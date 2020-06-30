@@ -1,0 +1,4 @@
+<APIProxy name="sds">
+  <!-- This is the root of the application -->
+  <Description>Proxy to Spine Directory Service endpoints.</Description>
+</APIProxy>
