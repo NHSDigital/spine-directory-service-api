@@ -44,8 +44,6 @@
     <SSLInfo>
       <Enabled>true</Enabled>
     </SSLInfo>
-    <LoadBalancer>
-      <Server name="spine-directory-target" />
-    </LoadBalancer>
+    <URL>https://{{ APIM_PROXY_HOSTNAME }}</URL>
   </HTTPTargetConnection>
 </TargetEndpoint>

@@ -14,7 +14,8 @@ install-hooks:
 
 lint:
 	npm run lint
-	cd sandbox && npm run lint && cd ..
+	cd docker/sandbox && npm run lint && cd ..
+	cd docker/adaptor && npm run lint && cd ..
 	poetry run flake8 **/*.py
 	find -name '*.sh' | grep -v node_modules | xargs shellcheck
 
@@ -42,9 +43,14 @@ sandbox: update-examples
 build-proxy:
 	scripts/build_proxy.sh
 
-release: clean publish build-proxy
+dist: clean publish build-proxy
 	mkdir -p dist
 	cp -r build/. dist
+	cp ecs-proxies-deploy.yml dist/ecs-deploy-internal-dev.yml
+	cp ecs-proxies-deploy.yml dist/ecs-deploy-ref.yml
+	cp ecs-proxies-deploy.yml dist/ecs-deploy-int.yml
+	cp ecs-proxies-deploy.yml dist/ecs-deploy-prod.yml
+	cp ecs-proxies-deploy-sandbox.yml dist/ecs-deploy-sandbox.yml
 
 test:
 	echo "TODO: add tests"
