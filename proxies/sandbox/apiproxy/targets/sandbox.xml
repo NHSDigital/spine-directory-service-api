@@ -14,7 +14,10 @@
           </Step>
         </Response>
     </PreFlow>
-    <HostedTarget>
-        <Properties/>
-    </HostedTarget>
+    <HTTPTargetConnection>
+      <SSLInfo>
+        <Enabled>true</Enabled>
+      </SSLInfo>
+      <URL>https://{{ APIM_PROXY_HOSTNAME }}</URL>
+    </HTTPTargetConnection>
 </TargetEndpoint>

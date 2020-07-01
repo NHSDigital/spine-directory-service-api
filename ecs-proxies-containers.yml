@@ -1,0 +1,10 @@
+
+docker_containers:
+
+  - name: sandbox
+    dockerfile: "docker/sandbox/Dockerfile"
+    path: "docker/sandbox"
+
+  - name: adaptor
+    dockerfile: "docker/adaptor/Dockerfile"
+    path: "docker/adaptor"
