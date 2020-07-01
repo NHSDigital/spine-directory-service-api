@@ -1,0 +1,57 @@
+name: "$(SourceBranchName)+$(BuildID)"
+
+resources:
+  repositories:
+    - repository: utils
+      name: NHSDigital/api-management-utils
+      endpoint: NHSDigital
+      type: github
+#      ref: refs/heads/<xxxx>
+
+trigger:
+  branches:
+    include:
+      - tags/refs/v*
+  tags:
+    include:
+      - v*
+
+pr:
+  branches:
+    include: ['*']
+
+jobs:
+  - job: build
+    displayName: Build & Test
+    timeoutInMinutes: 30
+    pool:
+      vmImage: 'ubuntu-20.04'
+    steps:
+      - checkout: self
+        path: s
+
+      - checkout: utils
+        path: s/utils
+
+  ## BUILD AND TEST
+      -
+      - bash: "make dist"
+        displayName: build artifact
+
+      - template: az/build-prereqs.yml@utils
+
+      - template: az/create-build-env-vars.yml@utils
+        parameters:
+          out_dir: 'dist'
+          service_name: 'sync-wrap'
+
+      - template: az/become-build-user.yml@utils
+        parameters:
+          env_vars_dir: 'dist'
+
+      - template: az/build-and-push-ecs-proxies.yml@utils
+        parameters:
+          env_vars_dir: 'dist'
+
+      - publish: dist/
+        artifact: sync-wrap-$(Build.BuildNumber)

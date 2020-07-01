@@ -43,7 +43,7 @@ sandbox: update-examples
 build-proxy:
 	scripts/build_proxy.sh
 
-release: clean publish build-proxy
+dist: clean publish build-proxy
 	mkdir -p dist
 	cp -r build/. dist
 	cp ecs-proxies-deploy.yml dist/ecs-deploy-internal-dev.yml
