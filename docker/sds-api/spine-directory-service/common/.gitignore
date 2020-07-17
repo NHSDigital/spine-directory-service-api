@@ -1,0 +1,6 @@
+.DS_Store
+*/test-reports
+/.idea/
+__pycache__
+*.iml
+*.egg-info
