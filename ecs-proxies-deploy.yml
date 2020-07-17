@@ -14,11 +14,11 @@ docker_service:
       - name: MHS_SDS_SEARCH_BASE
         value: ou=services,o=nhs
       - name: MHS_DISABLE_SDS_TLS
-        value: True
+        value: "true"
       - name: MHS_SDS_REDIS_CACHE_HOST
         value: redis
       - name: MHS_SDS_REDIS_DISABLE_TLS
-        value: True
+        value: "true"
     health_check:
       matcher: "200"
       path: "/healthcheck"
