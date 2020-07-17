@@ -54,4 +54,4 @@ jobs:
           env_vars_dir: 'dist'
 
       - publish: dist/
-        artifact: sync-wrap-$(Build.BuildNumber)
+        artifact: spine-directory-service-$(Build.BuildNumber)
