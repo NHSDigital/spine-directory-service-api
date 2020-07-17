@@ -1,0 +1,152 @@
+openapi: 3.0.0
+servers:
+  - description: Spine Directory Service API
+    url: https://virtserver.swaggerhub.com/kainos_nhsnia/SDS_API/1.0.0
+info:
+  description: Spine Directory Service API
+  version: "1.0.0"
+  title: Spine Directory Service API
+  license:
+    name: Apache 2.0
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+paths:
+  /routing:
+    get:
+      summary: Obtain SDS routing information
+      operationId: getRoutingInformation
+      description: |
+        Requests to obtain sds routing information
+      parameters:
+        - in: query
+          name: org-code
+          description: The organisation code for the Spine instance that your MHS is communicating with (eg."YES-0000806")
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: service-id
+          description: service that is being contacted and the action that is required (eg."urn:nhs:names:services:psis:REPC_IN150016UK05")
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: search results matching input parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SDS-Routing'
+        '400':
+          description: bad input parameter
+  /reliability:
+    get:
+      summary: Request to obtain reliability information
+      operationId: getReliabilityInformation
+      description: |
+        A handler for requests to obtain reliability information.
+      parameters:
+        - in: query
+          name: org-code
+          description: The organisation code for the Spine instance that your MHS is communicating with (eg."YES-0000806")
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: service-id
+          description: service that is being contacted and the action that is required (eg."urn:nhs:names:services:psis:REPC_IN150016UK05")
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: search results matching criteria
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SDS-Reliability'
+        '400':
+          description: bad input parameter
+  /routing-reliability:
+    get:
+      summary: Request to obtain combined routing and reliability information
+      operationId: getRoutingAndReliabilityInformation
+      description: |
+        A handler for requests to obtain combined routing and reliability information.
+      parameters:
+        - in: query
+          name: org-code
+          description: The organisation code for the Spine instance that your MHS is communicating with (eg."YES-0000806")
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: service-id
+          description: service that is being contacted and the action that is required (eg."urn:nhs:names:services:psis:REPC_IN150016UK05")
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: search results matching criteria
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/SDS-Routing'
+                  - $ref: '#/components/schemas/SDS-Reliability'
+        '400':
+          description: bad input parameter
+  /healthcheck:
+    get:
+      summary: Health check endpoint
+      description: This endpoint just returns a HTTP 200 response and does no further processing. This endpoint is intended to be used by load balancers/other infrastructure to check that the server is running.
+      operationId: getHealthcheck
+      responses:
+        "200":
+          description: The only response this endpoint returns.
+components:
+  schemas:
+    SDS-Reliability:
+      type: object
+      properties:
+        nhsMHSSyncReplyMode:
+          type: string
+          example: MSHSignalsOnly
+        nhsMHSRetryInterval:
+          type: string
+          example: PT1M
+        nhsMHSRetries:
+          type: string
+          example: 2
+        nhsMHSPersistDuration:
+          type: string
+          example: PT5M
+        nhsMHSDuplicateElimination:
+          type: string
+          example: always
+        nhsMHSAckRequested:
+          type: string
+          example: always
+    SDS-Routing:
+      type: object
+      properties:
+        nhsMhsFQDN:
+          type: string
+          example: 192.168.128.11
+        nhsMHSEndPoint:
+          type: array
+          items:
+            type: string
+            format: url
+            example: "https://192.168.128.11/reliablemessaging/reliablerequest" 
+        nhsMHSPartyKey: 
+          type: string
+          example: "YES-0000806"
+        nhsMhsCPAId:
+          type: string
+          example: S20001A000182
+        uniqueIdentifier:
+          type: array
+          items:
+            type: string
+            example: "227319907548"
