@@ -4,7 +4,7 @@
 
 docker_service:
 
-  - name: adaptor
+  - name: sds-api
     expose: true
     environment:
       - name: NODE_ENV
