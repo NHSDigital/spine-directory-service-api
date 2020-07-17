@@ -7,10 +7,10 @@ docker_service:
   - name: sds-api
     expose: true
     environment:
+      - name: NO_CACHE
+        value: "true"
       - name: MHS_LOG_LEVEL
         value: NOTSET
-      - name: MHS_SDS_URL
-        value: ldap://192.168.128.11
       - name: MHS_SDS_SEARCH_BASE
         value: ou=services,o=nhs
       - name: MHS_DISABLE_SDS_TLS
@@ -19,6 +19,10 @@ docker_service:
         value: redis
       - name: MHS_SDS_REDIS_DISABLE_TLS
         value: "true"
+    secrets:
+      - name: MHS_SDS_URL
+        valueFrom: "/ptl/platform-common/cis/ldap-uri"
+
     health_check:
       matcher: "200"
       path: "/healthcheck"
