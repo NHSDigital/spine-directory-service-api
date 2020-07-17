@@ -7,10 +7,18 @@ docker_service:
   - name: sds-api
     expose: true
     environment:
-      - name: NODE_ENV
-        value: production
-      - name: LOG_LEVEL
-        value: "{{ 'debug' if APIGEE_ENVIRONMENT == 'internal-dev' else 'info' }}"
+      - name: MHS_LOG_LEVEL
+        value: NOTSET
+      - name: MHS_SDS_URL
+        value: ldap://192.168.128.11
+      - name: MHS_SDS_SEARCH_BASE
+        value: ou=services,o=nhs
+      - name: MHS_DISABLE_SDS_TLS
+        value: True
+      - name: MHS_SDS_REDIS_CACHE_HOST
+        value: redis
+      - name: MHS_SDS_REDIS_DISABLE_TLS
+        value: True
     health_check:
       matcher: "200"
-      path: "/_ping"
+      path: "/healthcheck"
