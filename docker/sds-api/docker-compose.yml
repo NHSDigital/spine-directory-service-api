@@ -12,7 +12,3 @@ services:
       - MHS_DISABLE_SDS_TLS=True
       - MHS_SDS_REDIS_CACHE_HOST=redis
       - MHS_SDS_REDIS_DISABLE_TLS=True
-  redis:
-    image: redis
-    ports:
-      - "6379:6379"
