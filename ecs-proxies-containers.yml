@@ -5,6 +5,10 @@ docker_containers:
 #    dockerfile: "docker/sandbox/Dockerfile"
 #    path: "docker/sandbox"
 
+  - name: ache-service
+    dockerfile: "docker/cache-service/spine-directory-service/Dockerfile"
+    path: "docker/cache-service"
+
   - name: sds-api
     dockerfile: "docker/sds-api/spine-directory-service/spine-directory-service/Dockerfile"
     path: "docker/sds-api"
