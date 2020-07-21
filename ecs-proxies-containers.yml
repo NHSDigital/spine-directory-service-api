@@ -5,7 +5,7 @@ docker_containers:
 #    dockerfile: "docker/sandbox/Dockerfile"
 #    path: "docker/sandbox"
 
-  - name: ache-service
+  - name: cache-service
     dockerfile: "docker/cache-service/spine-directory-service/Dockerfile"
     path: "docker/cache-service"
 
