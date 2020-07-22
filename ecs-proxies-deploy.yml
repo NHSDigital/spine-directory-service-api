@@ -18,8 +18,6 @@ docker_service:
         value: DEBUG
       - name: MHS_SDS_SEARCH_BASE
         value: ou=services,o=nhs
-      - name: MHS_DISABLE_SDS_TLS
-        value: "true"
       - name: MHS_SDS_REDIS_CACHE_HOST
         value: cache-service
       - name: MHS_SDS_REDIS_DISABLE_TLS
