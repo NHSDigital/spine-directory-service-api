@@ -3,7 +3,7 @@ python = "^3.8"
 
 
 [tool.poetry]
-name = "spine-directory-api"
+name = "spine-directory-service-api"
 version = "0.0.1-alpha"
 description = "TODO"
 
@@ -15,7 +15,7 @@ authors = [
 
 readme = 'README.md'
 
-repository = "https://github.com/NHSDigital/spine-directory-api"
+repository = "https://github.com/NHSDigital/spine-directory-service-api"
 homepage = ""
 
 keywords = ["healthcare", "uk", "nhs"] #TODO add additional keywords

@@ -4,7 +4,7 @@ services:
   route:
     image: local/spine-directory-service:${BUILD_TAG}
     ports:
-        - "8080:80"
+        - "9000:80"
     environment:
       - MHS_LOG_LEVEL=NOTSET
       - MHS_SDS_URL=ldap://192.168.128.11

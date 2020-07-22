@@ -14,6 +14,6 @@ WORKDIR /usr/src/app/spine-directory-service/spine-directory-service
 
 RUN pipenv install --deploy --ignore-pipfile
 
-EXPOSE 80
+EXPOSE 9000
 
 ENTRYPOINT pipenv run start
