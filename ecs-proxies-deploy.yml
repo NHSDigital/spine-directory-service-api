@@ -15,7 +15,7 @@ docker_service:
       - name: NO_CACHE
         value: "true"
       - name: MHS_LOG_LEVEL
-        value: NOTSET
+        value: DEBUG
       - name: MHS_SDS_SEARCH_BASE
         value: ou=services,o=nhs
       - name: MHS_DISABLE_SDS_TLS
