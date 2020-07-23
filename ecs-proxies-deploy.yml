@@ -18,7 +18,7 @@ docker_service:
       - name: MHS_SDS_SEARCH_BASE
         value: ou=services,o=nhs
       - name: MHS_SDS_REDIS_CACHE_HOST
-        value: cache-service
+        value: localhost
       - name: MHS_SDS_REDIS_DISABLE_TLS
         value: "true"
     secrets:
