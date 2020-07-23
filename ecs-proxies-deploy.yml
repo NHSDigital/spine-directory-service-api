@@ -4,10 +4,6 @@
 
 docker_service:
 
-  - name: cache-service
-    port-mappings:
-      - containerPort: 6379
-
   - name: sds-api
     expose: true
     environment:
@@ -18,7 +14,7 @@ docker_service:
       - name: MHS_SDS_SEARCH_BASE
         value: ou=services,o=nhs
       - name: MHS_SDS_REDIS_CACHE_HOST
-        value: localhost
+        value: cache-service
       - name: MHS_SDS_REDIS_DISABLE_TLS
         value: "true"
     secrets:
