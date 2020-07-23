@@ -4,14 +4,14 @@ set -euo pipefail
 function copy-secret {
     secretValue="$(
         aws secretsmanager get-secret-value \
-        --profile build-sds-coordinator \
+        --profile build-sds \
         --secret-id "$1" \
         --query SecretString \
         --output text
     )"
 
     aws ssm put-parameter \
-        --profile build-sds-coordinator \
+        --profile build-sds \
         --name "$2" \
         --value "$secretValue" \
         --type SecureString \
@@ -21,14 +21,14 @@ function copy-secret {
 function copy-parameter {
     secretValue="$(
         aws ssm get-parameter \
-        --profile build-sds-coordinator \
+        --profile build-sds \
         --name "$1" \
         --query Parameter.Value \
         --output text
     )"
 
     aws ssm put-parameter \
-        --profile build-sds-coordinator \
+        --profile build-sds \
         --name "$2" \
         --value "$secretValue" \
         --type String \
