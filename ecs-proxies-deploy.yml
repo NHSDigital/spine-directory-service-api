@@ -18,6 +18,12 @@ docker_service:
     secrets:
       - name: MHS_SDS_URL
         valueFrom: "/ptl/platform-common/cis/ldap-uri"
+      - name: MHS_CLIENT_KEY
+        valueFrom: "/ptl/api-deployment/sds/ldap/private-key"
+      - name: MHS_CLIENT_CERT
+        valueFrom: "/ptl/api-deployment/sds/ldap/client_cert"
+      - name: MHS_CA_CERTS
+        valueFrom: "/ptl/api-deployment/sds/ldap/ca-certs"
 
     health_check:
       matcher: "200"
