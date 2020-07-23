@@ -7,7 +7,6 @@ docker_service:
   - name: cache-service
     port-mappings:
         - containerPort: 6379
-        - hostPort: 127.0.0.1
 
   - name: sds-api
     expose: true
