@@ -11,7 +11,7 @@ unittest-xml-reporting = "~=2.5"
 tornado = "~=6.0"
 defusedxml = "~=0.6"
 ldap3 = "~=2.7"
-spine-directory-service-common = {editable = true, path = "./../../spine-directory-service/common"}
+spine-directory-service-common = {editable = true, path = "./../common"}
 redis = "~=3.3"
 
 [requires]

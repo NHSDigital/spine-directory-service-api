@@ -4,10 +4,10 @@ The following sections are intended to provide the necessary info on how to conf
 
 ### Pre-requisites
 
-* You'll need to have a connection to Spine. For testing purposes, you can use [Opentest](https://nhs-digital-opentest.github.io/Welcome/index.html). 
+* You'll need to have a connection to Spine. For testing purposes, you can use [Opentest](https://nhs-digital-opentest.github.io/Welcome/index.html).
 See [Setup an OpenTest connection](../setup-opentest.md) for details.
 
-* Ensure you have [Pipenv](https://docs.pipenv.org/en/latest/) installed 
+* Ensure you have [Pipenv](https://docs.pipenv.org/en/latest/) installed
   ```
   brew install pipenv
   ```
@@ -17,23 +17,23 @@ See [Setup an OpenTest connection](../setup-opentest.md) for details.
 
 ### Set up
 
-Within directory of the `spine-directory-service/common` project run:
+Within directory of the `./common` project run:
 ```
 pipenv install --dev
 ```
-Within directory of the `spine-directory-service/spine-directory-service` project run:
+Within directory of the `./sds` project run:
 ```
 pipenv install --dev
 pipenv install -e ./../common
 ```
 After installing/configuring dependencies with pipenv, open IntelliJ IDEA project using root path `spine-directory-service`.
 
-Make sure both `./spine-directory-service` and `./common` module interpreters are configured with Pipenv pointing to proper virtual environtments created by `pipenv install` commands executed above (run `pipenv --venv` to check the virtualenv directory of each module)
+Make sure both `./sds` and `./common` module interpreters are configured with Pipenv pointing to proper virtual environtments created by `pipenv install` commands executed above (run `pipenv --venv` to check the virtualenv directory of each module)
 
 Make a copy of `spine-directory-service-env-example.yml` as `spine-directory-service-env.yml` (this file has already been added to .gitignore) and fill it with data (mostly certificates - be vary of indentation for them) obtained earlier for OpenTest access
 
 Last step is to add new Python Run Configuration in Pycharm:
-1. Point script path to `main.py` and `spine-directory-service` module
+1. Point script path to `main.py` and `sds` module
 2. Switch to EnvFile tab
 3. Enable EnvFile plugin and add yaml file you edited and saved earlier.
 4. Make sure your connection to OpenTest is active

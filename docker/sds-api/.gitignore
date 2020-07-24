@@ -145,7 +145,7 @@ export-env-vars-and-run-mhs-docker.sh
 .DS_Store
 
 # mock ldap data
-/docker/sds-api/spine-directory-service/spine-directory-service/mock_ldap_data/*.json
+/docker/sds-api/spine-directory-service/sds/mock_ldap_data/*.json
 
 **/export-env-vars.sh
 out/
