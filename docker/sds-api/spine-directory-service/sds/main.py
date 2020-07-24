@@ -80,8 +80,8 @@ def start_tornado_server(routing: routing_reliability.RoutingAndReliability) -> 
 
 
 def main():
-    config.setup_config("MHS")
-    secrets.setup_secret_config("MHS")
+    config.setup_config("SDS")
+    secrets.setup_secret_config("SDS")
     log.configure_logging('sds')
 
     routing = initialise_routing(search_base=config.get_config("SDS_SEARCH_BASE"))

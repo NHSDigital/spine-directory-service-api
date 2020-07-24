@@ -14,16 +14,16 @@ docker_service:
     environment:
       - name: NO_CACHE
         value: "true"
-      - name: MHS_LOG_LEVEL
+      - name: SDS_LOG_LEVEL
         value: DEBUG
-      - name: MHS_SDS_SEARCH_BASE
+      - name: SDS_SDS_SEARCH_BASE
         value: ou=services,o=nhs
-      - name: MHS_SDS_REDIS_CACHE_HOST
+      - name: SDS_SDS_REDIS_CACHE_HOST
         value: cache-service
-      - name: MHS_SDS_REDIS_DISABLE_TLS
+      - name: SDS_SDS_REDIS_DISABLE_TLS
         value: "true"
     secrets:
-      - name: MHS_SDS_URL
+      - name: SDS_SDS_URL
         valueFrom: "/ptl/platform-common/cis/ldap-uri"
 
     health_check:
