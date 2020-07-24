@@ -21,10 +21,11 @@ docker_service:
       - name: MHS_CLIENT_KEY
         valueFrom: "/ptl/api-deployment/sds/ldap/private-key"
       - name: MHS_CLIENT_CERT
-        valueFrom: "/ptl/api-deployment/sds/ldap/client_cert"
+        valueFrom: "/ptl/api-deployment/sds/ldap/client-cert"
       - name: MHS_CA_CERTS
         valueFrom: "/ptl/api-deployment/sds/ldap/ca-certs"
 
     health_check:
       matcher: "200"
       path: "/healthcheck"
+      
