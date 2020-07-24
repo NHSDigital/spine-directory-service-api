@@ -138,15 +138,14 @@ spine-directory-service-implementation/selenium_tests/data/local_asid
 **/component-test-source.sh
 
 # Local configuration
-/spine-directory-service/spine-directory-service/nhs-spineroutelookup-env.yaml
+/docker/sds-api/spine-directory-service/spine-directory-service-env.yaml
 export-env-vars-and-run-mhs-docker.sh
-/integration-tests/integration_tests/integration-test-env.yaml
 
 # system
 .DS_Store
 
 # mock ldap data
-/spine-directory-service/spine-directory-service/mock_ldap_data/*.json
+/docker/sds-api/spine-directory-service/spine-directory-service/mock_ldap_data/*.json
 
 **/export-env-vars.sh
 out/
