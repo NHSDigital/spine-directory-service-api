@@ -9,13 +9,7 @@ unittest-xml-reporting = "~=2.5"
 
 [packages]
 tornado = "~=6.0"
-defusedxml = "~=0.6"
-python-qpid-proton = "~=0.28"
-pystache = "~=0.5"
-lxml = "~=4.4"
-aioboto3 = "~=8.0"
 isodate = "~=0.6"
-motor = "~=2.1"
 
 [requires]
 python_version = "3.7"
