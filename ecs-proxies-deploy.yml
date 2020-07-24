@@ -16,14 +16,14 @@ docker_service:
         value: "true"
       - name: SDS_LOG_LEVEL
         value: DEBUG
-      - name: SDS_SDS_SEARCH_BASE
+      - name: SDS_LDAP_SEARCH_BASE
         value: ou=services,o=nhs
-      - name: SDS_SDS_REDIS_CACHE_HOST
+      - name: SDS_REDIS_CACHE_HOST
         value: cache-service
-      - name: SDS_SDS_REDIS_DISABLE_TLS
+      - name: SDS_REDIS_DISABLE_TLS
         value: "true"
     secrets:
-      - name: SDS_SDS_URL
+      - name: SDS_LDAP_URL
         valueFrom: "/ptl/platform-common/cis/ldap-uri"
 
     health_check:

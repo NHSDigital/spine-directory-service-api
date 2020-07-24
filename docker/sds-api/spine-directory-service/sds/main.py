@@ -15,11 +15,11 @@ logger = log.IntegrationAdaptorsLogger(__name__)
 
 
 def load_cache_implementation():
-    cache_expiry_time = int(config.get_config("SDS_CACHE_EXPIRY_TIME", cache_adaptor.FIFTEEN_MINUTES_IN_SECONDS))
+    cache_expiry_time = int(config.get_config("CACHE_EXPIRY_TIME", cache_adaptor.FIFTEEN_MINUTES_IN_SECONDS))
 
-    redis_host = config.get_config("SDS_REDIS_CACHE_HOST")
-    redis_port = int(config.get_config("SDS_REDIS_CACHE_PORT", "6379"))
-    disable_tls_flag = config.get_config("SDS_REDIS_DISABLE_TLS", None)
+    redis_host = config.get_config("REDIS_CACHE_HOST")
+    redis_port = int(config.get_config("REDIS_CACHE_PORT", "6379"))
+    disable_tls_flag = config.get_config("REDIS_DISABLE_TLS", None)
     use_tls = disable_tls_flag != "True"
 
     logger.info('Using the Redis cache with {redis_host}, {redis_port}, {cache_expiry_time}, {use_tls}',
@@ -63,7 +63,7 @@ def start_tornado_server(routing: routing_reliability.RoutingAndReliability) -> 
         ("/healthcheck", healthcheck_handler.HealthcheckHandler)
     ])
     server = tornado.httpserver.HTTPServer(application)
-    server_port = int(config.get_config('SPINE_ROUTE_LOOKUP_SERVER_PORT', default='80'))
+    server_port = int(config.get_config('SERVER_PORT', default='80'))
     server.listen(server_port)
 
     logger.info('Starting router server at port {server_port}', fparams={'server_port': server_port})
@@ -84,7 +84,7 @@ def main():
     secrets.setup_secret_config("SDS")
     log.configure_logging('sds')
 
-    routing = initialise_routing(search_base=config.get_config("SDS_SEARCH_BASE"))
+    routing = initialise_routing(search_base=config.get_config("LDAP_SEARCH_BASE"))
     start_tornado_server(routing)
 
 

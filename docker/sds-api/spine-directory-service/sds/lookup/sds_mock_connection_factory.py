@@ -111,7 +111,7 @@ def main(args):
 
 
 def _read_real_server_data(output_path, nhs_id_code):
-    ldap_address = config.get_config('SDS_URL')
+    ldap_address = config.get_config('LDAP_URL')
     logger.info("Downloading real server data from '%s' for nhs id code '%s' and saving data at '%s'",
                 ldap_address, nhs_id_code, output_path)
     server = Server(ldap_address, get_info=ALL)

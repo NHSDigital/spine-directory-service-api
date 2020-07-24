@@ -7,11 +7,11 @@ services:
         - "9000:80"
     environment:
       - SDS_LOG_LEVEL=NOTSET
-      - SDS_SDS_URL=ldap://192.168.128.11
-      - SDS_SDS_SEARCH_BASE=ou=services,o=nhs
-      - SDS_DISABLE_SDS_TLS=True
-      - SDS_SDS_REDIS_CACHE_HOST=cache-service
-      - SDS_SDS_REDIS_DISABLE_TLS=True
+      - SDS_LDAP_URL=ldap://192.168.128.11
+      - SDS_LDAP_SEARCH_BASE=ou=services,o=nhs
+      - SDS_LDAP_DISABLE_TLS=True
+      - SDS_REDIS_CACHE_HOST=cache-service
+      - SDS_REDIS_DISABLE_TLS=True
 
   cache-service:
     image: local/cache-service:${BUILD_TAG}

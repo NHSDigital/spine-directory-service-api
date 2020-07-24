@@ -95,17 +95,17 @@ contain sensitive information such as the content of messages being sent.
 * `MHS_SECRET_SPINE_ROUTE_LOOKUP_CA_CERTS` (outbound only) Optional. The CA certificates used to validate the certificate presented by the Spine Route Lookup service. Should include the following in this order: endpoint issuing subCA certificate, root CA Certificate. If not specified, the system defaults will be used.
 * `MHS_SPINE_ROUTE_LOOKUP_HTTP_PROXY` (outbound only) An optional http(s) proxy to route requests to the Spine Route Lookup service via. Note that the proxy must pass through https requests transparently.
 * `MHS_SPINE_ROUTE_LOOKUP_HTTP_PROXY_PORT` (outbound only) The http(s) proxy port to use for the Spine Route Lookup service proxy. Ignored if `MHS_SPINE_ROUTE_LOOKUP_HTTP_PROXY` is not provided. Defaults to `3128`.
-* `SDS_SDS_URL` (Spine Route Lookup service only) The URL to communicate with SDS on. e.g. `ldaps://example.com`
-* `SDS_SDS_SEARCH_BASE` (Spine Route Lookup service only) The LDAP location to use as the base of SDS searches, e.g. `ou=services,o=nhs`. This value is specific to the SDS instance you configure your MHS to communicate with and should not contain whitespace.
-* `SDS_DISABLE_SDS_TLS` (Spine Route Lookup service only) An optional flag that can be set to disable TLS for SDS
+* `SDS_LDAP_URL` (Spine Route Lookup service only) The URL to communicate with SDS on. e.g. `ldaps://example.com`
+* `SDS_LDAP_SEARCH_BASE` (Spine Route Lookup service only) The LDAP location to use as the base of SDS searches, e.g. `ou=services,o=nhs`. This value is specific to the SDS instance you configure your MHS to communicate with and should not contain whitespace.
+* `SDS_LDAP_DISABLE_TLS` (Spine Route Lookup service only) An optional flag that can be set to disable TLS for LDAP
 connections. *Must* be set to exactly `True` for TLS to be disabled.
-* `MHS_SDS_CACHE_EXPIRY_TIME` (Spine Route Lookup service only). An optional value that specifies the time (in seconds)
+* `SDS_CACHE_EXPIRY_TIME` (Spine Route Lookup service only). An optional value that specifies the time (in seconds)
 that a value should be held in the SDS cache. Defaults to `900` (fifteen minutes)
-* `SDS_SDS_REDIS_CACHE_HOST` (Spine Route Lookup service only). The Redis host to use when caching SDS information
+* `SDS_REDIS_CACHE_HOST` (Spine Route Lookup service only). The Redis host to use when caching SDS information
 retrieved from SDS.
-* `MHS_SDS_REDIS_CACHE_PORT` (Spine Route Lookup service only). An optional value that specified the port to use when
-connecting to the Redis host specified by `SDS_SDS_REDIS_CACHE_HOST`. Defaults to `6379`.
-* `SDS_SDS_REDIS_DISABLE_TLS` (Spine Route Lookup service only) An optional flag that can be set to disable TLS for
+* `SDS_REDIS_CACHE_PORT` (Spine Route Lookup service only). An optional value that specified the port to use when
+connecting to the Redis host specified by `SDS_REDIS_CACHE_HOST`. Defaults to `6379`.
+* `SDS_REDIS_DISABLE_TLS` (Spine Route Lookup service only) An optional flag that can be set to disable TLS for
 connections to the Redis cache used by the Spine Route Lookup service. *Must* be set to exactly `True` for TLS to be
 disabled.
 * `MHS_FORWARD_RELIABLE_ENDPOINT_URL` (outbound only) The URL to communicate with Spine for Forward Reliable messaging
@@ -116,7 +116,7 @@ are allowed to be. This should be set minus any HTTP headers and other content i
 e.g. Setting this to ~400 bytes less than the maximum request body size should be roughly the correct value
 (calculating this value accurately is pretty much impossible as one of the HTTP headers is the Content-Length header
 which varies depending on the request body size).
-* `SDS_LAZY_LDAP` use lazy connection from spine route lookup component to SPINE LDAP service
+* `SDS_LDAP_LAZY_CONNECTION` use lazy connection from spine route lookup component to SPINE LDAP service
 
 Note that if you are using Opentest, you should use the credentials you were given when you got access to set `SDS_SECRET_PARTY_KEY`, `SDS_SECRET_CLIENT_CERT`, `SDS_SECRET_CLIENT_KEY` and `SDS_SECRET_CA_CERTS`.
 
