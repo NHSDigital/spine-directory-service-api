@@ -1,0 +1,172 @@
+{
+	"info": {
+		"_postman_id": "876c319c-3c03-4f2f-817c-33f2f0f07401",
+		"name": "Spine Directory Service - End to End Tests",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Tests Routing Endpoint",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "550ce903-cedd-40d6-9438-2f4d7c3ae29d",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Check routing contains all keys\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData).to.be.an('object').that.has.keys('nhsMHSPartyKey','nhsMhsCPAId','nhsMhsFQDN', 'nhsMHSEndPoint', 'uniqueIdentifier');",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{environment}}/routing?org-code={{org-code}}&service-id={{service-id}}",
+					"host": [
+						"{{environment}}"
+					],
+					"path": [
+						"routing"
+					],
+					"query": [
+						{
+							"key": "org-code",
+							"value": "{{org-code}}"
+						},
+						{
+							"key": "service-id",
+							"value": "{{service-id}}"
+						}
+					]
+				},
+				"description": "Return routing information for the spine directory service"
+			},
+			"response": []
+		},
+		{
+			"name": "Tests Bad Request on Endpoint",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "472f81dd-10a1-47da-9fff-217ff85080be",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Check routing contains all keys\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData).to.be.an('object').that.has.keys('nhsMHSPartyKey','nhsMhsCPAId','nhsMhsFQDN', 'nhsMHSEndPoint', 'uniqueIdentifier');",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{environment}}/routing?org-code={{org-code}}&service-id={{service-id}}",
+					"host": [
+						"{{environment}}"
+					],
+					"path": [
+						"routing"
+					],
+					"query": [
+						{
+							"key": "org-code",
+							"value": "{{org-code}}"
+						},
+						{
+							"key": "service-id",
+							"value": "{{service-id}}"
+						}
+					]
+				},
+				"description": "Return error information for the spine directory service"
+			},
+			"response": []
+		},
+		{
+			"name": "Tests Reliability Endpoint",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "ae85d23e-b77f-4fa8-88cb-4085bc165328",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Check routing contains all keys\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData).to.be.an('object').that.has.keys('nhsMHSSyncReplyMode','nhsMHSRetryInterval','nhsMHSRetries', 'nhsMHSPersistDuration', 'nhsMHSDuplicateElimination','nhsMHSAckRequested');",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{environment}}/reliability?org-code={{org-code}}&service-id={{service-id}}",
+					"host": [
+						"{{environment}}"
+					],
+					"path": [
+						"reliability"
+					],
+					"query": [
+						{
+							"key": "org-code",
+							"value": "{{org-code}}"
+						},
+						{
+							"key": "service-id",
+							"value": "{{service-id}}"
+						}
+					]
+				},
+				"description": "Return routing information for the spine directory service"
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "f7b32fc3-a7c8-47c1-95e8-96d15f1e4548",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "7c784a2c-2373-444d-9a28-dcadc118815c",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
