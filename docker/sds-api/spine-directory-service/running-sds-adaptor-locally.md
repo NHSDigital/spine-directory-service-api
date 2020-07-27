@@ -2,7 +2,7 @@
 
 It may be useful to run these adaptors in a local environment. The following is a step-by-step guide on how to set this up.
 
-* Requirements: 
+* Requirements:
     - OpenTest connection [Set up NHS Digital OpenTest connection](../setup-opentest.md)
     - Docker - for example [Docker for Windows](https://docs.docker.com/docker-for-windows/)
     <!-- not needed as we are using Dockerfile
@@ -13,28 +13,23 @@ It may be useful to run these adaptors in a local environment. The following is 
     - git bash (to run .sh files below)
 * Set up Environment variable:
 `export BUILD_TAG='latest'`
-* Run the `./build.sh` script found in the top level directory of this project. This will build docker images which 
-are required to run the SDS Adaptor in using docker. 
-    
+* Run the `./build.sh` script found in the top level directory of this project. This will build docker images which
+are required to run the SDS Adaptor in using docker.
+
  * Set up Environment variables. The environment variables `MHS_SECRET_PARTY_KEY`, `MHS_SECRET_CLIENT_CERT`, `MHS_SECRET_CLIENT_KEY` and `MHS_SECRET_CA_CERTS` need to
-  be set when running this command. These variables should be set as described [here](sds-adaptor-dev-notes.md#environment-variables). 
+  be set when running this command. These variables should be set as described [here](sds-adaptor-dev-notes.md#environment-variables).
   A simple way of setting this up once is to create a bash file `configure-env-vars.sh` that looks like:
     ```sh
     export MHS_SECRET_PARTY_KEY="your party key from NHS Digital here"
     export MHS_SECRET_CLIENT_CERT=$'client cert from NHS Digital here'
     export MHS_SECRET_CLIENT_KEY=$'client key from NHS Digital here'
     export MHS_SECRET_CA_CERTS=$'ca certs from NHS Digital here'
-    ``` 
+    ```
     and then run `source configure-env-vars.sh`
 
 * Ensure your OpenTest connectivity is enabled in OpenVPN. (This does not apply if you have an available HSCN connection)
-    
+
 * Run `docker-compose up`. This will start the containers which have been built or pulled down, as described above.
-   
-<!-- TODO not needed as all is synchronous?
-* Depending on the OS the SDS is being run on, measures may have to be taken to allow public inbound traffic so that
-the async responses from Spine can access the MHS. For example on windows a inbound rule may be required in windows
-firewall to allow inbound traffic from the Spine through port 443.  -->
 
 * Note that the `MHS_LOG_LEVEL` environment variable (as documented [here](sds-adaptor-dev-notes.md#environment-variables)) is set by default to `NOTSET` in the
 `docker-compose.yml` file but should be changed if needed.

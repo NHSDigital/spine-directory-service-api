@@ -59,7 +59,7 @@ generates HTML docs. An invocation of this command can be seen
 [here](https://htmlpreview.github.io/?https://github.com/nhsconnect/integration-adaptors/blob/develop/mhs/outbound/openapi-docs.html).
 
 ### Environment Variables
-<!-- TODO: review env vars and shange prefix -->
+<!-- TODO: review env vars and change prefix -->
 SDS takes a number of environment variables when it is run. These are:
 * `MHS_LOG_LEVEL` This is required to be set to one of: `INFO`, `WARNING`, `ERROR` or `CRITICAL`, where `INFO` displays
 the most logs and `CRITICAL` displays the least. Note: Setting this value to one of the more detailed 'standard' Python
@@ -143,7 +143,6 @@ Ensure sonar-scanner is on your path, and configured for the sonarqube host with
 NOTE: Coverage will not show in the analysis unless you have already generated the xml report (as per above.)
 
 ## Running Integration Tests
-<!-- TODO: there are no int test atm -->
 See the [integration tests README](../integration-tests/README.md).
 
 Timeouts received whilst waiting for a response from Spine on a Windows machine could be due to the machine rejecting incoming connections on port 443. In order to open the port, follow these instructions:
