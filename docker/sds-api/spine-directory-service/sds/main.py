@@ -2,7 +2,7 @@ import tornado.httpserver
 import tornado.ioloop
 import tornado.web
 
-from handlers import healthcheck_handler
+from request import healthcheck_handler
 from utilities import config, secrets
 from utilities import integration_adaptors_logger as log
 

@@ -1,6 +1,6 @@
 from tornado.httputil import HTTPHeaders
 
-from comms.http_headers import HttpHeaders
+from request.http_headers import HttpHeaders
 from utilities import message_utilities, mdc, integration_adaptors_logger as log
 
 logger = log.IntegrationAdaptorsLogger(__name__)
