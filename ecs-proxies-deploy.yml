@@ -7,7 +7,7 @@ docker_service:
   - name: sds-api
     expose: true
     environment:
-      - name: NO_CACHE
+      - name: MHS_NO_CACHE
         value: "true"
       - name: MHS_LOG_LEVEL
         value: DEBUG
