@@ -116,5 +116,4 @@ Ensure sonar-scanner is on your path, and configured for the sonarqube host with
 NOTE: Coverage will not show in the analysis unless you have already generated the xml report (as per above.)
 
 ## Running Integration Tests
-<!-- TODO: there are no int test atm -->
 See the [integration tests README](../integration-tests/README.md).
