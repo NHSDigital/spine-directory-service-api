@@ -13,10 +13,7 @@ class TestLogger(TestCase):
 
     def tearDown(self) -> None:
         logging.getLogger().handlers = []
-        mdc.message_id.set(None)
         mdc.correlation_id.set(None)
-        mdc.interaction_id.set(None)
-        mdc.inbound_message_id.set(None)
 
     @patch('sys.stdout', new_callable=io.StringIO)
     def test_custom_audit_level(self, mock_stdout):
@@ -60,19 +57,13 @@ class TestLogger(TestCase):
         mock_stdout.truncate(0)
 
         log.configure_logging('TEST')
-        mdc.message_id.set('10')
         mdc.correlation_id.set('15')
-        mdc.inbound_message_id.set('20')
-        mdc.interaction_id.set('25')
 
         log.IntegrationAdaptorsLogger('SYS').info('%s %s', 'yes', 'no')
 
         log_entry = LogEntry(mock_stdout.getvalue())
 
-        self.assertEqual('10', log_entry.message_id)
         self.assertEqual('15', log_entry.correlation_id)
-        self.assertEqual('20', log_entry.inbound_message_id)
-        self.assertEqual('25', log_entry.interaction_id)
         self.assertEqual('TEST.SYS', log_entry.name)
         self.assertEqual('INFO', log_entry.level)
         self.assertEqual('yes no', log_entry.message)
@@ -134,10 +125,7 @@ class LogEntry:
             self.time,
             self.level,
             self.process_id,
-            self.interaction_id,
-            self.message_id,
             self.correlation_id,
-            self.inbound_message_id,
             self.name,
             self.message
         ) = log_elements
