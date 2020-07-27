@@ -20,7 +20,7 @@ docker_service:
         valueFrom: "/ptl/platform-common/cis/ldap-uri"
       - name: MHS_SECRET_CLIENT_KEY
         valueFrom: "/ptl/api-deployment/sds/ldap/private-key"
-      - name: MHS_CSECRET_LIENT_CERT
+      - name: MHS_SECRET_CLIENT_CERT
         valueFrom: "/ptl/api-deployment/sds/ldap/client-cert"
       - name: MHS_SECRET_CA_CERTS
         valueFrom: "/ptl/api-deployment/sds/ldap/ca-certs"
