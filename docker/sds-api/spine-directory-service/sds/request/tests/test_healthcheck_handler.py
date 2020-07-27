@@ -1,7 +1,7 @@
 import tornado.testing
 from tornado.web import Application
 
-from handlers import healthcheck_handler
+from request import healthcheck_handler
 
 
 class TestHealthcheckHandler(tornado.testing.AsyncHTTPTestCase):
