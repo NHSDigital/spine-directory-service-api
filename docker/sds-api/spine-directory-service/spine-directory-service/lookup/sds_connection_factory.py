@@ -67,7 +67,6 @@ def create_connection() -> ldap3.Connection:
         return sds_mock_connection_factory.build_mock_sds_connection()
     else:
         sds_url = config.get_config("SDS_URL")
-        sds_url.replace("ldap://", "ldaps://")
         disable_tls_flag = config.get_config("DISABLE_SDS_TLS", None)
         use_tls = disable_tls_flag != "True"
         logger.info('Configuring connection to SDS using {url} {tls}', fparams={"url": sds_url, "tls": use_tls})
