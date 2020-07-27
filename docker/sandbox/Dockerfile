@@ -1,11 +1,3 @@
-FROM node:12
+FROM rodolpheche/wiremock
 
-COPY . /sandbox
-
-WORKDIR /sandbox
-
-RUN npm install --only=production
-
-USER nobody
-
-CMD ["node", "index.js"]
+COPY stubs /home/wiremock
