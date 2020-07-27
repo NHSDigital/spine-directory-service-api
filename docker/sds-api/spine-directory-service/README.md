@@ -4,10 +4,10 @@ This package contains a pre-assured implementation of a Spine Directory Service 
 
 ## Introduction - What is an SDS?
 
-The NHS Spine is "a collection of national applications, services and directories which support the health and social care sector in the 
-exchange of information in national and local IT systems. A national, central service that underpins the NHS Care Records Service". 
-It provides applications such as the Personal Demographics Service (PDS) and also supports intermediary communication between other systems 
-(such as the transfer of patient records between GP practices when a patient moves practice). 
+The NHS Spine is "a collection of national applications, services and directories which support the health and social care sector in the
+exchange of information in national and local IT systems. A national, central service that underpins the NHS Care Records Service".
+It provides applications such as the Personal Demographics Service (PDS) and also supports intermediary communication between other systems
+(such as the transfer of patient records between GP practices when a patient moves practice).
 
 ## Software Architecture
 
@@ -16,22 +16,14 @@ The following diagram provides a view of the services (run in docker containers)
 <!-- TODO change link -->
 [MHS Adaptor Logical Architecture](../documentation/MHSLogicalArchitecture.pdf)
 
-<!-- TODO what SDS is using?
 These services have some dependencies, shown in blue, which are implemented through the adaptor pattern:
-- State database, which is used to handle internal MHS message state. 
-In this repository, DynamoDB and MongoDB are used as an implementations of the State database.
-- Sync-Async Response Database, a special case of the state database where a synchronous facade is provided by the Outbound Service for interactions
-with Spine which actually involve asynchronous responses. This database is used to correlate request to Spine and responses from Spine in this scenario. 
-Again this is implemented here as a DynamoDB and MongoDB state adaptor.
 - Container orchestration. The container orchestration solution of your choice can be used. In this repository, Docker compose is used when running
 the adaptor locally, and ECS, Fargate and ECR are used by the AWS exemplar architecture.
 - Secret Store - Used to safely inject secrets such as passwords into running containers.
 - Log and Audit Store - Running containers log to STDOUT and therefore logs can be captured and forwarded to the logginc and auditing solution of your choice.
-- Inbound Queue - Where unsolicited messages are received from Spine, these are placed on an AMQP compliant queue for processing by the local system.
-When running locally, this solution makes use of RabbitMQ, whereas the AWS Exemplar uses AmazonMQ as an AMQP compliant message queue.
 - Load Balancers are shown balancing load to the Inbound and outbound services. The AWS exemplar demonstrates the use of Application Load Balancers and
 Network Load Balancers to implement this.
-- Directory cache which acts as a cache for frequently requested routing and reliability information. Locally implemented through Redis, this is 
+- Directory cache which acts as a cache for frequently requested routing and reliability information. Locally implemented through Redis, this is
 also demonstrated through Elasticache for Redis in AWS.
 
 The National Adaptors Common Module provides classes which implement common requirements leveraged by multiple services or modules. -->
@@ -40,8 +32,7 @@ The National Adaptors Common Module provides classes which implement common requ
 
 Please refer to the [API Documentation](spine-directory-service-api.yaml) for further details.
 
-<!-- TODO check after int test are ready -->
-Examples of how this API is called can be found in the [integration tests](../integration-tests/integration_tests) module
+Examples of how this API is called can be found in the [integration tests](../integration-tests) module
 
 ## RestClient collection- example requests to the SDS API
 
@@ -50,7 +41,7 @@ is called. This collection provides following API request examples:
 -health check
 -routing information from the spine
 -reliability information from the spine
- 
+
 Before sending these requests, you will need to create a setting.json file as described in [README](../rest-client/README.md).
 
 ## Operating the SDS Adaptor in your infrastructure
@@ -60,5 +51,5 @@ within the boundary of your infrastructure.
 
 ## Developer Setup
 
-For information targeted at developers making use of the SDS Adaptor, please refer to [SDS Adaptor developer notes](sds-adaptor-dev-notes.md). 
-For just test-driving the SDS Adaptor check [how to run SDS Adaptor locally](running-sds-adaptor-locally.md). 
+For information targeted at developers making use of the SDS Adaptor, please refer to [SDS Adaptor developer notes](sds-adaptor-dev-notes.md).
+For just test-driving the SDS Adaptor check [how to run SDS Adaptor locally](running-sds-adaptor-locally.md).
