@@ -10,6 +10,7 @@ from lookup import cache_adaptor, redis_cache, sds_client, mhs_attribute_lookup,
     routing_reliability, sds_connection_factory
 from lookup.nocache_cache import NoCacheCache
 from request import routing_handler, reliability_handler, routing_reliability_handler
+from utilities.string_utilities import str2bool
 
 logger = log.IntegrationAdaptorsLogger(__name__)
 
@@ -39,8 +40,8 @@ def initialise_routing(search_base: str) -> routing_reliability.RoutingAndReliab
     :return:
     """
 
-    no_cache = config.get_config("NO_CACHE", "")
-    cache = NoCacheCache() if no_cache else load_cache_implementation()
+    cache_enabled = str2bool(config.get_config("CACHE_ENABLED", str(True)))
+    cache = load_cache_implementation() if cache_enabled else NoCacheCache()
 
     sds_connection = sds_connection_factory.create_connection()
 
