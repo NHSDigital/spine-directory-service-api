@@ -4,15 +4,10 @@
 
 docker_service:
 
-  - name: cache-service
-    port-mappings:
-        - containerPort: 6379
-        - hostPort: 127.0.0.1
-
   - name: sds-api
     expose: true
     environment:
-      - name: NO_CACHE
+      - name: MHS_NO_CACHE
         value: "true"
       - name: MHS_LOG_LEVEL
         value: DEBUG
@@ -20,11 +15,15 @@ docker_service:
         value: ou=services,o=nhs
       - name: MHS_SDS_REDIS_CACHE_HOST
         value: cache-service
-      - name: MHS_SDS_REDIS_DISABLE_TLS
-        value: "true"
     secrets:
       - name: MHS_SDS_URL
         valueFrom: "/ptl/platform-common/cis/ldap-uri"
+      - name: MHS_SECRET_CLIENT_KEY
+        valueFrom: "/ptl/api-deployment/sds/ldap/private-key"
+      - name: MHS_SECRET_CLIENT_CERT
+        valueFrom: "/ptl/api-deployment/sds/ldap/client-cert"
+      - name: MHS_SECRET_CA_CERTS
+        valueFrom: "/ptl/api-deployment/sds/ldap/ca-certs"
 
     health_check:
       matcher: "200"
