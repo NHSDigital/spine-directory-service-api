@@ -9,10 +9,10 @@ unittest-xml-reporting = "~=2.5"
 
 [packages]
 tornado = "~=6.0"
-defusedxml = "~=0.6"
 ldap3 = "~=2.7"
 spine-directory-service-common = {editable = true, path = "./../common"}
 redis = "~=3.3"
+aioboto3 = "~=8.0"
 
 [requires]
 python_version = "3.7"
