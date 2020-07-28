@@ -16,14 +16,14 @@ It may be useful to run these adaptors in a local environment. The following is 
 * Run the `./build.sh` script found in the top level directory of this project. This will build docker images which
 are required to run the SDS Adaptor in using docker.
 
- * Set up Environment variables. The environment variables `MHS_SECRET_PARTY_KEY`, `MHS_SECRET_CLIENT_CERT`, `MHS_SECRET_CLIENT_KEY` and `MHS_SECRET_CA_CERTS` need to
+ * Set up Environment variables. The environment variables `SDS_SECRET_PARTY_KEY`, `SDS_SECRET_CLIENT_CERT`, `SDS_SECRET_CLIENT_KEY` and `SDS_SECRET_CA_CERTS` need to
   be set when running this command. These variables should be set as described [here](sds-adaptor-dev-notes.md#environment-variables).
   A simple way of setting this up once is to create a bash file `configure-env-vars.sh` that looks like:
     ```sh
-    export MHS_SECRET_PARTY_KEY="your party key from NHS Digital here"
-    export MHS_SECRET_CLIENT_CERT=$'client cert from NHS Digital here'
-    export MHS_SECRET_CLIENT_KEY=$'client key from NHS Digital here'
-    export MHS_SECRET_CA_CERTS=$'ca certs from NHS Digital here'
+    export SDS_SECRET_PARTY_KEY="your party key from NHS Digital here"
+    export SDS_SECRET_CLIENT_CERT=$'client cert from NHS Digital here'
+    export SDS_SECRET_CLIENT_KEY=$'client key from NHS Digital here'
+    export SDS_SECRET_CA_CERTS=$'ca certs from NHS Digital here'
     ```
     and then run `source configure-env-vars.sh`
 
@@ -31,7 +31,7 @@ are required to run the SDS Adaptor in using docker.
 
 * Run `docker-compose up`. This will start the containers which have been built or pulled down, as described above.
 
-* Note that the `MHS_LOG_LEVEL` environment variable (as documented [here](sds-adaptor-dev-notes.md#environment-variables)) is set by default to `NOTSET` in the
+* Note that the `SDS_LOG_LEVEL` environment variable (as documented [here](sds-adaptor-dev-notes.md#environment-variables)) is set by default to `NOTSET` in the
 `docker-compose.yml` file but should be changed if needed.
 
 ## Smoke Testing your local SDS adaptor
