@@ -8,7 +8,7 @@ Whichever Docker container orchestration technology is used, these log streams c
 service for consumption, storage and subsequent query.
 
 ### Log format
-SDS default log format can be checked in [integration_adaptors_logger.py](common/utilities/integration_adaptors_logger.py)
+SDS default log format can be checked at [integration_adaptors_logger.py](sds/utilities/integration_adaptors_logger.py)
 
 ### Audit consumption
 Audit logs are emitted through the same channel as other log messages, via the standard I/O streams captured and forwarded by Docker. Audit log messages have a log level of AUDIT which is used to differentiate them from other logs. Due to the potential sensitivity of the data held in AUDIT logs and the need to ensure that AUDIT logs have stronger controls around them to prevent the possibility of tampering, it is strongly advised that the log indexing tooling chosen should be configured to filter AUDIT logs out of the main log bucket and divert them into their own audit log bucket, which can be stored and controlled separately.
@@ -25,7 +25,7 @@ Pattern:
 ```
 Example:
 ```text
-2020-03-26T10:31:52.118165Z | INFO | 40186 | 4DE4BBB7-F1DE-48BD-8824-E8FFCE4FC703 | outbound.mhs_common.workflow.asynchronous_express | WorkflowName=async-express outbound workflow invoked.
+[2020-07-28T08:46:53.821783Z] | INFO | 52908 |  | sds.__main__ | Starting router server at port server_port=8088
 ```
 
 - The start of the log line included a datetime-stamp in ISO8601 timestamp format and always in UTC timezone.
@@ -56,14 +56,9 @@ The SDS Adaptor components have specifically chosen INFO as the lowest log level
 
 ### Audit Messages
 
-Every request which passes through the SDS Adaptor produces an audit log message. Following is an example of the format:
-
-```text
-20-03-26T10:31:52.500735Z | AUDIT | 40186 | 4DE4BBB7-F1DE-48BD-8824-E8FFCE4FC703 | outbound.mhs_common.workflow.common_asynchronous | WorkflowName=async-express outbound workflow invoked. Message sent to Spine and Acknowledgment=MessageStatus.OUTBOUND_MESSAGE_ACKD received.
-```
-Audit messages are produced with the log level of AUDIT.
-
-See above for details of `Time`, `LogLevel`, `pid`, `CorrelationID`, `Loggername` and `Log Message`.
+<!-- TODO they are not! -->
+Every request which passes through the SDS Adaptor produces an audit log message.
+Audit log message format is the same as described in [Log Format](#log-format) section.
 
 ### Cloud Watch
 

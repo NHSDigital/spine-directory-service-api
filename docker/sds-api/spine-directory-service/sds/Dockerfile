@@ -7,7 +7,6 @@ COPY spine-directory-service/sds/Pipfile.lock /usr/src/app
 
 RUN pip install pipenv
 
-COPY spine-directory-service/common/ /usr/src/app/spine-directory-service/common/
 COPY spine-directory-service/sds/ /usr/src/app/spine-directory-service/sds
 
 WORKDIR /usr/src/app/spine-directory-service/sds

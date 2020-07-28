@@ -14,7 +14,7 @@ It provides applications such as the Personal Demographics Service (PDS) and als
 The following diagram provides a view of the services (run in docker containers) and Python modules which make up the SDS Adaptor:
 
 <!-- TODO change link -->
-[MHS Adaptor Logical Architecture](../documentation/MHSLogicalArchitecture.pdf)
+[SDS Adaptor Logical Architecture](../documentation/MHSLogicalArchitecture.pdf)
 
 These services have some dependencies, shown in blue, which are implemented through the adaptor pattern:
 - Container orchestration. The container orchestration solution of your choice can be used. In this repository, Docker compose is used when running
