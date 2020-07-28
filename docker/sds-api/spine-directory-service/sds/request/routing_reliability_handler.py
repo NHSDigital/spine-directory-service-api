@@ -12,6 +12,8 @@ class RoutingReliabilityRequestHandler(BaseHandler):
         org_code = self.get_query_argument("org-code")
         service_id = self.get_query_argument("service-id")
 
+        # TODO: could be run in parallel
+
         logger.info("Looking up routing information. {org_code}, {service_id}",
                     fparams={"org_code": org_code, "service_id": service_id})
         routing_info = await self.routing.get_end_point(org_code, service_id)
