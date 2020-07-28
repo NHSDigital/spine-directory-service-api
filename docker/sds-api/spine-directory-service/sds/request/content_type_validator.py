@@ -1,19 +1,21 @@
 import tornado.web
-from comms.http_headers import HttpHeaders
 from tornado.httputil import HTTPHeaders
+
+from request.http_headers import HttpHeaders
 from utilities import integration_adaptors_logger as log
 
 logger = log.IntegrationAdaptorsLogger(__name__)
-valid_content_types = ['application/json', 'application/fhir+json', 'application/fhir+xml']
+valid_accept_types = ['application/json', 'application/fhir+json', 'application/fhir+xml']
 
 
-def get_valid_content_type(headers: HTTPHeaders):
-    content_type = headers.get(HttpHeaders.CONTENT_TYPE, None)
-    if content_type is None:
+def get_valid_accept_type(headers: HTTPHeaders):
+    accept_type = headers.get(HttpHeaders.ACCEPT, 'application/json')
+    if accept_type == '*/*':
         return 'application/json'
-    elif content_type in valid_content_types:
-        return content_type
+    elif accept_type in valid_accept_types:
+        return accept_type
     else:
         logger.info("Invalid content-type in request")
-        raise tornado.web.HTTPError(400, 'Invalid content-type in request',
-                                    reason=f'Invalid content-type in request')
+        raise tornado.web.HTTPError(400, 'Invalid Accept header in request',
+                                    reason=f'Invalid Accept header in request, only: application/json, '
+                                    f'application/fhir+json & application/fhir+xml are allowed')

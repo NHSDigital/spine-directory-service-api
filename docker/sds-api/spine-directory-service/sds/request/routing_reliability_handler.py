@@ -1,8 +1,7 @@
-from comms.http_headers import HttpHeaders
-from utilities import timing, integration_adaptors_logger as log
-
 from request.base_handler import BaseHandler
-from request.content_type_validator import get_valid_content_type
+from request.content_type_validator import get_valid_accept_type
+from request.http_headers import HttpHeaders
+from utilities import timing, integration_adaptors_logger as log
 
 logger = log.IntegrationAdaptorsLogger(__name__)
 
@@ -14,7 +13,7 @@ class RoutingReliabilityRequestHandler(BaseHandler):
     async def get(self):
         org_code = self.get_query_argument("org-code")
         service_id = self.get_query_argument("service-id")
-        content_type = get_valid_content_type(self.request.headers)
+        content_type = get_valid_accept_type(self.request.headers)
 
         logger.info("Looking up routing information. {org_code}, {service_id}",
                     fparams={"org_code": org_code, "service_id": service_id})
