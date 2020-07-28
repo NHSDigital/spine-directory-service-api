@@ -1,5 +1,6 @@
 import datetime as dt
 import logging
+
 import sys
 from logging import LogRecord
 from typing import Optional, Any
@@ -7,7 +8,6 @@ from typing import Optional, Any
 from utilities import config
 from utilities import mdc
 
-AUDIT = 25
 LOG_FORMAT_STRING = "[%(asctime)sZ] | %(levelname)s | %(process)d | %(correlation_id)s | %(name)s | %(message)s"
 
 _project_name = None
@@ -36,10 +36,6 @@ class IntegrationAdaptorsLogger(logging.LoggerAdapter):
     def log(self, level: int, msg: Any, *args: Any, **kwargs: Any) -> None:
         msg = self._format_using_custom_params(msg, kwargs)
         super().log(level, msg, *args, **kwargs)
-
-    def audit(self, msg: str, *args: Any, **kwargs: Any) -> None:
-        if self.isEnabledFor(AUDIT):
-            self.log(AUDIT, msg, *args, **kwargs)
 
     def _format_using_custom_params(self, msg: str, kwargs: dict) -> str:
         if "fparams" in kwargs:
@@ -97,7 +93,6 @@ def configure_logging(project_name: str = None):
     _project_name = project_name
     _log_format = config.get_config("LOG_FORMAT", default=LOG_FORMAT_STRING)
 
-    logging.addLevelName(AUDIT, "AUDIT")
     logger = logging.getLogger()
     log_level = config.get_config('LOG_LEVEL')
     logger.setLevel(log_level)

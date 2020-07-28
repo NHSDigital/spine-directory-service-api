@@ -20,7 +20,7 @@ These services have some dependencies, shown in blue, which are implemented thro
 - Container orchestration. The container orchestration solution of your choice can be used. In this repository, Docker compose is used when running
 the adaptor locally, and ECS, Fargate and ECR are used by the AWS exemplar architecture.
 - Secret Store - Used to safely inject secrets such as passwords into running containers.
-- Log and Audit Store - Running containers log to STDOUT and therefore logs can be captured and forwarded to the logginc and auditing solution of your choice.
+- Logs Store - Running containers log to STDOUT and therefore logs can be captured and forwarded to the logging solution of your choice.
 - Load Balancers are shown balancing load to the Inbound and outbound services. The AWS exemplar demonstrates the use of Application Load Balancers and
 Network Load Balancers to implement this.
 - Directory cache which acts as a cache for frequently requested routing and reliability information. Locally implemented through Redis, this is
