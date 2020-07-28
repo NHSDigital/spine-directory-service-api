@@ -1,18 +1,10 @@
-
 docker_containers:
-
-#  - name: sandbox
-#    dockerfile: "docker/sandbox/Dockerfile"
-#    path: "docker/sandbox"
-
   - name: cache-service
     dockerfile: "docker/cache-service/spine-directory-service/Dockerfile"
     path: "docker/cache-service"
-
   - name: sds-api
     dockerfile: "docker/sds-api/spine-directory-service/sds/Dockerfile"
     path: "docker/sds-api"
-
   - name: sds-sandbox
-        dockerfile: "docker/sandbox/Dockerfile"
-        path: "docker/sandbox"
+    dockerfile: "docker/sandbox/Dockerfile"
+    path: "docker/sandbox"
