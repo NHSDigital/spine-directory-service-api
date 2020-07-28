@@ -63,7 +63,7 @@ def start_tornado_server(routing: routing_reliability.RoutingAndReliability) -> 
         ("/healthcheck", healthcheck_handler.HealthcheckHandler)
     ])
     server = tornado.httpserver.HTTPServer(application)
-    server_port = int(config.get_config('SERVER_PORT', default='80'))
+    server_port = int(config.get_config('SERVER_PORT', default='9000'))
     server.listen(server_port)
 
     logger.info('Starting router server at port {server_port}', fparams={'server_port': server_port})
