@@ -10,5 +10,5 @@ docker_containers:
     path: "docker/cache-service"
 
   - name: sds-api
-    dockerfile: "docker/sds-api/spine-directory-service/spine-directory-service/Dockerfile"
+    dockerfile: "docker/sds-api/spine-directory-service/sds/Dockerfile"
     path: "docker/sds-api"
