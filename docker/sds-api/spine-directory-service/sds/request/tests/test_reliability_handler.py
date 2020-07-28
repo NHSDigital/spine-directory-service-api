@@ -2,6 +2,7 @@ import json
 import unittest.mock
 
 import tornado.web
+from comms.http_headers import HttpHeaders
 from tornado.testing import AsyncHTTPTestCase
 from utilities import test_utilities
 
@@ -26,6 +27,7 @@ class TestReliabilityRequestHandler(AsyncHTTPTestCase):
 
         self.assertEqual(response.code, 200)
         self.assertEqual(RELIABILITY_DETAILS, json.loads(response.body))
+        self.assertEqual(response.headers.get(HttpHeaders.CONTENT_TYPE, None), "application/json")
         self.routing.get_reliability.assert_called_with(test_request_handler.ORG_CODE, test_request_handler.SERVICE_ID)
 
     def test_get_returns_error(self):
@@ -50,5 +52,36 @@ class TestReliabilityRequestHandler(AsyncHTTPTestCase):
 
         with self.subTest("Missing Org Code & Service ID"):
             response = self.fetch(test_request_handler.build_url(org_code=None, service_id=None), method="GET")
+
+            self.assertEqual(response.code, 400)
+
+    def test_get_handles_different_content_type(self):
+        with self.subTest("Content-type missing"):
+            self.routing.get_reliability.return_value = test_utilities.awaitable(RELIABILITY_DETAILS)
+            response = self.fetch(test_request_handler.build_url(), method="GET")
+
+            self.assertEqual(response.code, 200)
+            self.assertEqual(response.headers.get(HttpHeaders.CONTENT_TYPE, None), "application/json")
+
+        with self.subTest("Content-type is application/fhir+json"):
+            headers = {'content-type': 'application/fhir+json'}
+            self.routing.get_reliability.return_value = test_utilities.awaitable(RELIABILITY_DETAILS)
+            response = self.fetch(test_request_handler.build_url(), method="GET", headers=headers)
+
+            self.assertEqual(response.code, 200)
+            self.assertEqual(response.headers.get(HttpHeaders.CONTENT_TYPE, None), "application/fhir+json")
+
+        with self.subTest("Content-type is application/fhir+xml"):
+            headers = {'content-type': 'application/fhir+xml'}
+            self.routing.get_reliability.return_value = test_utilities.awaitable(RELIABILITY_DETAILS)
+            response = self.fetch(test_request_handler.build_url(), method="GET", headers=headers)
+
+            self.assertEqual(response.code, 200)
+            self.assertEqual(response.headers.get(HttpHeaders.CONTENT_TYPE, None), "application/fhir+xml")
+
+        with self.subTest("Content-type is invalid"):
+            headers = {'content-type': 'invalid-header'}
+            self.routing.get_reliability.return_value = test_utilities.awaitable(RELIABILITY_DETAILS)
+            response = self.fetch(test_request_handler.build_url(), method="GET", headers=headers)
 
             self.assertEqual(response.code, 400)
