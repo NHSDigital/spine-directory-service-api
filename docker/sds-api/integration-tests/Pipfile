@@ -7,9 +7,10 @@ verify_ssl = true
 
 [packages]
 requests = "*"
+unittest-xml-reporting = "*"
 
 [requires]
 python_version = "3.7"
 
 [scripts]
-inttests = 'python -m xmlrunner discover -o test-reports -p "int_*" -v'
+inttests = 'python -m xmlrunner discover -o test-reports ./tests'
