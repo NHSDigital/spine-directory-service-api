@@ -59,46 +59,23 @@ generates HTML docs. An invocation of this command can be seen
 [here](https://htmlpreview.github.io/?https://github.com/nhsconnect/integration-adaptors/blob/develop/mhs/outbound/openapi-docs.html).
 
 ### Environment Variables
-<!-- TODO: review env vars and change prefix -->
 SDS takes a number of environment variables when it is run. These are:
+* `SDS_SERVER_PORT` Server port on which to run SDS on
 * `SDS_LOG_LEVEL` This is required to be set to one of: `INFO`, `WARNING`, `ERROR` or `CRITICAL`, where `INFO` displays
 the most logs and `CRITICAL` displays the least. Note: Setting this value to one of the more detailed 'standard' Python
 log levels (such as `DEBUG` or `NOTSET`) may result in the libraries used by this application logging details that
 contain sensitive information such as the content of messages being sent.
-* `SDS_SECRET_PARTY_KEY` (inbound & outbound only) The party key associated with your MHS.
+* `SDS_LOG_FORMAT` Allows overwriting default log format <!-- TODO update after logging refactor -->
 * `SDS_SECRET_CLIENT_CERT` Your endpoint certificate
 * `SDS_SECRET_CLIENT_KEY` Your endpoint private key
 * `SDS_SECRET_CA_CERTS` Should include the following in this order: endpoint issuing subCA certificate, root CA Certificate.
-* `MHS_STATE_TABLE_NAME` (inbound & outbound only) The name of the DB table used to store MHS state.
-* `MHS_SYNC_ASYNC_STATE_TABLE_NAME` (inbound & outbound only) The table name used to store sync async responses
-* `MHS_STATE_STORE_MAX_RETRIES'` (inbound & outbound only) The max number of retries when attempting to interact with either the work description or sync-async store. Defaults to `3`
-* `MHS_OUTBOUND_TRANSMISSION_MAX_RETRIES` (outbound only) This is the maximum number of retries for outbound requests. If no value is given a default of `3` is used.
-* `MHS_OUTBOUND_TRANSMISSION_RETRY_DELAY` (outbound only) The delay between retries of outbound requests in milliseconds. If no value is given, a default of `100` is used.
-* `MHS_OUTBOUND_HTTP_PROXY` (outbound only) An optional http(s) proxy to route downstream requests via. Note that the proxy must passthrough https requests transparently.
-* `MHS_OUTBOUND_HTTP_PROXY_PORT` (outbound only) The http(s) proxy port to use. Ignored if `MHS_OUTBOUND_HTTP_PROXY` is not provided. Defaults to `3128`.
-* `MHS_OUTBOUND_VALIDATE_CERTIFICATE` (outbound only) Verification of the server certificate received when making a connection to the spine MHS.
-* `MHS_INBOUND_QUEUE_BROKERS` (inbound only) The url(s) of the amqp inbound queue broker(s). e.g. `amqps://example.com:port`. Note that if the amqp connection being used is a secured connection (which it should be in production), then the url should start with `amqps://` and not `amqp+ssl://`. This URL should not include the queue name. Can be a coma-separated list or urls for HA
-* `MHS_INBOUND_QUEUE_NAME` The name of the queue on the broker identified by `MHS_INBOUND_QUEUE_BROKERS` to place inbound messages on. e.g `queue-name`
-* `MHS_INBOUND_QUEUE_MESSAGE_TTL_IN_SECONDS` Defines Time-To-Live of inbound queue messages
-* `MHS_SECRET_INBOUND_QUEUE_USERNAME` (inbound only) The username to use when connecting to the amqp inbound queue.
-* `MHS_SECRET_INBOUND_QUEUE_PASSWORD` (inbound only) The password to use when connecting to the amqp inbound queue.
-* `MHS_INBOUND_QUEUE_MAX_RETRIES` (inbound only) The max number of times to retry putting a message onto the amqp inbound queue. Defaults to `3`.
-* `MHS_INBOUND_QUEUE_RETRY_DELAY` (inbound only) The delay in milliseconds between retrying putting a message onto the amqp inbound queue. Defaults to `100`ms.
-* `MHS_SYNC_ASYNC_STORE_MAX_RETRIES'` (inbound only) The max number of retries when attempting to add a message to the sync-async store. Defaults to `3`
-* `MHS_SYNC_ASYNC_STORE_RETRY_DELAY` (inbound only) The delay in milliseconds between retrying placing a message on the sysnc-async store. Defaults to `100`ms
-* `MHS_RESYNC_RETRIES` (outbound only) The total number of attempts made to the sync-async store during resynchronisation, defaults to `20`
-* `MHS_RESYNC_INTERVAL` (outbound only) The time in between polls of the sync-async store, the interval is in seconds and defaults to `1`
-* `MHS_SPINE_ROUTE_LOOKUP_URL` (outbound only) The URL of the Spine route lookup service. E.g `https://example.com`. This URL should not contain path or query parameter parts.
-* `MHS_SPINE_ORG_CODE` (outbound only) The organisation code for the Spine instance that your MHS is communicating with. E.g `YES`
-* `MHS_SECRET_SPINE_ROUTE_LOOKUP_CLIENT_CERT` (outbound only) Optional. The client certificate to present when making HTTPS connections to the Spine Route Lookup service. If not specified, no client certificate will be presented.
-* `MHS_SECRET_SPINE_ROUTE_LOOKUP_CLIENT_KEY` (outbound only) Optional. The private key for the client certificate to present when making HTTPS connections to the Spine Route Lookup service. Must be specified if `MHS_SPINE_ROUTE_LOOKUP_CLIENT_CERT` is provided.
-* `MHS_SECRET_SPINE_ROUTE_LOOKUP_CA_CERTS` (outbound only) Optional. The CA certificates used to validate the certificate presented by the Spine Route Lookup service. Should include the following in this order: endpoint issuing subCA certificate, root CA Certificate. If not specified, the system defaults will be used.
-* `MHS_SPINE_ROUTE_LOOKUP_HTTP_PROXY` (outbound only) An optional http(s) proxy to route requests to the Spine Route Lookup service via. Note that the proxy must pass through https requests transparently.
-* `MHS_SPINE_ROUTE_LOOKUP_HTTP_PROXY_PORT` (outbound only) The http(s) proxy port to use for the Spine Route Lookup service proxy. Ignored if `MHS_SPINE_ROUTE_LOOKUP_HTTP_PROXY` is not provided. Defaults to `3128`.
 * `SDS_LDAP_URL` (Spine Route Lookup service only) The URL to communicate with SDS on. e.g. `ldaps://example.com`
 * `SDS_LDAP_SEARCH_BASE` (Spine Route Lookup service only) The LDAP location to use as the base of SDS searches, e.g. `ou=services,o=nhs`. This value is specific to the SDS instance you configure your MHS to communicate with and should not contain whitespace.
 * `SDS_LDAP_DISABLE_TLS` (Spine Route Lookup service only) An optional flag that can be set to disable TLS for LDAP
 connections. *Must* be set to exactly `True` for TLS to be disabled.
+* `SDS_LDAP_CONNECTION_RETRIES` Number of retries when LDAP connection cannot be established
+* `SDS_LDAP_CONNECTION_TIMEOUT_IN_SECONDS` Number of seconds to wait for establishing LDAP connection
+* `SDS_CACHE_ENABLED` Whether to enable cache. Defaults to "True"
 * `SDS_CACHE_EXPIRY_TIME` (Spine Route Lookup service only). An optional value that specifies the time (in seconds)
 that a value should be held in the SDS cache. Defaults to `900` (fifteen minutes)
 * `SDS_REDIS_CACHE_HOST` (Spine Route Lookup service only). The Redis host to use when caching SDS information
@@ -108,25 +85,21 @@ connecting to the Redis host specified by `SDS_REDIS_CACHE_HOST`. Defaults to `6
 * `SDS_REDIS_DISABLE_TLS` (Spine Route Lookup service only) An optional flag that can be set to disable TLS for
 connections to the Redis cache used by the Spine Route Lookup service. *Must* be set to exactly `True` for TLS to be
 disabled.
-* `MHS_FORWARD_RELIABLE_ENDPOINT_URL` (outbound only) The URL to communicate with Spine for Forward Reliable messaging
-* `MHS_RESYNC_INITIAL_DELAY` (Outbound service only) The initial delay (in seconds) before making the first poll to the sync-async
-    store after the outbound service receives an acknowledgement from Spine
-* `MHS_SPINE_REQUEST_MAX_SIZE` (outbound service only) The maximum size (in bytes) that request bodies sent to Spine
-are allowed to be. This should be set minus any HTTP headers and other content in the HTTP packets sent to Spine.
-e.g. Setting this to ~400 bytes less than the maximum request body size should be roughly the correct value
-(calculating this value accurately is pretty much impossible as one of the HTTP headers is the Content-Length header
-which varies depending on the request body size).
 * `SDS_LDAP_LAZY_CONNECTION` use lazy connection from spine route lookup component to SPINE LDAP service
 
-Note that if you are using Opentest, you should use the credentials you were given when you got access to set `SDS_SECRET_PARTY_KEY`, `SDS_SECRET_CLIENT_CERT`, `SDS_SECRET_CLIENT_KEY` and `SDS_SECRET_CA_CERTS`.
+Note that if you are using Opentest, you should use the credentials you were given when you got access to set `SDS_SECRET_CLIENT_CERT`, `SDS_SECRET_CLIENT_KEY` and `SDS_SECRET_CA_CERTS`.
+
+For offline debugging purpose following environment variables can be set:
+* `SDS_LDAP_MOCK_DATA_URL_CONFIG_KEY`
+* `SDS_FAKE_SPINE_URL_CONFIG_KEY`
+* `SDS_AWS_PROFILE`
+Check [SDS mock LDAP readme](sds/sds-mock-ldap.md)
 
 ## Running Unit Tests
 Unit test can be run for each module by executing following commands within their folders:
-<!-- TODO: verify commands -->
 - `pipenv run unittests` will run all unit tests.
 
 ## Coverage
-<!-- TODO: verify commands -->
 - `pipenv run unittests-cov` will run all unit tests, generating a [Coverage](https://coverage.readthedocs.io/) report
 in the `test-reports` directory.
 - `pipenv run coverage-report` will print the coverage report generated by `unittests-cov`
@@ -144,10 +117,3 @@ NOTE: Coverage will not show in the analysis unless you have already generated t
 
 ## Running Integration Tests
 See the [integration tests README](../integration-tests/README.md).
-
-Timeouts received whilst waiting for a response from Spine on a Windows machine could be due to the machine rejecting incoming connections on port 443. In order to open the port, follow these instructions:
-https://docs.microsoft.com/en-us/windows/security/threat-protection/windows-firewall/create-an-inbound-port-rule
-
-Any content POSTed to `/` on port 80 will result in the request configuration for the `Interaction-Id` header in
-`data/interactions.json` being loaded and the content sent as the body of the request to Spine. Adding entries to
-`interactions.json` will allow you to define new supported interactions.
