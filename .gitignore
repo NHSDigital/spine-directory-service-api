@@ -5,7 +5,7 @@ build/
 public/
 newman/
 .idea/
-
+.venv/
 .#*
 
 __pycache__/

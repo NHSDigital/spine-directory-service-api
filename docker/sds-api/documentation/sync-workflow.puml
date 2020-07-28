@@ -1,0 +1,42 @@
+@startuml
+
+title Synchronous workflow
+
+"GP System" -> Outbound: POST
+Outbound -> "State Db": OUTBOUND_MESSAGE_RECEIVED
+Outbound <-- "State Db": Response
+alt from_asid missing
+    "GP System" <-- Outbound: 400 from_asid header field missing
+end
+
+Outbound -> SDS: Lookup endpoint details
+alt Success
+    SDS -> "Spine Directory Service": GET
+    SDS <-- "Spine Directory Service": Response
+    Outbound -> SDS: Endpoint details
+else Exception
+    Outbound -> "State Db": OUTBOUND_MESSAGE_PREPARATION_FAILED
+    "GP System" <-- Outbound: 500 Error obtaining outbound URL    
+end
+Outbound -> Outbound: Prepare outbound message
+alt Failed to prepare outbound message
+    Outbound -> "State Db": OUTBOUND_MESSAGE_PREPARATION_FAILED
+    "GP System" <-- Outbound: 500 Failed message preparation    
+end
+alt Request to send to Spine is too large
+    Outbound -> "State Db": OUTBOUND_MESSAGE_PREPARATION_FAILED
+    "GP System" <-- Outbound: 400 Request to send to Spine is too large    
+end
+Outbound -> "Spine": POST
+alt Success 
+    Outbound <-- "Spine": Response
+else HTTPClientError
+    "GP System" <-- Outbound: 400 Specific client error    
+else Exception
+    Outbound -> "State Db": OUTBOUND_MESSAGE_TRANSMISSION_FAILED
+    "GP System" <-- Outbound: 500 Error making outbound request    
+end
+Outbound -> "State Db": OUTBOUND_SYNC_MESSAGE_RESPONSE_RECEIVED
+"GP System" <-- Outbound: 200 Response
+
+@enduml

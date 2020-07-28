@@ -1,0 +1,25 @@
+@startuml MHS Logical Architecture
+!includeurl https://raw.githubusercontent.com/RicardoNiepel/C4-PlantUML/release/1-0/C4_Container.puml
+
+Person(gp, "Supplier Principal Clinical System")
+System_Boundary(c1, "MHS Adapter") {
+    Container(outbound, "MHS Outbound Service", "", "")
+    Container(route, "Spine Route Lookup", "", "")
+    ContainerDb(state, "State Database", "Message state", "Platform provided Db")
+    Container(inbound, "MHS Inbound Service", "", "")
+    ContainerDb(responsedb, "Sync-Async Response Database", "", "Platform provided Db")
+}
+Container(sds, "Spine Directory Service", "", "")
+Container(spinemhs, "NHS Digital Spine MHS", "", "")
+
+Rel(gp, outbound, "Uses", "HTTPS")
+Rel(outbound, route, "Uses", "HTTPS")
+Rel(outbound, state, "", "")
+Rel(route, sds, "Uses", "HTTPS")
+Rel(outbound, spinemhs, "Uses", "HTTPS")
+Rel(spinemhs, inbound, "Enqueues", "Async response or unsolicited inbound")
+Rel(outbound, responsedb, "", "")
+Rel(inbound, responsedb, "", "")
+Rel(inbound, state, "", "")
+Rel(inbound, gp, "Enqueues", "Async response or unsolicited inbound")
+@enduml

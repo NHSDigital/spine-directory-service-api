@@ -1,0 +1,29 @@
+@startuml MHS Logical Architecture
+!includeurl https://raw.githubusercontent.com/RicardoNiepel/C4-PlantUML/release/1-0/C4_Container.puml
+
+title Container diagram for MHS Adapter
+
+System(gp, "Supplier Principal Clinical System", "")
+System_Boundary(mhsb, "MHS Adapter") {
+    Container(outbound, "Outbound", "Listens for requests from wider system context and transmits them to Spine and when requested, returns responses")
+    Container(inbound, "Inbound", "Responsible for incoming requests from Spine")
+    Container(route, "Route", "Used to lookup routing and reliability information from Spine's directory service")
+    ContainerDb(statedb, "State and Sync/Async Response Db", "used to handle internal MHS message state and for sync/async where a synchronous facade is provided by the Outbound Service for interactions with Spine which actually involve asynchronous responses", "Provider specific implementation")
+}
+System(spinemhs, "NHS Digital Spine MHS", "A collection of national applications, services and directories which support the health and social care sector in the exchange of information in national and local IT systems. A national, central service that underpins the NHS Care Records Service")
+System(spineroute, "NHS Spine Directory Service", "Provides routing and reliability information")
+
+Rel_Down(gp, outbound, "Sends Interactions to", "Post HL7 messages and receive sync responses and acks")
+Rel_Up(inbound, gp, "async response or unsolicited messages received from", "Queued")
+Rel_L(outbound, route, "lookup routing and reliability information from", "https")
+Rel_L(route, spineroute, "lookup routing and reliability information from", "ldap")
+Rel(outbound, spinemhs, "Sends interactions to", "Post HL7 messages, response can be returned synchronously if requested")
+Rel_R(outbound, statedb, "stores/reads")
+Rel_L(inbound, statedb, "stores/reads")
+Rel(spinemhs, inbound, "response messages sent to", "Post HL7 messages, if sync response not requested")
+
+note left of spinemhs
+    Responses from spine can be returned either as part of the initial request (sync) or sent to the inbound container (async)
+end note
+
+@enduml
