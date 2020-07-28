@@ -19,6 +19,7 @@ class TestLogger(TestCase):
     def test_log_level_threshold(self, mock_stdout):
         mock_stdout.truncate(0)
 
+        config.config['LOG_LEVEL'] = 'CRITICAL'
         log.configure_logging()
         log.IntegrationAdaptorsLogger('TES').info('Test message')
         config.config['LOG_LEVEL'] = 'INFO'
