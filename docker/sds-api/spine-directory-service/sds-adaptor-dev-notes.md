@@ -64,20 +64,20 @@ contain sensitive information such as the content of messages being sent.
 * `SDS_SECRET_CLIENT_CERT` Your endpoint certificate
 * `SDS_SECRET_CLIENT_KEY` Your endpoint private key
 * `SDS_SECRET_CA_CERTS` Should include the following in this order: endpoint issuing subCA certificate, root CA Certificate.
-* `SDS_LDAP_URL` (Spine Route Lookup service only) The URL to communicate with SDS on. e.g. `ldaps://example.com`
-* `SDS_LDAP_SEARCH_BASE` (Spine Route Lookup service only) The LDAP location to use as the base of SDS searches, e.g. `ou=services,o=nhs`. This value is specific to the SDS instance you configure your MHS to communicate with and should not contain whitespace.
-* `SDS_LDAP_DISABLE_TLS` (Spine Route Lookup service only) An optional flag that can be set to disable TLS for LDAP
+* `SDS_LDAP_URL` The URL to communicate with SDS on. e.g. `ldaps://example.com`
+* `SDS_LDAP_SEARCH_BASE` The LDAP location to use as the base of SDS searches, e.g. `ou=services,o=nhs`. Should not contain whitespace.
+* `SDS_LDAP_DISABLE_TLS` An optional flag that can be set to disable TLS for LDAP
 connections. *Must* be set to exactly `True` for TLS to be disabled.
 * `SDS_LDAP_CONNECTION_RETRIES` Number of retries when LDAP connection cannot be established
 * `SDS_LDAP_CONNECTION_TIMEOUT_IN_SECONDS` Number of seconds to wait for establishing LDAP connection
 * `SDS_CACHE_ENABLED` Whether to enable cache. Defaults to "True"
-* `SDS_CACHE_EXPIRY_TIME` (Spine Route Lookup service only). An optional value that specifies the time (in seconds)
+* `SDS_CACHE_EXPIRY_TIME` An optional value that specifies the time (in seconds)
 that a value should be held in the SDS cache. Defaults to `900` (fifteen minutes)
-* `SDS_REDIS_CACHE_HOST` (Spine Route Lookup service only). The Redis host to use when caching SDS information
+* `SDS_REDIS_CACHE_HOST` The Redis host to use when caching SDS information
 retrieved from SDS.
-* `SDS_REDIS_CACHE_PORT` (Spine Route Lookup service only). An optional value that specified the port to use when
+* `SDS_REDIS_CACHE_PORT` An optional value that specified the port to use when
 connecting to the Redis host specified by `SDS_REDIS_CACHE_HOST`. Defaults to `6379`.
-* `SDS_REDIS_DISABLE_TLS` (Spine Route Lookup service only) An optional flag that can be set to disable TLS for
+* `SDS_REDIS_DISABLE_TLS` An optional flag that can be set to disable TLS for
 connections to the Redis cache used by the Spine Route Lookup service. *Must* be set to exactly `True` for TLS to be
 disabled.
 * `SDS_LDAP_LAZY_CONNECTION` use lazy connection from spine route lookup component to SPINE LDAP service

@@ -25,7 +25,7 @@ Pattern:
 ```
 Example:
 ```text
-2020-03-26T10:31:52.118165Z | INFO | 40186 | 4DE4BBB7-F1DE-48BD-8824-E8FFCE4FC703 | outbound.mhs_common.workflow.asynchronous_express | WorkflowName=async-express outbound workflow invoked.
+[2020-07-28T08:46:53.821783Z] | INFO | 52908 |  | sds.__main__ | Starting router server at port server_port=8088
 ```
 
 - The start of the log line included a datetime-stamp in ISO8601 timestamp format and always in UTC timezone.
@@ -56,14 +56,9 @@ The SDS Adaptor components have specifically chosen INFO as the lowest log level
 
 ### Audit Messages
 
-Every request which passes through the SDS Adaptor produces an audit log message. Following is an example of the format:
-
-```text
-20-03-26T10:31:52.500735Z | AUDIT | 40186 | 4DE4BBB7-F1DE-48BD-8824-E8FFCE4FC703 | outbound.mhs_common.workflow.common_asynchronous | WorkflowName=async-express outbound workflow invoked. Message sent to Spine and Acknowledgment=MessageStatus.OUTBOUND_MESSAGE_ACKD received.
-```
-Audit messages are produced with the log level of AUDIT.
-
-See above for details of `Time`, `LogLevel`, `pid`, `CorrelationID`, `Loggername` and `Log Message`.
+<!-- TODO they are not! -->
+Every request which passes through the SDS Adaptor produces an audit log message.
+Audit log message format is the same as described in [Log Format](#log-format) section.
 
 ### Cloud Watch
 
