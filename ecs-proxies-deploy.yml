@@ -15,8 +15,6 @@ docker_service:
         value: ou=services,o=nhs
       - name: MHS_SDS_REDIS_CACHE_HOST
         value: cache-service
-      - name: MHS_SDS_REDIS_DISABLE_TLS
-        value: "true"
     secrets:
       - name: MHS_SDS_URL
         valueFrom: "/ptl/platform-common/cis/ldap-uri"
