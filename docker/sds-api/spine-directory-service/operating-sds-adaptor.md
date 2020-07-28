@@ -8,7 +8,7 @@ Whichever Docker container orchestration technology is used, these log streams c
 service for consumption, storage and subsequent query.
 
 ### Log format
-SDS default log format can be checked in [integration_adaptors_logger.py](sds/utilities/integration_adaptors_logger.py)
+SDS default log format can be checked at [integration_adaptors_logger.py](sds/utilities/integration_adaptors_logger.py)
 
 ### Audit consumption
 Audit logs are emitted through the same channel as other log messages, via the standard I/O streams captured and forwarded by Docker. Audit log messages have a log level of AUDIT which is used to differentiate them from other logs. Due to the potential sensitivity of the data held in AUDIT logs and the need to ensure that AUDIT logs have stronger controls around them to prevent the possibility of tampering, it is strongly advised that the log indexing tooling chosen should be configured to filter AUDIT logs out of the main log bucket and divert them into their own audit log bucket, which can be stored and controlled separately.
