@@ -18,6 +18,5 @@ docker run -p 7000:8080 image_id
 ```
 http://localhost:7000/routing-reliability
 ```
-
 #Wiremock:
 You can read about Wiremock stubbing on this site: http://wiremock.org/docs/stubbing/
