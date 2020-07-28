@@ -65,7 +65,7 @@ SDS takes a number of environment variables when it is run. These are:
 the most logs and `CRITICAL` displays the least. Note: Setting this value to one of the more detailed 'standard' Python
 log levels (such as `DEBUG` or `NOTSET`) may result in the libraries used by this application logging details that
 contain sensitive information such as the content of messages being sent.
-* `SDS_LOG_FORMAT` Allows overwriting default log format <!-- TODO update after logging refactor -->
+* `SDS_LOG_FORMAT` Allows overwriting default log format. Check default log format at [integration_adaptors_logger.py](common/utilities/integration_adaptors_logger.py)
 * `SDS_SECRET_CLIENT_CERT` Your endpoint certificate
 * `SDS_SECRET_CLIENT_KEY` Your endpoint private key
 * `SDS_SECRET_CA_CERTS` Should include the following in this order: endpoint issuing subCA certificate, root CA Certificate.
