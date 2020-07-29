@@ -7,7 +7,7 @@ docker_service:
   - name: sds-api
     expose: true
     environment:
-      - name: SDS_NO_CACHE
+      - name: SDS_CACHE_ENABLED
         value: "true"
       - name: SDS_LOG_LEVEL
         value: DEBUG
@@ -24,7 +24,6 @@ docker_service:
         valueFrom: "/ptl/api-deployment/sds/ldap/client-cert"
       - name: SDS_SECRET_CA_CERTS
         valueFrom: "/ptl/api-deployment/sds/ldap/ca-certs"
-
     health_check:
       matcher: "200"
       path: "/healthcheck"

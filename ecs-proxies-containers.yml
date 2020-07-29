@@ -5,6 +5,6 @@ docker_containers:
   - name: sds-api
     dockerfile: "docker/sds-api/spine-directory-service/sds/Dockerfile"
     path: "docker/sds-api"
-  - name: sds-sandbox
+  - name: sandbox
     dockerfile: "docker/sandbox/Dockerfile"
     path: "docker/sandbox"

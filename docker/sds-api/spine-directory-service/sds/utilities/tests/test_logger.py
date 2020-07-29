@@ -16,24 +16,10 @@ class TestLogger(TestCase):
         mdc.correlation_id.set(None)
 
     @patch('sys.stdout', new_callable=io.StringIO)
-    def test_custom_audit_level(self, mock_stdout):
-        mock_stdout.truncate(0)
-
-        log.configure_logging()
-        mdc.correlation_id.set('2')
-        log.IntegrationAdaptorsLogger('TES').audit('Some audit message with %s %s', 'additional', 'parameters')
-
-        output = mock_stdout.getvalue()
-        log_entry = LogEntry(output)
-        self.assertEqual('2', log_entry.correlation_id)
-        self.assertEqual('AUDIT', log_entry.level)
-        self.assertIn('Some audit message with additional parameters', log_entry.message)
-
-    @patch('sys.stdout', new_callable=io.StringIO)
     def test_log_level_threshold(self, mock_stdout):
         mock_stdout.truncate(0)
 
-        config.config['LOG_LEVEL'] = 'AUDIT'
+        config.config['LOG_LEVEL'] = 'CRITICAL'
         log.configure_logging()
         log.IntegrationAdaptorsLogger('TES').info('Test message')
         config.config['LOG_LEVEL'] = 'INFO'
@@ -96,7 +82,7 @@ class TestLogger(TestCase):
     @patch('utilities.config.get_config')
     @patch('sys.stdout', new_callable=io.StringIO)
     def test_should_not_log_critical_message_if_log_level_is_above_debug(self, mock_stdout, mock_config):
-        safe_log_levels = ['INFO', 'AUDIT', 'WARNING', 'ERROR', 'CRITICAL']
+        safe_log_levels = ['INFO', 'WARNING', 'ERROR', 'CRITICAL']
         for level in safe_log_levels:
             def config_values(*args, **kwargs):
                 return {
