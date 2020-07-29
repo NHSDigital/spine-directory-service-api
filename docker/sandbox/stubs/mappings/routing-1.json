@@ -1,7 +1,7 @@
 {
   "request": {
     "method": "GET",
-    "url": "/routing"
+    "urlPathPattern": "/routing.*"
   },
   "response": {
     "status": 200,
