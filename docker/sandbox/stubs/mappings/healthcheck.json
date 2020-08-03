@@ -1,0 +1,10 @@
+{
+  "request": {
+    "method": "GET",
+    "url": "/healthcheck"
+  },
+  "response": {
+    "status": 200,
+    "body" : "The only response this endpoint returns."
+  }
+}

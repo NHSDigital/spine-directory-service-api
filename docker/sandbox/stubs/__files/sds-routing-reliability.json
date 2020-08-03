@@ -1,0 +1,56 @@
+{
+  "type": "object",
+  "properties": {
+    "nhsMhsFQDN": {
+      "type": "string",
+      "example": "192.168.128.11"
+    },
+    "nhsMHSEndPoint": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "url",
+        "example": "https://192.168.128.11/reliablemessaging/reliablerequest"
+      }
+    },
+    "nhsMHSPartyKey": {
+      "type": "string",
+      "example": "YES-0000806"
+    },
+    "nhsMhsCPAId": {
+      "type": "string",
+      "example": "S20001A000182"
+    },
+    "uniqueIdentifier": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "example": "227319907548"
+      }
+    },
+    "nhsMHSSyncReplyMode": {
+      "type": "string",
+      "example": "MSHSignalsOnly"
+    },
+    "nhsMHSRetryInterval": {
+      "type": "string",
+      "example": "PT1M"
+    },
+    "nhsMHSRetries": {
+      "type": "string",
+      "example": 2
+    },
+    "nhsMHSPersistDuration": {
+      "type": "string",
+      "example": "PT5M"
+    },
+    "nhsMHSDuplicateElimination": {
+      "type": "string",
+      "example": "always"
+    },
+    "nhsMHSAckRequested": {
+      "type": "string",
+      "example": "always"
+    }
+  }
+}

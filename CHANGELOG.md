@@ -2,4 +2,7 @@
 
 ## {{ ansible_date_time.date }}
 * Initial commit
-* End to End tests added
+* testing terraform
+* testing upstream change
+* Smoke tests added using postman and newman
+* End to End tests added using postman and newman

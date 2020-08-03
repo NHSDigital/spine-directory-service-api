@@ -1,0 +1,17 @@
+{
+  "nhsMhsFQDN": "192.168.128.11",
+  "nhsMHSEndPoint": [
+    "https://192.168.128.11/reliablemessaging/reliablerequest"
+  ],
+  "nhsMHSPartyKey": "YES-0000806",
+  "nhsMhsCPAId": "S20001A000182",
+  "uniqueIdentifier": [
+    "227319907548"
+  ],
+  "nhsMHSSyncReplyMode": "MSHSignalsOnly",
+  "nhsMHSRetryInterval": "PT1M",
+  "nhsMHSRetries": "2",
+  "nhsMHSPersistDuration": "PT5M",
+  "nhsMHSDuplicateElimination": "always",
+  "nhsMHSAckRequested": "always"
+}
