@@ -1,11 +1,11 @@
 {
   "request": {
     "method": "GET",
-    "url": "/routing-reliability"
+    "urlPathPattern": "/reliability.*"
   },
   "response": {
     "status": 200,
-    "bodyFileName": "sds-routing-reliability.json",
+    "bodyFileName": "sds-reliability.json",
     "headers": {
       "Content-Type": "application/json"
     }

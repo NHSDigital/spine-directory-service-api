@@ -1,0 +1,18 @@
+{
+  "request": {
+    "method": "GET",
+    "urlPathPattern": "/routing.*",
+    "headers": {
+      "Accept": {
+        "equalTo": "application/fhir+json"
+      }
+    }
+  },
+  "response": {
+    "status": 200,
+    "bodyFileName": "sds-routing.json",
+    "headers": {
+      "Content-Type": "application/fhir+json"
+    }
+  }
+}

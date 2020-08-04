@@ -36,6 +36,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/SDS-Routing'
+            application/fhir+json:
+              schema:
+                $ref: '#/components/schemas/SDS-Routing'
+            application/fhir+xml:
+              schema:
+                $ref: '#/components/schemas/SDS-Routing'
         '400':
           description: bad input parameter
   /reliability:
@@ -64,6 +70,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/SDS-Reliability'
+            application/fhir+json:
+              schema:
+                $ref: '#/components/schemas/SDS-Reliability'
+            application/fhir+xml:
+              schema:
+                $ref: '#/components/schemas/SDS-Reliability'                
         '400':
           description: bad input parameter
   /routing-reliability:
@@ -94,6 +106,16 @@ paths:
                 allOf:
                   - $ref: '#/components/schemas/SDS-Routing'
                   - $ref: '#/components/schemas/SDS-Reliability'
+            application/fhir+json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/SDS-Routing'
+                  - $ref: '#/components/schemas/SDS-Reliability'
+            application/fhir+xml:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/SDS-Routing'
+                  - $ref: '#/components/schemas/SDS-Reliability'                    
         '400':
           description: bad input parameter
   /healthcheck:
