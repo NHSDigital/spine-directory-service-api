@@ -24,6 +24,6 @@ variables:
   - template: project-vars.yml
 
 extends:
-  template: azure/common/build.yml@common
+  template: azure/common/apigee-build.yml@common
   parameters:
     service_name: ${{ variables.service_name }}
