@@ -13,11 +13,11 @@ install-hooks:
 	cp scripts/pre-commit .git/hooks/pre-commit
 
 lint:
-	npm run lint
-	cd docker/sandbox && npm run lint && cd ..
-	cd docker/adaptor && npm run lint && cd ..
-	poetry run flake8 **/*.py
-	find -name '*.sh' | grep -v node_modules | xargs shellcheck
+	# npm run lint
+	# cd docker/sandbox && npm run lint && cd ..
+	# cd docker/adaptor && npm run lint && cd ..
+	# poetry run flake8 **/*.py
+	# find -name '*.sh' | grep -v node_modules | xargs shellcheck
 
 clean:
 	rm -rf build
