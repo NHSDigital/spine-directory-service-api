@@ -1,0 +1,13 @@
+parameters:
+  - name: serviceName
+    type: string
+    
+steps:
+  - bash: |
+      sudo apt-get install git -y
+      git clone https://github.com/NHSDigital/api-management-utils.git utils
+      cd utils
+      pip install --upgrade pip setuptools
+      pip install poetry
+      poetry install
+    displayName: 'Deploy ${{ parameters.serviceName }} > Set up utils'

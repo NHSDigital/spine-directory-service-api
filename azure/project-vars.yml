@@ -1,0 +1,5 @@
+variables:
+  service_name: pipeline-service
+  service_base_path: dummy
+  product_display_name: Spine Directory Service
+  product_description: Placeholder description

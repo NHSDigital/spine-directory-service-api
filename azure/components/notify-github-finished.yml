@@ -1,0 +1,10 @@
+steps:
+  - bash: |
+      curl --fail -q -X POST "https://api.github.com/repos/$(Build.Repository.Name)/statuses/$(COMMIT_HASH)" -d '{"state": "success", "context": "$(Build.DefinitionName)", "description": "PR Deploy succeeded", "target_url": "https://dev.azure.com/NHSD-APIM/API%20Platform/_build/results?buildId=$(Build.BuildID)"}' --user $(GITHUB_USER):$(GITHUB_ACCESS_TOKEN)
+    displayName: "Notify GitHub that the pipeline has finished"
+    condition: succeeded()
+
+  - bash: |
+      curl --fail -q -X POST "https://api.github.com/repos/$(Build.Repository.Name)/statuses/$(COMMIT_HASH)" -d '{"state": "failure", "context": "$(Build.DefinitionName)", "description": "PR Deploy failed", "target_url": "https://dev.azure.com/NHSD-APIM/API%20Platform/_build/results?buildId=$(Build.BuildID)"}' --user $(GITHUB_USER):$(GITHUB_ACCESS_TOKEN)
+    displayName: "Notify GitHub that the pipeline has failed"
+    condition: failed()

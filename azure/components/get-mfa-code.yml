@@ -1,0 +1,15 @@
+parameters:
+  - name: serviceName
+    type: string
+  - name: apigeeOTPKey
+    type: string
+
+steps:
+- bash: |
+    # Install requirements 
+    sudo apt-get install oathtool gnupg2 jq -y
+    
+    # Save code to variable
+    export MFA_CODE=`oathtool --totp -b '${{ parameters.apigeeOTPKey }}'`
+    echo "##vso[task.setvariable variable=secret.MFACode;issecret=true]$MFA_CODE"
+  displayName: 'Deploy ${{ parameters.serviceName }} > Get MFA Code'

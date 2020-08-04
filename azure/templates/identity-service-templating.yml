@@ -1,0 +1,31 @@
+parameters:
+  - name: service_name
+    type: string
+  - name: variables_kvm
+    type: string
+  - name: encrypted_variables_kvm
+    type: string
+  - name: identity_target_server
+    type: string
+
+steps:
+  - bash: |
+      set -euo pipefail
+      
+      cd utils
+      
+      poetry run python scripts/template.py '{"VARIABLES_KVM": "${{ parameters.variables_kvm }}"}' --file=$(Pipeline.Workspace)/${{ parameters.service_name }}/$(SERVICE_ARTIFACT_NAME)/proxies/live/apiproxy/policies/KeyValueMapOperations.GetVariables.xml > /tmp/live.xml
+      mv /tmp/live.xml $(Pipeline.Workspace)/${{ parameters.service_name }}/$(SERVICE_ARTIFACT_NAME)/proxies/live/apiproxy/policies/KeyValueMapOperations.GetVariables.xml
+      
+      poetry run python scripts/template.py '{"ENCRYPTED_VARIABLES_KVM": "${{ parameters.encrypted_variables_kvm }}"}' --file=$(Pipeline.Workspace)/${{ parameters.service_name }}/$(SERVICE_ARTIFACT_NAME)/proxies/live/apiproxy/policies/KeyValueMapOperations.GetSecureVariables.xml > /tmp/live.xml
+      mv /tmp/live.xml $(Pipeline.Workspace)/${{ parameters.service_name }}/$(SERVICE_ARTIFACT_NAME)/proxies/live/apiproxy/policies/KeyValueMapOperations.GetSecureVariables.xml
+      
+      poetry run python scripts/template.py '{"IDENTITY_TARGET_SERVER": "${{ parameters.identity_target_server }}"}' --file=$(Pipeline.Workspace)/${{ parameters.service_name }}/$(SERVICE_ARTIFACT_NAME)/proxies/live/apiproxy/targets/identity-server.xml > /tmp/live.xml
+      mv /tmp/live.xml $(Pipeline.Workspace)/${{ parameters.service_name }}/$(SERVICE_ARTIFACT_NAME)/proxies/live/apiproxy/targets/identity-server.xml
+      
+      poetry run python scripts/template.py '{"IDENTITY_TARGET_SERVER": "${{ parameters.identity_target_server }}"}' --file=$(Pipeline.Workspace)/${{ parameters.service_name }}/$(SERVICE_ARTIFACT_NAME)/proxies/live/apiproxy/policies/ServiceCallout.GetJWKS.xml > /tmp/live.xml
+      mv /tmp/live.xml $(Pipeline.Workspace)/${{ parameters.service_name }}/$(SERVICE_ARTIFACT_NAME)/proxies/live/apiproxy/policies/ServiceCallout.GetJWKS.xml
+      
+      poetry run python scripts/template.py '{"IDENTITY_TARGET_SERVER": "${{ parameters.identity_target_server }}"}' --file=$(Pipeline.Workspace)/${{ parameters.service_name }}/$(SERVICE_ARTIFACT_NAME)/proxies/live/apiproxy/policies/ServiceCallout.PostToken.xml > /tmp/live.xml
+      mv /tmp/live.xml $(Pipeline.Workspace)/${{ parameters.service_name }}/$(SERVICE_ARTIFACT_NAME)/proxies/live/apiproxy/policies/ServiceCallout.PostToken.xml
+    displayName: 'Set KVM and Target Server'

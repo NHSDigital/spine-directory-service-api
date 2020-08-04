@@ -1,0 +1,30 @@
+parameters:
+  - name: useCustomTerraform
+    type: string
+
+steps:
+  - task: ms-devlabs.custom-terraform-tasks.custom-terraform-installer-task.TerraformInstaller@0
+    displayName: 'Install Terraform 0.12.24'
+    inputs:
+      terraformVersion: 0.12.24
+
+  - bash: |
+      mkdir -p ~/.terraform.d/plugins
+      
+      echo "Using custom terraform: ${{ parameters.useCustomTerraform }}"
+      
+      export USE_CUSTOM_TERRAFORM=${{ parameters.useCustomTerraform }}
+      if [ "$USE_CUSTOM_TERRAFORM" = "yes" ]; then
+        # Build from source 
+        git clone -b apm-749-fix-incosistent-apply https://github.com/NHSDigital/terraform-provider-apigee.git
+        wget https://dl.google.com/go/go1.14.2.linux-amd64.tar.gz
+        sudo tar -C /usr/local -xzf go1.14.2.linux-amd64.tar.gz
+        cd terraform-provider-apigee
+        GOOS=linux GOARCH=amd64 /usr/local/go/bin/go build -o ~/.terraform.d/plugins/terraform-provider-apigee_v0.0.1
+      else
+        wget https://github.com/NHSDigital/terraform-provider-apigee/releases/download/v0.0.27/terraform-provider-apigee_0.0.27_linux_amd64.tar.gz -O ~/.terraform.d/plugins/terraform.tar.gz
+        tar -xzf ~/.terraform.d/plugins/terraform.tar.gz -C ~/.terraform.d/plugins
+      fi
+      
+      ls ~/.terraform.d/plugins
+    displayName: 'Install apigee terraform provider'

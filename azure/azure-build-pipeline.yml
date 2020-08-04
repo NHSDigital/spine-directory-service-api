@@ -1,0 +1,29 @@
+name: "$(SourceBranchName)+$(BuildID)"
+
+trigger:
+  branches:
+    include:
+      - tags/refs/v*
+  tags:
+    include:
+      - v*
+
+pr:
+  branches:
+    include: ['*']
+
+resources:
+  repositories:
+    - repository: common
+      type: github
+      name: NHSDigital/api-management-utils
+      ref: refs/heads/apm-1191-common-pipelines
+      endpoint: NHSDigital
+
+variables:
+  - template: project-vars.yml
+
+extends:
+  template: azure/common/build.yml@common
+  parameters:
+    service_name: ${{ variables.service_name }}
