@@ -46,7 +46,7 @@ build-proxy:
 dist: clean publish build-proxy
 	mkdir -p dist
 	cp -r build/. dist
-	cp azure/ecs-proxies-deploy.yml dist/ecs-deploy-internal-dev.yml
+	cp ecs-proxies-deploy.yml dist/ecs-deploy-internal-dev.yml
 #	cp ecs-proxies-deploy.yml dist/ecs-deploy-ref.yml
 #	cp ecs-proxies-deploy.yml dist/ecs-deploy-int.yml
 #	cp ecs-proxies-deploy.yml dist/ecs-deploy-prod.yml
