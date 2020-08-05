@@ -17,7 +17,7 @@ resources:
     - repository: common
       type: github
       name: NHSDigital/api-management-utils
-      ref: master
+      ref: refs/heads/apm-1313-ecs-deploy-in-common-pipelines
       endpoint: NHSDigital
 
 variables:
@@ -27,4 +27,5 @@ extends:
   template: azure/common/apigee-build.yml@common
   parameters:
     service_name: ${{ variables.service_name }}
+    short_service_name: ${{ variables.short_service_name }}
 
