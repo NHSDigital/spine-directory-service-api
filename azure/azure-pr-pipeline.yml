@@ -31,6 +31,7 @@ extends:
   parameters:
     service_name: ${{ variables.service_name }}
     service_base_path: ${{ variables.service_base_path }}
+    short_service_name: ${{ variables.short_service_name }}
     product_display_name: ${{ variables.product_display_name }}
     product_description: ${{ variables.product_description }}
     proxy_path: live
