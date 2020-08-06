@@ -31,8 +31,6 @@ extends:
     service_base_path: ${{ variables.service_base_path }}
     product_display_name: ${{ variables.product_display_name }}
     product_description: ${{ variables.product_description }}
-    proxy_path: live
-    deploy_review_sandbox: false
     apigee_deployments:
       - environment: internal-dev
       - environment: internal-qa
@@ -41,10 +39,3 @@ extends:
         depends_on:
           - internal_qa
           - internal_qa_sandbox
-    # pre_template:
-    #   - template: "templates/identity-service-templating.yml"
-    #     parameters:
-    #       service_name: ${{ variables.service_name }}
-    #       variables_kvm: "identity-service-variables"
-    #       encrypted_variables_kvm: "identity-service-variables-encrypted"
-    #       identity_target_server: "identity-server"
