@@ -1,5 +1,5 @@
 variables:
-  service_name: pipeline-service
+  service_name: sds-service
   service_base_path: dummy
   short_service_name: sds
   product_display_name: Spine Directory Service
