@@ -24,7 +24,7 @@ pool:
   vmImage: 'ubuntu-latest'
 
 variables:
-  - template: project-vars.yml
+  - template: project.yml
 
 extends:
   template: azure/common/apigee-deployment.yml@common

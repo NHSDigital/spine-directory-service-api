@@ -22,7 +22,7 @@ pool:
   vmImage: 'ubuntu-latest'
 
 variables:
-  - template: project-vars.yml
+  - template: project.yml
 
 extends:
   template: azure/common/common.yml@common
