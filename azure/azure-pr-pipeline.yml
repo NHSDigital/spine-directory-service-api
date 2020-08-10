@@ -8,7 +8,6 @@ resources:
     - repository: common
       type: github
       name: NHSDigital/api-management-utils
-      ref: refs/heads/apm-1313-ecs-deploy-in-common-pipelines
       endpoint: NHSDigital
   pipelines:
   - pipeline: Spine-Directory-Service-Build
