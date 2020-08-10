@@ -16,10 +16,10 @@
       <Step>
         <Name>SpikeArrest</Name>
       </Step>
+      <!-- ASID not needed as the parameter values provided look up ASID
       <Step>
         <Name>KeyValueMapOperations.GetSecureVariables</Name>
       </Step>
-      <!-- ASID not needed as the parameter values provided look up ASID
       <Step>
         <Name>AssignMessage.AddAsidHeader</Name>
       </Step>
