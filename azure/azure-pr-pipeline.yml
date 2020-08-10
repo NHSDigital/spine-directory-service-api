@@ -12,7 +12,7 @@ resources:
       endpoint: NHSDigital
   pipelines:
   - pipeline: build_pipeline
-    source: Spine-Directory-Service-Build
+    source: "Spine-Directory-Service-Build"
     trigger:
       branches:
         exclude:
@@ -35,10 +35,10 @@ extends:
     product_display_name: ${{ variables.product_display_name }}
     product_description: ${{ variables.product_description }}
     secret_ids:
-      - "ptl/cis/ldap.nis1.national.ncrs.nhs.uk/key"
-      - "ptl/cis/ldap.nis1.national.ncrs.nhs.uk/crt"
-      - "ptl/veit07.devspineservices.nhs.uk/root-ca/crt"
+      - ptl/cis/ldap.nis1.national.ncrs.nhs.uk/key
+      - ptl/cis/ldap.nis1.national.ncrs.nhs.uk/crt
+      - ptl/veit07.devspineservices.nhs.uk/root-ca/crt
     config_ids:
-      - "/ptl/api-deployment/sds/ldap/private-key"
-      - "/ptl/api-deployment/sds/ldap/client-cert"
-      - "/ptl/api-deployment/sds/ldap/ca-certs"
+      - /ptl/api-deployment/sds/ldap/private-key
+      - /ptl/api-deployment/sds/ldap/client-cert
+      - /ptl/api-deployment/sds/ldap/ca-certs
