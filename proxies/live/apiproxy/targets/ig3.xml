@@ -13,15 +13,17 @@
       <Step>
         <Name>Quota</Name>
       </Step>
-      <Step>	
-        <Name>SpikeArrest</Name>	
+      <Step>
+        <Name>SpikeArrest</Name>
       </Step>
       <Step>
         <Name>KeyValueMapOperations.GetSecureVariables</Name>
       </Step>
+      <!-- ASID not needed as the parameter values provided look up ASID
       <Step>
         <Name>AssignMessage.AddAsidHeader</Name>
       </Step>
+       -->
     </Request>
   </PreFlow>
   <HTTPTargetConnection>
