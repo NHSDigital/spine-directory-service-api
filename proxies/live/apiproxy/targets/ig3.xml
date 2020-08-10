@@ -22,9 +22,7 @@
     <SSLInfo>
       <Enabled>true</Enabled>
     </SSLInfo>
-    <LoadBalancer>
-      <Server name="ig3" />
-    </LoadBalancer>
+    <URL>https://{{ APIM_PROXY_HOSTNAME }}</URL>
   </HTTPTargetConnection>
   <FaultRules>
   </FaultRules>
