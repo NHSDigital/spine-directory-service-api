@@ -12,13 +12,13 @@ resources:
       endpoint: NHSDigital
   pipelines:
   - pipeline: build_pipeline
-    source: Spine-Directory-Service-Build
+    source: 'Spine-Directory-Service-Build'
     trigger:
       branches:
         exclude:
-          - master
-          - refs/heads/master
-          - refs/tags/v*
+          - 'master'
+          - 'refs/heads/master'
+          - 'refs/tags/v*'
 
 pool:
   vmImage: 'ubuntu-latest'
