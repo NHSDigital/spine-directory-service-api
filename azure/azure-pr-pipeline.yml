@@ -8,9 +8,10 @@ resources:
     - repository: common
       type: github
       name: NHSDigital/api-management-utils
+      ref: refs/heads/apm-1162-fix-build-refs
       endpoint: NHSDigital
   pipelines:
-  - pipeline: Spine-Directory-Service-Build
+  - pipeline: build_pipeline
     source: Spine-Directory-Service-Build
     trigger:
       branches:
