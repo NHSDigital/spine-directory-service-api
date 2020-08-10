@@ -1,0 +1,36 @@
+<TargetEndpoint name="ig3">
+  <PreFlow>
+    <Request>
+      <Step>
+        <Name>VerifyApiKey-Header</Name>
+      </Step>
+      <Step>
+        <Name>Quota</Name>
+      </Step>
+      <Step>
+        <Name>SpikeArrest</Name>
+      </Step>
+    </Request>
+  </PreFlow>
+  <HTTPTargetConnection>
+    <Properties>
+      <!-- Whitelist the 'expected' error code responses so the responses pass unhindered to caller
+      Anything unexpected will be sanitsed by the DefaultFaultRule -
+      https://docs.apigee.com/api-platform/fundamentals/fault-handling#customhandlingofhttperrorcodesfromthetargetserver -->
+      <Property name="success.codes">1xx,2xx,3xx,4xx</Property>
+    </Properties>
+    <SSLInfo>
+      <Enabled>true</Enabled>
+    </SSLInfo>
+    <LoadBalancer>
+      <Server name="ig3" />
+    </LoadBalancer>
+  </HTTPTargetConnection>
+  <FaultRules>
+  </FaultRules>
+  <DefaultFaultRule>
+    <Step>
+      <Name>AssignMessage.CatchallErrorMessage</Name>
+    </Step>
+  </DefaultFaultRule>
+</TargetEndpoint>

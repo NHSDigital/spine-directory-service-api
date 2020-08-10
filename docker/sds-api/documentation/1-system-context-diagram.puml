@@ -1,0 +1,19 @@
+@startuml MHS Logical Architecture
+!includeurl https://raw.githubusercontent.com/RicardoNiepel/C4-PlantUML/release/1-0/C4_Container.puml
+
+title System context diagram for MHS Adapter
+
+System_Boundary(mhsb, "Supplier System") {
+    System(gp, "Supplier Principal Clinical System", "")
+    Container(mhs, "MHS Adapter", "Encapsulate the details of Spine messaging and provides a simple interface to allow HL7 messages to be sent to a remote MHS")
+}
+System(spinemhs, "NHS Digital Spine MHS", "A collection of national applications, services and directories which support the health and social care sector in the exchange of information in national and local IT systems. A national, central service that underpins the NHS Care Records Service")
+System(spineroute, "NHS Spine Directory Service", "Provides routing and reliability information")
+
+Rel_Down(gp, mhs, "Sends Interactions to", "HL7 messages sent and sync responses received")
+Rel_Up(mhs, gp, "Enqueues", "async response/unsolicited messages")
+Rel_L(mhs, spineroute, "Get service endpoint addresses and reliability info from")
+Rel(mhs, spinemhs, "Sends interactions to", "HL7 messages")
+Rel(spinemhs, mhs, "Sends responses to", "HL7 messages")
+
+@enduml

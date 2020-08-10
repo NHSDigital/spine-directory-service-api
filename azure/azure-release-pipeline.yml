@@ -1,0 +1,41 @@
+name: "$(SourceBranchName)+$(BuildID)"
+
+trigger: none
+pr: none
+
+resources:
+  repositories:
+    - repository: common
+      type: github
+      name: NHSDigital/api-management-utils
+      ref: master
+      endpoint: NHSDigital
+  pipelines:
+  - pipeline: Spine-Directory-Service-Build
+    source: Spine-Directory-Service-Build
+    trigger:
+      branches:
+        include:
+          - refs/tags/v*
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  - template: project.yml
+
+extends:
+  template: azure/common/apigee-deployment.yml@common
+  parameters:
+    service_name: ${{ variables.service_name }}
+    service_base_path: ${{ variables.service_base_path }}
+    product_display_name: ${{ variables.product_display_name }}
+    product_description: ${{ variables.product_description }}
+    apigee_deployments:
+      - environment: internal-dev
+      - environment: internal-qa
+      - environment: internal-qa-sandbox
+      - environment: int
+        depends_on:
+          - internal_qa
+          - internal_qa_sandbox

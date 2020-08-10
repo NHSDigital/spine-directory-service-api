@@ -5,8 +5,11 @@ build/
 public/
 newman/
 .idea/
-
+.venv/
 .#*
 
 __pycache__/
 .envrc
+
+identity-api/
+azure-pipeline.yml

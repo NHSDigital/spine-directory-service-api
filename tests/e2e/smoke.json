@@ -1,0 +1,107 @@
+{
+	"info": {
+		"_postman_id": "78afcba7-c673-4f18-91db-f5f870c2c7bd",
+		"name": "Spine Directory Service - Smoke Tests",
+		"description": "Spine directory service smoke tests",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Healthcheck",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "9cfba0f7-a542-466b-a7bd-0fad3fc498a3",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "74b3392e-7163-4b5f-bcc4-5b059daa9e68",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{environment}}/healthcheck",
+					"host": [
+						"{{environment}}"
+					],
+					"path": [
+						"healthcheck"
+					]
+				},
+				"description": "Return health check for the spine directory service"
+			},
+			"response": []
+		},
+		{
+			"name": "Test endpoint is returning responses",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "21a71e42-b382-4dbb-ba0b-d12ec8d2cd7a",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Check routing contains all keys\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData).to.be.an('object').that.has.keys('nhsMHSPartyKey','nhsMhsCPAId','nhsMhsFQDN', 'nhsMHSEndPoint', 'uniqueIdentifier');",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{environment}}/routing?org-code={{org-code}}&service-id={{service-id}}",
+					"host": [
+						"{{environment}}"
+					],
+					"path": [
+						"routing"
+					],
+					"query": [
+						{
+							"key": "org-code",
+							"value": "{{org-code}}"
+						},
+						{
+							"key": "service-id",
+							"value": "{{service-id}}"
+						}
+					]
+				},
+				"description": "Return routing information for the spine directory service"
+			},
+			"response": []
+		}
+	]
+}

@@ -1,0 +1,13 @@
+{
+  "request": {
+    "method": "GET",
+    "urlPathPattern": "/reliability.*"
+  },
+  "response": {
+    "status": 200,
+    "bodyFileName": "sds-reliability.json",
+    "headers": {
+      "Content-Type": "application/json"
+    }
+  }
+}

@@ -4,13 +4,26 @@
 
 docker_service:
 
-  - name: adaptor
+  - name: sds-api
     expose: true
     environment:
-      - name: NODE_ENV
-        value: production
-      - name: LOG_LEVEL
-        value: "{{ 'debug' if APIGEE_ENVIRONMENT == 'internal-dev' else 'info' }}"
+      - name: SDS_CACHE_ENABLED
+        value: "true"
+      - name: SDS_LOG_LEVEL
+        value: DEBUG
+      - name: SDS_LDAP_SEARCH_BASE
+        value: ou=services,o=nhs
+      - name: SDS_REDIS_CACHE_HOST
+        value: cache-service
+    secrets:
+      - name: SDS_LDAP_URL
+        valueFrom: "/ptl/platform-common/cis/ldap-uri"
+      - name: SDS_SECRET_CLIENT_KEY
+        valueFrom: "/ptl/api-deployment/sds/ldap/private-key"
+      - name: SDS_SECRET_CLIENT_CERT
+        valueFrom: "/ptl/api-deployment/sds/ldap/client-cert"
+      - name: SDS_SECRET_CA_CERTS
+        valueFrom: "/ptl/api-deployment/sds/ldap/ca-certs"
     health_check:
       matcher: "200"
-      path: "/_ping"
+      path: "/healthcheck"
