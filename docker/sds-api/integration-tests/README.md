@@ -1,8 +1,6 @@
 # Integration tests
 
 Integration tests are sending predefined HTTP requests for all available actions:
-* /routing
-* /reliability
 * /routing-reliability
 to a running SDS instance running at `http://localhost:9000/`
 

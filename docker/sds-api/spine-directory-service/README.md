@@ -39,8 +39,7 @@ Examples of how this API is called can be found in the [integration tests](../in
 A RestClient collection [rest-client/spine-directory-service](../rest-client/spine-directory-service) illustrates how the SDS Adaptor API
 is called. This collection provides following API request examples:
 -health check
--routing information from the spine
--reliability information from the spine
+-routing and reliability information from the spine
 
 Before sending these requests, you will need to create a setting.json file as described in [README](../rest-client/README.md).
 
