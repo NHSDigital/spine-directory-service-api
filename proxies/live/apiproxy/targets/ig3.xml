@@ -1,12 +1,6 @@
 <TargetEndpoint name="ig3">
   <PreFlow>
     <Request>
-      <!-- LPS: Commenting out because I'm not sure this is needed
-      <Step>
-        <Name>RaiseFault.400BadRequest</Name>
-        <Condition>(request.header.NHSD-Session-URID is null) or (not request.header.NHSD-Session-URID ~~ ".+")</Condition>
-      </Step>
-      -->
       <Step>
         <Name>VerifyApiKey-Header</Name>
       </Step>
@@ -16,14 +10,6 @@
       <Step>
         <Name>SpikeArrest</Name>
       </Step>
-      <!-- ASID not needed as the parameter values provided look up ASID
-      <Step>
-        <Name>KeyValueMapOperations.GetSecureVariables</Name>
-      </Step>
-      <Step>
-        <Name>AssignMessage.AddAsidHeader</Name>
-      </Step>
-       -->
     </Request>
   </PreFlow>
   <HTTPTargetConnection>
