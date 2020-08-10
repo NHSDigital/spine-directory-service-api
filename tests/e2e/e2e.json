@@ -30,7 +30,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{environment}}/routing-reliability?org-code={{org-code}}&service-id={{service-id}}",
+					"raw": "{{environment}}/endpoint?org-code={{org-code}}&service-id={{service-id}}",
 					"host": [
 						"{{environment}}"
 					],
@@ -72,7 +72,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{environment}}/routing-reliability?org-code={{org-code}}",
+					"raw": "{{environment}}/endpoint?org-code={{org-code}}",
 					"host": [
 						"{{environment}}"
 					],

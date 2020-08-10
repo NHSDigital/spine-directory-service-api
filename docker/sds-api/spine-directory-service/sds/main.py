@@ -58,7 +58,7 @@ def start_tornado_server(routing: routing_reliability.RoutingAndReliability) -> 
     """
     handler_dependencies = {"routing": routing}
     application = tornado.web.Application([
-        ("/routing-reliability", routing_reliability_handler.RoutingReliabilityRequestHandler, handler_dependencies),
+        ("/endpoint", routing_reliability_handler.RoutingReliabilityRequestHandler, handler_dependencies),
         ("/healthcheck", healthcheck_handler.HealthcheckHandler)
     ])
     server = tornado.httpserver.HTTPServer(application)
