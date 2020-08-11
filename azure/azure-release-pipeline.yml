@@ -8,7 +8,6 @@ resources:
     - repository: common
       type: github
       name: NHSDigital/api-management-utils
-      ref: master
       endpoint: NHSDigital
   pipelines:
   - pipeline: Spine-Directory-Service-Build
