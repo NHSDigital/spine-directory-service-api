@@ -10,8 +10,8 @@ resources:
       name: NHSDigital/api-management-utils
       endpoint: NHSDigital
   pipelines:
-  - pipeline: Spine-Directory-Service-Build
-    source: Spine-Directory-Service-Build
+  - pipeline: build_pipeline
+    source: "Spine-Directory-Service-Build"
     trigger:
       branches:
         include:
