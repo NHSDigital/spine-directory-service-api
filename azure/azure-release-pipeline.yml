@@ -27,6 +27,7 @@ extends:
   template: azure/common/apigee-deployment.yml@common
   parameters:
     service_name: ${{ variables.service_name }}
+    short_service_name: ${{ variables.short_service_name }}
     service_base_path: ${{ variables.service_base_path }}
     product_display_name: ${{ variables.product_display_name }}
     product_description: ${{ variables.product_description }}
@@ -34,6 +35,7 @@ extends:
       - environment: internal-dev
       - environment: internal-qa
       - environment: internal-qa-sandbox
+        proxy_path: sandbox
       - environment: int
         depends_on:
           - internal_qa

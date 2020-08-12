@@ -3,4 +3,4 @@ variables:
   service_base_path: spine-directory
   short_service_name: sds
   product_display_name: Spine Directory Service
-  product_description: Placeholder description
+  product_description: Spine Directory Service
