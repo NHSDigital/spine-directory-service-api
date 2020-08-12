@@ -35,6 +35,7 @@ extends:
       - environment: internal-dev
       - environment: internal-qa
       - environment: internal-qa-sandbox
+        proxy_path: sandbox
       - environment: int
         depends_on:
           - internal_qa
