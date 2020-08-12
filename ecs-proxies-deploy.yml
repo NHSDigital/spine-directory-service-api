@@ -4,6 +4,9 @@
 
 docker_service:
 
+  - name: cache-service
+    expose: false
+
   - name: sds-api
     expose: true
     environment:
