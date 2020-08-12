@@ -8,7 +8,7 @@ docker_service:
     expose: true
     environment:
       - name: SDS_CACHE_ENABLED
-        value: "false"
+        value: "true"
       - name: SDS_LOG_LEVEL
         value: DEBUG
       - name: SDS_LDAP_SEARCH_BASE
