@@ -6,6 +6,9 @@ docker_service:
 
   - name: cache-service
     expose: false
+    portmappings:
+        - ContainerPort: 6379
+          HostPort: 6379
 
   - name: sds-api
     expose: true
