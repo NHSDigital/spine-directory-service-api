@@ -5,7 +5,7 @@
 docker_service:
   - name: cache-service
     expose: false
-    port: 127.0.0.1:6379
+    port: 6379
 
   - name: sds-api
     expose: true
@@ -17,7 +17,7 @@ docker_service:
       - name: SDS_LDAP_SEARCH_BASE
         value: ou=services,o=nhs
       - name: SDS_REDIS_CACHE_HOST
-        value: cache-service
+        value: localhost
     secrets:
       - name: SDS_LDAP_URL
         valueFrom: "/ptl/platform-common/cis/ldap-uri"
