@@ -3,16 +3,12 @@
 #docker_service_memory: 512
 
 docker_service:
-  - name: cache-service
-    expose: false
-    port: 6379
-    health_check:
 
   - name: sds-api
     expose: true
     environment:
       - name: SDS_CACHE_ENABLED
-        value: "true"
+        value: "false"
       - name: SDS_LOG_LEVEL
         value: DEBUG
       - name: SDS_LDAP_SEARCH_BASE
