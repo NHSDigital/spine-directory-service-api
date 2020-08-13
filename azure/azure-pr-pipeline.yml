@@ -8,6 +8,7 @@ resources:
     - repository: common
       type: github
       name: NHSDigital/api-management-utils
+      ref: refs/heads/niad-426-remove-container-healthcheck-to-use-docker-healthcheck-as-default
       endpoint: NHSDigital
   pipelines:
   - pipeline: build_pipeline
