@@ -1,9 +1,9 @@
 <ProxyEndpoint name="default">
   <PreFlow name="PreFlow">
     <Request>
-      <Steps>
+      <Step>
         <Name>Response-Cache-SDS</Name>
-      </Steps>
+      </Step>
     </Request>
   </PreFlow>
   <Flows>
