@@ -2,7 +2,7 @@
   <PreFlow name="PreFlow">
     <Request>
       <Steps>
-        <Name>Response-Cache-1</Name>
+        <Name>Response-Cache-SDS</Name>
       </Steps>
     </Request>
   </PreFlow>
@@ -44,8 +44,8 @@
   <RouteRule name="NoRoutePing">
     <Condition>(proxy.pathsuffix MatchesPath "/_ping") and ((request.verb = "GET") or (request.verb = "HEAD"))</Condition>
   </RouteRule>
-  <RouteRule name="ig3">
-    <TargetEndpoint>ig3</TargetEndpoint>
+  <RouteRule name="target">
+    <TargetEndpoint>target</TargetEndpoint>
   </RouteRule>
   <DefaultFaultRule>
     <Step>

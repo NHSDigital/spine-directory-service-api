@@ -1,4 +1,4 @@
-<TargetEndpoint name="ig3">
+<TargetEndpoint name="target">
   <PreFlow>
     <Request>
       <Step>
@@ -16,7 +16,7 @@
     <Request/>
     <Response>
       <Step>
-        <Name>Response-Cache-1</Name>
+        <Name>Response-Cache-SDS</Name>
       </Step>
     </Response>
   </PostFlow>

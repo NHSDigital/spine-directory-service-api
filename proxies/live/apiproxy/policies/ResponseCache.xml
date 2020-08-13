@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<ResponseCache async="false" continueOnError="false" enabled="true" name="Response-Cache-1">
-    <DisplayName>Response Cache-1</DisplayName>
+<ResponseCache async="false" continueOnError="false" enabled="true" name="Response-Cache-SDS">
     <Properties/>
     <CacheKey>
         <KeyFragment ref="request.queryparam.org-code"/>
