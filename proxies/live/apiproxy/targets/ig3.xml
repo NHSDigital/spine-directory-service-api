@@ -12,6 +12,14 @@
       </Step>
     </Request>
   </PreFlow>
+  <PostFlow name="PostFlow">
+    <Request/>
+    <Response>
+      <Step>
+        <Name>Response Cache-1</Name>
+      </Step>
+    </Response>
+  </PostFlow>
   <HTTPTargetConnection>
     <Properties>
       <!-- Whitelist the 'expected' error code responses so the responses pass unhindered to caller

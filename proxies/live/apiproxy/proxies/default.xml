@@ -1,5 +1,11 @@
 <ProxyEndpoint name="default">
-  <PreFlow/>
+  <PreFlow name="PreFlow">
+    <Request>
+      <Steps>
+        <Name>Response Cache-1</Name>
+      </Steps>
+    </Request>
+  </PreFlow>
   <Flows>
     <Flow name="OptionsPreFlight">
       <Request />
