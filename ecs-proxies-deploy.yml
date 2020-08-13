@@ -3,7 +3,6 @@
 #docker_service_memory: 512
 
 docker_service:
-
   - name: sds-api
     expose: true
     environment:
