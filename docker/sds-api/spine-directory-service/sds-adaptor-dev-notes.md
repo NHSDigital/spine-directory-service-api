@@ -70,16 +70,6 @@ contain sensitive information such as the content of messages being sent.
 connections. *Must* be set to exactly `True` for TLS to be disabled.
 * `SDS_LDAP_CONNECTION_RETRIES` Number of retries when LDAP connection cannot be established
 * `SDS_LDAP_CONNECTION_TIMEOUT_IN_SECONDS` Number of seconds to wait for establishing LDAP connection
-* `SDS_CACHE_ENABLED` Whether to enable cache. Defaults to "True"
-* `SDS_CACHE_EXPIRY_TIME` An optional value that specifies the time (in seconds)
-that a value should be held in the SDS cache. Defaults to `900` (fifteen minutes)
-* `SDS_REDIS_CACHE_HOST` The Redis host to use when caching SDS information
-retrieved from SDS.
-* `SDS_REDIS_CACHE_PORT` An optional value that specified the port to use when
-connecting to the Redis host specified by `SDS_REDIS_CACHE_HOST`. Defaults to `6379`.
-* `SDS_REDIS_DISABLE_TLS` An optional flag that can be set to disable TLS for
-connections to the Redis cache used by the Spine Route Lookup service. *Must* be set to exactly `True` for TLS to be
-disabled.
 * `SDS_LDAP_LAZY_CONNECTION` use lazy connection from spine route lookup component to SPINE LDAP service
 
 Note that if you are using Opentest, you should use the credentials you were given when you got access to set `SDS_SECRET_CLIENT_CERT`, `SDS_SECRET_CLIENT_KEY` and `SDS_SECRET_CA_CERTS`.

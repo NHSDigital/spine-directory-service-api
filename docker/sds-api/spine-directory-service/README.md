@@ -23,8 +23,7 @@ the adaptor locally, and ECS, Fargate and ECR are used by the AWS exemplar archi
 - Logs Store - Running containers log to STDOUT and therefore logs can be captured and forwarded to the logging solution of your choice.
 - Load Balancers are shown balancing load to the Inbound and outbound services. The AWS exemplar demonstrates the use of Application Load Balancers and
 Network Load Balancers to implement this.
-- Directory cache which acts as a cache for frequently requested routing and reliability information. Locally implemented through Redis, this is
-also demonstrated through Elasticache for Redis in AWS.
+- Directory cache which acts as a cache for frequently requested routing and reliability information. This has been implemented using Apigee Edge as response cache.
 
 The National Adaptors Common Module provides classes which implement common requirements leveraged by multiple services or modules. -->
 

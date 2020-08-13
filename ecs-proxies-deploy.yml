@@ -6,14 +6,10 @@ docker_service:
   - name: sds-api
     expose: true
     environment:
-      - name: SDS_CACHE_ENABLED
-        value: "false"
       - name: SDS_LOG_LEVEL
-        value: DEBUG
+        value: NOTSET
       - name: SDS_LDAP_SEARCH_BASE
         value: ou=services,o=nhs
-      - name: SDS_REDIS_CACHE_HOST
-        value: 127.0.0.1
     secrets:
       - name: SDS_LDAP_URL
         valueFrom: "/ptl/platform-common/cis/ldap-uri"
