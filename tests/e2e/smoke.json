@@ -52,21 +52,34 @@
 			},
 			"response": []
 		},
-		{
-			"name": "Test endpoint is returning responses",
+    {
+			"name": "_ping endpoint",
 			"event": [
 				{
 					"listen": "test",
 					"script": {
-						"id": "21a71e42-b382-4dbb-ba0b-d12ec8d2cd7a",
+						"id": "520205f0-cfff-4f39-8a15-fb51b2bf37b0",
 						"exec": [
-							"pm.test(\"Status code is 200\", function () {",
+							"pm.test(\"Status code\", function () {",
 							"    pm.response.to.have.status(200);",
 							"});",
 							"",
-							"pm.test(\"Check routing contains all keys\", function () {",
-							"    var jsonData = pm.response.json();",
-							"    pm.expect(jsonData).to.be.an('object').that.has.keys('nhsMHSPartyKey','nhsMhsCPAId','nhsMhsFQDN', 'nhsMHSEndPoint', 'uniqueIdentifier');",
+							"var versionRegex = /v[0-9]+\\.[0-9]+\\.[0-9]+-\\w+/;",
+							"var onlyNumberRegex = /^\\d+$/;",
+							"",
+							"pm.test(\"Json body has version\", function () {",
+							"    var version = pm.response.json().version;",
+							"    pm.expect(versionRegex.test(version)).to.be.true;",
+							"});",
+							"",
+							"pm.test(\"Json body has revision\", function () {",
+							"    var revision = pm.response.json().revision;",
+							"    pm.expect(onlyNumberRegex.test(revision)).to.be.true;",
+							"});",
+							"",
+							"pm.test(\"Json body has releaseId\", function () {",
+							"    var releaseId = pm.response.json().releaseId;",
+							"    pm.expect(onlyNumberRegex.test(releaseId)).to.be.true;",
 							"});"
 						],
 						"type": "text/javascript"
@@ -76,30 +89,15 @@
 			"request": {
 				"method": "GET",
 				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
 				"url": {
-					"raw": "{{environment}}/routing?org-code={{org-code}}&service-id={{service-id}}",
+					"raw": "{{environment}}/_ping",
 					"host": [
 						"{{environment}}"
 					],
 					"path": [
-						"routing"
-					],
-					"query": [
-						{
-							"key": "org-code",
-							"value": "{{org-code}}"
-						},
-						{
-							"key": "service-id",
-							"value": "{{service-id}}"
-						}
+						"_ping"
 					]
-				},
-				"description": "Return routing information for the spine directory service"
+				}
 			},
 			"response": []
 		}

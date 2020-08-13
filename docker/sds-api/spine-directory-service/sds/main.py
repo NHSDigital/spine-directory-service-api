@@ -9,7 +9,7 @@ from utilities import integration_adaptors_logger as log
 from lookup import cache_adaptor, redis_cache, sds_client, mhs_attribute_lookup, \
     routing_reliability, sds_connection_factory
 from lookup.nocache_cache import NoCacheCache
-from request import routing_handler, reliability_handler, routing_reliability_handler
+from request import routing_reliability_handler
 from utilities.string_utilities import str2bool
 
 logger = log.IntegrationAdaptorsLogger(__name__)
@@ -58,9 +58,7 @@ def start_tornado_server(routing: routing_reliability.RoutingAndReliability) -> 
     """
     handler_dependencies = {"routing": routing}
     application = tornado.web.Application([
-        ("/routing", routing_handler.RoutingRequestHandler, handler_dependencies),
-        ("/reliability", reliability_handler.ReliabilityRequestHandler, handler_dependencies),
-        ("/routing-reliability", routing_reliability_handler.RoutingReliabilityRequestHandler, handler_dependencies),
+        ("/endpoint", routing_reliability_handler.RoutingReliabilityRequestHandler, handler_dependencies),
         ("/healthcheck", healthcheck_handler.HealthcheckHandler)
     ])
     server = tornado.httpserver.HTTPServer(application)

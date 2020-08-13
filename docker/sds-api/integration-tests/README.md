@@ -1,9 +1,7 @@
 # Integration tests
 
 Integration tests are sending predefined HTTP requests for all available actions:
-* /routing
-* /reliability
-* /routing-reliability
+* /endpoint
 to a running SDS instance running at `http://localhost:9000/`
 
 Tests assume that target server is connected to test LDAP that supports `YES` organization code

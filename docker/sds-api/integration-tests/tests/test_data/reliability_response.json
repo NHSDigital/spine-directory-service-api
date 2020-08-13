@@ -1,8 +1,0 @@
-{
-  "nhsMHSSyncReplyMode": "MSHSignalsOnly",
-  "nhsMHSRetryInterval": "PT1M",
-  "nhsMHSRetries": "2",
-  "nhsMHSPersistDuration": "PT5M",
-  "nhsMHSDuplicateElimination": "always",
-  "nhsMHSAckRequested": "always"
-}
