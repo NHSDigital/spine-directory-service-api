@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ResponseCache async="false" continueOnError="false" enabled="true" name="Response-Cache-SDS">
+    <DisplayName>Response Cache SDS</DisplayName>
+    <Properties/>
+    <CacheKey>
+        <KeyFragment ref="request.queryparam.org-code"/>
+        <KeyFragment ref="request.queryparam.service-id"/>
+    </CacheKey>
+    <Scope>Exclusive</Scope>
+    <ExpirySettings>
+        <ExpiryDate/>
+        <TimeOfDay/>
+        <TimeoutInSeconds ref="">36000</TimeoutInSeconds>
+    </ExpirySettings>
+    <SkipCacheLookup/>
+    <SkipCachePopulation/>
+    <CacheLookupTimeoutInSeconds>30</CacheLookupTimeoutInSeconds>
+    <ExcludeErrorResponse>true</ExcludeErrorResponse>
+</ResponseCache>

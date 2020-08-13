@@ -1,5 +1,11 @@
 <ProxyEndpoint name="default">
-  <PreFlow/>
+  <PreFlow name="PreFlow">
+    <Request>
+      <Step>
+        <Name>Response-Cache-SDS</Name>
+      </Step>
+    </Request>
+  </PreFlow>
   <Flows>
     <Flow name="OptionsPreFlight">
       <Request />
@@ -38,8 +44,8 @@
   <RouteRule name="NoRoutePing">
     <Condition>(proxy.pathsuffix MatchesPath "/_ping") and ((request.verb = "GET") or (request.verb = "HEAD"))</Condition>
   </RouteRule>
-  <RouteRule name="ig3">
-    <TargetEndpoint>ig3</TargetEndpoint>
+  <RouteRule name="target">
+    <TargetEndpoint>target</TargetEndpoint>
   </RouteRule>
   <DefaultFaultRule>
     <Step>
