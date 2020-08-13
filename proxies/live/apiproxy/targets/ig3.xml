@@ -16,7 +16,7 @@
     <Request/>
     <Response>
       <Step>
-        <Name>Response Cache-1</Name>
+        <Name>Response-Cache-1</Name>
       </Step>
     </Response>
   </PostFlow>
