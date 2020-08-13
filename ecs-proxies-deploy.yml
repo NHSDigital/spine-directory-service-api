@@ -17,7 +17,7 @@ docker_service:
       - name: SDS_LDAP_SEARCH_BASE
         value: ou=services,o=nhs
       - name: SDS_REDIS_CACHE_HOST
-        value: "http://localhost"
+        value: 172.17.0.1
     secrets:
       - name: SDS_LDAP_URL
         valueFrom: "/ptl/platform-common/cis/ldap-uri"
