@@ -6,7 +6,7 @@
 	},
 	"item": [
 		{
-			"name": "Tests Routing Endpoint",
+			"name": "Tests Routing and Reliability Endpoint",
 			"event": [
 				{
 					"listen": "test",
@@ -19,7 +19,7 @@
 							"",
 							"pm.test(\"Check routing contains all keys\", function () {",
 							"    var jsonData = pm.response.json();",
-							"    pm.expect(jsonData).to.be.an('object').that.has.keys('nhsMHSPartyKey','nhsMhsCPAId','nhsMhsFQDN', 'nhsMHSEndPoint', 'uniqueIdentifier');",
+							"    pm.expect(jsonData).to.be.an('object').that.has.keys('nhsMHSPartyKey','nhsMhsCPAId','nhsMhsFQDN', 'nhsMHSEndPoint', 'uniqueIdentifier', 'nhsMHSSyncReplyMode','nhsMHSRetryInterval','nhsMHSRetries', 'nhsMHSPersistDuration', 'nhsMHSDuplicateElimination','nhsMHSAckRequested');",
 							"});"
 						],
 						"type": "text/javascript"
@@ -30,7 +30,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{environment}}/routing?org-code={{org-code}}&service-id={{service-id}}",
+					"raw": "{{environment}}/endpoint?org-code={{org-code}}&service-id={{service-id}}",
 					"host": [
 						"{{environment}}"
 					],
@@ -48,7 +48,7 @@
 						}
 					]
 				},
-				"description": "Return routing information for the spine directory service"
+				"description": "Return routing and reliability information for the spine directory service"
 			},
 			"response": []
 		},
@@ -72,7 +72,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{environment}}/routing?org-code={{org-code}}",
+					"raw": "{{environment}}/endpoint?org-code={{org-code}}",
 					"host": [
 						"{{environment}}"
 					],
@@ -87,53 +87,6 @@
 					]
 				},
 				"description": "Return error information for the spine directory service"
-			},
-			"response": []
-		},
-		{
-			"name": "Tests Reliability Endpoint",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"id": "ae85d23e-b77f-4fa8-88cb-4085bc165328",
-						"exec": [
-							"pm.test(\"Status code is 200\", function () {",
-							"    pm.response.to.have.status(200);",
-							"});",
-							"",
-							"pm.test(\"Check reliability contains all keys\", function () {",
-							"    var jsonData = pm.response.json();",
-							"    pm.expect(jsonData).to.be.an('object').that.has.keys('nhsMHSSyncReplyMode','nhsMHSRetryInterval','nhsMHSRetries', 'nhsMHSPersistDuration', 'nhsMHSDuplicateElimination','nhsMHSAckRequested');",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{environment}}/reliability?org-code={{org-code}}&service-id={{service-id}}",
-					"host": [
-						"{{environment}}"
-					],
-					"path": [
-						"reliability"
-					],
-					"query": [
-						{
-							"key": "org-code",
-							"value": "{{org-code}}"
-						},
-						{
-							"key": "service-id",
-							"value": "{{service-id}}"
-						}
-					]
-				},
-				"description": "Return routing information for the spine directory service"
 			},
 			"response": []
 		}

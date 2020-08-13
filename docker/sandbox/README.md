@@ -16,7 +16,7 @@ docker run -p 7000:8080 image_id
 ```
 4. Now you can make your requests, i.e.:
 ```
-http://localhost:7000/routing-reliability
+http://localhost:7000/endpoint
 ```
 #Wiremock:
 You can read about Wiremock stubbing on this site: http://wiremock.org/docs/stubbing/
