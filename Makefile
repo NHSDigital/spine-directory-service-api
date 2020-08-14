@@ -47,10 +47,12 @@ release: clean publish build-proxy
 	mkdir -p dist
 	cp -r build/. dist
 	cp ecs-proxies-deploy.yml dist/ecs-deploy-internal-dev.yml
-#	cp ecs-proxies-deploy.yml dist/ecs-deploy-ref.yml
-#	cp ecs-proxies-deploy.yml dist/ecs-deploy-int.yml
-#	cp ecs-proxies-deploy.yml dist/ecs-deploy-prod.yml
+	cp ecs-proxies-deploy.yml dist/ecs-deploy-internal-qa.yml
+	cp ecs-proxies-deploy-sandbox.yml dist/ecs-deploy-internal-qa-sandbox.yml
 	cp ecs-proxies-deploy-sandbox.yml dist/ecs-deploy-sandbox.yml
+	cp ecs-proxies-deploy.yml dist/ecs-deploy-int.yml
+#	cp ecs-proxies-deploy.yml dist/ecs-deploy-ref.yml
+#	cp ecs-proxies-deploy.yml dist/ecs-deploy-prod.yml
 
 test:
 	echo "TODO: add tests"
