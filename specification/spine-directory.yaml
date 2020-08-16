@@ -68,7 +68,7 @@ paths:
   /endpoint:
     get:
       summary: Request to obtain combined routing and reliability information
-      operationId: getRoutingAndReliabilityInformation
+      operationId: getEndpoint
       description: |
         A handler for requests to obtain combined routing and reliability information.
       parameters:
@@ -88,21 +88,14 @@ paths:
         '200':
           description: search results matching criteria
           content:
-            application/json:
-              schema:
-                allOf:
-                  - $ref: '#/components/schemas/SDS-Routing'
-                  - $ref: '#/components/schemas/SDS-Reliability'
             application/fhir+json:
               schema:
                 allOf:
-                  - $ref: '#/components/schemas/SDS-Routing'
-                  - $ref: '#/components/schemas/SDS-Reliability'
+                  - $ref: '#/components/schemas/Endpoint'
             application/fhir+xml:
               schema:
                 allOf:
-                  - $ref: '#/components/schemas/SDS-Routing'
-                  - $ref: '#/components/schemas/SDS-Reliability'                    
+                  - $ref: '#/components/schemas/Endpoint'
         '400':
           description: bad input parameter
   /healthcheck:
@@ -115,47 +108,102 @@ paths:
           description: The only response this endpoint returns.
 components:
   schemas:
-    SDS-Reliability:
+    Endpoint:
       type: object
+      description: "A FHIR endpoint that will return the routing and reliability information from the spine route lookup"
+      required:
+        - address
+        - status
+        - connectionType
+        - payloadType
       properties:
-        nhsMHSSyncReplyMode:
+        resourceType:
           type: string
-          example: MSHSignalsOnly
-        nhsMHSRetryInterval:
+          description: "FHIR Resource type"
+          example: "Endpoint"
+        id:
           type: string
-          example: PT1M
-        nhsMHSRetries:
-          type: string
-          example: 2
-        nhsMHSPersistDuration:
-          type: string
-          example: PT5M
-        nhsMHSDuplicateElimination:
-          type: string
-          example: always
-        nhsMHSAckRequested:
-          type: string
-          example: always
-    SDS-Routing:
-      type: object
-      properties:
-        nhsMhsFQDN:
-          type: string
-          example: 192.168.128.11
-        nhsMHSEndPoint:
+          format: uuid
+          example: "f0f0e921-92ca-4a88-a550-2dbb36f703af"
+        extension:
           type: array
           items:
-            type: string
-            format: url
-            example: "https://192.168.128.11/reliablemessaging/reliablerequest" 
-        nhsMHSPartyKey: 
-          type: string
-          example: "YES-0000806"
-        nhsMhsCPAId:
-          type: string
-          example: S20001A000182
-        uniqueIdentifier:
+            type: object
+            properties:
+              url:
+                type: string
+              valueString:
+                  type: string
+          example:
+            - url: "nhsMHSSyncReplyMode"
+              valueString: "MSHSignalsOnly"
+            - url: "nhsMHSRetryInterval"
+              valueString: "PT1M"
+            - url: "nhsMHSRetries"
+              valueString: "2"
+            - url: "nhsMHSPersistDuration"
+              valueString: "PT5M"       
+            - url: "nhsMHSDuplicateElimination"
+              valueString: "always"
+            - url: "nhsMHSAckRequested"
+              valueString: "always"
+        identifier:
           type: array
-          items:
-            type: string
-            example: "227319907548"
+          items: 
+            type: object
+            properties:
+              system:
+                type: string
+              value:
+                type: string
+          example:
+            - system: "https://fhir.nhs.uk/Id/nhsEndpointServiceId"
+              value: "urn:nhs:names:services:psis:REPC_IN150016UK0"
+            - system: "https://fhir.nhs.uk/Id/nhsMhsFQD"
+              value: "192.168.128.11"
+            - system: "https://fhir.nhs.uk/Id/nhsMhsEndPoint"
+              value: "https://192.168.128.11/reliablemessaging/reliablerequest"
+            - system: "https://fhir.nhs.uk/Id/nhsMhsPartyKey"
+              value: "R8008-0000806"
+            - system: "https://fhir.nhs.uk/Id/nhsMhsCPAId"
+              value: "S20001A000182"
+            - system: "https://fhir.nhs.uk/Id/nhsSpineASID"
+              value: "227319907548"
+        status:
+          type: string
+          enum:
+            - active
+            - suspended 
+            - error 
+            - off 
+            - entered-in-error 
+            - test
+          example: "active"
+        connectionType:
+          type: string
+        managingOrganization:
+          type: object
+          properties:
+            system:
+              type: string
+              example: "https://fhir.nhs.uk/Id/ods-organization-code"
+            value:
+              type: string
+              example: "R8008"
+        payloadType:
+          type: object
+          properties:
+            system:
+              type: string
+              example: "http://terminology.hl7.org/CodeSystem/endpoint-payload-type"
+            code:
+              type: string
+              example: "any"
+            display:
+              type: string
+              example: "any"
+        address:
+          type: string
+          example: "https://192.168.128.11/"
+      xml:
+        name: Endpoint
