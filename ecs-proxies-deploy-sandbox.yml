@@ -6,6 +6,7 @@ docker_service:
 
   - name: sds-sandbox
     expose: true
+    port: 8080
     health_check:
       matcher: "200"
       path: "/healthcheck"
