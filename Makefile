@@ -34,6 +34,12 @@ check-licenses:
 	npm run check-licenses
 	scripts/check_python_licenses.sh
 
+deploy-proxy: update-examples
+	scripts/deploy_proxy.sh
+
+deploy-spec: update-examples
+	scripts/deploy_spec.sh
+
 format:
 	poetry run black **/*.py
 
