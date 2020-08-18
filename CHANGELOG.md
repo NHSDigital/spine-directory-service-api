@@ -7,3 +7,4 @@
 * Smoke tests added using postman and newman
 * End to End tests added using postman and newman
 * Test apigee proxy
+* Test Sandbox deployment
