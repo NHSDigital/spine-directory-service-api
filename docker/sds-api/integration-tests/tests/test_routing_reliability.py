@@ -7,7 +7,7 @@ from utilities.TestUtils import test_should_return_successful_response, \
 class RoutingAndReliabilityHandlerTests(TestCase):
 
     def test_should_return_successful_response(self):
-        test_should_return_successful_response("routing-reliability", "routing_reliability_response.json")
+        test_should_return_successful_response("routing_reliability_response.json")
 
     def test_should_return_bad_request_when_query_parameters_are_missing(self):
-        test_should_return_bad_request_when_query_parameters_are_missing("routing-reliability")
+        test_should_return_bad_request_when_query_parameters_are_missing()

@@ -4,18 +4,8 @@ SDS_LOG_LEVEL: NOTSET
 SDS_LDAP_URL: ldap://192.168.128.11 #SDS address from OpenTest
 SDS_LDAP_SEARCH_BASE: ou=services,o=nhs
 SDS_LDAP_DISABLE_TLS: "True"
-SDS_REDIS_CACHE_HOST: redis
-#SDS_REDIS_CACHE_PORT: 6379 #optional
-#SDS_CACHE_EXPIRY_TIME: 900 #optional
-SDS_REDIS_DISABLE_TLS: "True"
 SDS_LDAP_CONNECTION_RETRIES: "3"
 SDS_LDAP_LAZY_CONNECTION: "True"
-
-# Optional mock ldap env variables
-#SDS_AWS_PROFILE: nhsd-private # AWS profile from ~/.aws/credentials to be used when downloading LDAP data from S3
-#SDS_LDAP_MOCK_DATA_URL: "file://tmp/mock_ldap_data"
-#SDS_LDAP_MOCK_DATA_URL: "s3://nhsd-integration-adaptors/mock_ldap_data"
-#SDS_FAKE_SPINE_URL: "http://fake-spine/"
 
 #User-specific env variables
 SDS_SECRET_PARTY_KEY: AXXXXX-XXXXXXX #put your party key here (OpenTest)

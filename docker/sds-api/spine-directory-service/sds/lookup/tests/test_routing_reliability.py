@@ -84,9 +84,6 @@ class TestRoutingAndReliability(unittest.TestCase):
 
     @staticmethod
     def _configure_routing_and_reliability():
-        cache = mock.Mock()
-        cache.add_cache_value.return_value = test_utilities.awaitable(None)
-        cache.retrieve_mhs_attributes_value.return_value = test_utilities.awaitable(None)
-        handler = mhs_attribute_lookup.MHSAttributeLookup(mocks.mocked_sds_client(), cache)
+        handler = mhs_attribute_lookup.MHSAttributeLookup(mocks.mocked_sds_client())
         router = rar.RoutingAndReliability(handler)
         return router
