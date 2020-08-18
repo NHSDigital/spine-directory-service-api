@@ -1,6 +1,7 @@
 from request.base_handler import BaseHandler
 from request.content_type_validator import get_valid_accept_type
 from request.http_headers import HttpHeaders
+from request.xml_formatter import get_xml_format
 from utilities import timing, integration_adaptors_logger as log
 
 logger = log.IntegrationAdaptorsLogger(__name__)
@@ -33,5 +34,8 @@ class RoutingReliabilityRequestHandler(BaseHandler):
         logger.info("Combined routing and reliability information. {routing_reliability_information}",
                     fparams={"routing_reliability_information": combined_info})
 
-        self.write(combined_info)
+        if content_type == 'application/fhir+xml':
+            self.write(get_xml_format(combined_info, org_code, service_id))
+        else:
+            self.write(combined_info)
         self.set_header(HttpHeaders.CONTENT_TYPE, content_type)

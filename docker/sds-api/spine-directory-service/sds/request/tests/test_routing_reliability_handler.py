@@ -9,9 +9,44 @@ from request.http_headers import HttpHeaders
 from request.tests import test_request_handler
 from utilities import test_utilities
 
-END_POINT_DETAILS = {"end_point": "http://www.example.com"}
-RELIABILITY_DETAILS = {"retries": 7}
-COMBINED_DETAILS = {"end_point": "http://www.example.com", "retries": 7}
+END_POINT_DETAILS = {
+    "nhsMHSEndPoint": [
+        "https://192.168.128.11/sync-service"
+    ],
+    "nhsMHSPartyKey": "YES-0000806",
+    "nhsMhsCPAId": "S20001A000168",
+    "nhsMhsFQDN": "192.168.128.11",
+    "uniqueIdentifier": [
+        "928942012545"
+    ]
+}
+
+RELIABILITY_DETAILS = {
+    "nhsMHSAckRequested": "never",
+    "nhsMHSDuplicateElimination": "never",
+    "nhsMHSPersistDuration": [],
+    "nhsMHSRetries": [],
+    "nhsMHSRetryInterval": [],
+    "nhsMHSSyncReplyMode": "None"
+}
+
+COMBINED_DETAILS = {
+    "nhsMHSAckRequested": "never",
+    "nhsMHSDuplicateElimination": "never",
+    "nhsMHSEndPoint": [
+        "https://192.168.128.11/sync-service"
+    ],
+    "nhsMHSPartyKey": "YES-0000806",
+    "nhsMHSPersistDuration": [],
+    "nhsMHSRetries": [],
+    "nhsMHSRetryInterval": [],
+    "nhsMHSSyncReplyMode": "None",
+    "nhsMhsCPAId": "S20001A000168",
+    "nhsMhsFQDN": "192.168.128.11",
+    "uniqueIdentifier": [
+        "928942012545"
+    ]
+}
 
 
 class TestRoutingReliabilityRequestHandler(tornado.testing.AsyncHTTPTestCase):

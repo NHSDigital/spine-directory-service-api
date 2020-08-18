@@ -49,15 +49,15 @@ def build_root_element():
 
 
 def build_extension_node(combined_info: Dict):
-    extension_node = etree.Element("extension", url=extension_url)
-    extension_node.append(build_string_extension("nhsMHSSyncReplyMode", array_to_string(combined_info,"nhsMHSSyncReplyMode")))
-    extension_node.append(build_string_extension("nhsMHSRetryInterval", array_to_string(combined_info, "nhsMHSRetryInterval")))
-    extension_node.append(build_integer_extension("nhsMHSRetries", array_to_string(combined_info, "nhsMHSRetries")))
-    extension_node.append(build_string_extension("nhsMHSPersistDuration", array_to_string(combined_info, "nhsMHSPersistDuration")))
-    extension_node.append(build_string_extension("nhsMHSDuplicateElimination", combined_info.get("nhsMHSDuplicateElimination")))
-    extension_node.append(build_string_extension("nhsMHSAckRequested", combined_info.get("nhsMHSAckRequested")))
+    ext = etree.Element("extension", url=extension_url)
+    ext.append(build_string_extension("nhsMHSSyncReplyMode", array_to_string(combined_info, "nhsMHSSyncReplyMode")))
+    ext.append(build_string_extension("nhsMHSRetryInterval", array_to_string(combined_info, "nhsMHSRetryInterval")))
+    ext.append(build_integer_extension("nhsMHSRetries", array_to_string(combined_info, "nhsMHSRetries")))
+    ext.append(build_string_extension("nhsMHSPersistDuration", array_to_string(combined_info, "nhsMHSPersistDuration")))
+    ext.append(build_string_extension("nhsMHSDuplicateElimination", combined_info.get("nhsMHSDuplicateElimination")))
+    ext.append(build_string_extension("nhsMHSAckRequested", combined_info.get("nhsMHSAckRequested")))
 
-    return extension_node
+    return ext
 
 
 def build_string_extension(url: str, value: str):
