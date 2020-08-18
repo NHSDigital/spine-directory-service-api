@@ -39,8 +39,7 @@ def get_xml_format():
 
     root.append(etree.Element("address", value="https://192.168.128.11/"))
 
-    tree = etree.tostring(root, pretty_print=False, xml_declaration=True, encoding="UTF-8")
-    return tree
+    return etree.tostring(root, pretty_print=True, xml_declaration=True, encoding="UTF-8").decode()
 
 
 def build_root_element():

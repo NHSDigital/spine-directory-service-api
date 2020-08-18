@@ -8,7 +8,8 @@ from request.xml_formatter import get_xml_format
 class TestGetXmlFormat(TestCase):
 
     def test_get_xml_format(self):
-        print(get_xml_format())
+        example = open("SDS-Endpoint-Example.xml", "r").read()
+        self.assertEqual(example, get_xml_format())
 
     def test__xml_attributes(self):
         root = etree.fromstring(get_xml_format())
