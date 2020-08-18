@@ -1,3 +1,5 @@
+from typing import Dict
+
 from lxml import etree
 
 schemaLocation_url = "http://www.w3.org/2001/XMLSchema-instance"
@@ -16,45 +18,45 @@ managing_organization_url = "https://fhir.nhs.uk/Id/ods-organization-code"
 payload_type_url = "http://terminology.hl7.org/CodeSystem/endpoint-payload-type"
 
 
-def get_xml_format():
+def get_xml_format(combined_info: Dict, org_code: str, service_id: str):
     root = build_root_element()
     root.append(etree.Element("id", value="f0f0e921-92ca-4a88-a550-2dbb36f703af"))
-    root.append(build_extension_node())
+    root.append(build_extension_node(combined_info))
     root.append(build_comment("NhsEndpointServiceId"))
-    root.append(build_identifier_node(nhs_endpoint_serviceId_url, "urn:nhs:names:services:psis:REPC_IN150016UK05"))
+    root.append(build_identifier_node(nhs_endpoint_serviceId_url, service_id))
     root.append(build_comment("NhsMhsFQDN"))
-    root.append(build_identifier_node(nhs_mhs_fqdn_url, "192.168.128.11"))
+    root.append(build_identifier_node(nhs_mhs_fqdn_url, combined_info.get("nhsMhsFQDN")))
     root.append(build_comment("NhsMhsEndPoint"))
-    root.append(build_identifier_node(nhs_mhs_endpoint_url, "https://192.168.128.11/reliablemessaging/reliablerequest"))
+    root.append(build_identifier_node(nhs_mhs_endpoint_url, array_to_string(combined_info, "nhsMHSEndPoint")))
     root.append(build_comment("NhsMhsPartyKey"))
-    root.append(build_identifier_node(nhs_mhs_partykey_url, "R8008-0000806"))
+    root.append(build_identifier_node(nhs_mhs_partykey_url, combined_info.get("nhsMHSPartyKey")))
     root.append(build_comment("NhsMhsCPAId"))
-    root.append(build_identifier_node(nhs_mhs_cpaid_url, "S20001A000182"))
+    root.append(build_identifier_node(nhs_mhs_cpaid_url, combined_info.get("nhsMhsCPAId")))
     root.append(build_comment("NhsSpineASID"))
-    root.append(build_identifier_node(nhs_spine_asid_url, "227319907548"))
+    root.append(build_identifier_node(nhs_spine_asid_url, array_to_string(combined_info, "uniqueIdentifier")))
     root.append(etree.Element("status", value="active"))
     root.append(build_connection_type(connection_type_url, "hl7-fhir-msg", "HL7 FHIR Messaging"))
-    root.append(build_managing_organization(managing_organization_url, "R8008"))
+    root.append(build_managing_organization(managing_organization_url, org_code))
     root.append(build_payload_type(payload_type_url, "any", "Any"))
-
-    root.append(etree.Element("address", value="https://192.168.128.11/"))
+    root.append(build_address(combined_info.get("nhsMhsFQDN")))
 
     return etree.tostring(root, pretty_print=True, xml_declaration=True, encoding="UTF-8").decode()
 
 
 def build_root_element():
     attr_qname = etree.QName(schemaLocation_url, "schemaLocation")
-    return etree.Element("Endpoint", {attr_qname: attr_qname_url}, nsmap={None: default_url, 'xsi': xsi_url})
+    return etree.Element("Endpoint", {attr_qname: attr_qname_url}, nsmap={None: default_url, "xsi": xsi_url})
 
 
-def build_extension_node():
-    extension_node = etree.Element('extension', url=extension_url)
-    extension_node.append(build_string_extension("nhsMHSSyncReplyMode", "MSHSignalsOnly"))
-    extension_node.append(build_string_extension("nhsMHSRetryInterval", "PT1M"))
-    extension_node.append(build_integer_extension("nhsMHSRetries", "2"))
-    extension_node.append(build_string_extension("nhsMHSPersistDuration", "PT5M"))
-    extension_node.append(build_string_extension("nhsMHSDuplicateElimination", "always"))
-    extension_node.append(build_string_extension("nhsMHSAckRequested", "always"))
+def build_extension_node(combined_info: Dict):
+    extension_node = etree.Element("extension", url=extension_url)
+    extension_node.append(build_string_extension("nhsMHSSyncReplyMode", array_to_string(combined_info,"nhsMHSSyncReplyMode")))
+    extension_node.append(build_string_extension("nhsMHSRetryInterval", array_to_string(combined_info, "nhsMHSRetryInterval")))
+    extension_node.append(build_integer_extension("nhsMHSRetries", array_to_string(combined_info, "nhsMHSRetries")))
+    extension_node.append(build_string_extension("nhsMHSPersistDuration", array_to_string(combined_info, "nhsMHSPersistDuration")))
+    extension_node.append(build_string_extension("nhsMHSDuplicateElimination", combined_info.get("nhsMHSDuplicateElimination")))
+    extension_node.append(build_string_extension("nhsMHSAckRequested", combined_info.get("nhsMHSAckRequested")))
+
     return extension_node
 
 
@@ -71,18 +73,18 @@ def build_integer_extension(url: str, value: str):
 
 
 def build_comment(comment: str):
-    return etree.Comment(" " + comment + " ")
+    return etree.Comment(" {} ".format(comment))
 
 
 def build_identifier_node(system_value: str, value_value: str):
-    identifier_node = etree.Element('identifier')
+    identifier_node = etree.Element("identifier")
     identifier_node.append(etree.SubElement(identifier_node, "system", value=system_value))
     identifier_node.append(etree.SubElement(identifier_node, "value", value=value_value))
     return identifier_node
 
 
 def build_connection_type(system_value: str, code_value: str, display_value: str):
-    connection_type = etree.Element('connectionType')
+    connection_type = etree.Element("connectionType")
     connection_type.append(etree.SubElement(connection_type, "system", value=system_value))
     connection_type.append(etree.SubElement(connection_type, "code", value=code_value))
     connection_type.append(etree.SubElement(connection_type, "display", value=display_value))
@@ -90,16 +92,25 @@ def build_connection_type(system_value: str, code_value: str, display_value: str
 
 
 def build_managing_organization(system_value: str, value_value: str):
-    managing_organization = etree.Element('managingOrganization')
+    managing_organization = etree.Element("managingOrganization")
     managing_organization.append(build_identifier_node(system_value, value_value))
     return managing_organization
 
 
 def build_payload_type(system_value: str, code_value: str, display_value: str):
-    payload_type = etree.Element('payloadType')
-    coding = etree.Element('coding')
+    payload_type = etree.Element("payloadType")
+    coding = etree.Element("coding")
     coding.append(etree.SubElement(coding, "system", value=system_value))
     coding.append(etree.SubElement(coding, "code", value=code_value))
     coding.append(etree.SubElement(coding, "display", value=display_value))
     payload_type.append(coding)
     return payload_type
+
+
+def build_address(value: str):
+    address = etree.Element("address", value="https://{}/".format(value))
+    return address
+
+
+def array_to_string(combined_info: Dict, key: str):
+    return str(combined_info.get(key)).strip("['']")
