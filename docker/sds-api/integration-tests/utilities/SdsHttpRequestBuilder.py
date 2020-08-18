@@ -6,11 +6,10 @@ from requests import Response
 
 
 class SdsHttpRequestBuilder(object):
-    def __init__(self, path):
+    def __init__(self):
         self.headers = {}
         self.query_params = {}
-        self.path = path
-        self.sds_host = os.environ.get('SDS_ADDRESS', 'http://localhost:9000') + "/"
+        self.sds_host = os.environ.get('SDS_ADDRESS', 'http://localhost:9000/endpoint')
         self.assertions = unittest.TestCase('__init__')
 
     def with_org_code(self, org_code: str):
@@ -50,4 +49,4 @@ class SdsHttpRequestBuilder(object):
         return response
 
     def _execute_request(self) -> Response:
-        return requests.get(self.sds_host + self.path, params=self.query_params, headers=self.headers, verify=False, timeout=15)
+        return requests.get(self.sds_host, params=self.query_params, headers=self.headers, verify=False, timeout=15)
