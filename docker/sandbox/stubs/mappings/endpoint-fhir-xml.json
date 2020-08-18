@@ -4,15 +4,15 @@
     "urlPathPattern": "/endpoint.*",
     "headers": {
       "Accept": {
-        "equalTo": "application/fhir+json"
+        "equalTo": "application/fhir+xml"
       }
     }
   },
   "response": {
     "status": 200,
-    "bodyFileName": "sds-routing-reliability.json",
+    "bodyFileName": "sds-routing-reliability-fhir-xml.xml",
     "headers": {
-      "Content-Type": "application/fhir+json"
+      "Content-Type": "application/fhir+xml"
     }
   }
 }
