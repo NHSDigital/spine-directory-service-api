@@ -11,7 +11,8 @@ def read_tracking_id_headers(headers: HTTPHeaders):
 
 
 def _extract_correlation_id(headers: HTTPHeaders):
-    correlation_id = headers.get(HttpHeaders.CORRELATION_ID, None)
+    correlation_id = headers.get(HttpHeaders.CORRELATION_ID, headers.get(HttpHeaders.X_CORRELATION_ID, None))
+
     if not correlation_id:
         correlation_id = message_utilities.get_uuid()
         logger.info(f"Missing correlation id in incoming request. Assigning new one: {correlation_id}")

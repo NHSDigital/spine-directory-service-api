@@ -10,16 +10,16 @@ To be able to use it, three json configuration files has to be present:
 # Downloading real LDAP configuration
 
 Although LDAP configuration is already available on NHSD S3 bucket `nhsd-integration-adaptors` in
-`mock_ldap_data` folder, you can still easily download new configuration from real OpenTest LDAP server. 
-To do so, navigate to: 
+`mock_ldap_data` folder, you can still easily download new configuration from real OpenTest LDAP server.
+To do so, navigate to:
 
-`mhs/spineroutelookup/lookup` 
+`docker/sds-api/spine-directory-service/sds/lookup`
 
-launch 
+launch
 
 `pipenv shell`
 
-run 
+run
 
 `python sds_mock_connection_factory.py <output_path>`
 
@@ -31,8 +31,8 @@ where
 
 To enable LDAP mock, environment variable `SDS_LDAP_MOCK_DATA_URL` have to be set to one of supported values (more information below)
 
-Running Spine Route Lookup with mock LDAP enabled, will download 3 config files from given location 
-to local `mhs/spineroutelookup/mock_ldap_data` folder (ignored in git) and use the data to feed the mock LDAP 
+Running Spine Route Lookup with mock LDAP enabled, will download 3 config files from given location
+to local `docker/sds-api/spine-directory-service/sds/mock_ldap_data` folder (ignored in git) and use the data to feed the mock LDAP
 
 There is another optional variable `SDS_FAKE_SPINE_URL` which value is used to replace LDAP configuration to point to the desired Spine server instead of real one.
 For example:
