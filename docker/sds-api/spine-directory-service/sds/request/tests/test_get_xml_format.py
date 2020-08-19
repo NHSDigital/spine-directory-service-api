@@ -26,5 +26,5 @@ COMBINED_INFO = {
 class TestGetXmlFormat(TestCase):
 
     def test_get_xml_format(self):
-        example = open("SDS-Endpoint-Example.xml", "r").read()
+        example = open("examples/SDS-Endpoint-Example.xml", "r").read()
         self.assertEqual(example, get_xml_format(COMBINED_INFO, ORG_CODE, SERVICE_ID))
