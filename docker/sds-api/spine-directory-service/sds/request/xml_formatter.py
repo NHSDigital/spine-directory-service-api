@@ -2,20 +2,7 @@ from typing import Dict
 
 from lxml import etree
 
-schemaLocation_url = "http://www.w3.org/2001/XMLSchema-instance"
-attr_qname_url = "http://hl7.org/fhir file:///C:/Validation-Assets-R4/Schemas/fhir-all-xsd/fhir-all.xsd"
-default_url = "http://hl7.org/fhir"
-xsi_url = "http://www.w3.org/2001/XMLSchema-instance"
-extension_url = "https://fhir.nhs.uk/R4/StructureDefinition/Extension-SDS-ReliabilityConfiguration"
-nhs_endpoint_serviceId_url = "https://fhir.nhs.uk/Id/nhsEndpointServiceId"
-nhs_mhs_fqdn_url = "https://fhir.nhs.uk/Id/nhsMhsFQDN"
-nhs_mhs_endpoint_url = "https://fhir.nhs.uk/Id/nhsMhsEndPoint"
-nhs_mhs_partykey_url = "https://fhir.nhs.uk/Id/nhsMhsPartyKey"
-nhs_mhs_cpaid_url = "https://fhir.nhs.uk/Id/nhsMhsCPAId"
-nhs_spine_asid_url = "https://fhir.nhs.uk/Id/nhsSpineASID"
-connection_type_url = "http://terminology.hl7.org/CodeSystem/endpoint-connection-type"
-managing_organization_url = "https://fhir.nhs.uk/Id/ods-organization-code"
-payload_type_url = "http://terminology.hl7.org/CodeSystem/endpoint-payload-type"
+from request.formatter_urls import FormatterUrls as Url
 
 
 def get_xml_format(combined_info: Dict, org_code: str, service_id: str):
@@ -25,33 +12,34 @@ def get_xml_format(combined_info: Dict, org_code: str, service_id: str):
     root.append(etree.Element("id", value="f0f0e921-92ca-4a88-a550-2dbb36f703af"))
     root.append(build_extension_node(combined_info))
     root.append(build_comment("NhsEndpointServiceId"))
-    root.append(build_identifier_node(nhs_endpoint_serviceId_url, service_id))
+    root.append(build_identifier_node(Url.NHS_ENDPOINT_SERVICE_ID_URL, service_id))
     root.append(build_comment("NhsMhsFQDN"))
-    root.append(build_identifier_node(nhs_mhs_fqdn_url, combined_info.get("nhsMhsFQDN")))
+    root.append(build_identifier_node(Url.NHS_MHS_FQDN_URL, combined_info.get("nhsMhsFQDN")))
     root.append(build_comment("NhsMhsEndPoint"))
-    root.append(build_identifier_node(nhs_mhs_endpoint_url, array_to_string(combined_info, "nhsMHSEndPoint")))
+    root.append(build_identifier_node(Url.NHS_MHS_ENDPOINT_URL, array_to_string(combined_info, "nhsMHSEndPoint")))
     root.append(build_comment("NhsMhsPartyKey"))
-    root.append(build_identifier_node(nhs_mhs_partykey_url, combined_info.get("nhsMHSPartyKey")))
+    root.append(build_identifier_node(Url.NHS_MHS_PARTYKEY_URL, combined_info.get("nhsMHSPartyKey")))
     root.append(build_comment("NhsMhsCPAId"))
-    root.append(build_identifier_node(nhs_mhs_cpaid_url, combined_info.get("nhsMhsCPAId")))
+    root.append(build_identifier_node(Url.NHS_MHS_CPAID_URL, combined_info.get("nhsMhsCPAId")))
     root.append(build_comment("NhsSpineASID"))
-    root.append(build_identifier_node(nhs_spine_asid_url, array_to_string(combined_info, "uniqueIdentifier")))
+    root.append(build_identifier_node(Url.NHS_SPINE_ASID_URL, array_to_string(combined_info, "uniqueIdentifier")))
     root.append(etree.Element("status", value="active"))
-    root.append(build_connection_type(connection_type_url, "hl7-fhir-msg", "HL7 FHIR Messaging"))
-    root.append(build_managing_organization(managing_organization_url, org_code))
-    root.append(build_payload_type(payload_type_url, "any", "Any"))
+    root.append(build_connection_type(Url.CONNECTION_TYPE_URL, "hl7-fhir-msg", "HL7 FHIR Messaging"))
+    root.append(build_managing_organization(Url.MANAGING_ORGANIZATION_URL, org_code))
+    root.append(build_payload_type(Url.PAYLOAD_TYPE_URL, "any", "Any"))
     root.append(build_address(combined_info.get("nhsMhsFQDN")))
 
     return etree.tostring(root, pretty_print=True, xml_declaration=True, encoding="UTF-8").decode()
 
 
 def build_root_element():
-    attr_qname = etree.QName(schemaLocation_url, "schemaLocation")
-    return etree.Element("Endpoint", {attr_qname: attr_qname_url}, nsmap={None: default_url, "xsi": xsi_url})
+    attr_qname = etree.QName(Url.SCHEMA_LOCATION_URL, "schemaLocation")
+    return etree.Element("Endpoint", {attr_qname: Url.ATTR_QNAME_URL},
+                         nsmap={None: Url.DEFAULT_URL, "xsi": Url.XSI_URL})
 
 
 def build_extension_node(combined_info: Dict):
-    ext = etree.Element("extension", url=extension_url)
+    ext = etree.Element("extension", url=Url.EXTENSION_URL)
     ext.append(build_string_extension("nhsMHSSyncReplyMode", array_to_string(combined_info, "nhsMHSSyncReplyMode")))
     ext.append(build_string_extension("nhsMHSRetryInterval", array_to_string(combined_info, "nhsMHSRetryInterval")))
     ext.append(build_integer_extension("nhsMHSRetries", array_to_string(combined_info, "nhsMHSRetries")))
