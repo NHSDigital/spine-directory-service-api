@@ -23,7 +23,7 @@ COMBINED_INFO = {
 }
 
 
-class TestGetXmlFormat(TestCase):
+class TestGetJsonFormat(TestCase):
 
     def test_get_json_format(self):
         example = open("examples/SDS-Endpoint-Example.json", "r").read()
