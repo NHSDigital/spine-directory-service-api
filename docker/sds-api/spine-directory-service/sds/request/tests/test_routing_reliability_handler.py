@@ -1,8 +1,10 @@
 import json
 import unittest.mock
 
+import lxml
 import tornado.testing
 import tornado.web
+from lxml import etree
 
 from request import routing_reliability_handler
 from request.http_headers import HttpHeaders
@@ -32,6 +34,7 @@ RELIABILITY_DETAILS = {
 
 
 class TestRoutingReliabilityRequestHandler(tornado.testing.AsyncHTTPTestCase):
+
     def get_app(self):
         self.routing = unittest.mock.Mock()
 
@@ -91,9 +94,12 @@ class TestRoutingReliabilityRequestHandler(tornado.testing.AsyncHTTPTestCase):
             self.routing.get_end_point.return_value = test_utilities.awaitable(END_POINT_DETAILS)
             self.routing.get_reliability.return_value = test_utilities.awaitable(RELIABILITY_DETAILS)
             response = self.fetch(test_request_handler.build_url(), method="GET")
-            # check body?
+
+            json_body = json.loads(response.body)
+            expected = open("examples/routing_reliability_result.json", "r").read()
 
             self.assertEqual(response.code, 200)
+            self.assertEqual(expected, json.dumps(json_body, indent=2))
             self.assertEqual(response.headers.get(HttpHeaders.CONTENT_TYPE, None), "application/json")
 
         with self.subTest("Accept header is application/fhir+json"):
@@ -101,9 +107,12 @@ class TestRoutingReliabilityRequestHandler(tornado.testing.AsyncHTTPTestCase):
             self.routing.get_end_point.return_value = test_utilities.awaitable(END_POINT_DETAILS)
             self.routing.get_reliability.return_value = test_utilities.awaitable(RELIABILITY_DETAILS)
             response = self.fetch(test_request_handler.build_url(), method="GET", headers=headers)
-            # check body?
+
+            json_body = json.loads(response.body)
+            expected = open("examples/routing_reliability_result.json", "r").read()
 
             self.assertEqual(response.code, 200)
+            self.assertEqual(expected, json.dumps(json_body, indent=2))
             self.assertEqual(response.headers.get(HttpHeaders.CONTENT_TYPE, None), "application/fhir+json")
 
         with self.subTest("Accept header is application/fhir+xml"):
@@ -111,9 +120,12 @@ class TestRoutingReliabilityRequestHandler(tornado.testing.AsyncHTTPTestCase):
             self.routing.get_end_point.return_value = test_utilities.awaitable(END_POINT_DETAILS)
             self.routing.get_reliability.return_value = test_utilities.awaitable(RELIABILITY_DETAILS)
             response = self.fetch(test_request_handler.build_url(), method="GET", headers=headers)
-            # check body?
+
+            body_xml = etree.tostring(lxml.etree.fromstring(response.body))
+            expected = etree.tostring(etree.parse("examples/routing_reliability_result.xml"))
 
             self.assertEqual(response.code, 200)
+            self.assertEqual(expected, body_xml)
             self.assertEqual(response.headers.get(HttpHeaders.CONTENT_TYPE, None), "application/fhir+xml")
 
         with self.subTest("Accept header is invalid"):
