@@ -21,7 +21,7 @@ payload_type_url = "http://terminology.hl7.org/CodeSystem/endpoint-payload-type"
 def get_xml_format(combined_info: Dict, org_code: str, service_id: str):
     # should we care about missing fields / nulls in combined_info dict?
     root = build_root_element()
-    # what about this ID:
+    # what about this ID?
     root.append(etree.Element("id", value="f0f0e921-92ca-4a88-a550-2dbb36f703af"))
     root.append(build_extension_node(combined_info))
     root.append(build_comment("NhsEndpointServiceId"))

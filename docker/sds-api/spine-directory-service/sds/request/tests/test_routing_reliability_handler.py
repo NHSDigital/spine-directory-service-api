@@ -30,24 +30,6 @@ RELIABILITY_DETAILS = {
     "nhsMHSSyncReplyMode": "None"
 }
 
-COMBINED_DETAILS = {
-    "nhsMHSAckRequested": "never",
-    "nhsMHSDuplicateElimination": "never",
-    "nhsMHSEndPoint": [
-        "https://192.168.128.11/sync-service"
-    ],
-    "nhsMHSPartyKey": "YES-0000806",
-    "nhsMHSPersistDuration": [],
-    "nhsMHSRetries": [],
-    "nhsMHSRetryInterval": [],
-    "nhsMHSSyncReplyMode": "None",
-    "nhsMhsCPAId": "S20001A000168",
-    "nhsMhsFQDN": "192.168.128.11",
-    "uniqueIdentifier": [
-        "928942012545"
-    ]
-}
-
 
 class TestRoutingReliabilityRequestHandler(tornado.testing.AsyncHTTPTestCase):
     def get_app(self):
@@ -62,9 +44,11 @@ class TestRoutingReliabilityRequestHandler(tornado.testing.AsyncHTTPTestCase):
         self.routing.get_reliability.return_value = test_utilities.awaitable(RELIABILITY_DETAILS)
 
         response = self.fetch(test_request_handler.build_url(), method="GET")
+        json_body = json.loads(response.body)
+        expected = open("examples/routing_reliability_result.json", "r").read()
 
         self.assertEqual(response.code, 200)
-        self.assertEqual(COMBINED_DETAILS, json.loads(response.body))
+        self.assertEqual(expected, json.dumps(json_body, indent=2))
         self.assertEqual(response.headers.get(HttpHeaders.CONTENT_TYPE, None), "application/json")
         self.routing.get_end_point.assert_called_with(test_request_handler.ORG_CODE, test_request_handler.SERVICE_ID)
         self.routing.get_reliability.assert_called_with(test_request_handler.ORG_CODE, test_request_handler.SERVICE_ID)
@@ -107,6 +91,7 @@ class TestRoutingReliabilityRequestHandler(tornado.testing.AsyncHTTPTestCase):
             self.routing.get_end_point.return_value = test_utilities.awaitable(END_POINT_DETAILS)
             self.routing.get_reliability.return_value = test_utilities.awaitable(RELIABILITY_DETAILS)
             response = self.fetch(test_request_handler.build_url(), method="GET")
+            # check body?
 
             self.assertEqual(response.code, 200)
             self.assertEqual(response.headers.get(HttpHeaders.CONTENT_TYPE, None), "application/json")
@@ -116,6 +101,7 @@ class TestRoutingReliabilityRequestHandler(tornado.testing.AsyncHTTPTestCase):
             self.routing.get_end_point.return_value = test_utilities.awaitable(END_POINT_DETAILS)
             self.routing.get_reliability.return_value = test_utilities.awaitable(RELIABILITY_DETAILS)
             response = self.fetch(test_request_handler.build_url(), method="GET", headers=headers)
+            # check body?
 
             self.assertEqual(response.code, 200)
             self.assertEqual(response.headers.get(HttpHeaders.CONTENT_TYPE, None), "application/fhir+json")
@@ -125,6 +111,7 @@ class TestRoutingReliabilityRequestHandler(tornado.testing.AsyncHTTPTestCase):
             self.routing.get_end_point.return_value = test_utilities.awaitable(END_POINT_DETAILS)
             self.routing.get_reliability.return_value = test_utilities.awaitable(RELIABILITY_DETAILS)
             response = self.fetch(test_request_handler.build_url(), method="GET", headers=headers)
+            # check body?
 
             self.assertEqual(response.code, 200)
             self.assertEqual(response.headers.get(HttpHeaders.CONTENT_TYPE, None), "application/fhir+xml")

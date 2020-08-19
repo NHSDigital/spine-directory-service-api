@@ -1,6 +1,7 @@
 from request.base_handler import BaseHandler
 from request.content_type_validator import get_valid_accept_type
 from request.http_headers import HttpHeaders
+from request.json_formatter import get_json_format
 from request.xml_formatter import get_xml_format
 from utilities import timing, integration_adaptors_logger as log
 
@@ -37,5 +38,5 @@ class RoutingReliabilityRequestHandler(BaseHandler):
         if content_type == 'application/fhir+xml':
             self.write(get_xml_format(combined_info, org_code, service_id))
         else:
-            self.write(combined_info)
+            self.write(get_json_format(combined_info, org_code, service_id))
         self.set_header(HttpHeaders.CONTENT_TYPE, content_type)
