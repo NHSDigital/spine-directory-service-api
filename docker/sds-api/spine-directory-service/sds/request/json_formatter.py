@@ -2,11 +2,12 @@ import json
 from typing import Dict
 
 from request.formatter_urls import FormatterUrls as Url
+from utilities import message_utilities
 
 
 def get_json_format(combined_info: Dict, org_code: str, service_id: str):
     output = {"resourceType": "Endpoint"}
-    output.update({"id": "f0f0e921-92ca-4a88-a550-2dbb36f703af"})
+    output.update({"id": message_utilities.get_uuid()})
     output.update({"extension": build_extension_array(combined_info)})
     output.update({"identifier": build_identifier_array(combined_info, service_id)})
     output.update({"status": "active"})

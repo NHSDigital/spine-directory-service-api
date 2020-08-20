@@ -10,8 +10,10 @@ from lxml import etree
 from request import routing_reliability_handler
 from request.http_headers import HttpHeaders
 from request.tests import test_request_handler
+from utilities import message_utilities
 from utilities import test_utilities
 
+FIXED_UUID = "f0f0e921-92ca-4a88-a550-2dbb36f703af"
 END_POINT_DETAILS = {
     "nhsMHSEndPoint": [
         "https://192.168.128.11/sync-service"
@@ -50,10 +52,11 @@ class TestRoutingReliabilityRequestHandler(tornado.testing.AsyncHTTPTestCase):
         response = self.fetch(test_request_handler.build_url(), method="GET")
         json_body = json.loads(response.body)
         expected = open("examples/routing_reliability_result.json", "r").read()
+        json_with_fixed_uuid = message_utilities.replace_uuid(json.dumps(json_body, indent=2), FIXED_UUID)
 
         self.endpoint_resource_validation(json_body)
         self.assertEqual(response.code, 200)
-        self.assertEqual(expected, json.dumps(json_body, indent=2))
+        self.assertEqual(expected, json_with_fixed_uuid)
         self.assertEqual(response.headers.get(HttpHeaders.CONTENT_TYPE, None), "application/json")
         self.routing.get_end_point.assert_called_with(test_request_handler.ORG_CODE, test_request_handler.SERVICE_ID)
         self.routing.get_reliability.assert_called_with(test_request_handler.ORG_CODE, test_request_handler.SERVICE_ID)
@@ -99,9 +102,10 @@ class TestRoutingReliabilityRequestHandler(tornado.testing.AsyncHTTPTestCase):
 
             json_body = json.loads(response.body)
             expected = open("examples/routing_reliability_result.json", "r").read()
+            json_with_fixed_uuid = message_utilities.replace_uuid(json.dumps(json_body, indent=2), FIXED_UUID)
 
             self.assertEqual(response.code, 200)
-            self.assertEqual(expected, json.dumps(json_body, indent=2))
+            self.assertEqual(expected, json_with_fixed_uuid)
             self.assertEqual(response.headers.get(HttpHeaders.CONTENT_TYPE, None), "application/json")
 
         with self.subTest("Accept header is application/fhir+json"):
@@ -112,9 +116,10 @@ class TestRoutingReliabilityRequestHandler(tornado.testing.AsyncHTTPTestCase):
 
             json_body = json.loads(response.body)
             expected = open("examples/routing_reliability_result.json", "r").read()
+            json_with_fixed_uuid = message_utilities.replace_uuid(json.dumps(json_body, indent=2), FIXED_UUID)
 
             self.assertEqual(response.code, 200)
-            self.assertEqual(expected, json.dumps(json_body, indent=2))
+            self.assertEqual(expected, json_with_fixed_uuid)
             self.assertEqual(response.headers.get(HttpHeaders.CONTENT_TYPE, None), "application/fhir+json")
 
         with self.subTest("Accept header is application/fhir+xml"):
@@ -123,7 +128,8 @@ class TestRoutingReliabilityRequestHandler(tornado.testing.AsyncHTTPTestCase):
             self.routing.get_reliability.return_value = test_utilities.awaitable(RELIABILITY_DETAILS)
             response = self.fetch(test_request_handler.build_url(), method="GET", headers=headers)
 
-            body_xml = etree.tostring(lxml.etree.fromstring(response.body))
+            body_with_fixed_uuid = message_utilities.replace_uuid(response.body.decode(), FIXED_UUID)
+            body_xml = etree.tostring(lxml.etree.fromstring(body_with_fixed_uuid))
             expected = etree.tostring(etree.parse("examples/routing_reliability_result.xml"))
 
             self.assertEqual(response.code, 200)
