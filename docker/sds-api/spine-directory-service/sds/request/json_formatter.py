@@ -11,9 +11,9 @@ def get_json_format(combined_info: Dict, org_code: str, service_id: str):
     output.update({"extension": build_extension_array(combined_info)})
     output.update({"identifier": build_identifier_array(combined_info, service_id)})
     output.update({"status": "active"})
-    output.update({"connectionType": "string"})
-    output.update({"managingOrganization": build_managing_organization(Url.MANAGING_ORGANIZATION_URL, org_code)})
-    output.update({"payloadType": build_payload_type(Url.PAYLOAD_TYPE_URL, "any", "any")})
+    output.update({"connectionType": build_connection_type()})
+    output.update({"managingOrganization": build_managing_organization(org_code)})
+    output.update({"payloadType": build_payload_type()})
     output.update({"address": build_address(combined_info.get("nhsMhsFQDN"))})
 
     return json.dumps(output, indent=2)
@@ -55,19 +55,33 @@ def build_identifier_dict(system: str, value: str):
     }
 
 
-def build_managing_organization(system_value: str, value_value: str):
+def build_connection_type():
     return {
-        "system": system_value,
-        "value": value_value
+        "system": Url.CONNECTION_TYPE_URL,
+        "code": "hl7-fhir-msg",
+        "display": "HL7 FHIR Messaging"
     }
 
 
-def build_payload_type(system_value: str, code_value: str, display_value: str):
+def build_managing_organization(value_value: str):
     return {
-        "system": system_value,
-        "code": code_value,
-        "display": display_value
+        "reference": Url.MANAGING_ORGANIZATION_URL,
+        "display": value_value
     }
+
+
+def build_payload_type():
+    return [
+        {
+            "coding": [
+                {
+                    "system": Url.PAYLOAD_TYPE_URL,
+                    "code": "any",
+                    "display": "any"
+                }
+            ]
+        }
+    ]
 
 
 def build_address(value: str):

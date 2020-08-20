@@ -1,6 +1,7 @@
 import json
 import unittest.mock
 
+import fhirclient.models.endpoint as endpoint
 import lxml
 import tornado.testing
 import tornado.web
@@ -50,6 +51,7 @@ class TestRoutingReliabilityRequestHandler(tornado.testing.AsyncHTTPTestCase):
         json_body = json.loads(response.body)
         expected = open("examples/routing_reliability_result.json", "r").read()
 
+        self.endpoint_resource_validation(json_body)
         self.assertEqual(response.code, 200)
         self.assertEqual(expected, json.dumps(json_body, indent=2))
         self.assertEqual(response.headers.get(HttpHeaders.CONTENT_TYPE, None), "application/json")
@@ -135,3 +137,6 @@ class TestRoutingReliabilityRequestHandler(tornado.testing.AsyncHTTPTestCase):
             response = self.fetch(test_request_handler.build_url(), method="GET", headers=headers)
 
             self.assertEqual(response.code, 400)
+
+    def endpoint_resource_validation(self, json_body: dict):
+        endpoint.Endpoint(json_body)
