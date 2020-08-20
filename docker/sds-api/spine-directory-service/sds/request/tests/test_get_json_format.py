@@ -22,9 +22,26 @@ COMBINED_INFO = {
     ]
 }
 
+COMBINED_INFO_EMPTY = {
+    "nhsMHSAckRequested": "",
+    "nhsMHSDuplicateElimination": "",
+    "nhsMHSEndPoint": [],
+    "nhsMHSPartyKey": "",
+    "nhsMHSPersistDuration": [],
+    "nhsMHSRetries": [],
+    "nhsMHSRetryInterval": [],
+    "nhsMHSSyncReplyMode": "",
+    "nhsMhsCPAId": "",
+    "nhsMhsFQDN": "",
+    "uniqueIdentifier": []
+}
+
 
 class TestGetJsonFormat(TestCase):
 
     def test_get_json_format(self):
         example = open("examples/SDS-Endpoint-Example.json", "r").read()
         self.assertEqual(example, get_json_format(COMBINED_INFO, ORG_CODE, SERVICE_ID))
+
+    def test_get_json_format_with_empty_values_throws_no_exception(self):
+        get_json_format(COMBINED_INFO_EMPTY, ORG_CODE, SERVICE_ID)
