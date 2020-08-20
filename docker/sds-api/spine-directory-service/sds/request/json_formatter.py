@@ -6,7 +6,6 @@ from request.formatter_urls import FormatterUrls as Url
 
 def get_json_format(combined_info: Dict, org_code: str, service_id: str):
     output = {"resourceType": "Endpoint"}
-    # what about this ID?
     output.update({"id": "f0f0e921-92ca-4a88-a550-2dbb36f703af"})
     output.update({"extension": build_extension_array(combined_info)})
     output.update({"identifier": build_identifier_array(combined_info, service_id)})
