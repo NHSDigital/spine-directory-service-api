@@ -3,7 +3,7 @@ from unittest import TestCase
 from request.json_formatter import get_json_format
 
 ORG_CODE = "R8008"
-SERVICE_ID = "urn:nhs:names:services:psis:REPC_IN150016UK0"
+SERVICE_ID = "urn:nhs:names:services:psis:REPC_IN150016UK05"
 COMBINED_INFO = {
     "nhsMHSAckRequested": "always",
     "nhsMHSDuplicateElimination": "always",

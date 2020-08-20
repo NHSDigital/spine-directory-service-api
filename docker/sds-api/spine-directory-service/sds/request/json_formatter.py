@@ -14,41 +14,50 @@ def get_json_format(combined_info: Dict, org_code: str, service_id: str):
     output.update({"connectionType": build_connection_type()})
     output.update({"managingOrganization": build_managing_organization(org_code)})
     output.update({"payloadType": build_payload_type()})
-    output.update({"address": build_address(combined_info.get("nhsMhsFQDN"))})
+    output.update({"address": array_to_string(combined_info, "nhsMHSEndPoint")})
 
     return json.dumps(output, indent=2)
 
 
 def build_extension_array(combined_info: Dict):
-    return [
-        build_extension_dict("nhsMHSSyncReplyMode", "nhsMHSSyncReplyMode", combined_info),
-        build_extension_dict("nhsMHSRetryInterval", "nhsMHSRetryInterval", combined_info),
-        build_extension_dict("nhsMHSRetries", "nhsMHSRetries", combined_info),
-        build_extension_dict("nhsMHSPersistDuration", "nhsMHSPersistDuration", combined_info),
-        build_extension_dict("nhsMHSDuplicateElimination", "nhsMHSDuplicateElimination", combined_info),
-        build_extension_dict("nhsMHSAckRequested", "nhsMHSAckRequested", combined_info)
-    ]
+    return [{
+        "url": Url.EXTENSION_URL,
+        "extension": [
+            build_extension("nhsMHSSyncReplyMode", "nhsMHSSyncReplyMode", combined_info),
+            build_extension("nhsMHSRetryInterval", "nhsMHSRetryInterval", combined_info),
+            build_int_extension("nhsMHSRetries", "nhsMHSRetries", combined_info),
+            build_extension("nhsMHSPersistDuration", "nhsMHSPersistDuration", combined_info),
+            build_extension("nhsMHSDuplicateElimination", "nhsMHSDuplicateElimination", combined_info),
+            build_extension("nhsMHSAckRequested", "nhsMHSAckRequested", combined_info)
+        ]
+    }]
 
 
-def build_extension_dict(url: str, value: str, combined_info: Dict):
+def build_extension(url: str, value: str, combined_info: Dict):
     return {
         "url": url,
         "valueString": array_to_string(combined_info, value)
     }
 
 
+def build_int_extension(url: str, value: str, combined_info: Dict):
+    return {
+        "url": url,
+        "valueInteger": int(array_to_string(combined_info, value) or 0)
+    }
+
+
 def build_identifier_array(combined_info: Dict, service_id: str):
     return [
-        build_identifier_dict(Url.NHS_ENDPOINT_SERVICE_ID_URL, service_id),
-        build_identifier_dict(Url.NHS_MHS_FQDN_URL, array_to_string(combined_info, "nhsMhsFQDN")),
-        build_identifier_dict(Url.NHS_MHS_ENDPOINT_URL, array_to_string(combined_info, "nhsMHSEndPoint")),
-        build_identifier_dict(Url.NHS_MHS_PARTYKEY_URL, array_to_string(combined_info, "nhsMHSPartyKey")),
-        build_identifier_dict(Url.NHS_MHS_CPAID_URL, array_to_string(combined_info, "nhsMhsCPAId")),
-        build_identifier_dict(Url.NHS_SPINE_ASID_URL, array_to_string(combined_info, "uniqueIdentifier"))
+        build_identifier(Url.NHS_ENDPOINT_SERVICE_ID_URL, service_id),
+        build_identifier(Url.NHS_MHS_FQDN_URL, array_to_string(combined_info, "nhsMhsFQDN")),
+        build_identifier(Url.NHS_MHS_PARTYKEY_URL, array_to_string(combined_info, "nhsMHSPartyKey")),
+        build_identifier(Url.NHS_MHS_CPAID_URL, array_to_string(combined_info, "nhsMhsCPAId")),
+        build_identifier(Url.NHS_SPINE_ASID_URL, array_to_string(combined_info, "uniqueIdentifier"))
     ]
 
 
-def build_identifier_dict(system: str, value: str):
+def build_identifier(system: str, value: str):
     return {
         "system": system,
         "value": value
@@ -63,10 +72,9 @@ def build_connection_type():
     }
 
 
-def build_managing_organization(value_value: str):
+def build_managing_organization(value: str):
     return {
-        "reference": Url.MANAGING_ORGANIZATION_URL,
-        "display": value_value
+        "identifier": build_identifier(Url.MANAGING_ORGANIZATION_URL, value)
     }
 
 
@@ -77,7 +85,7 @@ def build_payload_type():
                 {
                     "system": Url.PAYLOAD_TYPE_URL,
                     "code": "any",
-                    "display": "any"
+                    "display": "Any"
                 }
             ]
         }
