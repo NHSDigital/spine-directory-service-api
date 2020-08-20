@@ -11,31 +11,22 @@ def get_xml_format(combined_info: Dict, org_code: str, service_id: str):
     # what about this ID?
     root.append(etree.Element("id", value="f0f0e921-92ca-4a88-a550-2dbb36f703af"))
     root.append(build_extension_node(combined_info))
-    root.append(build_comment("NhsEndpointServiceId"))
     root.append(build_identifier_node(Url.NHS_ENDPOINT_SERVICE_ID_URL, service_id))
-    root.append(build_comment("NhsMhsFQDN"))
     root.append(build_identifier_node(Url.NHS_MHS_FQDN_URL, combined_info.get("nhsMhsFQDN")))
-    root.append(build_comment("NhsMhsEndPoint"))
-    root.append(build_identifier_node(Url.NHS_MHS_ENDPOINT_URL, array_to_string(combined_info, "nhsMHSEndPoint")))
-    root.append(build_comment("NhsMhsPartyKey"))
     root.append(build_identifier_node(Url.NHS_MHS_PARTYKEY_URL, combined_info.get("nhsMHSPartyKey")))
-    root.append(build_comment("NhsMhsCPAId"))
     root.append(build_identifier_node(Url.NHS_MHS_CPAID_URL, combined_info.get("nhsMhsCPAId")))
-    root.append(build_comment("NhsSpineASID"))
     root.append(build_identifier_node(Url.NHS_SPINE_ASID_URL, array_to_string(combined_info, "uniqueIdentifier")))
     root.append(etree.Element("status", value="active"))
     root.append(build_connection_type(Url.CONNECTION_TYPE_URL, "hl7-fhir-msg", "HL7 FHIR Messaging"))
     root.append(build_managing_organization(Url.MANAGING_ORGANIZATION_URL, org_code))
     root.append(build_payload_type(Url.PAYLOAD_TYPE_URL, "any", "Any"))
-    root.append(build_address(combined_info.get("nhsMhsFQDN")))
+    root.append(etree.Element("address", value=array_to_string(combined_info, "nhsMHSEndPoint")))
 
-    return etree.tostring(root, pretty_print=True, xml_declaration=True, encoding="UTF-8").decode()
+    return etree.tostring(root, pretty_print=True).decode()
 
 
 def build_root_element():
-    attr_qname = etree.QName(Url.SCHEMA_LOCATION_URL, "schemaLocation")
-    return etree.Element("Endpoint", {attr_qname: Url.ATTR_QNAME_URL},
-                         nsmap={None: Url.DEFAULT_URL, "xsi": Url.XSI_URL})
+    return etree.Element("Endpoint", xmlns="http://hl7.org/fhir")
 
 
 def build_extension_node(combined_info: Dict):
@@ -60,10 +51,6 @@ def build_integer_extension(url: str, value: str):
     extension_sub = etree.Element("extension", url=url)
     extension_sub.append(etree.SubElement(extension_sub, "valueInteger", value=value))
     return extension_sub
-
-
-def build_comment(comment: str):
-    return etree.Comment(" {} ".format(comment))
 
 
 def build_identifier_node(system_value: str, value_value: str):
@@ -95,11 +82,6 @@ def build_payload_type(system_value: str, code_value: str, display_value: str):
     coding.append(etree.SubElement(coding, "display", value=display_value))
     payload_type.append(coding)
     return payload_type
-
-
-def build_address(value: str):
-    address = etree.Element("address", value="https://{}/".format(value))
-    return address
 
 
 def array_to_string(combined_info: Dict, key: str):
