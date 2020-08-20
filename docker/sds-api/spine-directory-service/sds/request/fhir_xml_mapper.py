@@ -2,7 +2,7 @@ from typing import Dict
 
 from lxml import etree
 
-from request.formatter_urls import FormatterUrls as Url
+from request.mapper_urls import MapperUrls as Url
 from utilities import message_utilities
 
 

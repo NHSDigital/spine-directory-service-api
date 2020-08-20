@@ -1,8 +1,4 @@
-class FormatterUrls:
-    SCHEMA_LOCATION_URL = "http://www.w3.org/2001/XMLSchema-instance"
-    ATTR_QNAME_URL = "http://hl7.org/fhir file:///C:/Validation-Assets-R4/Schemas/fhir-all-xsd/fhir-all.xsd"
-    DEFAULT_URL = "http://hl7.org/fhir"
-    XSI_URL = "http://www.w3.org/2001/XMLSchema-instance"
+class MapperUrls:
     EXTENSION_URL = "https://fhir.nhs.uk/R4/StructureDefinition/Extension-SDS-ReliabilityConfiguration"
     NHS_ENDPOINT_SERVICE_ID_URL = "https://fhir.nhs.uk/Id/nhsEndpointServiceId"
     NHS_MHS_FQDN_URL = "https://fhir.nhs.uk/Id/nhsMhsFQDN"

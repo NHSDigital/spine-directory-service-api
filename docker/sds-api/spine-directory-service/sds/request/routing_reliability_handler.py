@@ -1,8 +1,8 @@
 from request.base_handler import BaseHandler
 from request.content_type_validator import get_valid_accept_type
 from request.http_headers import HttpHeaders
-from request.json_formatter import get_json_format
-from request.xml_formatter import get_xml_format
+from request.fhir_json_mapper import get_json_format
+from request.fhir_xml_mapper import get_xml_format
 from utilities import timing, integration_adaptors_logger as log
 
 logger = log.IntegrationAdaptorsLogger(__name__)

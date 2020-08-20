@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from request.xml_formatter import get_xml_format
+from request.fhir_xml_mapper import get_xml_format
 from utilities import message_utilities
 
 FIXED_UUID = "f0f0e921-92ca-4a88-a550-2dbb36f703af"
