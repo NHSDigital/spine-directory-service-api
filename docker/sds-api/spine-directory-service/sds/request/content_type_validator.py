@@ -9,9 +9,10 @@ valid_accept_types = ['application/json', 'application/fhir+json', 'application/
 
 
 def get_valid_accept_type(headers: HTTPHeaders):
-    accept_type = headers.get(HttpHeaders.ACCEPT, 'application/json')
+    accept_type = headers.get(HttpHeaders.ACCEPT, 'application/fhir+json').lower()
+
     if accept_type == '*/*':
-        return 'application/json'
+        return 'application/fhir+json'
     elif accept_type in valid_accept_types:
         return accept_type
     else:
