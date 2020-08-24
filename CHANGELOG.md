@@ -8,4 +8,5 @@
 * End to End tests added using postman and newman
 * Test apigee proxy
 * Test Sandbox deployment
-* FHIR specification updated
+* FHIR specification added
+* Sandbox - FHIR specification updated
