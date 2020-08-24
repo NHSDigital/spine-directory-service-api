@@ -1,8 +1,10 @@
+from os import path
 from unittest import TestCase
 
 from request.fhir_xml_mapper import get_xml_format
 from utilities import message_utilities
 
+FILE_PATH = path.join(path.dirname(__file__), "examples/SDS-Endpoint-Example.xml")
 FIXED_UUID = "f0f0e921-92ca-4a88-a550-2dbb36f703af"
 ORG_CODE = "R8008"
 SERVICE_ID = "urn:nhs:names:services:psis:REPC_IN150016UK05"
@@ -42,7 +44,7 @@ COMBINED_INFO_EMPTY = {
 class TestGetXmlFormat(TestCase):
 
     def test_get_xml_format(self):
-        example = open("examples/SDS-Endpoint-Example.xml", "r").read()
+        example = open(FILE_PATH, "r").read()
         actual = get_xml_format(COMBINED_INFO, ORG_CODE, SERVICE_ID)
         xml_with_fixed_uuid = message_utilities.replace_uuid(actual, FIXED_UUID)
 
