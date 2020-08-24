@@ -10,10 +10,11 @@
     <ExpirySettings>
         <ExpiryDate/>
         <TimeOfDay/>
-        <TimeoutInSeconds ref="">36000</TimeoutInSeconds>
+        <TimeoutInSeconds ref="">900</TimeoutInSeconds>
     </ExpirySettings>
     <SkipCacheLookup/>
     <SkipCachePopulation/>
     <CacheLookupTimeoutInSeconds>30</CacheLookupTimeoutInSeconds>
     <ExcludeErrorResponse>true</ExcludeErrorResponse>
+    <UseAcceptHeader>true</UseAcceptHeader>
 </ResponseCache>
