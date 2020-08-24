@@ -57,7 +57,7 @@ class TestRoutingReliabilityRequestHandler(tornado.testing.AsyncHTTPTestCase):
         self.endpoint_resource_validation(json_body)
         self.assertEqual(response.code, 200)
         self.assertEqual(expected, json_with_fixed_uuid)
-        self.assertEqual(response.headers.get(HttpHeaders.CONTENT_TYPE, None), "application/json")
+        self.assertEqual(response.headers.get(HttpHeaders.CONTENT_TYPE, None), "application/fhir+json")
         self.routing.get_end_point.assert_called_with(test_request_handler.ORG_CODE, test_request_handler.SERVICE_ID)
         self.routing.get_reliability.assert_called_with(test_request_handler.ORG_CODE, test_request_handler.SERVICE_ID)
 
@@ -106,10 +106,10 @@ class TestRoutingReliabilityRequestHandler(tornado.testing.AsyncHTTPTestCase):
 
             self.assertEqual(response.code, 200)
             self.assertEqual(expected, json_with_fixed_uuid)
-            self.assertEqual(response.headers.get(HttpHeaders.CONTENT_TYPE, None), "application/json")
+            self.assertEqual(response.headers.get(HttpHeaders.CONTENT_TYPE, None), "application/fhir+json")
 
-        with self.subTest("Accept header is application/fhir+json"):
-            headers = {'Accept': 'application/fhir+json'}
+        with self.subTest("Accept header is case-insensitive application/fhir+json"):
+            headers = {'Accept': 'application/fhir+JSON'}
             self.routing.get_end_point.return_value = test_utilities.awaitable(END_POINT_DETAILS)
             self.routing.get_reliability.return_value = test_utilities.awaitable(RELIABILITY_DETAILS)
             response = self.fetch(test_request_handler.build_url(), method="GET", headers=headers)
