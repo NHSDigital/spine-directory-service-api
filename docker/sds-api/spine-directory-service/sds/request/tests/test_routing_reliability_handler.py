@@ -1,5 +1,6 @@
 import json
 import unittest.mock
+from os import path
 
 import fhirclient.models.endpoint as endpoint
 import lxml
@@ -13,6 +14,8 @@ from request.tests import test_request_handler
 from utilities import message_utilities
 from utilities import test_utilities
 
+FILE_PATH_JSON = path.join(path.dirname(__file__), "examples/routing_reliability_result.json")
+FILE_PATH_XML = path.join(path.dirname(__file__), "examples/routing_reliability_result.xml")
 FIXED_UUID = "f0f0e921-92ca-4a88-a550-2dbb36f703af"
 END_POINT_DETAILS = {
     "nhsMHSEndPoint": [
@@ -51,7 +54,7 @@ class TestRoutingReliabilityRequestHandler(tornado.testing.AsyncHTTPTestCase):
 
         response = self.fetch(test_request_handler.build_url(), method="GET")
         json_body = json.loads(response.body)
-        expected = open("examples/routing_reliability_result.json", "r").read()
+        expected = open(FILE_PATH_JSON, "r").read()
         json_with_fixed_uuid = message_utilities.replace_uuid(json.dumps(json_body, indent=2), FIXED_UUID)
 
         self.endpoint_resource_validation(json_body)
@@ -101,7 +104,7 @@ class TestRoutingReliabilityRequestHandler(tornado.testing.AsyncHTTPTestCase):
             response = self.fetch(test_request_handler.build_url(), method="GET")
 
             json_body = json.loads(response.body)
-            expected = open("examples/routing_reliability_result.json", "r").read()
+            expected = open(FILE_PATH_JSON, "r").read()
             json_with_fixed_uuid = message_utilities.replace_uuid(json.dumps(json_body, indent=2), FIXED_UUID)
 
             self.assertEqual(response.code, 200)
@@ -115,7 +118,7 @@ class TestRoutingReliabilityRequestHandler(tornado.testing.AsyncHTTPTestCase):
             response = self.fetch(test_request_handler.build_url(), method="GET", headers=headers)
 
             json_body = json.loads(response.body)
-            expected = open("examples/routing_reliability_result.json", "r").read()
+            expected = open(FILE_PATH_JSON, "r").read()
             json_with_fixed_uuid = message_utilities.replace_uuid(json.dumps(json_body, indent=2), FIXED_UUID)
 
             self.assertEqual(response.code, 200)
@@ -130,7 +133,7 @@ class TestRoutingReliabilityRequestHandler(tornado.testing.AsyncHTTPTestCase):
 
             body_with_fixed_uuid = message_utilities.replace_uuid(response.body.decode(), FIXED_UUID)
             body_xml = etree.tostring(lxml.etree.fromstring(body_with_fixed_uuid))
-            expected = etree.tostring(etree.parse("examples/routing_reliability_result.xml"))
+            expected = etree.tostring(etree.parse(FILE_PATH_XML))
 
             self.assertEqual(response.code, 200)
             self.assertEqual(expected, body_xml)
