@@ -132,28 +132,44 @@ components:
             properties:
               url:
                 type: string
-              valueString:
-                  type: string
-          example:
-            - url: "nhsMHSSyncReplyMode"
-              valueString: "MSHSignalsOnly"
-            - url: "nhsMHSRetryInterval"
-              valueString: "PT1M"
-            - url: "nhsMHSRetries"
-              valueString: "2"
-            - url: "nhsMHSPersistDuration"
-              valueString: "PT5M"       
-            - url: "nhsMHSDuplicateElimination"
-              valueString: "always"
-            - url: "nhsMHSAckRequested"
-              valueString: "always"
+                example: "https://fhir.nhs.uk/R4/StructureDefinition/Extension-SDS-ReliabilityConfiguration"
+                xml:
+                  attribute: true
+              extension:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    url:
+                      type: string
+                      xml:
+                        attribute: true
+                    valueString:
+                      type: string
+                example:
+                  - url: "nhsMHSSyncReplyMode"
+                    valueString: "MSHSignalsOnly"
+                  - url: "nhsMHSRetryInterval"
+                    valueString: "PT1M"
+                  - url: "nhsMHSRetries"
+                    valueString: "2"
+                  - url: "nhsMHSPersistDuration"
+                    valueString: "PT5M"       
+                  - url: "nhsMHSDuplicateElimination"
+                    valueString: "always"
+                  - url: "nhsMHSAckRequested"
+                    valueString: "always"
         identifier:
           type: array
+          xml:
+            wrapped: false
           items: 
             type: object
             properties:
               system:
                 type: string
+                xml:
+                  attribute: true
               value:
                 type: string
           example:
@@ -180,30 +196,51 @@ components:
             - test
           example: "active"
         connectionType:
-          type: string
+          type: object
+          properties:
+            system:
+              type: string
+              example: "http://terminology.hl7.org/CodeSystem/endpoint-connection-type"
+            code:
+              type: string
+              example: "hl7-fhir-msg"
+            display:
+              type: string
+              example: "HL7 FHIR Messaging"
         managingOrganization:
           type: object
           properties:
-            system:
-              type: string
-              example: "https://fhir.nhs.uk/Id/ods-organization-code"
-            value:
-              type: string
-              example: "R8008"
+            identifier:
+              type: object
+              properties:
+                system:
+                  type: string
+                  example: "https://fhir.nhs.uk/Id/ods-organization-code"
+                value:
+                  type: string
+                  example: "R8008"
         payloadType:
-          type: object
-          properties:
-            system:
-              type: string
-              example: "http://terminology.hl7.org/CodeSystem/endpoint-payload-type"
-            code:
-              type: string
-              example: "any"
-            display:
-              type: string
-              example: "any"
+          type: array
+          items:
+            type: object
+            properties:
+              coding:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    system:
+                      type: string
+                      example: "http://terminology.hl7.org/CodeSystem/endpoint-payload-type"
+                    code:
+                      type: string
+                      example: "any"
+                    display:
+                      type: string
+                      example: "any"
         address:
           type: string
           example: "https://192.168.128.11/"
       xml:
         name: Endpoint
+        namespace: "http://hl7.org/fhir"
