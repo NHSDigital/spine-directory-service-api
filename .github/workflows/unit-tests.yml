@@ -19,9 +19,6 @@ jobs:
     
     - name: Test
       uses: VaultVulp/action-pipenv@v2.0.1
-    - run: |
-        echo "Using pipenv shell"
-        pwd
-        cd sds
-        python -m unittest
+      with:
+        command: run unittests
 
