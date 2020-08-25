@@ -24,11 +24,12 @@ jobs:
         echo "Start..."
         pwd
         ls -la
-        cd sds
+        pipenv shell
+        pipenv run unittests
         echo "End..."
     
-    - name: Test
-      uses: VaultVulp/action-pipenv@v2.0.1
-      with:
-        command: run unittests
+#    - name: Test
+#      uses: VaultVulp/action-pipenv@v2.0.1
+#      with:
+#        command: run unittests
 
