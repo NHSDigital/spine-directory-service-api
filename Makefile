@@ -25,10 +25,19 @@ clean:
 
 publish: clean
 	mkdir -p build
-#	npm run publish 2> /dev/null
+	npm run publish 2> /dev/null
 
 serve:
 	npm run serve
+
+generate-examples: publish clean
+	mkdir -p build/examples
+	poetry run python scripts/generate_examples.py build/spine-directory.json build/examples
+	scripts/duplicate_examples.sh
+
+update-examples: generate-examples
+	scripts/update_examples.sh
+	make publish
 
 check-licenses:
 	npm run check-licenses
