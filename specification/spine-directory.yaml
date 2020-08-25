@@ -1,11 +1,12 @@
+# This is an OpenAPI Specification (https://swagger.io/specification/)
+# for the Spine Directory Service (SDS) API
+# owned by NHS Digital (https://digital.nhs.uk/)
 openapi: 3.0.0
-servers:
-  - description: Spine Directory Service API
-    url: https://virtserver.swaggerhub.com/kainos_nhsnia/SDS_API/1.0.0
 info:
-  version: "1.0.0"
+  version: "{VERSION}"
   title: Spine Directory Service API
-  description: "## Overview
+  description: |
+    ## Overview
     Use this API to access the [Spine Directory Services (SDS)](https://digital.nhs.uk/services/spine) - an endpoint and identifier directory for Spine and Spine connected systems, containing information on accredited systems, services and NHS registered users.
     GP Connect provider and consumer systems are registered in SDS in order to enable: 
     * consumer systems to look up provider system’s ASID and endpoint information 
@@ -20,15 +21,15 @@ info:
     
     ## API Status 
     This API is in [beta](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#api-status), meaning:- we might make breaking changes, but only if we can't avoid it, and we'll give advance notice- we can't guarantee availability or performance   
-    If you have any other queries, please [contact us](https://digital.nhs.uk/developer/help-and-support).\
+    If you have any other queries, please [contact us](https://digital.nhs.uk/developer/help-and-support).
 
     ## Technology 
     This API is [RESTful](https://digital.nhs.uk/developer/guides-and-documentation/api-technologies-at-nhs-digital#basic-rest).  
-    It also conforms to the [FHIR](https://digital.nhs.uk/developer/guides-and-documentation/api-technologies-at-nhs-digital#fhir) global standard for health care data exchange.Specifically, it is aligned with [FHIR UK Core](https://digital.nhs.uk/services/fhir-uk-core), which is built on FHIR Release 4.You don’t need to know much about FHIR to use this API - FHIR APIs are just RESTful APIs that follow specific rules.In particular:\
-    - resource names are capitalised and singular, for example `/Patient` not `/patients`\
-    - array names are singular, for example `line` not `lines` for address lines\
+    It also conforms to the [FHIR](https://digital.nhs.uk/developer/guides-and-documentation/api-technologies-at-nhs-digital#fhir) global standard for health care data exchange.Specifically, it is aligned with [FHIR UK Core](https://digital.nhs.uk/services/fhir-uk-core), which is built on FHIR Release 4.You don’t need to know much about FHIR to use this API - FHIR APIs are just RESTful APIs that follow specific rules.In particular:
+    - resource names are capitalised and singular, for example `/Patient` not `/patients`
+    - array names are singular, for example `line` not `lines` for address lines
     - data items that are country-specific and thus not included in the FHIR global base resources are usually wrapped in an `extension` object
-    This API is available on the Internet, although access using NHS smartcards (see below) currently requires a connection to the [Health and Social Care Network (HSCN)](https://digital.nhs.uk/services/health-and-social-care-network).\
+    This API is available on the Internet, although access using NHS smartcards (see below) currently requires a connection to the [Health and Social Care Network (HSCN)](https://digital.nhs.uk/services/health-and-social-care-network).
 
     ## Authorisation 
     This API uses the Unattended Access pattern.  For more information on this pattern, please see our [Security and Authorisation](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation#user-restricted-apis) page within the NHS Digital Portal.
@@ -41,7 +42,7 @@ info:
     || Integration test  | `https://int.api.service.nhs.uk/spine-directory/`             |
     || Production        | `https://api.service.nhs.uk/spine-directory/`                 |
     
-    ### Sandbox testingOur [sandbox environment](https://digital.nhs.uk/developer/guides-and-documentation/testing#sandbox-testing):\
+    ### Sandbox testingOur [sandbox environment](https://digital.nhs.uk/developer/guides-and-documentation/testing#sandbox-testing):
     * is for early developer testing* only covers a limited set of scenarios
     * is stateless, so it does not actually persist any updates
     * is open access,so does not allow you to test authorisation
@@ -51,20 +52,28 @@ info:
     ## Integration testing 
     Our [integration test environment](https://digital.nhs.uk/developer/guides-and-documentation/testing#integration-testing) is available for formal integration testing
     The SDS API specification has more information on this.      
-    For more details see [integration testing with our RESTful APIs](https://digital.nhs.uk/developer/guides-and-documentation/testing#integration-testing-with-our-restful-apis).\ 
+    For more details see [integration testing with our RESTful APIs](https://digital.nhs.uk/developer/guides-and-documentation/testing#integration-testing-with-our-restful-apis).
     
     ## Onboarding
     You need to get your software approved by us before it can go live with this API. We call this onboarding. The onboarding process can sometimes be quite long, so it’s worth planning well ahead.
-    To onboard for this API, follow the [Supplier Conformance Assessment List (SCAL) process.](https://digital.nhs.uk/developer/guides-and-documentation/onboarding-process#onboard-using-the-supplier-conformance-assessment-list-scal-process)\ 
+    To onboard for this API, follow the [Supplier Conformance Assessment List (SCAL) process.](https://digital.nhs.uk/developer/guides-and-documentation/onboarding-process#onboard-using-the-supplier-conformance-assessment-list-scal-process)
     When following the SCAL process, note that:
-    * In step 9: you must conduct penetration testing to [CHECK standards](https://www.ncsc.gov.uk/information/check-penetration-testing).\
+    * In step 9: you must conduct penetration testing to [CHECK standards](https://www.ncsc.gov.uk/information/check-penetration-testing).
     * In step 10: when you complete the Service Desk Registration Form, send it to [api.management@nhs.net](mailto:api.management@nhs.net).
-    * In step 11: submit your completed SCAL to [api.management@nhs.net](mailto:api.management@nhs.net).\
+    * In step 11: submit your completed SCAL to [api.management@nhs.net](mailto:api.management@nhs.net).
     * In step 14: to request production access, contact us at [api.management@nhs.net](mailto:api.management@nhs.net).
-  " 
-  license:
-    name: Apache 2.0
-    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+
+  contact:
+    name: Spine Directory Service API Support
+    url: 'https://digital.nhs.uk/developer/help-and-support'
+    email: api.management@nhs.net
+servers:
+  - url: 'https://sandbox.api.service.nhs.uk/spine-directory/'
+    description: Sandbox environment
+  - url: 'https://int.api.service.nhs.uk/spine-directory/'
+    description: Integration test environment
+  - url: 'https://api.service.nhs.uk/spine-directory/'
+    description: Production environment
 paths:
   /endpoint:
     get:
