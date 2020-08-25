@@ -5,23 +5,25 @@ name: unit-tests
 
 on: pull_request
 
-jobs:  
-  install-test:
+jobs:
+  build:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./docker/sds-api/spine-directory-service/sds    
 
     steps:
-    - uses: actions/checkout@v2 # Checking out the repo
-
-    - name: Install dependecies
-      uses: VaultVulp/action-pipenv@v2.0.1
-      with:
-        command: install -d # Install all dependencies, including development ones
-    
-    - name: Test
-      uses: VaultVulp/action-pipenv@v2.0.1
-    - run: |
-        echo "Using pipenv shell"
-        pwd
-        cd sds
-        python -m unittest
-
+      - uses: actions/checkout@v1
+      - name: Set up Python 3.7
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.7
+      - name: Install pipenv
+        uses: dschep/install-pipenv-action@v1
+      - name: Install dependencies
+        run: |
+          pipenv install --dev
+      - name: Test with pytest
+        run: |
+          ls -la
+          pipenv run unittests
