@@ -34,16 +34,16 @@ check-licenses:
 	npm run check-licenses
 	scripts/check_python_licenses.sh
 
-deploy-proxy: update-examples
+deploy-proxy:
 	scripts/deploy_proxy.sh
 
-deploy-spec: update-examples
+deploy-spec:
 	scripts/deploy_spec.sh
 
 format:
 	poetry run black **/*.py
 
-sandbox: update-examples
+sandbox:
 	cd sandbox && npm run start
 
 build-proxy:
@@ -57,7 +57,7 @@ release: clean publish build-proxy
 	cp ecs-proxies-deploy-sandbox.yml dist/ecs-deploy-internal-qa-sandbox.yml
 	cp ecs-proxies-deploy-sandbox.yml dist/ecs-deploy-sandbox.yml
 	cp ecs-proxies-deploy.yml dist/ecs-deploy-int.yml
-#	cp ecs-proxies-deploy.yml dist/ecs-deploy-ref.yml
+	cp ecs-proxies-deploy.yml dist/ecs-deploy-ref.yml
 #	cp ecs-proxies-deploy.yml dist/ecs-deploy-prod.yml
 
 test:
