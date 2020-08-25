@@ -1,25 +1,22 @@
 {
 	"info": {
-		"_postman_id": "876c319c-3c03-4f2f-817c-33f2f0f07401",
-		"name": "Spine Directory Service - End to End Tests",
+		"_postman_id": "f4502b1f-9ea8-47a2-bf8f-b4e818bd25f4",
+		"name": "Spine Directory Service - FHIR End to End Tests",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
 		{
-			"name": "Tests Routing and Reliability Endpoint",
+			"name": "Bearer token not supplied",
 			"event": [
 				{
 					"listen": "test",
 					"script": {
-						"id": "550ce903-cedd-40d6-9438-2f4d7c3ae29d",
+						"id": "5c7d18dc-0a0f-4641-8fee-d90891d998e8",
 						"exec": [
-							"pm.test(\"Status code is 200\", function () {",
-							"    pm.response.to.have.status(200);",
-							"});",
+							"const skipTest = pm.environment.get('skipAuthTest');",
 							"",
-							"pm.test(\"Check routing contains all keys\", function () {",
-							"    var jsonData = pm.response.json();",
-							"    pm.expect(jsonData).to.be.an('object').that.has.keys('nhsMHSPartyKey','nhsMhsCPAId','nhsMhsFQDN', 'nhsMHSEndPoint', 'uniqueIdentifier', 'nhsMHSSyncReplyMode','nhsMHSRetryInterval','nhsMHSRetries', 'nhsMHSPersistDuration', 'nhsMHSDuplicateElimination','nhsMHSAckRequested');",
+							"(skipTest ? pm.test.skip : pm.test)(\"Status code is 401 Unauthorized\", function () {",
+							"    pm.response.to.have.status(401);",
 							"});"
 						],
 						"type": "text/javascript"
@@ -27,6 +24,9 @@
 				}
 			],
 			"request": {
+				"auth": {
+					"type": "noauth"
+				},
 				"method": "GET",
 				"header": [],
 				"url": {
@@ -35,7 +35,7 @@
 						"{{environment}}"
 					],
 					"path": [
-						"routing"
+						"endpoint"
 					],
 					"query": [
 						{
@@ -48,7 +48,122 @@
 						}
 					]
 				},
-				"description": "Return routing and reliability information for the spine directory service"
+				"description": "Invalid bearer token"
+			},
+			"response": []
+		},
+		{
+			"name": "No API key",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "0bc674ca-b016-4887-ac2f-f31c49fd7003",
+						"exec": [
+							"const skipTest = pm.environment.get('skipAuthTest');",
+							"",
+							"(skipTest ? pm.test.skip : pm.test)(\"Status code is 401 Unauthorized\", function () {",
+							"    pm.response.to.have.status(401);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{environment}}/endpoint?org-code={{org-code}}&service-id={{service-id}}",
+					"host": [
+						"{{environment}}"
+					],
+					"path": [
+						"endpoint"
+					],
+					"query": [
+						{
+							"key": "org-code",
+							"value": "{{org-code}}"
+						},
+						{
+							"key": "service-id",
+							"value": "{{service-id}}"
+						}
+					]
+				},
+				"description": "No API key supplied"
+			},
+			"response": []
+		},
+		{
+			"name": "Incorrect API key",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "53ce12b2-976a-43eb-a4c8-4cbc8aeb7c22",
+						"exec": [
+							"const skipTest = pm.environment.get('skipAuthTest');",
+							"",
+							"(skipTest ? pm.test.skip : pm.test)(\"Status code is 401 Unauthorized\", function () {",
+							"    pm.response.to.have.status(401);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "apikey",
+						"value": "xxxxxxxxxxx",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{environment}}/endpoint?org-code={{org-code}}&service-id={{service-id}}",
+					"host": [
+						"{{environment}}"
+					],
+					"path": [
+						"endpoint"
+					],
+					"query": [
+						{
+							"key": "org-code",
+							"value": "{{org-code}}"
+						},
+						{
+							"key": "service-id",
+							"value": "{{service-id}}"
+						}
+					]
+				},
+				"description": "Incorrect API key supplied"
 			},
 			"response": []
 		},
@@ -58,26 +173,43 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "472f81dd-10a1-47da-9fff-217ff85080be",
+						"id": "f0e157ed-43ae-407b-a959-c2ecedab2883",
 						"exec": [
-							"pm.test(\"Status code is 400\", function () {",
+							"pm.test(\"Status code is 400 Bad Requests\", function () {",
 							"    pm.response.to.have.status(400);",
-							"});"
+							"});",
+							""
 						],
 						"type": "text/javascript"
 					}
 				}
 			],
 			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
 				"method": "GET",
-				"header": [],
+				"header": [
+					{
+						"key": "apikey",
+						"value": "{{apikey}}",
+						"type": "text"
+					}
+				],
 				"url": {
 					"raw": "{{environment}}/endpoint?org-code={{org-code}}",
 					"host": [
 						"{{environment}}"
 					],
 					"path": [
-						"routing"
+						"endpoint"
 					],
 					"query": [
 						{
@@ -89,13 +221,233 @@
 				"description": "Return error information for the spine directory service"
 			},
 			"response": []
+		},
+		{
+			"name": "Tests null parameter on Endpoint",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "36fbc718-c697-4776-adc5-e6e3c923de3f",
+						"exec": [
+							"pm.test(\"Status code is 400 Bad Request\", function () {",
+							"    pm.response.to.have.status(400);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "apikey",
+						"value": "{{apikey}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{environment}}/endpoint?org-code=null&service-id=null",
+					"host": [
+						"{{environment}}"
+					],
+					"path": [
+						"endpoint"
+					]
+				},
+				"description": "Return error information for the spine directory service"
+			},
+			"response": []
+		},
+		{
+			"name": "Test Endpoint and FHIR+JSON returned",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "d824701b-1372-449c-98b9-117459179032",
+						"exec": [
+							"var jsonData = pm.response.json();",
+							"",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"",
+							"pm.test(\"Check extension contains reliability keys\", function() {",
+							"    var extensions = jsonData.extension[0].extension;",
+							"    var reliabilityKeys = ['nhsMHSSyncReplyMode','nhsMHSRetryInterval','nhsMHSRetries', 'nhsMHSPersistDuration', 'nhsMHSDuplicateElimination','nhsMHSAckRequested'];",
+							"",
+							"    for(i=0; i<extensions.length; i++) {   ",
+							"        pm.expect(extensions[i].url).to.deep.include(reliabilityKeys[i]);",
+							"    }",
+							"})",
+							"",
+							"pm.test(\"Check identifier contains routing keys\", function() {",
+							"    var identifiers = jsonData.identifier;",
+							"    var routingKeys = ['https://fhir.nhs.uk/Id/nhsEndpointServiceId', 'https://fhir.nhs.uk/Id/nhsMhsFQDN', 'https://fhir.nhs.uk/Id/nhsMhsPartyKey', 'https://fhir.nhs.uk/Id/nhsMhsCPAId', 'https://fhir.nhs.uk/Id/nhsSpineASID'];",
+							"",
+							"   for(i=0; i<identifiers.length; i++) {",
+							"        pm.expect(identifiers[i].system).to.deep.include(routingKeys[i]);",
+							"   } ",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "apikey",
+						"value": "{{apikey}}",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "application/fhir+json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{environment}}/endpoint?org-code={{org-code}}&service-id={{service-id}}",
+					"host": [
+						"{{environment}}"
+					],
+					"path": [
+						"endpoint"
+					],
+					"query": [
+						{
+							"key": "org-code",
+							"value": "{{org-code}}"
+						},
+						{
+							"key": "service-id",
+							"value": "{{service-id}}"
+						}
+					]
+				},
+				"description": "Return FHIR+JSON routing and reliability information for the spine directory service"
+			},
+			"response": []
+		},
+		{
+			"name": "Test Endpoint and FHIR+XML is returned",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "c6a34080-d0bb-4036-adbe-c479427db7f9",
+						"exec": [
+							"var jsonData = xml2Json(responseBody);",
+							"console.log(jsonData);",
+							"var id = jsonData.Endpoint.identifier",
+							"console.log(id);",
+							"",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"",
+							"pm.test(\"Check extension contains reliability keys\", function() {",
+							"    var extensions = jsonData.Endpoint.extension;",
+							"    var reliabilityKeys = ['nhsMHSSyncReplyMode','nhsMHSRetryInterval','nhsMHSRetries', 'nhsMHSPersistDuration', 'nhsMHSDuplicateElimination','nhsMHSAckRequested'];",
+							"",
+							"    for(i=0; i<extensions.length; i++) {   ",
+							"        pm.expect(extensions[i].url).to.deep.include(reliabilityKeys[i]);",
+							"    }",
+							"})",
+							"",
+							"pm.test(\"Check identifier contains routing keys\", function() {",
+							"    var identifiers = jsonData.Endpoint.identifier;",
+							"    var routingKeys = ['https://fhir.nhs.uk/Id/nhsEndpointServiceId', 'https://fhir.nhs.uk/Id/nhsMhsFQDN', 'https://fhir.nhs.uk/Id/nhsMhsPartyKey', 'https://fhir.nhs.uk/Id/nhsMhsCPAId', 'https://fhir.nhs.uk/Id/nhsSpineASID'];",
+							"",
+							"   for(i=0; i<identifiers.length; i++) {",
+							"        pm.expect(identifiers[i].system.$.value).to.deep.include(routingKeys[i]);",
+							"   } ",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "apikey",
+						"value": "{{apikey}}",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "application/fhir+xml",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{environment}}/endpoint?org-code={{org-code}}&service-id={{service-id}}",
+					"host": [
+						"{{environment}}"
+					],
+					"path": [
+						"endpoint"
+					],
+					"query": [
+						{
+							"key": "org-code",
+							"value": "{{org-code}}"
+						},
+						{
+							"key": "service-id",
+							"value": "{{service-id}}"
+						}
+					]
+				},
+				"description": "Return FHIR+XML routing and reliability information for the spine directory service"
+			},
+			"response": []
 		}
 	],
 	"event": [
 		{
 			"listen": "prerequest",
 			"script": {
-				"id": "f7b32fc3-a7c8-47c1-95e8-96d15f1e4548",
+				"id": "138b4e5e-e977-4d6e-89a5-18c3c23b6028",
 				"type": "text/javascript",
 				"exec": [
 					""
@@ -105,12 +457,13 @@
 		{
 			"listen": "test",
 			"script": {
-				"id": "7c784a2c-2373-444d-9a28-dcadc118815c",
+				"id": "60e11a93-10ae-41c9-9cc0-76e6957d5117",
 				"type": "text/javascript",
 				"exec": [
 					""
 				]
 			}
 		}
-	]
+	],
+	"protocolProfileBehavior": {}
 }
