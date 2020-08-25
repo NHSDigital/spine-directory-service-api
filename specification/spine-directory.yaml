@@ -72,8 +72,6 @@ info:
     url: 'https://digital.nhs.uk/developer/help-and-support'
     email: api.management@nhs.net
 servers:
-  - url: 'https://internal-qa-sandbox.api.service.nhs.uk/spine-directory-pr-59-sandbox'
-    description: Internal Sandbox environment
   - url: 'https://sandbox.api.service.nhs.uk/spine-directory'
     description: Sandbox environment
 paths:
