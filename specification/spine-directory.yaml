@@ -11,9 +11,11 @@ info:
     GP Connect provider and consumer systems are registered in SDS in order to enable: 
     * consumer systems to look up provider system’s ASID and endpoint information 
     * the Spine Secure Proxy to allow or deny requests based on known identifier and endpoint information  
+    
     ### Accredited Systems records 
     Every system that connects to the Spine has one or more “Accredited System” (AS) records in SDS, identified by an Accredited System Identifier (ASID). 
     This ASID is unique to a system deployed in a specific organisation, so the same application deployed into three NHS organisations would typically be represented as three unique ASIDs. 
+    
     ### MHS records and endpoints 
     Every GP Connect system also has one or more “MHS” records (or message handling server record), identified by Party Key and [Interaction ID](https://developer.nhs.uk/apis/gpconnect-0-7-2/integration_interaction_ids.html). 
     MHS records of GP Connect provider systems contain the endpoint of the target practice, as defined by the [FHIR service root URL](https://developer.nhs.uk/apis/gpconnect-0-7-2/development_fhir_api_guidance.html#service-root-url). 
@@ -36,14 +38,16 @@ info:
 
 
     ## Environments and testing 
-    || Environment       | Base URL                                                       
-    || ----------------- | --------------------------------------------------------------|
-    || Sandbox           | `https://sandbox.api.service.nhs.uk/spine-directory/`         |
-    || Integration test  | `https://int.api.service.nhs.uk/spine-directory/`             |
-    || Production        | `https://api.service.nhs.uk/spine-directory/`                 |
+    | Environment       | Base URL                                                       
+    | ----------------- | --------------------------------------------------------------|
+    | Sandbox           | `https://sandbox.api.service.nhs.uk/spine-directory/`         |
+    | Integration test  | `https://int.api.service.nhs.uk/spine-directory/`             |
+    | Production        | `https://api.service.nhs.uk/spine-directory/`                 |
     
-    ### Sandbox testingOur [sandbox environment](https://digital.nhs.uk/developer/guides-and-documentation/testing#sandbox-testing):
-    * is for early developer testing* only covers a limited set of scenarios
+    ### Sandbox testing
+    Our [sandbox environment](https://digital.nhs.uk/developer/guides-and-documentation/testing#sandbox-testing):
+    * is for early developer testing
+    * only covers a limited set of scenarios
     * is stateless, so it does not actually persist any updates
     * is open access,so does not allow you to test authorisation
     
@@ -68,12 +72,8 @@ info:
     url: 'https://digital.nhs.uk/developer/help-and-support'
     email: api.management@nhs.net
 servers:
-  - url: 'https://sandbox.api.service.nhs.uk/spine-directory/'
+  - url: 'https://internal-qa-sandbox.api.service.nhs.uk/spine-directory/'
     description: Sandbox environment
-  - url: 'https://int.api.service.nhs.uk/spine-directory/'
-    description: Integration test environment
-  - url: 'https://api.service.nhs.uk/spine-directory/'
-    description: Production environment
 paths:
   /endpoint:
     get:
