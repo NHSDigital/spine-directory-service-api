@@ -18,7 +18,7 @@ lxml = "~=4.5.2"
 python_version = "3.7"
 
 [scripts]
-unittests = 'python -m xmlrunner -o test-reports -v'
+unittests = 'python -m unittest'
 unittests-cov = 'coverage run -m xmlrunner -o test-reports -v'
 coverage-report = 'coverage report'
 coverage-report-xml = 'coverage xml'
