@@ -22,4 +22,6 @@ jobs:
           pipenv install --dev
       - name: Test with pytest
         run: |
+          ls -la
+          cd sds
           pipenv run unittests
