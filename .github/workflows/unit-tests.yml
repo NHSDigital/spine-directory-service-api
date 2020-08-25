@@ -22,6 +22,6 @@ jobs:
     - run: |
         echo "Using pipenv shell"
         pwd
-        pipenv graph
-        python3 -m unittest
+        cd sds
+        python -m unittest
 
