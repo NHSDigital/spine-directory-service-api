@@ -36,7 +36,20 @@ extends:
       - environment: internal-qa
       - environment: internal-qa-sandbox
         proxy_path: sandbox
+      - environment: ref
+        depends_on:
+          - internal_qa
+          - internal_qa_sandbox
       - environment: int
         depends_on:
           - internal_qa
           - internal_qa_sandbox
+      - environment: sandbox
+        proxy_path: sandbox
+        depends_on:
+            - internal_qa
+            - internal_qa_sandbox
+      - environment: prod
+        depends_on:
+            - internal_qa
+            - internal_qa_sandbox

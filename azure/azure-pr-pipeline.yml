@@ -33,6 +33,8 @@ extends:
     short_service_name: ${{ variables.short_service_name }}
     product_display_name: ${{ variables.product_display_name }}
     product_description: ${{ variables.product_description }}
+    spec_file: ${{ variables.spec_file }}
+    deploy_review_sandbox: true
     secret_ids:
       - ptl/cis/ldap.nis1.national.ncrs.nhs.uk/key
       - ptl/cis/ldap.nis1.national.ncrs.nhs.uk/crt

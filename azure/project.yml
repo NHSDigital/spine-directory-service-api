@@ -4,3 +4,4 @@ variables:
   short_service_name: sds
   product_display_name: Spine Directory Service
   product_description: Spine Directory Service
+  spec_file: spine-directory.json
