@@ -1,0 +1,23 @@
+# This workflow will install Python dependencies, run tests and lint with a single version of Python
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
+
+name: unit-tests
+
+on: pull_request
+
+jobs:  
+  install-test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2 # Checking out the repo
+
+    - name: Install dependecies
+      uses: VaultVulp/action-pipenv@v2.0.1
+      with:
+        command: install -d # Install all dependencies, including development ones
+    
+    - name: Test
+      uses: VaultVulp/action-pipenv@v2.0.1
+      with:
+        command: run test # Run custom `test` command defined in the `[scripts]` block of Pipfile
