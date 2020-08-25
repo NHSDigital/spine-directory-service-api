@@ -25,7 +25,7 @@ clean:
 
 publish: clean
 	mkdir -p build
-	npm run publish 2> /dev/null
+	npm run publish
 
 serve:
 	npm run serve
