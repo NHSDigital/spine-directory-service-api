@@ -1,6 +1,6 @@
 {
   "resourceType": "Endpoint",
-  "id": "EA3CBD94-17D1-4BE5-8D19-DDA46C9EC266",
+  "id": "EA3SAN94-17D1-4BE5-8D19-OXA46C9EC266",
   "extension": [
     {
       "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-SDS-ReliabilityConfiguration",
