@@ -364,9 +364,6 @@
 						"id": "c6a34080-d0bb-4036-adbe-c479427db7f9",
 						"exec": [
 							"var jsonData = xml2Json(responseBody);",
-							"console.log(jsonData);",
-							"var id = jsonData.Endpoint.identifier",
-							"console.log(id);",
 							"",
 							"pm.test(\"Status code is 200\", function () {",
 							"    pm.response.to.have.status(200);",
