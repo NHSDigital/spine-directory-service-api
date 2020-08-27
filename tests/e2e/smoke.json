@@ -33,8 +33,24 @@
 				}
 			],
 			"request": {
-				"method": "GET",
-				"header": [],
+        "auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+        "method": "GET",
+				"header": [
+          {
+						"key": "apikey",
+						"value": "{{apikey}}",
+						"type": "text"
+					}
+        ],
 				"body": {
 					"mode": "raw",
 					"raw": ""
