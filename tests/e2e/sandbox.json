@@ -1,0 +1,228 @@
+{
+	"info": {
+		"_postman_id": "4466c266-8fbf-478c-8b53-e787ce983f08",
+		"name": "Spine Directory Service - Sandbox Tests",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Accept header not supplied",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "6d68b9e2-9067-4ea0-a699-c7de3978473a",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "",
+						"value": "",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{environment}}/endpoint",
+					"host": [
+						"{{environment}}"
+					],
+					"path": [
+						"endpoint"
+					]
+				},
+				"description": "Accept header not supplied"
+			},
+			"response": []
+		},
+		{
+			"name": "Accept Header FHIR+JSON",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "dc65ab8f-c7da-4f9a-8400-584c86d94415",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Expect response to be same as expected_response_json\", function(){",
+							"    pm.expect(pm.response.json()).to.deep.include(pm.environment.get(\"expected_fhir_json\"));",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "20a0f29b-8301-4372-a1c4-be7d8e044204",
+						"exec": [
+							"var expected_response_json = {",
+							"  \"resourceType\": \"Endpoint\",",
+							"  \"id\": \"EA3SAN94-17D1-4BE5-8D19-OXA46C9EC266\",",
+							"  \"extension\": [",
+							"    {",
+							"      \"url\": \"https://fhir.nhs.uk/R4/StructureDefinition/Extension-SDS-ReliabilityConfiguration\",",
+							"      \"extension\": [",
+							"        {",
+							"          \"url\": \"nhsMHSSyncReplyMode\",",
+							"          \"valueString\": \"MSHSignalsOnly\"",
+							"        },",
+							"        {",
+							"          \"url\": \"nhsMHSRetryInterval\",",
+							"          \"valueString\": \"PT1M\"",
+							"        },",
+							"        {",
+							"          \"url\": \"nhsMHSRetries\",",
+							"          \"valueInteger\": 2",
+							"        },",
+							"        {",
+							"          \"url\": \"nhsMHSPersistDuration\",",
+							"          \"valueString\": \"PT5M\"",
+							"        },",
+							"        {",
+							"          \"url\": \"nhsMHSDuplicateElimination\",",
+							"          \"valueString\": \"always\"",
+							"        },",
+							"        {",
+							"          \"url\": \"nhsMHSAckRequested\",",
+							"          \"valueString\": \"always\"",
+							"        }",
+							"      ]",
+							"    }",
+							"  ],",
+							"  \"identifier\": [",
+							"    {",
+							"      \"system\": \"https://fhir.nhs.uk/Id/nhsEndpointServiceId\",",
+							"      \"value\": \"urn:nhs:names:services:psis:REPC_IN150016UK05\"",
+							"    },",
+							"    {",
+							"      \"system\": \"https://fhir.nhs.uk/Id/nhsMhsFQDN\",",
+							"      \"value\": \"192.168.128.11\"",
+							"    },",
+							"    {",
+							"      \"system\": \"https://fhir.nhs.uk/Id/nhsMhsPartyKey\",",
+							"      \"value\": \"YES-0000806\"",
+							"    },",
+							"    {",
+							"      \"system\": \"https://fhir.nhs.uk/Id/nhsMhsCPAId\",",
+							"      \"value\": \"S20001A000182\"",
+							"    },",
+							"    {",
+							"      \"system\": \"https://fhir.nhs.uk/Id/nhsSpineASID\",",
+							"      \"value\": \"227319907548\"",
+							"    }",
+							"  ],",
+							"  \"status\": \"active\",",
+							"  \"connectionType\": {",
+							"    \"system\": \"http://terminology.hl7.org/CodeSystem/endpoint-connection-type\",",
+							"    \"code\": \"hl7-fhir-msg\",",
+							"    \"display\": \"HL7 FHIR Messaging\"",
+							"  },",
+							"  \"managingOrganization\": {",
+							"    \"identifier\": {",
+							"      \"system\": \"https://fhir.nhs.uk/Id/ods-organization-code\",",
+							"      \"value\": \"YES\"",
+							"    }",
+							"  },",
+							"  \"payloadType\": [",
+							"    {",
+							"      \"coding\": [",
+							"        {",
+							"          \"system\": \"http://terminology.hl7.org/CodeSystem/endpoint-payload-type\",",
+							"          \"code\": \"any\",",
+							"          \"display\": \"Any\"",
+							"        }",
+							"      ]",
+							"    }",
+							"  ],",
+							"  \"address\": \"https://192.168.128.11/reliablemessaging/reliablerequest\"",
+							"};",
+							"",
+							"pm.environment.set(\"expected_fhir_json\", expected_response_json);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"type": "text",
+						"value": "application/fhir+json "
+					}
+				],
+				"url": {
+					"raw": "{{environment}}/endpoint",
+					"host": [
+						"{{environment}}"
+					],
+					"path": [
+						"endpoint"
+					]
+				},
+				"description": "Returns 200 and FHIR JSON Endpoint"
+			},
+			"response": []
+		},
+		{
+			"name": "Accept Header FHIR+XML",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "fb23e858-acaf-4aca-a6f3-e7e488836115",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "3677c163-1134-464c-999e-90cf564b0ac2",
+						"exec": [
+							"var expected_response_xml = \"\";",
+							"",
+							"pm.environment.set(\"expected_fhir_xml_response\", expected_response_xml);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"type": "text",
+						"value": "application/fhir+xml"
+					}
+				],
+				"url": {
+					"raw": "{{environment}}/endpoint",
+					"host": [
+						"{{environment}}"
+					],
+					"path": [
+						"endpoint"
+					]
+				},
+				"description": "Returns 200 and FHIR XML Endpoint"
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}
