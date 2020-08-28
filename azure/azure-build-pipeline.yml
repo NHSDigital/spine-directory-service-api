@@ -18,6 +18,7 @@ resources:
       type: github
       name: NHSDigital/api-management-utils
       endpoint: NHSDigital
+      ref: refs/heads/apm-1162-do-not-reinstall-utils
 
 variables:
   - template: project.yml
