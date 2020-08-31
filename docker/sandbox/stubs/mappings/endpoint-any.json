@@ -4,7 +4,7 @@
     "urlPathPattern": "/endpoint.*",
     "headers": {
       "Accept": {
-        "equalTo": "*/*"
+        "equalTo": "application/json, text/plain, */*"
       }
     }
   },
