@@ -20,7 +20,14 @@
         <Condition>(proxy.pathsuffix MatchesPath "/_ping") and ((request.verb = "GET") or (request.verb = "HEAD"))</Condition>
       </Flow>
     </Flows>
-    <PreFlow/>
+    <PreFlow name="PreFlow">
+      <Request/>
+      <Response>
+        <Step>
+          <Name>AssignMessage.AddCors</Name>
+        </Step>
+      </Response>
+    </PreFlow>
     <PostClientFlow name="PostClientFlow">
       <Response>
         <Step>
