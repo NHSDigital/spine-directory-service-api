@@ -1,17 +1,17 @@
 {
 	"info": {
-		"_postman_id": "f4502b1f-9ea8-47a2-bf8f-b4e818bd25f4",
+		"_postman_id": "d2c25005-50ea-4f10-8d99-3e9e98fa8cd1",
 		"name": "Spine Directory Service - FHIR End to End Tests",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
 		{
-			"name": "Bearer token not supplied",
+			"name": "No API key",
 			"event": [
 				{
 					"listen": "test",
 					"script": {
-						"id": "5c7d18dc-0a0f-4641-8fee-d90891d998e8",
+						"id": "48605d4e-df5d-4f00-9b11-503c97aa046d",
 						"exec": [
 							"const skipTest = pm.environment.get('skipAuthTest');",
 							"",
@@ -48,60 +48,6 @@
 						}
 					]
 				},
-				"description": "Invalid bearer token"
-			},
-			"response": []
-		},
-		{
-			"name": "No API key",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"id": "0bc674ca-b016-4887-ac2f-f31c49fd7003",
-						"exec": [
-							"const skipTest = pm.environment.get('skipAuthTest');",
-							"",
-							"(skipTest ? pm.test.skip : pm.test)(\"Status code is 401 Unauthorized\", function () {",
-							"    pm.response.to.have.status(401);",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "{{token}}",
-							"type": "string"
-						}
-					]
-				},
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{environment}}/endpoint?org-code={{org-code}}&service-id={{service-id}}",
-					"host": [
-						"{{environment}}"
-					],
-					"path": [
-						"endpoint"
-					],
-					"query": [
-						{
-							"key": "org-code",
-							"value": "{{org-code}}"
-						},
-						{
-							"key": "service-id",
-							"value": "{{service-id}}"
-						}
-					]
-				},
 				"description": "No API key supplied"
 			},
 			"response": []
@@ -112,7 +58,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "53ce12b2-976a-43eb-a4c8-4cbc8aeb7c22",
+						"id": "0db1dd31-afbc-45a0-9202-7514e1bc717f",
 						"exec": [
 							"const skipTest = pm.environment.get('skipAuthTest');",
 							"",
@@ -127,14 +73,7 @@
 			],
 			"request": {
 				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "{{token}}",
-							"type": "string"
-						}
-					]
+					"type": "noauth"
 				},
 				"method": "GET",
 				"header": [
@@ -173,7 +112,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "f0e157ed-43ae-407b-a959-c2ecedab2883",
+						"id": "0f7dc85f-d020-48f5-a3e7-a81c21460793",
 						"exec": [
 							"pm.test(\"Status code is 400 Bad Requests\", function () {",
 							"    pm.response.to.have.status(400);",
@@ -186,14 +125,7 @@
 			],
 			"request": {
 				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "{{token}}",
-							"type": "string"
-						}
-					]
+					"type": "noauth"
 				},
 				"method": "GET",
 				"header": [
@@ -228,7 +160,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "36fbc718-c697-4776-adc5-e6e3c923de3f",
+						"id": "30ea2698-4100-48a0-b909-3d0e5e10f60c",
 						"exec": [
 							"pm.test(\"Status code is 400 Bad Request\", function () {",
 							"    pm.response.to.have.status(400);",
@@ -241,14 +173,7 @@
 			],
 			"request": {
 				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "{{token}}",
-							"type": "string"
-						}
-					]
+					"type": "noauth"
 				},
 				"method": "GET",
 				"header": [
@@ -259,7 +184,7 @@
 					}
 				],
 				"url": {
-					"raw": "{{environment}}/endpoint?org-code=null&service-id=null",
+					"raw": "{{environment}}/endpoint",
 					"host": [
 						"{{environment}}"
 					],
@@ -277,7 +202,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "d824701b-1372-449c-98b9-117459179032",
+						"id": "983fd2aa-f1d0-41b3-bf4e-63eba087b838",
 						"exec": [
 							"var jsonData = pm.response.json();",
 							"",
@@ -310,14 +235,7 @@
 			],
 			"request": {
 				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "{{token}}",
-							"type": "string"
-						}
-					]
+					"type": "noauth"
 				},
 				"method": "GET",
 				"header": [
@@ -361,7 +279,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "c6a34080-d0bb-4036-adbe-c479427db7f9",
+						"id": "83598c08-d3b3-4762-a088-3defa851b595",
 						"exec": [
 							"var jsonData = xml2Json(responseBody);",
 							"",
@@ -394,14 +312,7 @@
 			],
 			"request": {
 				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "{{token}}",
-							"type": "string"
-						}
-					]
+					"type": "noauth"
 				},
 				"method": "GET",
 				"header": [
@@ -444,7 +355,7 @@
 		{
 			"listen": "prerequest",
 			"script": {
-				"id": "138b4e5e-e977-4d6e-89a5-18c3c23b6028",
+				"id": "db42adcc-9943-4a8b-a2b5-b8a54f6347ce",
 				"type": "text/javascript",
 				"exec": [
 					""
@@ -454,7 +365,7 @@
 		{
 			"listen": "test",
 			"script": {
-				"id": "60e11a93-10ae-41c9-9cc0-76e6957d5117",
+				"id": "916419af-9562-4cbf-9a5c-eb02102c14b0",
 				"type": "text/javascript",
 				"exec": [
 					""

@@ -11,9 +11,9 @@ def get_xml_format(combined_info: Dict, org_code: str, service_id: str):
     root.append(etree.Element("id", value=message_utilities.get_uuid()))
     root.append(build_extension_node(combined_info))
     root.append(build_identifier_node(Url.NHS_ENDPOINT_SERVICE_ID_URL, service_id))
-    root.append(build_identifier_node(Url.NHS_MHS_FQDN_URL, combined_info.get("nhsMhsFQDN")))
-    root.append(build_identifier_node(Url.NHS_MHS_PARTYKEY_URL, combined_info.get("nhsMHSPartyKey")))
-    root.append(build_identifier_node(Url.NHS_MHS_CPAID_URL, combined_info.get("nhsMhsCPAId")))
+    root.append(build_identifier_node(Url.NHS_MHS_FQDN_URL, array_to_string(combined_info, "nhsMhsFQDN")))
+    root.append(build_identifier_node(Url.NHS_MHS_PARTYKEY_URL, array_to_string(combined_info, "nhsMHSPartyKey")))
+    root.append(build_identifier_node(Url.NHS_MHS_CPAID_URL, array_to_string(combined_info, "nhsMhsCPAId")))
     root.append(build_identifier_node(Url.NHS_SPINE_ASID_URL, array_to_string(combined_info, "uniqueIdentifier")))
     root.append(etree.Element("status", value="active"))
     root.append(build_connection_type(Url.CONNECTION_TYPE_URL, "hl7-fhir-msg", "HL7 FHIR Messaging"))
@@ -34,8 +34,9 @@ def build_extension_node(combined_info: Dict):
     ext.append(build_string_extension("nhsMHSRetryInterval", array_to_string(combined_info, "nhsMHSRetryInterval")))
     ext.append(build_integer_extension("nhsMHSRetries", array_to_string(combined_info, "nhsMHSRetries")))
     ext.append(build_string_extension("nhsMHSPersistDuration", array_to_string(combined_info, "nhsMHSPersistDuration")))
-    ext.append(build_string_extension("nhsMHSDuplicateElimination", combined_info.get("nhsMHSDuplicateElimination")))
-    ext.append(build_string_extension("nhsMHSAckRequested", combined_info.get("nhsMHSAckRequested")))
+    ext.append(build_string_extension("nhsMHSDuplicateElimination",
+                                      array_to_string(combined_info, "nhsMHSDuplicateElimination")))
+    ext.append(build_string_extension("nhsMHSAckRequested", array_to_string(combined_info, "nhsMHSAckRequested")))
 
     return ext
 

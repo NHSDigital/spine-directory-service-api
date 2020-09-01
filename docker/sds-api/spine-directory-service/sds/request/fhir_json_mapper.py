@@ -41,9 +41,10 @@ def build_extension(url: str, value: str, combined_info: Dict):
 
 
 def build_int_extension(url: str, value: str, combined_info: Dict):
+
     return {
         "url": url,
-        "valueInteger": int(array_to_string(combined_info, value) or 0)
+        "valueInteger": string_to_int(array_to_string(combined_info, value))
     }
 
 
@@ -98,3 +99,12 @@ def build_address(value: str):
 
 def array_to_string(combined_info: Dict, key: str):
     return str(combined_info.get(key)).strip("['']")
+
+
+def string_to_int(value: str):
+    try:
+        value_integer = int(value)
+    except ValueError:
+        value_integer = 0
+
+    return value_integer
