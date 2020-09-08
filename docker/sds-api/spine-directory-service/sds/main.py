@@ -2,26 +2,22 @@ import tornado.httpserver
 import tornado.ioloop
 import tornado.web
 
+import lookup.sds_client_factory
+from lookup import mhs_attribute_lookup, routing_reliability
 from request import healthcheck_handler
+from request import routing_reliability_handler
 from utilities import config, secrets
 from utilities import integration_adaptors_logger as log
-
-from lookup import sds_client, mhs_attribute_lookup, routing_reliability, \
-    sds_connection_factory
-from request import routing_reliability_handler
 
 logger = log.IntegrationAdaptorsLogger(__name__)
 
 
-def initialise_routing(search_base: str) -> routing_reliability.RoutingAndReliability:
+def initialise_routing() -> routing_reliability.RoutingAndReliability:
     """Initialise the routing and reliability component to be used for SDS queries.
 
-    :param search_base: The LDAP location to use as the base of SDS searched. e.g. ou=services,o=nhs.
     :return:
     """
-    sds_connection = sds_connection_factory.create_connection()
-
-    client = sds_client.SDSClient(sds_connection, search_base)
+    client = lookup.sds_client_factory.get_sds_client()
     attribute_lookup = mhs_attribute_lookup.MHSAttributeLookup(client=client)
     routing = routing_reliability.RoutingAndReliability(attribute_lookup)
     return routing
@@ -59,7 +55,7 @@ def main():
     secrets.setup_secret_config("SDS")
     log.configure_logging('sds')
 
-    routing = initialise_routing(search_base=config.get_config("LDAP_SEARCH_BASE"))
+    routing = initialise_routing()
     start_tornado_server(routing)
 
 
