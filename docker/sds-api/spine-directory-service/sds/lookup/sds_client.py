@@ -147,7 +147,7 @@ class SDSClient(object):
         return response
 
 
-class MockSDSClient:
+class SDSMockClient:
 
     def __init__(self):
         self.pause_duration = int(config.get_config('MOCK_LDAP_PAUSE_IN_SECONDS', default="0"))
@@ -161,6 +161,6 @@ class MockSDSClient:
 
     @staticmethod
     def _read_mock_data():
-        with open('./lookup/mock_data/mock_sds_response.json', 'r') as f:
+        with open('./lookup/mock_data/sds_response.json', 'r') as f:
             data = f.read()
             return ast.literal_eval(data)

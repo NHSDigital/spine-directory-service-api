@@ -60,14 +60,7 @@ class TestRoutingReliabilityRequestHandler(tornado.testing.AsyncHTTPTestCase):
         self.routing.get_routing_and_reliability.assert_called_with(test_request_handler.ORG_CODE, test_request_handler.SERVICE_ID)
 
     def test_get_returns_error(self):
-        with self.subTest("Routing lookup error"):
-            self.routing.get_routing_and_reliability.side_effect = Exception
-
-            response = self.fetch(test_request_handler.build_url(), method="GET")
-
-            self.assertEqual(response.code, 500)
-
-        with self.subTest("Reliability lookup error"):
+        with self.subTest("Routing and reliability lookup error"):
             self.routing.get_routing_and_reliability.side_effect = Exception
 
             response = self.fetch(test_request_handler.build_url(), method="GET")
@@ -138,5 +131,6 @@ class TestRoutingReliabilityRequestHandler(tornado.testing.AsyncHTTPTestCase):
 
             self.assertEqual(response.code, 400)
 
-    def endpoint_resource_validation(self, json_body: dict):
+    @staticmethod
+    def endpoint_resource_validation(json_body: dict):
         endpoint.Endpoint(json_body)
