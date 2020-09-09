@@ -10,7 +10,8 @@ logger = log.IntegrationAdaptorsLogger(__name__)
 def get_sds_client():
     use_mock = str2bool(config.get_config('MOCK_LDAP_RESPONSE', default=str(False)))
     if use_mock:
-        logger.warning("!!! IMPORTANT !!! USING LDAP MOCK RESPONSE")
+        pause_duration = float(config.get_config('MOCK_LDAP_PAUSE', default="0"))
+        logger.warning("!!! IMPORTANT !!! Using LDAP mock response with %.0fms delay", pause_duration)
         return SDSMockClient()
     else:
         sds_connection = sds_connection_factory.create_connection()

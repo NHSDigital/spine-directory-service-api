@@ -10,3 +10,5 @@ services:
       - SDS_LDAP_URL=ldap://192.168.128.11
       - SDS_LDAP_SEARCH_BASE=ou=services,o=nhs
       - SDS_LDAP_DISABLE_TLS=True
+      - SDS_MOCK_LDAP_RESPONSE
+      - SDS_MOCK_LDAP_PAUSE

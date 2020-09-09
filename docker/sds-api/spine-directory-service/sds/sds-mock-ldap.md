@@ -3,7 +3,7 @@
 SDS component has a built in LDAP mocking capability configurable via environment variables:
 
 - `SDS_MOCK_LDAP_RESPONSE` - turns the behaviour on and off (`"True"` / `"False"`)
-- `SDS_MOCK_LDAP_PAUSE_IN_SECONDS` - optional value that determines how long the mock code should wait before returning a fake response
+- `SDS_MOCK_LDAP_PAUSE` - [optional] value in milliseconds that determines how long the mock code should wait before returning a fake response
 
 # Mock data
 
@@ -13,5 +13,5 @@ Fake data is defined at
 
 # Simulating slow LDAP response
 
-When mock response is enabled, it is possible to simulate long LDAP response using the `SDS_MOCK_LDAP_PAUSE_IN_SECONDS` environment variable
+When mock response is enabled, it is possible to simulate long LDAP response using the `SDS_MOCK_LDAP_PAUSE` environment variable
 If value is not present, the default 0 seconds will be used - immediate response
