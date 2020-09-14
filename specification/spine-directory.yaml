@@ -30,7 +30,7 @@ info:
     Please see [System topologies](https://developer.nhs.uk/apis/gpconnect-0-7-2/integration_system_topologies.html) for more details on the allocation of ASIDs and Party Keys. 
     
     ## API status 
-    This API is in [balphaeta](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#api-status), meaning:- we are in early prototyping, the API specification is available, and maybe a sandbox service is available - but we expect to make extensive breaking changes based on developer feedback   
+    This API is in [alpha](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#api-status), meaning:- we are in early prototyping, the API specification is available, and maybe a sandbox service is available - but we expect to make extensive breaking changes based on developer feedback   
     If you have any other queries, please [contact us](https://digital.nhs.uk/developer/help-and-support).
 
     ## Technology 
