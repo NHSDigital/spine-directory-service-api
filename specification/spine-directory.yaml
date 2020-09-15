@@ -42,10 +42,10 @@ info:
     - data items that are country-specific and thus not included in the FHIR global base resources are usually wrapped in an `extension` object
     
     ## Network access
-    This API is available on the Internet, although access using NHS smartcards (see below) currently requires a connection to the [Health and Social Care Network (HSCN)](https://digital.nhs.uk/services/health-and-social-care-network).
+    This API is available on the Internet.
 
     ## Authorisation 
-    This API uses the Unattended Access pattern.  For more information on this pattern, please see our [Security and Authorisation](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation#user-restricted-apis) page within the NHS Digital Portal.
+    This API uses the Application-restricted pattern.  For more information on this pattern, please see our [Security and Authorisation](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation#user-restricted-apis) page within the NHS Digital Portal.
 
     ## Environments and testing 
     | Environment       | Base URL                                                       
