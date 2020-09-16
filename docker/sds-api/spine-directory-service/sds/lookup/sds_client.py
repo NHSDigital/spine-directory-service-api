@@ -1,15 +1,16 @@
 """This module contains the client used to make requests to SDS."""
 
+import ast
 import asyncio
 from typing import Dict, List
 
 import ldap3
 import ldap3.core.exceptions as ldap_exceptions
 
-from lookup import sds_connection_factory
-from utilities import integration_adaptors_logger as log
-
 import lookup.sds_exception as sds_exception
+from lookup import sds_connection_factory
+from utilities import config
+from utilities import integration_adaptors_logger as log
 
 logger = log.IntegrationAdaptorsLogger(__name__)
 
@@ -144,3 +145,22 @@ class SDSClient(object):
             logger.error("LDAP query timed out for {message_id}", fparams={"message_id": message_id})
 
         return response
+
+
+class SDSMockClient:
+
+    def __init__(self):
+        self.pause_duration = int(config.get_config('MOCK_LDAP_PAUSE', default="0"))
+        self.mock_data = self._read_mock_data()
+
+    async def get_mhs_details(self, ods_code: str, interaction_id: str) -> Dict:
+        if self.pause_duration != 0:
+            logger.debug("Sleeping for %sms", self.pause_duration)
+            await asyncio.sleep(self.pause_duration / 1000)
+        return self.mock_data
+
+    @staticmethod
+    def _read_mock_data():
+        with open('./lookup/mock_data/sds_response.json', 'r') as f:
+            data = f.read()
+            return ast.literal_eval(data)
