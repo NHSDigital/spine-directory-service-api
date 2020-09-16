@@ -270,4 +270,3 @@ components:
       xml:
         name: Endpoint
         namespace: "http://hl7.org/fhir"
-
