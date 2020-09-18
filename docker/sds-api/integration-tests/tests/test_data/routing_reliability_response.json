@@ -1,17 +1,81 @@
 {
-  "nhsMhsFQDN": "192.168.128.11",
-  "nhsMHSEndPoint": [
-    "https://192.168.128.11/reliablemessaging/reliablerequest"
+  "address": "https://192.168.128.11/reliablemessaging/reliablerequest",
+  "connectionType": {
+    "code": "hl7-fhir-msg",
+    "display": "HL7 FHIR Messaging",
+    "system": "http://terminology.hl7.org/CodeSystem/endpoint-connection-type"
+  },
+  "extension": [
+    {
+      "extension": [
+        {
+          "url": "nhsMHSSyncReplyMode",
+          "valueString": "MSHSignalsOnly"
+        },
+        {
+          "url": "nhsMHSRetryInterval",
+          "valueString": "PT1M"
+        },
+        {
+          "url": "nhsMHSRetries",
+          "valueInteger": 2
+        },
+        {
+          "url": "nhsMHSPersistDuration",
+          "valueString": "PT5M"
+        },
+        {
+          "url": "nhsMHSDuplicateElimination",
+          "valueString": "always"
+        },
+        {
+          "url": "nhsMHSAckRequested",
+          "valueString": "always"
+        }
+      ],
+      "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-SDS-ReliabilityConfiguration"
+    }
   ],
-  "nhsMHSPartyKey": "YES-0000806",
-  "nhsMhsCPAId": "S20001A000182",
-  "uniqueIdentifier": [
-    "227319907548"
+  "id": "<TO_REPLACE>",
+  "identifier": [
+    {
+      "system": "https://fhir.nhs.uk/Id/nhsEndpointServiceId",
+      "value": "urn:nhs:names:services:psis:REPC_IN150016UK05"
+    },
+    {
+      "system": "https://fhir.nhs.uk/Id/nhsMhsFQDN",
+      "value": "192.168.128.11"
+    },
+    {
+      "system": "https://fhir.nhs.uk/Id/nhsMhsPartyKey",
+      "value": "YES-0000806"
+    },
+    {
+      "system": "https://fhir.nhs.uk/Id/nhsMhsCPAId",
+      "value": "S20001A000182"
+    },
+    {
+      "system": "https://fhir.nhs.uk/Id/nhsSpineASID",
+      "value": "227319907548"
+    }
   ],
-  "nhsMHSSyncReplyMode": "MSHSignalsOnly",
-  "nhsMHSRetryInterval": "PT1M",
-  "nhsMHSRetries": "2",
-  "nhsMHSPersistDuration": "PT5M",
-  "nhsMHSDuplicateElimination": "always",
-  "nhsMHSAckRequested": "always"
+  "managingOrganization": {
+    "identifier": {
+      "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+      "value": "YES"
+    }
+  },
+  "payloadType": [
+    {
+      "coding": [
+        {
+          "code": "any",
+          "display": "Any",
+          "system": "http://terminology.hl7.org/CodeSystem/endpoint-payload-type"
+        }
+      ]
+    }
+  ],
+  "resourceType": "Endpoint",
+  "status": "active"
 }

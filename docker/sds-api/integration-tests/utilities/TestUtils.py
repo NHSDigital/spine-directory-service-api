@@ -1,5 +1,6 @@
 import json
 import os
+import re
 import unittest
 
 from utilities.SdsHttpRequestBuilder import SdsHttpRequestBuilder
@@ -20,10 +21,19 @@ def test_should_return_successful_response(test_data_file_name):
         .with_service_id('urn:nhs:names:services:psis:REPC_IN150016UK05') \
         .execute_get_expecting_success()
 
-    assertions.assertEqual('application/json', response.headers['Content-Type'])
+    assertions.assertEqual('application/fhir+json', response.headers['Content-Type'])
 
     expected_body = read_test_data_json(test_data_file_name)
     body = json.loads(response.content.decode('UTF-8'))
+
+    # id is generated so we first check if existing one is an UUID
+    # and then we use it in the expected json
+    actual_id = body['id']
+    uuid4hex = re.compile('^[A-F0-9]{8}-?[A-F0-9]{4}-?[A-F0-9]{4}-?[A-F0-9]{4}-?[A-F0-9]{12}')
+    assertions.assertTrue(bool(uuid4hex.match(actual_id)))
+
+    expected_body['id'] = actual_id
+
     assertions.assertEqual(expected_body, body)
 
 

@@ -2,7 +2,12 @@
 
 import lookup.mhs_attribute_lookup as mhs_attribute_lookup
 
-RELIABILITY_KEYS = [
+ROUTING_AND_RELIABILITY_KEYS = [
+    'nhsMhsFQDN',
+    'nhsMHSEndPoint',
+    'nhsMHSPartyKey',
+    'nhsMhsCPAId',
+    'uniqueIdentifier',
     'nhsMHSSyncReplyMode',
     'nhsMHSRetryInterval',
     'nhsMHSRetries',
@@ -10,8 +15,6 @@ RELIABILITY_KEYS = [
     'nhsMHSDuplicateElimination',
     'nhsMHSAckRequested'
 ]
-
-ROUTING_KEYS = ['nhsMhsFQDN', 'nhsMHSEndPoint', 'nhsMHSPartyKey', 'nhsMhsCPAId', 'uniqueIdentifier']
 
 
 class RoutingAndReliability(object):
@@ -22,7 +25,7 @@ class RoutingAndReliability(object):
             raise ValueError("MHS Attribute Lookup Handler not found")
         self.lookup = lookup_handler
 
-    async def get_end_point(self, org_code, service_id):
+    async def get_routing_and_reliability(self, org_code, service_id):
         """Get the endpoint of the MHS registered for the specified org code and service ID.
 
         :param org_code:
@@ -30,17 +33,5 @@ class RoutingAndReliability(object):
         :return:
         """
         endpoint_details = await self.lookup.retrieve_mhs_attributes(org_code, service_id)
-        routing = {item: endpoint_details[item] for item in ROUTING_KEYS}
+        routing = {item: endpoint_details[item] for item in ROUTING_AND_RELIABILITY_KEYS}
         return routing
-
-    async def get_reliability(self, org_code, service_id):
-        """Get the reliability information for the MHS registered for the specified org code and service ID.
-
-        :param org_code:
-        :param service_id:
-        :return:
-        """
-        endpoint_details = await self.lookup.retrieve_mhs_attributes(org_code, service_id)
-
-        reliability = {item: endpoint_details[item] for item in RELIABILITY_KEYS}
-        return reliability
