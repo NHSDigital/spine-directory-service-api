@@ -34,8 +34,11 @@ extends:
     spec_file: ${{ variables.spec_file }}
     apigee_deployments:
       - environment: internal-dev
+        make_spec_visible: true
       - environment: internal-qa
+        make_spec_visible: true
       - environment: internal-qa-sandbox
+        make_spec_visible: true
         proxy_path: sandbox
       - environment: ref
         depends_on:
