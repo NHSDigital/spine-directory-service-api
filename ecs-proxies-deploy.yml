@@ -10,6 +10,10 @@ docker_service:
         value: NOTSET
       - name: SDS_LDAP_SEARCH_BASE
         value: ou=services,o=nhs
+      - name: SDS_MOCK_LDAP_RESPONSE
+        value: "True"
+      - name: SDS_MOCK_LDAP_PAUSE
+        value: "2000"
     secrets:
       - name: SDS_LDAP_URL
         valueFrom: "/ptl/platform-common/cis/ldap-uri"
