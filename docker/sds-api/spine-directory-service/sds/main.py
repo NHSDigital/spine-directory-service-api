@@ -1,6 +1,9 @@
+import re
+
 import tornado.httpserver
 import tornado.ioloop
 import tornado.web
+from tornado.routing import PathMatches
 
 import lookup.sds_client_factory
 from lookup import mhs_attribute_lookup, routing_reliability
@@ -30,8 +33,8 @@ def start_tornado_server(routing: routing_reliability.RoutingAndReliability) -> 
     """
     handler_dependencies = {"routing": routing}
     application = tornado.web.Application([
-        ("/endpoint", routing_reliability_handler.RoutingReliabilityRequestHandler, handler_dependencies),
-        ("/healthcheck", healthcheck_handler.HealthcheckHandler)
+        (PathMatches(re.compile("/endpoint", re.IGNORECASE)), routing_reliability_handler.RoutingReliabilityRequestHandler, handler_dependencies),
+        (PathMatches(re.compile("/healthcheck", re.IGNORECASE)), healthcheck_handler.HealthcheckHandler)
     ])
     server = tornado.httpserver.HTTPServer(application)
     server_port = int(config.get_config('SERVER_PORT', default='9000'))

@@ -13,10 +13,14 @@ def read_test_data_json(file):
         return json.load(json_file)
 
 
-def test_should_return_successful_response(test_data_file_name):
+def test_should_return_successful_response(test_data_file_name, request_builder_modifier=None):
     assertions = unittest.TestCase('__init__')
 
-    response = SdsHttpRequestBuilder() \
+    request_builder = SdsHttpRequestBuilder()
+    if request_builder_modifier is not None:
+        request_builder_modifier(request_builder)
+
+    response = request_builder \
         .with_org_code('YES') \
         .with_service_id('urn:nhs:names:services:psis:REPC_IN150016UK05') \
         .execute_get_expecting_success()
@@ -48,3 +52,10 @@ def test_should_return_bad_request_when_query_parameters_are_missing():
     SdsHttpRequestBuilder() \
         .with_service_id('urn:nhs:names:services:psis:REPC_IN150016UK05') \
         .execute_get_expecting_bad_request_response()
+
+
+def test_endpoint_should_be_case_insensitive(test_data_file_name):
+    def modify_request_builder(request_builder):
+        request_builder.sds_host = request_builder.sds_host.upper()
+
+    test_should_return_successful_response(test_data_file_name, modify_request_builder)
