@@ -43,9 +43,15 @@ info:
     
     ## Network access
     This API is available on the Internet.
+    
+    For more details see [Network access for APIs](https://digital.nhs.uk/developer/guides-and-documentation/network-access-for-apis).
+    
+    ## Security and Authorisation 
+    This API uses the Application-restricted pattern.  
 
-    ## Authorisation 
-    This API uses the Application-restricted pattern.  For more information on this pattern, please see our [Security and Authorisation](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation#user-restricted-apis) page within the NHS Digital Portal.
+    In this pattern, you authenticate your application by including an API key with each API request. The API key is unique to your application.
+
+    For more details, including detailed technical integration instructions, see [Security and Authorisation - Application-restricted RESTful APIs - API key authentication](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation/application-restricted-restful-apis-api-key-authentication) page within the NHS Digital Portal.
 
     ## Environments and testing 
     | Environment       | Base URL                                                       
@@ -68,6 +74,15 @@ info:
     The SDS API specification has more information on this.
 
     For more details see [integration testing with our RESTful APIs](https://digital.nhs.uk/developer/guides-and-documentation/testing#integration-testing-with-our-restful-apis).
+
+    ## Related APIs
+    The following APIs are related to this one:
+    - [Spine Directory Service - LDAP API](https://digital.nhs.uk/developer/api-catalogue/spine-directory-service-ldap) - Access details of organisations, people and systems registered in the Spine Directory Service (SDS) using our LDAP API.
+    
+    ## Legal Use
+    This API can only be used where there is a legal basis to do so. Make sure you have a valid use case before you go too far with your development.
+
+    You must do this before you can go live (see ‘Onboarding’ below). 
     
     ## Onboarding
     Onboarding for this API is not available yet, but when it is, you need to get your software approved by us before it can go live with this API. We call this onboarding. The onboarding process can sometimes be quite long, so it’s worth planning well ahead.
@@ -270,4 +285,3 @@ components:
       xml:
         name: Endpoint
         namespace: "http://hl7.org/fhir"
-
