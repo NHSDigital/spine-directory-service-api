@@ -7,20 +7,16 @@ info:
   title: Spine Directory Service API
   description: |
     ## Overview
-    Use this API to access the [Spine Directory Services (SDS)](https://digital.nhs.uk/services/spine) - an endpoint and identifier directory for Spine and Spine connected systems, containing information on organisations, people and systems registered in the Spine Directory Service (SDS).
+    Use this API to access details of systems registered in the Spine Directory Service (SDS).
     
     You can:
-    - search for information on systems
+    - get accredited system details
 
     You cannot currently use this API to:
     - search for organisations
     - search for people
-
-    GP Connect provider and consumer systems are registered in SDS in order to enable: 
-    * consumer systems to look up provider system’s ASID and endpoint information 
-    * the Spine Secure Proxy to allow or deny requests based on known identifier and endpoint information  
     
-    ### Accredited Systems records 
+    ### Accredited system records 
     Every system that connects to the Spine has one or more “Accredited System” (AS) records in SDS, identified by an Accredited System Identifier (ASID). 
     This ASID is unique to a system deployed in a specific organisation, so the same application deployed into three NHS organisations would typically be represented as three unique ASIDs. 
     
@@ -30,19 +26,23 @@ info:
     Please see [System topologies](https://developer.nhs.uk/apis/gpconnect-0-7-2/integration_system_topologies.html) for more details on the allocation of ASIDs and Party Keys. 
     
     ## API status 
-    This API is in [alpha](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#api-status), meaning:- we are in early prototyping, the API specification is available, and maybe a sandbox service is available - but we expect to make extensive breaking changes based on developer feedback   
+    This API is in [alpha](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#api-status), meaning:
+    - the API is available in our sandbox and integration test environments.
+    - the API is not yet available for production use. 
+    - we might make breaking changes.
+    
+    To see our roadmap, or to suggest, comment or vote on features for this API, see our [interactive product backlog.](https://nhs-digital-api-management.featureupvote.com/?order=popular&filter=all&tag=sds-fhir-api)
+    
     If you have any other queries, please [contact us](https://digital.nhs.uk/developer/help-and-support).
 
     ## Technology 
     This API is [RESTful](https://digital.nhs.uk/developer/guides-and-documentation/api-technologies-at-nhs-digital#basic-rest).
 
-    It also conforms to the [FHIR](https://digital.nhs.uk/developer/guides-and-documentation/api-technologies-at-nhs-digital#fhir) global standard for health care data exchange.Specifically, it is aligned with [FHIR UK Core](https://digital.nhs.uk/services/fhir-uk-core), which is built on FHIR Release 4.You don’t need to know much about FHIR to use this API - FHIR APIs are just RESTful APIs that follow specific rules.In particular:
-    - resource names are capitalised and singular, for example `/Patient` not `/patients`
-    - array names are singular, for example `line` not `lines` for address lines
-    - data items that are country-specific and thus not included in the FHIR global base resources are usually wrapped in an `extension` object
+    It also conforms to the [FHIR](https://digital.nhs.uk/developer/guides-and-documentation/api-technologies-at-nhs-digital#fhir) global standard for health care data exchange.Specifically, it is aligned with [FHIR UK Core](https://digital.nhs.uk/services/fhir-uk-core), which is built on FHIR Release 4. You don’t need to know much about FHIR to use this API - FHIR APIs are just RESTful APIs that follow specific rules. In particular:
+    - resource names are capitalised and singular, for example `/Endpoint` not `/endpoints`
     
     ## Network access
-    This API is available on the Internet.
+    This API is available on the internet and, indirectly, on the [Health and Social Care Network (HSCN).](https://digital.nhs.uk/services/health-and-social-care-network)
     
     For more details see [Network access for APIs](https://digital.nhs.uk/developer/guides-and-documentation/network-access-for-apis).
     
@@ -63,15 +63,17 @@ info:
     Our [sandbox environment](https://digital.nhs.uk/developer/guides-and-documentation/testing#sandbox-testing):
     * is for early developer testing
     * only covers a limited set of scenarios
-    * is stateless, so it does not actually persist any updates
-    * is open access,so does not allow you to test authorisation
+    * is open-access, so does not allow you to test authorisation
     
     For more details on sandbox testing, or to try out the sandbox using our \"Try this API\" feature, see the documentation for each endpoint.
     
     ## Integration testing 
-    Our [integration test environment](https://digital.nhs.uk/developer/guides-and-documentation/testing#integration-testing) is available for formal integration testing.
-
-    The SDS API specification has more information on this.
+    Our [integration test environment](https://digital.nhs.uk/developer/guides-and-documentation/testing#integration-testing): 
+    - is for formal integration testing.
+    - includes application authentication
+    
+    # Data
+    The data used will be dependant on the service you are trying to access. See [Spine Services and Interaction IDs](https://nhsconnect.github.io/FHIR-SpineCore/security_interaction_ids.html)
 
     For more details see [integration testing with our RESTful APIs](https://digital.nhs.uk/developer/guides-and-documentation/testing#integration-testing-with-our-restful-apis).
 
@@ -85,13 +87,8 @@ info:
     You must do this before you can go live (see ‘Onboarding’ below). 
     
     ## Onboarding
-    Onboarding for this API is not available yet, but when it is, you need to get your software approved by us before it can go live with this API. We call this onboarding. The onboarding process can sometimes be quite long, so it’s worth planning well ahead.
-    To onboard for this API, follow the [Supplier Conformance Assessment List (SCAL) process.](https://digital.nhs.uk/developer/guides-and-documentation/onboarding-process#onboard-using-the-supplier-conformance-assessment-list-scal-process)
-    When following the SCAL process, note that:
-    * In step 9: you must conduct penetration testing to [CHECK standards](https://www.ncsc.gov.uk/information/check-penetration-testing).
-    * In step 10: when you complete the Service Desk Registration Form, send it to [api.management@nhs.net](mailto:api.management@nhs.net).
-    * In step 11: submit your completed SCAL to [api.management@nhs.net](mailto:api.management@nhs.net).
-    * In step 14: to request production access, contact us at [api.management@nhs.net](mailto:api.management@nhs.net).
+    You need to get your software approved by us before it can go live with this API. We call this onboarding. The onboarding process can sometimes be quite long, so it’s worth planning well ahead.
+    This API is not yet available for onboarding.
 
   contact:
     name: Spine Directory Service API Support
@@ -103,32 +100,39 @@ servers:
 paths:
   /Endpoint:
     get:
-      summary: Request to obtain combined routing and reliability information
+      summary: Get accredited system details
       operationId: getEndpoint
       description: |
         # Overview
-        Use this endpoint to search for accredited systems routing and reliability information in SDS.
-
-        You must use a combination of:
+        Use this endpoint to get accredited systems routing and reliability information in SDS.
+        
+        This endpoint should return a single matching accredited system object which provides the following information:
+          * Endpoint Service ID
+          * Message Handling System Party Key
+          * Accredited System ID
+          * Endpoint URL
+          * Fully Qualified Domain Name of the Message Handling System
+        
+        To get the information, you must supply:
           * organisation code
-          * service Id
+          * service identifier
 
       parameters:
         - in: query
           name: org-code
-          description: The organisation code for the Spine instance that your MHS is communicating with (eg."YES-0000806")
+          description: The organisation code for the NHS Spine instance that your Message Handling System is communicating with (eg."YES-0000806")
           required: true
           schema:
             type: string
         - in: query
           name: service-id
-          description: service that is being contacted and the action that is required (eg."urn:nhs:names:services:psis:REPC_IN150016UK05")
+          description: The service that is being contacted and the action that is required (eg."urn:nhs:names:services:psis:REPC_IN150016UK05"). See the Data section in this API Specification document for more information.
           required: true
           schema:
             type: string
       responses:
         '200':
-          description: search results matching criteria
+          description: One or more accredited systems were found that match the search criteria.
           content:
             application/fhir+json:
               schema:
@@ -139,12 +143,12 @@ paths:
                 allOf:
                   - $ref: '#/components/schemas/Endpoint'
         '400':
-          description: bad input parameter
+          description: Missing or invalid query parameter(s).
 components:
   schemas:
     Endpoint:
       type: object
-      description: "A FHIR endpoint that will return the routing and reliability information from the spine route lookup"
+      description: "A FHIR Endpoint resource that includes routing and reliability information for the accredited system"
       required:
         - address
         - status
@@ -153,11 +157,11 @@ components:
       properties:
         resourceType:
           type: string
-          description: "FHIR Resource type"
+          description: "FHIR Resource type. Always 'Endpoint'."
           example: "Endpoint"
         id:
           type: string
-          description: "Logical id of this artifact"
+          description: "SDS’s unique identifier for this accredited system record."
           format: uuid
           example: "f0f0e921-92ca-4a88-a550-2dbb36f703af"
         extension:
@@ -280,7 +284,7 @@ components:
                       example: "any"
         address:
           type: string
-          description: "The technical base address for connecting to this endpoint"
+          description: "The base URL for connecting to this endpoint"
           example: "https://192.168.128.11/"
       xml:
         name: Endpoint
