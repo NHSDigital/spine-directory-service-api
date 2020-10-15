@@ -2,12 +2,12 @@ FROM nhsdev/nia-spine-directory-service-base:1.0.0
 
 RUN mkdir -p /usr/src/app/spine-directory-service/sds
 
-COPY spine-directory-service/sds/Pipfile /usr/src/app
-COPY spine-directory-service/sds/Pipfile.lock /usr/src/app
+COPY ./Pipfile /usr/src/app
+COPY ./Pipfile.lock /usr/src/app
 
 RUN pip install pipenv
 
-COPY spine-directory-service/sds/ /usr/src/app/spine-directory-service/sds
+COPY . /usr/src/app/spine-directory-service/sds
 
 WORKDIR /usr/src/app/spine-directory-service/sds
 
