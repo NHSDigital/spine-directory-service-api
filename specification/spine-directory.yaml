@@ -138,7 +138,6 @@ paths:
               schema:
                 allOf:
                   - $ref: '#/components/schemas/Endpoint'
-
             application/fhir+xml:
               schema:
                 allOf:
