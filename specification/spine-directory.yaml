@@ -247,13 +247,9 @@ components:
                 type: string
         status:
           type: string
+          description: "The Endpoint status is always 'active'"
           enum:
             - active
-            - suspended 
-            - error 
-            - off 
-            - entered-in-error 
-            - test
         connectionType:
           type: object
           description: "Protocol/Profile/Standard to be used with this endpoint connection"
