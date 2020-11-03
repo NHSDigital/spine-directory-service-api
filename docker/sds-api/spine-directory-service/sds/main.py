@@ -24,20 +24,7 @@ def initialise_routing() -> routing_reliability.RoutingAndReliability:
     attribute_lookup = mhs_attribute_lookup.MHSAttributeLookup(client=client)
     routing = routing_reliability.RoutingAndReliability(attribute_lookup)
     return routing
-
-
-def start_tornado_server(routing: routing_reliability.RoutingAndReliability) -> None:
-    """Start the Tornado server
-
-    :param routing: The routing/reliability component to be used when servicing requests.
-    """
-    handler_dependencies = {"routing": routing}
-    application = tornado.web.Application([
-        (PathMatches(re.compile("/endpoint", re.IGNORECASE)), routing_reliability_handler.RoutingReliabilityRequestHandler, handler_dependencies),
-        (PathMatches(re.compile("/healthcheck", re.IGNORECASE)), healthcheck_handler.HealthcheckHandler)
-    ])
-    server = tornado.httpserver.HTTPServer(application)
-    server_port = int(config.get_config('SERVER_PORT', default='9000'))
+'9000'))
     server.listen(server_port)
 
     logger.info('Starting router server at port {server_port}', fparams={'server_port': server_port})
@@ -55,15 +42,7 @@ def start_tornado_server(routing: routing_reliability.RoutingAndReliability) -> 
 
 def main():
     config.setup_config("SDS")
-    secrets.setup_secret_config("SDS")
-    log.configure_logging('sds')
-
-    routing = initialise_routing()
-    start_tornado_server(routing)
-
-
-if __name__ == "__main__":
-    try:
+    secrets
         main()
     except Exception:
         logger.critical('Fatal exception in main application', exc_info=True)
