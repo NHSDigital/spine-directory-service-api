@@ -1,14 +1,16 @@
-import re
+from typing import Optional, Dict, Any
 
 import tornado.httpserver
 import tornado.ioloop
 import tornado.web
-from tornado.routing import PathMatches
+from tornado import httputil
+from tornado.routing import Matcher
 
 import lookup.sds_client_factory
 from lookup import mhs_attribute_lookup, routing_reliability
 from request import healthcheck_handler
 from request import routing_reliability_handler
+from request.error_handler import ErrorHandler
 from utilities import config, secrets
 from utilities import integration_adaptors_logger as log
 
@@ -31,11 +33,20 @@ def start_tornado_server(routing: routing_reliability.RoutingAndReliability) -> 
 
     :param routing: The routing/reliability component to be used when servicing requests.
     """
+
+    class CaseInsensitiveRouteMatcher(Matcher):
+        def __init__(self, path) -> None:
+            super().__init__()
+            self.path = path
+
+        def match(self, request: httputil.HTTPServerRequest) -> Optional[Dict[str, Any]]:
+            return {} if request.path.lower() == self.path.lower() else None
+
     handler_dependencies = {"routing": routing}
     application = tornado.web.Application([
-        (PathMatches(re.compile("/endpoint", re.IGNORECASE)), routing_reliability_handler.RoutingReliabilityRequestHandler, handler_dependencies),
-        (PathMatches(re.compile("/healthcheck", re.IGNORECASE)), healthcheck_handler.HealthcheckHandler)
-    ])
+        (CaseInsensitiveRouteMatcher("/endpoint"), routing_reliability_handler.RoutingReliabilityRequestHandler, handler_dependencies),
+        (CaseInsensitiveRouteMatcher("/healthcheck"), healthcheck_handler.HealthcheckHandler)
+    ], default_handler_class=ErrorHandler)
     server = tornado.httpserver.HTTPServer(application)
     server_port = int(config.get_config('SERVER_PORT', default='9000'))
     server.listen(server_port)
