@@ -53,7 +53,7 @@ def start_tornado_server(routing: routing_reliability.RoutingAndReliability) -> 
     logger.info('Server shut down, exiting...')
 
 
-def main:
+ef main:
     config.setup_config("SDS")
     secrets.setup_secret_config("SDS")
     log.configure_logging('sds')
