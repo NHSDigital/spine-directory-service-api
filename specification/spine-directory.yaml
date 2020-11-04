@@ -130,6 +130,13 @@ paths:
           required: true
           schema:
             type: string
+        - in: header
+          name: X-Correlation-Id
+          description: UUID for request tracking
+          schema:
+            type: string
+            format: uuid
+          required: false
       responses:
         '200':
           description: One or more accredited systems were found that match the search criteria.
@@ -144,6 +151,18 @@ paths:
                   - $ref: '#/components/schemas/Endpoint'
         '400':
           description: Missing or invalid query parameter(s).
+        '405':
+          description: Unsupported HTTP method. For this endpoint only GET is available
+        '404':
+          description: Invalid exist
+        '406':
+          description: Unsupported media type
+        '500':
+          description: Unhandled internal server error
+        '502':
+          description: Upstream LDAP returned an unsupported responses
+        '504':
+          descritpion: Upstream LDAP server request has timed out
 components:
   schemas:
     Endpoint:
