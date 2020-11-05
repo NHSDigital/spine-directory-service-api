@@ -36,7 +36,7 @@ def _build_sds_connection_tls(ldap_address: str, private_key: str, local_cert: s
 
     load_tls = ldap3.Tls(local_private_key_file=certificates.private_key_path,
                          local_certificate_file=certificates.local_cert_path, validate=ssl.CERT_NONE,
-                         version=ssl.PROTOCOL_TLSv1, ca_certs_file=certificates.ca_certs_path)
+                         version=ssl.PROTOCOL_TLSv1_2, ca_certs_file=certificates.ca_certs_path)
 
     ldap3.set_config_parameter('RESTARTABLE_TRIES', _LDAP_CONNECTION_RETRIES)
     server = ldap3.Server(ldap_address, port=636, use_ssl=True, tls=load_tls, connect_timeout=_LDAP_CONNECTION_TIMEOUT_IN_SECONDS)
