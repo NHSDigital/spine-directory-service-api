@@ -173,16 +173,60 @@ components:
         - status
         - connectionType
         - payloadType
+      example: 
+        resourceType: "Endpoint"
+        id: "f0f0e921-92ca-4a88-a550-2dbb36f703af"
+        extension:
+          url: "https://fhir.nhs.uk/R4/StructureDefinition/Extension-SDS-ReliabilityConfiguration"
+          extension:
+            - url: "nhsMHSSyncReplyMode"
+              valueString: "MSHSignalsOnly"
+            - url: "nhsMHSRetryInterval"
+              valueString: "PT1M"
+            - url: "nhsMHSRetries"
+              valueString: "2"
+            - url: "nhsMHSPersistDuration"
+              valueString: "PT5M"       
+            - url: "nhsMHSDuplicateElimination"
+              valueString: "always"
+            - url: "nhsMHSAckRequested"
+              valueString: "always"
+        identifier:
+        - system: "https://fhir.nhs.uk/Id/nhsEndpointServiceId"
+          value: "urn:nhs:names:services:psis:REPC_IN150016UK0"
+        - system: "https://fhir.nhs.uk/Id/nhsMhsFQD"
+          value: "msg.opentest.hscic.gov.uk"
+        - system: "https://fhir.nhs.uk/Id/nhsMhsEndPoint"
+          value: "https://msg.opentest.hscic.gov.uk/reliablemessaging/reliablerequest"
+        - system: "https://fhir.nhs.uk/Id/nhsMhsPartyKey"
+          value: "R8008-0000806"
+        - system: "https://fhir.nhs.uk/Id/nhsMhsCPAId"
+          value: "S20001A000182"
+        - system: "https://fhir.nhs.uk/Id/nhsSpineASID"
+          value: "227319907548"
+        status: "active"
+        connectionType:
+          system: "http://terminology.hl7.org/CodeSystem/endpoint-connection-type"
+          code: "hl7-fhir-msg"
+          display: "HL7 FHIR Messaging"
+        managingOrganization:
+          identifier: 
+            system: "https://fhir.nhs.uk/Id/ods-organization-code"
+            value: "R8008"
+        payloadType:
+          coding: 
+           - system: "http://terminology.hl7.org/CodeSystem/endpoint-payload-type"
+             code: "any"
+             display: "any"
+        address: "https://msg.opentest.hscic.gov.uk/"
       properties:
         resourceType:
           type: string
           description: "FHIR Resource type. Always 'Endpoint'."
-          example: "Endpoint"
         id:
           type: string
           description: "SDS’s unique identifier for this accredited system record."
           format: uuid
-          example: "f0f0e921-92ca-4a88-a550-2dbb36f703af"
         extension:
           type: array
           description: "Additional content defined by implementations"
@@ -205,19 +249,6 @@ components:
                         attribute: true
                     valueString:
                       type: string
-                example:
-                  - url: "nhsMHSSyncReplyMode"
-                    valueString: "MSHSignalsOnly"
-                  - url: "nhsMHSRetryInterval"
-                    valueString: "PT1M"
-                  - url: "nhsMHSRetries"
-                    valueString: "2"
-                  - url: "nhsMHSPersistDuration"
-                    valueString: "PT5M"       
-                  - url: "nhsMHSDuplicateElimination"
-                    valueString: "always"
-                  - url: "nhsMHSAckRequested"
-                    valueString: "always"
         identifier:
           type: array
           description: "Identifies this endpoint across multiple systems"
@@ -232,42 +263,21 @@ components:
                   attribute: true
               value:
                 type: string
-          example:
-            - system: "https://fhir.nhs.uk/Id/nhsEndpointServiceId"
-              value: "urn:nhs:names:services:psis:REPC_IN150016UK0"
-            - system: "https://fhir.nhs.uk/Id/nhsMhsFQD"
-              value: "192.168.128.11"
-            - system: "https://fhir.nhs.uk/Id/nhsMhsEndPoint"
-              value: "https://192.168.128.11/reliablemessaging/reliablerequest"
-            - system: "https://fhir.nhs.uk/Id/nhsMhsPartyKey"
-              value: "R8008-0000806"
-            - system: "https://fhir.nhs.uk/Id/nhsMhsCPAId"
-              value: "S20001A000182"
-            - system: "https://fhir.nhs.uk/Id/nhsSpineASID"
-              value: "227319907548"
         status:
           type: string
+          description: "The Endpoint status is always 'active'"
           enum:
             - active
-            - suspended 
-            - error 
-            - off 
-            - entered-in-error 
-            - test
-          example: "active"
         connectionType:
           type: object
           description: "Protocol/Profile/Standard to be used with this endpoint connection"
           properties:
             system:
               type: string
-              example: "http://terminology.hl7.org/CodeSystem/endpoint-connection-type"
             code:
               type: string
-              example: "hl7-fhir-msg"
             display:
               type: string
-              example: "HL7 FHIR Messaging"
         managingOrganization:
           type: object
           description: "Organization that manages this endpoint (might not be the organization that exposes the endpoint)"
@@ -277,10 +287,8 @@ components:
               properties:
                 system:
                   type: string
-                  example: "https://fhir.nhs.uk/Id/ods-organization-code"
                 value:
                   type: string
-                  example: "R8008"
         payloadType:
           type: array
           description: "The type of content that may be used at this endpoint (e.g. XDS Discharge summaries)"
@@ -294,17 +302,14 @@ components:
                   properties:
                     system:
                       type: string
-                      example: "http://terminology.hl7.org/CodeSystem/endpoint-payload-type"
                     code:
                       type: string
-                      example: "any"
                     display:
                       type: string
-                      example: "any"
         address:
           type: string
           description: "The base URL for connecting to this endpoint"
-          example: "https://192.168.128.11/"
       xml:
         name: Endpoint
         namespace: "http://hl7.org/fhir"
+        
