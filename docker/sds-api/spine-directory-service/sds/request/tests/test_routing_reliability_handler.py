@@ -129,7 +129,7 @@ class TestRoutingReliabilityRequestHandler(tornado.testing.AsyncHTTPTestCase):
             self.routing.get_routing_and_reliability.return_value = test_utilities.awaitable(ROUTING_AND_RELIABILITY_DETAILS)
             response = self.fetch(test_request_handler.build_url(), method="GET", headers=headers)
 
-            self.assertEqual(response.code, 400)
+            self.assertEqual(response.code, 406)
 
     @staticmethod
     def endpoint_resource_validation(json_body: dict):
