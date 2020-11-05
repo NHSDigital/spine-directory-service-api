@@ -176,9 +176,9 @@ components:
         - system: "https://fhir.nhs.uk/Id/nhsEndpointServiceId"
           value: "urn:nhs:names:services:psis:REPC_IN150016UK0"
         - system: "https://fhir.nhs.uk/Id/nhsMhsFQD"
-          value: "192.168.128.11"
+          value: "msg.opentest.hscic.gov.uk"
         - system: "https://fhir.nhs.uk/Id/nhsMhsEndPoint"
-          value: "https://192.168.128.11/reliablemessaging/reliablerequest"
+          value: "https://msg.opentest.hscic.gov.uk/reliablemessaging/reliablerequest"
         - system: "https://fhir.nhs.uk/Id/nhsMhsPartyKey"
           value: "R8008-0000806"
         - system: "https://fhir.nhs.uk/Id/nhsMhsCPAId"
@@ -199,7 +199,7 @@ components:
            - system: "http://terminology.hl7.org/CodeSystem/endpoint-payload-type"
              code: "any"
              display: "any"
-        address: "https://192.168.128.11/"
+        address: "https://msg.opentest.hscic.gov.uk/"
       properties:
         resourceType:
           type: string
