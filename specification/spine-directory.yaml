@@ -41,6 +41,8 @@ info:
     It also conforms to the [FHIR](https://digital.nhs.uk/developer/guides-and-documentation/api-technologies-at-nhs-digital#fhir) global standard for health care data exchange.Specifically, it is aligned with [FHIR UK Core](https://digital.nhs.uk/services/fhir-uk-core), which is built on FHIR Release 4. You don’t need to know much about FHIR to use this API - FHIR APIs are just RESTful APIs that follow specific rules. In particular:
     - resource names are capitalised and singular, for example `/Endpoint` not `/endpoints`
     
+    Errors handling in this API follows [NHS guidelines](https://nhsconnect.github.io/FHIR-SpineCore/resources_error_handling.html) and produces an [OperationOutcome](https://fhir.nhs.uk/STU3/StructureDefinition/Spine-OperationOutcome-1) FHIR resource response with appropriate HTTP code
+    
     ## Network access
     This API is available on the internet and, indirectly, on the [Health and Social Care Network (HSCN).](https://digital.nhs.uk/services/health-and-social-care-network)
     
@@ -154,7 +156,7 @@ paths:
         '405':
           description: Unsupported HTTP method. For this endpoint only GET is available
         '404':
-          description: Invalid exist
+          description: Invalid endpoint path
         '406':
           description: Unsupported media type
         '500':
@@ -162,7 +164,7 @@ paths:
         '502':
           description: Upstream LDAP returned an unsupported responses
         '504':
-          descritpion: Upstream LDAP server request has timed out
+          description: Upstream LDAP server request has timed out
 components:
   schemas:
     Endpoint:
@@ -312,4 +314,3 @@ components:
       xml:
         name: Endpoint
         namespace: "http://hl7.org/fhir"
-        
