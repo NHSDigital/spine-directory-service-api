@@ -1,4 +1,5 @@
 import io
+import json
 import logging
 import time
 from unittest import TestCase
@@ -53,7 +54,7 @@ class TestLogger(TestCase):
         self.assertEqual('TEST.SYS', log_entry.name)
         self.assertEqual('INFO', log_entry.level)
         self.assertEqual('yes no', log_entry.message)
-        time.strptime(log_entry.time, '%Y-%m-%dT%H:%M:%S.%fZ')
+        time.strptime(log_entry.time, '%Y-%m-%dT%H:%M:%S.%f')
 
     @patch('utilities.config.get_config')
     @patch('sys.stdout', new_callable=io.StringIO)
@@ -63,7 +64,7 @@ class TestLogger(TestCase):
             def config_values(*args, **kwargs):
                 return {
                     "LOG_LEVEL": level,
-                    "LOG_FORMAT": log.LOG_FORMAT_STRING
+                    "LOG_FORMAT": ""
                 }[args[0]]
 
             mock_stdout.truncate(0)
@@ -87,7 +88,7 @@ class TestLogger(TestCase):
             def config_values(*args, **kwargs):
                 return {
                     "LOG_LEVEL": level,
-                    "LOG_FORMAT": log.LOG_FORMAT_STRING
+                    "LOG_FORMAT": ""
                 }[args[0]]
 
             with self.subTest(f'Log level {level} should not result in critical log message being logged out'):
@@ -101,19 +102,16 @@ class LogEntry:
     def __init__(self, log_line: str):
         super().__init__()
         try:
+            log_line = log_line[log_line.find('{"ascti'):]
             self._unpack(log_line)
         except ValueError as e:
             raise ValueError("Failed parsing log line '%s'", log_line, e)
 
     def _unpack(self, log_line: str):
-        log_elements = log_line.split(' | ')
-        (
-            self.time,
-            self.level,
-            self.process_id,
-            self.correlation_id,
-            self.name,
-            self.message
-        ) = log_elements
-        self.time = self.time[1:-1]
-        self.message = self.message[:-1]
+        value = json.loads(log_line)
+        self.time = value['asctime']
+        self.level = value['levelname']
+        self.process_id = value['process']
+        self.correlation_id = value['correlation_id']
+        self.name = value['name']
+        self.message = value['message']
