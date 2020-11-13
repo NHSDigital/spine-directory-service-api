@@ -28,8 +28,7 @@ class RoutingReliabilityRequestHandler(BaseHandler, ErrorHandler):
 
     @timing.time_request
     async def get(self):
-        org_code = self.get_org_code()
-        service_id = self.get_service_id()
+        org_code, service_id = self._get_query_params()
 
         accept_type = get_valid_accept_type(self.request.headers)
 
@@ -42,18 +41,20 @@ class RoutingReliabilityRequestHandler(BaseHandler, ErrorHandler):
         self.write(get_json_format(routing_and_reliability, org_code, service_id))
         self.set_header(HttpHeaders.CONTENT_TYPE, accept_type)
 
-    def _get_query_parameter(self, query_parameter_name, fhir_identifier):
-        value = self.get_query_argument(query_parameter_name)
-        parts = value.split("|")
+    @staticmethod
+    def _extract_query_parameter_value(value_with_fhir_code, query_parameter_name, fhir_identifier):
+        parts = value_with_fhir_code.split("|")
         if len(parts) != 2 or parts[0] != fhir_identifier or len(parts[1]) == 0:
             raise tornado.web.HTTPError(
                 status_code=400,
                 reason=f"Missing or invalid '{query_parameter_name}' query parameter. Should be '{query_parameter_name}={fhir_identifier}|value'")
-
         return parts[1]
 
-    def get_org_code(self):
-        return self._get_query_parameter(ORG_CODE_QUERY_PARAMETER_NAME, ORG_CODE_FHIR_IDENTIFIER)
+    def _get_query_params(self):
+        org_code_with_fhir_code = self.get_query_argument(ORG_CODE_QUERY_PARAMETER_NAME)
+        service_id_with_fhir_code = self.get_query_argument(SERVICE_ID_QUERY_PARAMETER_NAME)
 
-    def get_service_id(self):
-        return self._get_query_parameter(SERVICE_ID_QUERY_PARAMETER_NAME, SERVICE_ID_FHIR_IDENTIFIER)
+        return (
+            self._extract_query_parameter_value(org_code_with_fhir_code, ORG_CODE_QUERY_PARAMETER_NAME, ORG_CODE_FHIR_IDENTIFIER),
+            self._extract_query_parameter_value(service_id_with_fhir_code, SERVICE_ID_QUERY_PARAMETER_NAME, SERVICE_ID_FHIR_IDENTIFIER)
+        )
