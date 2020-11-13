@@ -8,10 +8,8 @@ logger = log.IntegrationAdaptorsLogger(__name__)
 
 APPLICATION_JSON = 'application/json'
 APPLICATION_FHIR_JSON = 'application/fhir+json'
-APPLICATION_XML = 'application/xml'
-APPLICATION_FHIR_XML = 'application/fhir+xml'
 
-valid_accept_types = [APPLICATION_JSON, APPLICATION_FHIR_JSON, APPLICATION_XML, APPLICATION_FHIR_XML]
+valid_accept_types = [APPLICATION_JSON, APPLICATION_FHIR_JSON]
 
 
 def get_valid_accept_type(headers: HTTPHeaders):
