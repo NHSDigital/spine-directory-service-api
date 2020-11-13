@@ -4,7 +4,6 @@ from request.base_handler import BaseHandler
 from request.content_type_validator import get_valid_accept_type
 from request.error_handler import ErrorHandler
 from request.fhir_json_mapper import get_json_format
-from request.fhir_xml_mapper import get_xml_format
 from request.http_headers import HttpHeaders
 from utilities import timing, integration_adaptors_logger as log
 
@@ -32,8 +31,5 @@ class RoutingReliabilityRequestHandler(BaseHandler, ErrorHandler):
         logger.info("Obtained routing and reliability information. {routing_and_reliability}",
                     fparams={"routing_and_reliability": routing_and_reliability})
 
-        if accept_type == 'application/fhir+xml':
-            self.write(get_xml_format(routing_and_reliability, org_code, service_id))
-        else:
-            self.write(get_json_format(routing_and_reliability, org_code, service_id))
+        self.write(get_json_format(routing_and_reliability, org_code, service_id))
         self.set_header(HttpHeaders.CONTENT_TYPE, accept_type)

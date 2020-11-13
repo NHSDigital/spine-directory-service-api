@@ -4,8 +4,6 @@ from typing import Any, List
 
 import tornado
 
-from lxml import etree
-
 from request import content_type_validator
 from request.http_headers import HttpHeaders
 from utilities import mdc
@@ -55,12 +53,8 @@ class ErrorHandler(tornado.web.RequestHandler):
         self.set_header(HttpHeaders.X_CORRELATION_ID, mdc.correlation_id.get())
         if operation_outcome is not None:
             operation_outcome.id = str(mdc.correlation_id.get())
-            if self.request.headers[HttpHeaders.ACCEPT] in [content_type_validator.APPLICATION_XML, content_type_validator.APPLICATION_FHIR_XML]:
-                content_type = content_type_validator.APPLICATION_FHIR_XML
-                serialized = operation_outcome.to_xml()
-            else:
-                content_type = content_type_validator.APPLICATION_FHIR_JSON
-                serialized = operation_outcome.to_json()
+            content_type = content_type_validator.APPLICATION_FHIR_JSON
+            serialized = operation_outcome.to_json()
             self.set_header(HttpHeaders.CONTENT_TYPE, content_type)
             self.write(serialized)
         else:
@@ -79,13 +73,6 @@ class Coding:
             "code": self.code,
             "display": self.display
         }
-
-    def to_xml(self):
-        coding_xml = etree.Element("coding")
-        coding_xml.append(etree.Element("system", value=self.system))
-        coding_xml.append(etree.Element("code", value=self.code))
-        coding_xml.append(etree.Element("display", value=self.display))
-        return coding_xml
 
 
 class SpineCoding(Coding):
@@ -202,17 +189,6 @@ class Issue:
             issue["diagnostics"] = self.diagnostics
         return issue
 
-    def to_xml(self):
-        issue_xml = etree.Element("issue")
-        issue_xml.append(etree.Element("severity", value=self.severity.value))
-        issue_xml.append(etree.Element("code", value=self.code.value))
-        details_xml = etree.Element("details")
-        [details_xml.append(coding.value.to_xml()) for coding in self.codings]
-        issue_xml.append(details_xml)
-        if self.diagnostics is not None:
-            issue_xml.append(etree.Element("diagnostics", value=self.diagnostics))
-        return issue_xml
-
 
 class OperationOutcome:
     def __init__(self, issues: List[Issue], id: str = None):
@@ -230,10 +206,3 @@ class OperationOutcome:
 
     def to_json(self):
         return json.dumps(self._to_dict(), indent=4)
-
-    def to_xml(self):
-        root = etree.Element("OperationOutcome", xmlns="http://hl7.org/fhir")
-        if self.id is not None:
-            root.append(etree.Element("id", value=self.id))
-        [root.append(issue.to_xml()) for issue in self.issues]
-        return etree.tostring(root, pretty_print=True).decode()

@@ -147,10 +147,6 @@ paths:
               schema:
                 allOf:
                   - $ref: '#/components/schemas/Endpoint'
-            application/fhir+xml:
-              schema:
-                allOf:
-                  - $ref: '#/components/schemas/Endpoint'
         '400':
           description: Missing or invalid query parameter(s).
         '405':
@@ -238,8 +234,6 @@ components:
               url:
                 type: string
                 example: "https://fhir.nhs.uk/R4/StructureDefinition/Extension-SDS-ReliabilityConfiguration"
-                xml:
-                  attribute: true
               extension:
                 type: array
                 items:
@@ -247,22 +241,16 @@ components:
                   properties:
                     url:
                       type: string
-                      xml:
-                        attribute: true
                     valueString:
                       type: string
         identifier:
           type: array
           description: "Identifies this endpoint across multiple systems"
-          xml:
-            wrapped: false
           items: 
             type: object
             properties:
               system:
                 type: string
-                xml:
-                  attribute: true
               value:
                 type: string
         status:
@@ -311,6 +299,3 @@ components:
         address:
           type: string
           description: "The base URL for connecting to this endpoint"
-      xml:
-        name: Endpoint
-        namespace: "http://hl7.org/fhir"
