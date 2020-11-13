@@ -12,9 +12,7 @@ from utilities import mdc
 class ErrorHandler(tornado.web.RequestHandler):
 
     def prepare(self):
-        raise tornado.web.HTTPError(
-            status_code=404,
-            reason="Invalid resource path.")
+        raise tornado.web.HTTPError(status_code=404, reason="Invalid resource path.")
 
     def write_error(self, status_code: int, **kwargs: Any) -> None:
         operation_outcome = None

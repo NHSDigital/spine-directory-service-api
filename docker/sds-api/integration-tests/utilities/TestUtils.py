@@ -59,19 +59,19 @@ def test_should_return_400_when_query_parameters_are_missing():
     response = SdsHttpRequestBuilder() \
         .execute_get_expecting_bad_request_response()
 
-    assert_400_operation_outcome(response.content, 'HTTP 400: Bad Request (Missing argument org-code)')
+    assert_400_operation_outcome(response.content, "HTTP 400: Bad Request (Missing argument organization)")
 
     response = SdsHttpRequestBuilder() \
         .with_org_code('YES') \
         .execute_get_expecting_bad_request_response()
 
-    assert_400_operation_outcome(response.content, 'HTTP 400: Bad Request (Missing argument service-id)')
+    assert_400_operation_outcome(response.content, "HTTP 400: Bad Request (Missing argument identifier)")
 
     response = SdsHttpRequestBuilder() \
         .with_service_id('urn:nhs:names:services:psis:REPC_IN150016UK05') \
         .execute_get_expecting_bad_request_response()
 
-    assert_400_operation_outcome(response.content, 'HTTP 400: Bad Request (Missing argument org-code)')
+    assert_400_operation_outcome(response.content, 'HTTP 400: Bad Request (Missing argument organization)')
 
 
 def test_should_return_405_when_using_post():

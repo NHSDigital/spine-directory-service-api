@@ -31,10 +31,10 @@ def build_url(org_code: Union[None, str] = ORG_CODE, service_id: Union[None, str
     args = {}
 
     if org_code is not None:
-        args["org-code"] = org_code
+        args["organization"] = f"https://fhir.nhs.uk/Id/ods-organization-code|{org_code}"
 
     if service_id is not None:
-        args["service-id"] = service_id
+        args["identifier"] = f"https://fhir.nhs.uk/Id/nhsEndpointServiceId|{service_id}"
 
     url = tornado.httputil.url_concat(url, args)
     return url

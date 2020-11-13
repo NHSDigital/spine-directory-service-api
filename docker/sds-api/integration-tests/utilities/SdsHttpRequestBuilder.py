@@ -4,6 +4,9 @@ import unittest
 import requests
 from requests import Response
 
+ORG_CODE_FHIR_IDENTIFIER = "https://fhir.nhs.uk/Id/ods-organization-code"
+SERVICE_ID_FHIR_IDENTIFIER = "https://fhir.nhs.uk/Id/nhsEndpointServiceId"
+
 
 class SdsHttpRequestBuilder(object):
     def __init__(self):
@@ -22,11 +25,11 @@ class SdsHttpRequestBuilder(object):
         return self
 
     def with_org_code(self, org_code: str):
-        self.query_params['org-code'] = org_code
+        self.query_params['organization'] = f"{ORG_CODE_FHIR_IDENTIFIER}|{org_code}"
         return self
 
     def with_service_id(self, service_id: str):
-        self.query_params['service-id'] = service_id
+        self.query_params['identifier'] = f"{SERVICE_ID_FHIR_IDENTIFIER}|{service_id}"
         return self
 
     def with_correlation_id(self, correlation_id: str):
