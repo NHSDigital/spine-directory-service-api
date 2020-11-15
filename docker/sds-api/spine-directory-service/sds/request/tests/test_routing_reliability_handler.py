@@ -2,7 +2,6 @@ import json
 import unittest.mock
 from os import path
 
-import fhirclient.models.endpoint as endpoint
 import tornado.testing
 import tornado.web
 
@@ -46,13 +45,11 @@ class TestRoutingReliabilityRequestHandler(tornado.testing.AsyncHTTPTestCase):
         self.routing.get_routing_and_reliability.return_value = test_utilities.awaitable(ROUTING_AND_RELIABILITY_DETAILS)
 
         response = self.fetch(test_request_handler.build_url(), method="GET")
-        json_body = json.loads(response.body)
-        expected = open(FILE_PATH_JSON, "r").read()
-        json_with_fixed_uuid = message_utilities.replace_uuid(json.dumps(json_body, indent=2), FIXED_UUID)
 
-        self.endpoint_resource_validation(json_body)
+        current, expected = self._get_current_and_expected_body(response)
+
         self.assertEqual(response.code, 200)
-        self.assertEqual(expected, json_with_fixed_uuid)
+        self.assertEqual(expected, current)
         self.assertEqual(response.headers.get(HttpHeaders.CONTENT_TYPE, None), "application/fhir+json")
         self.routing.get_routing_and_reliability.assert_called_with(test_request_handler.ORG_CODE, test_request_handler.SERVICE_ID)
 
@@ -87,12 +84,10 @@ class TestRoutingReliabilityRequestHandler(tornado.testing.AsyncHTTPTestCase):
             self.routing.get_routing_and_reliability.return_value = test_utilities.awaitable(ROUTING_AND_RELIABILITY_DETAILS)
             response = self.fetch(test_request_handler.build_url(), method="GET")
 
-            json_body = json.loads(response.body)
-            expected = open(FILE_PATH_JSON, "r").read()
-            json_with_fixed_uuid = message_utilities.replace_uuid(json.dumps(json_body, indent=2), FIXED_UUID)
+            current, expected = self._get_current_and_expected_body(response)
 
             self.assertEqual(response.code, 200)
-            self.assertEqual(expected, json_with_fixed_uuid)
+            self.assertEqual(expected, current)
             self.assertEqual(response.headers.get(HttpHeaders.CONTENT_TYPE, None), "application/fhir+json")
 
         with self.subTest("Accept header is case-insensitive application/fhir+json"):
@@ -100,12 +95,10 @@ class TestRoutingReliabilityRequestHandler(tornado.testing.AsyncHTTPTestCase):
             self.routing.get_routing_and_reliability.return_value = test_utilities.awaitable(ROUTING_AND_RELIABILITY_DETAILS)
             response = self.fetch(test_request_handler.build_url(), method="GET", headers=headers)
 
-            json_body = json.loads(response.body)
-            expected = open(FILE_PATH_JSON, "r").read()
-            json_with_fixed_uuid = message_utilities.replace_uuid(json.dumps(json_body, indent=2), FIXED_UUID)
+            current, expected = self._get_current_and_expected_body(response)
 
             self.assertEqual(response.code, 200)
-            self.assertEqual(expected, json_with_fixed_uuid)
+            self.assertEqual(expected, current)
             self.assertEqual(response.headers.get(HttpHeaders.CONTENT_TYPE, None), "application/fhir+json")
 
         with self.subTest("Accept header is invalid"):
@@ -116,5 +109,17 @@ class TestRoutingReliabilityRequestHandler(tornado.testing.AsyncHTTPTestCase):
             self.assertEqual(response.code, 406)
 
     @staticmethod
-    def endpoint_resource_validation(json_body: dict):
-        endpoint.Endpoint(json_body)
+    def _get_current_and_expected_body(response):
+        current = json.loads(message_utilities.replace_uuid(response.body.decode(), FIXED_UUID))
+        current_id = current['id']
+        current_link_url = current['link'][0]['url']
+        current_entry_full_url = current["entry"][0]["fullUrl"]
+        current_resource_id = current["entry"][0]["resource"]["id"]
+
+        expected = json.loads(open(FILE_PATH_JSON, "r").read())
+        expected['id'] = current_id
+        expected["entry"][0]["fullUrl"] = current_entry_full_url
+        expected["entry"][0]["resource"]["id"] = current_resource_id
+        expected['link'][0]['url'] = current_link_url
+
+        return current, expected

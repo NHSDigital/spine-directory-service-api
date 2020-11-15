@@ -26,11 +26,21 @@ class RoutingAndReliabilityHandlerTests(TestCase):
 
         # id is generated so we first check if existing one is an UUID
         # and then we use it in the expected json
-        actual_id = body['id']
-        uuid4hex = re.compile('^[A-F0-9]{8}-?[A-F0-9]{4}-?[A-F0-9]{4}-?[A-F0-9]{4}-?[A-F0-9]{12}')
-        self.assertTrue(bool(uuid4hex.match(actual_id)))
+        current_id = body['id']
+        current_link_url = body['link'][0]['url']
+        current_entry_full_url = body["entry"][0]["fullUrl"]
+        current_resource_id = body["entry"][0]["resource"]["id"]
 
-        expected_body['id'] = actual_id
+        uuidRegex = re.compile('^[A-F0-9]{8}-?[A-F0-9]{4}-?[A-F0-9]{4}-?[A-F0-9]{4}-?[A-F0-9]{12}')
+        self.assertTrue(bool(uuidRegex.match(current_id)))
+        self.assertTrue(bool(uuidRegex.match(current_resource_id)))
+        fullUrlRegex = re.compile('^(http:\/\/localhost:9000\/(endpoint|ENDPOINT)\/)([A-F0-9]{8}-?[A-F0-9]{4}-?[A-F0-9]{4}-?[A-F0-9]{4}-?[A-F0-9]{12})')
+        self.assertTrue(bool(fullUrlRegex.match(current_entry_full_url)))
+
+        expected_body['id'] = current_id
+        expected_body["entry"][0]["fullUrl"] = current_entry_full_url
+        expected_body["entry"][0]["resource"]["id"] = current_resource_id
+        expected_body['link'][0]['url'] = current_link_url
 
         self.assertEqual(expected_body, body)
 

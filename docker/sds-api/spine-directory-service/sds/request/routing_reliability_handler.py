@@ -1,10 +1,13 @@
+import json
+
 import tornado
 from tornado.web import MissingArgumentError
+from urllib.parse import unquote
 
 from request.base_handler import BaseHandler
 from request.content_type_validator import get_valid_accept_type
 from request.error_handler import ErrorHandler
-from request.fhir_json_mapper import get_json_format
+from request.fhir_json_mapper import build_endpoint_resource, build_bundle_resource
 from request.http_headers import HttpHeaders
 from utilities import timing, integration_adaptors_logger as log
 
@@ -38,7 +41,13 @@ class RoutingReliabilityRequestHandler(BaseHandler, ErrorHandler):
         logger.info("Obtained routing and reliability information. {routing_and_reliability}",
                     fparams={"routing_and_reliability": routing_and_reliability})
 
-        self.write(get_json_format(routing_and_reliability, org_code, service_id))
+        endpoint = build_endpoint_resource(routing_and_reliability, org_code, service_id)
+        base_url = f"{self.request.protocol}://{self.request.host}{self.request.path}/"
+        full_url = unquote(self.request.full_url())
+        bundle = build_bundle_resource(endpoint, base_url, full_url)
+
+        # TODO: fix entries being sotred by key. They should be in the creation order
+        self.write(json.dumps(bundle, indent=2, sort_keys=False))
         self.set_header(HttpHeaders.CONTENT_TYPE, accept_type)
 
     @staticmethod

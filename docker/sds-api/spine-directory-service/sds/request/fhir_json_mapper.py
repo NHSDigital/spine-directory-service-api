@@ -1,22 +1,42 @@
-import json
 from typing import Dict
 
 from request.mapper_urls import MapperUrls as Url
 from utilities import message_utilities
 
 
-def get_json_format(combined_info: Dict, org_code: str, service_id: str):
-    output = {"resourceType": "Endpoint"}
-    output.update({"id": message_utilities.get_uuid()})
-    output.update({"extension": build_extension_array(combined_info)})
-    output.update({"identifier": build_identifier_array(combined_info, service_id)})
-    output.update({"status": "active"})
-    output.update({"connectionType": build_connection_type()})
-    output.update({"managingOrganization": build_managing_organization(org_code)})
-    output.update({"payloadType": build_payload_type()})
-    output.update({"address": array_to_string(combined_info, "nhsMHSEndPoint")})
+def build_bundle_resource(endpoint: Dict, base_url: str, full_url: str):
+    return {
+        "resourceType": "Bundle",
+        "id": message_utilities.get_uuid(),
+        "type": "searchset",
+        "total": 1,
+        "link": [
+            {
+                "relation": "self",
+                "url": full_url
+            }
+        ],
+        "entry": [
+            {
+                "fullUrl": base_url + endpoint["id"],
+                "resource": endpoint
+            }
+        ]
+    }
 
-    return json.dumps(output, indent=2)
+
+def build_endpoint_resource(combined_info: Dict, org_code: str, service_id: str):
+    return {
+        "resourceType": "Endpoint",
+        "id": message_utilities.get_uuid(),
+        "extension": build_extension_array(combined_info),
+        "identifier": build_identifier_array(combined_info, service_id),
+        "status": "active",
+        "connectionType": build_connection_type(),
+        "managingOrganization": build_managing_organization(org_code),
+        "payloadType": build_payload_type(),
+        "address": array_to_string(combined_info, "nhsMHSEndPoint")
+    }
 
 
 def build_extension_array(combined_info: Dict):

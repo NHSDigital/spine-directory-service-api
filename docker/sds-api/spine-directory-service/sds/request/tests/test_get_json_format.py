@@ -1,7 +1,8 @@
+import json
 from os import path
 from unittest import TestCase
 
-from request.fhir_json_mapper import get_json_format
+from request.fhir_json_mapper import build_endpoint_resource
 from utilities import message_utilities
 
 FILE_PATH = path.join(path.dirname(__file__), "examples/SDS-Endpoint-Example.json")
@@ -45,10 +46,11 @@ class TestGetJsonFormat(TestCase):
 
     def test_get_json_format(self):
         example = open(FILE_PATH, "r").read()
-        actual = get_json_format(COMBINED_INFO, ORG_CODE, SERVICE_ID)
+        actual = build_endpoint_resource(COMBINED_INFO, ORG_CODE, SERVICE_ID)
+        actual = json.dumps(actual, indent=2)
         json_with_fixed_uuid = message_utilities.replace_uuid(actual, FIXED_UUID)
 
-        self.assertEqual(example, json_with_fixed_uuid)
+        self.assertEqual(example.strip(), json_with_fixed_uuid.strip())
 
     def test_get_json_format_with_empty_values_throws_no_exception(self):
-        get_json_format(COMBINED_INFO_EMPTY, ORG_CODE, SERVICE_ID)
+        build_endpoint_resource(COMBINED_INFO_EMPTY, ORG_CODE, SERVICE_ID)
