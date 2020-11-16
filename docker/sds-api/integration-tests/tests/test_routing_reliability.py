@@ -44,6 +44,19 @@ class RoutingAndReliabilityHandlerTests(TestCase):
 
         self.assertEqual(expected_body, body)
 
+    def test_should_return_successful_response_when_there_are_no_results(self):
+        response = SdsHttpRequestBuilder()\
+            .with_org_code('YES') \
+            .with_service_id('non-existing') \
+            .execute_get_expecting_success()
+
+        self.assertEqual('application/fhir+json', response.headers['Content-Type'])
+
+        body = json.loads(response.content.decode('UTF-8'))
+
+        self.assertEqual(body["total"], 0)
+        self.assertEqual(len(body["entry"]), 0)
+
     def test_should_return_400_when_query_parameters_are_missing(self):
         # both missing
         response = SdsHttpRequestBuilder() \

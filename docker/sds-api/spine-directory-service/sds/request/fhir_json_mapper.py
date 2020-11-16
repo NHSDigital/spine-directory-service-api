@@ -1,27 +1,29 @@
-from typing import Dict
+from typing import Dict, List
 
 from request.mapper_urls import MapperUrls as Url
 from utilities import message_utilities
 
 
-def build_bundle_resource(endpoint: Dict, base_url: str, full_url: str):
+def build_bundle_resource(endpoints: List[Dict], base_url: str, full_url: str):
     return {
         "resourceType": "Bundle",
         "id": message_utilities.get_uuid(),
         "type": "searchset",
-        "total": 1,
+        "total": len(endpoints),
         "link": [
             {
                 "relation": "self",
                 "url": full_url
             }
         ],
-        "entry": [
-            {
-                "fullUrl": base_url + endpoint["id"],
-                "resource": endpoint
-            }
-        ]
+        "entry": list(map(lambda endpoint: _map_endpoint_to_entry(endpoint, base_url), endpoints))
+    }
+
+
+def _map_endpoint_to_entry(endpoint, base_url):
+    return {
+        "fullUrl": base_url + endpoint["id"],
+        "resource": endpoint
     }
 
 

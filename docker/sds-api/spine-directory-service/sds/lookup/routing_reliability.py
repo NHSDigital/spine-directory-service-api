@@ -33,5 +33,8 @@ class RoutingAndReliability(object):
         :return:
         """
         endpoint_details = await self.lookup.retrieve_mhs_attributes(org_code, service_id)
-        routing = {item: endpoint_details[item] for item in ROUTING_AND_RELIABILITY_KEYS}
-        return routing
+        return list(map(self._map_endpoint_details, endpoint_details))
+
+    @staticmethod
+    def _map_endpoint_details(endpoint_details):
+        return {item: endpoint_details[item] for item in ROUTING_AND_RELIABILITY_KEYS}

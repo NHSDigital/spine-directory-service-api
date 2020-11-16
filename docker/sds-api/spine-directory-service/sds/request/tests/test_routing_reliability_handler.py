@@ -13,7 +13,7 @@ from utilities import test_utilities
 
 FILE_PATH_JSON = path.join(path.dirname(__file__), "examples/routing_reliability_result.json")
 FIXED_UUID = "f0f0e921-92ca-4a88-a550-2dbb36f703af"
-ROUTING_AND_RELIABILITY_DETAILS = {
+ROUTING_AND_RELIABILITY_DETAILS = [{
     "nhsMHSEndPoint": [
         "https://192.168.128.11/sync-service"
     ],
@@ -29,7 +29,7 @@ ROUTING_AND_RELIABILITY_DETAILS = {
     "nhsMHSRetries": [],
     "nhsMHSRetryInterval": [],
     "nhsMHSSyncReplyMode": "None"
-}
+}]
 
 
 class TestRoutingReliabilityRequestHandler(tornado.testing.AsyncHTTPTestCase):

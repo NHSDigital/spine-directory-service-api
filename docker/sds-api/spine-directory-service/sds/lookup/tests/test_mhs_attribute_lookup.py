@@ -16,7 +16,7 @@ PARTY_KEY = " AP4RTY-K33Y"
 INTERACTION_ID = "urn:nhs:names:services:psis:MCCI_IN010000UK13"
 ODS_CODE = "ODSCODE1"
 
-expected_mhs_attributes = {
+expected_mhs_attributes = [{
     'nhsEPInteractionType': 'HL7',
     'nhsIDCode': 'ODSCODE1',
     'nhsMHSAckRequested': 'always',
@@ -36,7 +36,7 @@ expected_mhs_attributes = {
     'nhsMhsSvcIA': 'urn:nhs:names:services:psis:MCCI_IN010000UK13',
     'nhsProductKey': '7374',
     'uniqueIdentifier': ['123456789']
-}
+}]
 
 
 class TestMHSAttributeLookup(TestCase):

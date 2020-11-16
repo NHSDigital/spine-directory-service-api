@@ -4,7 +4,6 @@ from unittest import TestCase
 from utilities.test_utilities import async_test
 
 import lookup.sds_client as sds_client
-import lookup.sds_exception as re
 import lookup.tests.ldap_mocks as mocks
 
 MHS_OBJECT_CLASS = "nhsMhs"
@@ -14,7 +13,7 @@ ASID = "123456789"
 INTERACTION_ID = "urn:nhs:names:services:psis:MCCI_IN010000UK13"
 ODS_CODE = "ODSCODE1"
 
-expected_mhs_attributes = {
+expected_mhs_attributes = [{
     'nhsEPInteractionType': 'HL7',
     'nhsIDCode': 'ODSCODE1',
     'nhsMHSAckRequested': 'always',
@@ -34,7 +33,7 @@ expected_mhs_attributes = {
     'nhsMhsSvcIA': 'urn:nhs:names:services:psis:MCCI_IN010000UK13',
     'nhsProductKey': '7374',
     'uniqueIdentifier': ['S918999410559'],
-}
+}]
 
 
 class TestSDSClient(TestCase):
@@ -47,11 +46,11 @@ class TestSDSClient(TestCase):
         attributes = result[0]['attributes']
 
         # Check attributes contents
-        for key, value in expected_mhs_attributes.items():
+        for key, value in expected_mhs_attributes[0].items():
             self.assertEqual(value, attributes[key])
 
         # Assert exact number of attributes
-        self.assertEqual(len(attributes), len(expected_mhs_attributes))
+        self.assertEqual(len(attributes), len(expected_mhs_attributes[0]))
 
     @async_test
     async def test_accredited(self):
@@ -69,11 +68,11 @@ class TestSDSClient(TestCase):
         client = mocks.mocked_sds_client()
 
         attributes = await client.get_mhs_details(ODS_CODE, INTERACTION_ID)
-        expected = copy(expected_mhs_attributes)
-        expected['uniqueIdentifier'] = ['123456789']
+        expected = [copy(expected_mhs_attributes[0])]
+        expected[0]['uniqueIdentifier'] = ['123456789']
         # check values present
-        for key, value in expected.items():
-            self.assertEqual(value, attributes[key])
+        for key, value in expected[0].items():
+            self.assertEqual(value, attributes[0][key])
 
         # Assert exact number of attributes, minus the unique values
         self.assertEqual(len(attributes), len(expected_mhs_attributes))
@@ -84,13 +83,14 @@ class TestSDSClient(TestCase):
 
         attributes = await client.get_mhs_details(ODS_CODE, INTERACTION_ID)
 
-        self.assertIsInstance(attributes, dict)
+        self.assertIsInstance(attributes, list)
+        self.assertIsInstance(attributes[0], dict)
 
     @async_test
     async def test_no_results(self):
         client = mocks.mocked_sds_client()
-        with self.assertRaises(re.SDSException):
-            await client.get_mhs_details("fake code", "fake interaction")
+        attributes = await client.get_mhs_details("fake code", "fake interaction")
+        self.assertEqual(attributes, [])
 
     @async_test
     async def test_should_raise_error_if_no_connection_set(self):

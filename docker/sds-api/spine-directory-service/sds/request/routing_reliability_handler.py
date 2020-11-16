@@ -37,14 +37,14 @@ class RoutingReliabilityRequestHandler(BaseHandler, ErrorHandler):
 
         logger.info("Looking up routing and reliability information. {org_code}, {service_id}",
                     fparams={"org_code": org_code, "service_id": service_id})
-        routing_and_reliability = await self.routing.get_routing_and_reliability(org_code, service_id)
+        all_routing_and_reliability = await self.routing.get_routing_and_reliability(org_code, service_id)
         logger.info("Obtained routing and reliability information. {routing_and_reliability}",
-                    fparams={"routing_and_reliability": routing_and_reliability})
+                    fparams={"routing_and_reliability": all_routing_and_reliability})
 
-        endpoint = build_endpoint_resource(routing_and_reliability, org_code, service_id)
+        endpoints = list(map(lambda routing_and_reliability: build_endpoint_resource(routing_and_reliability, org_code, service_id), all_routing_and_reliability))
         base_url = f"{self.request.protocol}://{self.request.host}{self.request.path}/"
         full_url = unquote(self.request.full_url())
-        bundle = build_bundle_resource(endpoint, base_url, full_url)
+        bundle = build_bundle_resource(endpoints, base_url, full_url)
 
         # TODO: fix entries being sotred by key. They should be in the creation order
         self.write(json.dumps(bundle, indent=2, sort_keys=False))

@@ -46,7 +46,7 @@ class SDSClient(object):
         self.timeout = timeout
         self.search_base = search_base
 
-    async def get_mhs_details(self, ods_code: str, interaction_id: str) -> Dict:
+    async def get_mhs_details(self, ods_code: str, interaction_id: str) -> List[Dict]:
         """
         Returns the mhs details for the given org code and interaction ID.
 
@@ -56,9 +56,9 @@ class SDSClient(object):
         accredited_system_lookup = await self._accredited_system_lookup(ods_code, interaction_id)
 
         if not accredited_system_lookup:
-            logger.error("Failed to find accredited system details for {ods_code} & {interaction_id}",
-                         fparams={"ods_code": ods_code, "interaction_id": interaction_id})
-            raise sds_exception.SDSException('No response from accredited system lookup')
+            logger.info("Failed to find accredited system details for {ods_code} & {interaction_id}",
+                        fparams={"ods_code": ods_code, "interaction_id": interaction_id})
+            return []
 
         if len(accredited_system_lookup) > 1:
             logger.warning("More than one accredited system details returned on inputs: {ods_code} & "
@@ -82,7 +82,7 @@ class SDSClient(object):
                            fparams={"ods_code": ods_code, "interaction_id": interaction_id})
 
         details[0]['attributes'][MHS_ASID] = asid
-        return dict(details[0]['attributes'])
+        return [dict(details[0]['attributes'])]
 
     async def _accredited_system_lookup(self, ods_code: str, interaction_id: str) -> List:
         """
