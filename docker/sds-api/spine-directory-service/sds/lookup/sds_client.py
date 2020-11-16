@@ -103,7 +103,6 @@ class SDSClient(object):
             logger.exception(e)
             logger.info("LDAP error occurred trying to reconnect")
             self.connection = sds_connection_factory.create_connection()
-            self.connection.start_tls()
             self.connection.bind()
             message_id = self.connection.search(search_base=self.search_base,
                                                 search_filter=search_filter,
