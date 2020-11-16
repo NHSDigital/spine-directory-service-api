@@ -46,7 +46,7 @@ def _build_sds_connection_tls(ldap_address: str, private_key: str, local_cert: s
 
 
 def _configure_ldap_connection(server) -> ldap3.Connection:
-    lazy_ldap = str2bool(config.get_config("LDAP_LAZY_CONNECTION", default=str(False)))
+    lazy_ldap = str2bool(config.get_config("LDAP_LAZY_CONNECTION", default=str(True)))
     if lazy_ldap:
         connection = ldap3.Connection(server,
                                       lazy=True,
