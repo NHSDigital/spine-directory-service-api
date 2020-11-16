@@ -13,8 +13,10 @@ from request import routing_reliability_handler
 from request.error_handler import ErrorHandler
 from utilities import config, secrets
 from utilities import integration_adaptors_logger as log
+from ldap3.utils.log import set_library_log_detail_level, EXTENDED
 
 logger = log.IntegrationAdaptorsLogger(__name__)
+set_library_log_detail_level(EXTENDED)
 
 
 def initialise_routing() -> routing_reliability.RoutingAndReliability:
