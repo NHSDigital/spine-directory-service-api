@@ -1,5 +1,6 @@
 from typing import Optional, Dict, Any
 
+import logging
 import tornado.httpserver
 import tornado.ioloop
 import tornado.web
@@ -13,11 +14,11 @@ from request import routing_reliability_handler
 from request.error_handler import ErrorHandler
 from utilities import config, secrets
 from utilities import integration_adaptors_logger as log
-from ldap3.utils.log import set_library_log_detail_level, EXTENDED
+from ldap3.utils.log import set_library_log_activation_level, set_library_log_detail_level, EXTENDED
 
 logger = log.IntegrationAdaptorsLogger(__name__)
 set_library_log_detail_level(EXTENDED)
-
+set_library_log_activation_level(logging.CRITICAL)
 
 def initialise_routing() -> routing_reliability.RoutingAndReliability:
     """Initialise the routing and reliability component to be used for SDS queries.
