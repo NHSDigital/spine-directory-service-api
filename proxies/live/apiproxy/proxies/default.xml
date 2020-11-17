@@ -33,7 +33,7 @@
         </Step>
         </Request>
         <Response/>
-        <Condition>((proxy.pathsuffix MatchesPath "/spine-directory/endpoint") or (proxy.pathsuffix MatchesPath "/_status")) and (request.verb = "GET")</Condition>
+        <Condition>((proxy.pathsuffix MatchesPath "/endpoint") or (proxy.pathsuffix MatchesPath "/_status")) and (request.verb = "GET")</Condition>
     </Flow>
   </Flows>
   <PostClientFlow name="PostClientFlow">
