@@ -51,6 +51,7 @@ def _configure_ldap_connection(server) -> ldap3.Connection:
         connection = ldap3.Connection(server,
                                       lazy=True,
                                       auto_bind=ldap3.AUTO_BIND_NONE,
+                                      receive_timeout=30,
                                       client_strategy=ldap3.ASYNC)
     else:
         connection = ldap3.Connection(server,
