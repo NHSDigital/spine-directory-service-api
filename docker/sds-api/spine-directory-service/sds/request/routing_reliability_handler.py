@@ -44,13 +44,17 @@ class RoutingReliabilityRequestHandler(BaseHandler, ErrorHandler):
 
         logger.info("Looking up routing and reliability information. {org_code}, {service_id}",
                     fparams={"org_code": org_code, "service_id": service_id})
-        all_routing_and_reliability = await self.routing.get_routing_and_reliability(org_code, service_id, party_key)
-        logger.info("Obtained routing and reliability information. {routing_and_reliability}",
-                    fparams={"routing_and_reliability": all_routing_and_reliability})
+        ldap_result = await self.routing.get_routing_and_reliability(org_code, service_id, party_key)
+        logger.info("Obtained routing and reliability information. {ldap_result}",
+                    fparams={"ldap_result": ldap_result})
 
-        endpoints = list(map(lambda routing_and_reliability: build_endpoint_resource(routing_and_reliability, org_code, service_id), all_routing_and_reliability))
         base_url = f"{self.request.protocol}://{self.request.host}{self.request.path}/"
         full_url = unquote(self.request.full_url())
+
+        endpoints = []
+        for ldap_attributes in ldap_result:
+            endpoints += build_endpoint_resource(ldap_attributes, org_code, service_id)
+
         bundle = build_bundle_resource(endpoints, base_url, full_url)
 
         # TODO: fix entries being sorted by key. They should be in the creation order
