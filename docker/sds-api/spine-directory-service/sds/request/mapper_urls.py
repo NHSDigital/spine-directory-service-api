@@ -5,7 +5,7 @@ class MapperUrls:
     NHS_MHS_ENDPOINT_URL = "https://fhir.nhs.uk/Id/nhsMhsEndPoint"
     NHS_MHS_PARTYKEY_URL = "https://fhir.nhs.uk/Id/nhsMhsPartyKey"
     NHS_MHS_CPAID_URL = "https://fhir.nhs.uk/Id/nhsMhsCPAId"
-    NHS_SPINE_ASID_URL = "https://fhir.nhs.uk/Id/nhsSpineASID"
+    NHS_SPINE_MHS_URL = "https://fhir.nhs.uk/Id/nhsSpineMHS"
     CONNECTION_TYPE_URL = "http://terminology.hl7.org/CodeSystem/endpoint-connection-type"
     MANAGING_ORGANIZATION_URL = "https://fhir.nhs.uk/Id/ods-organization-code"
     PAYLOAD_TYPE_URL = "http://terminology.hl7.org/CodeSystem/endpoint-payload-type"

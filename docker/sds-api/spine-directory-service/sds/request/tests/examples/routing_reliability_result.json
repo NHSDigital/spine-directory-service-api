@@ -64,7 +64,7 @@
             "value": "S20001A000168"
           },
           {
-            "system": "https://fhir.nhs.uk/Id/nhsSpineASID",
+            "system": "https://fhir.nhs.uk/Id/nhsSpineMHS",
             "value": "928942012545"
           }
         ],

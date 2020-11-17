@@ -79,7 +79,7 @@ def build_identifier_array(ldap_attributes: Dict, service_id: str):
         build_identifier(Url.NHS_MHS_FQDN_URL, array_to_string(ldap_attributes, "nhsMhsFQDN")),
         build_identifier(Url.NHS_MHS_PARTYKEY_URL, array_to_string(ldap_attributes, "nhsMHSPartyKey")),
         build_identifier(Url.NHS_MHS_CPAID_URL, array_to_string(ldap_attributes, "nhsMhsCPAId")),
-        build_identifier(Url.NHS_SPINE_ASID_URL, array_to_string(ldap_attributes, "uniqueIdentifier"))
+        build_identifier(Url.NHS_SPINE_MHS_URL, array_to_string(ldap_attributes, "uniqueIdentifier"))
     ]
 
 

@@ -51,7 +51,7 @@
         "value": "S20001A000182"
       },
       {
-        "system": "https://fhir.nhs.uk/Id/nhsSpineASID",
+        "system": "https://fhir.nhs.uk/Id/nhsSpineMHS",
         "value": "227319907548"
       }
     ],
@@ -132,7 +132,7 @@
         "value": "S20001A000182"
       },
       {
-        "system": "https://fhir.nhs.uk/Id/nhsSpineASID",
+        "system": "https://fhir.nhs.uk/Id/nhsSpineMHS",
         "value": "227319907548"
       }
     ],
