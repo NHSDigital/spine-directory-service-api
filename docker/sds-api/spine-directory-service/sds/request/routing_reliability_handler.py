@@ -57,7 +57,6 @@ class RoutingReliabilityRequestHandler(BaseHandler, ErrorHandler):
 
         bundle = build_bundle_resource(endpoints, base_url, full_url)
 
-        # TODO: fix entries being sorted by key. They should be in the creation order
         self.write(json.dumps(bundle, indent=2, sort_keys=False))
         self.set_header(HttpHeaders.CONTENT_TYPE, accept_type)
 

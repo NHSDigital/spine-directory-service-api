@@ -1,81 +1,98 @@
 {
-  "resourceType": "Endpoint",
-  "id": "EA3SAN94-17D1-4BE5-8D19-OXA46C9EC266",
-  "extension": [
-    {
-      "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-SDS-ReliabilityConfiguration",
-      "extension": [
-        {
-          "url": "nhsMHSSyncReplyMode",
-          "valueString": "MSHSignalsOnly"
-        },
-        {
-          "url": "nhsMHSRetryInterval",
-          "valueString": "PT1M"
-        },
-        {
-          "url": "nhsMHSRetries",
-          "valueInteger": 2
-        },
-        {
-          "url": "nhsMHSPersistDuration",
-          "valueString": "PT5M"
-        },
-        {
-          "url": "nhsMHSDuplicateElimination",
-          "valueString": "always"
-        },
-        {
-          "url": "nhsMHSAckRequested",
-          "valueString": "always"
-        }
-      ]
-    }
+  "resourceType": "Bundle",
+  "id": "2A87F0F9-065E-42A5-98D0-51E060BB7B12",
+  "type": "searchset",
+  "total": 1,
+  "link": [
+      {
+          "relation": "self",
+          "url": "{{request.baseUrl}}/{{request.path}}?organization=https://fhir.nhs.uk/Id/ods-organization-code|YES&identifier=https://fhir.nhs.uk/Id/nhsEndpointServiceId|urn:nhs:names:services:psis:REPC_IN150016UK05&identifier=https://fhir.nhs.uk/Id/nhsMhsPartyKey|YES-0000806"
+      }
   ],
-  "identifier": [
-    {
-      "system": "https://fhir.nhs.uk/Id/nhsEndpointServiceId",
-      "value": "urn:nhs:names:services:psis:REPC_IN150016UK05"
-    },
-    {
-      "system": "https://fhir.nhs.uk/Id/nhsMhsFQDN",
-      "value": "192.168.128.11"
-    },
-    {
-      "system": "https://fhir.nhs.uk/Id/nhsMhsPartyKey",
-      "value": "YES-0000806"
-    },
-    {
-      "system": "https://fhir.nhs.uk/Id/nhsMhsCPAId",
-      "value": "S20001A000182"
-    },
-    {
-      "system": "https://fhir.nhs.uk/Id/nhsSpineASID",
-      "value": "227319907548"
-    }
-  ],
-  "status": "active",
-  "connectionType": {
-    "system": "http://terminology.hl7.org/CodeSystem/endpoint-connection-type",
-    "code": "hl7-fhir-msg",
-    "display": "HL7 FHIR Messaging"
-  },
-  "managingOrganization": {
-    "identifier": {
-      "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-      "value": "YES"
-    }
-  },
-  "payloadType": [
-    {
-      "coding": [
-        {
-          "system": "http://terminology.hl7.org/CodeSystem/endpoint-payload-type",
-          "code": "any",
-          "display": "Any"
-        }
-      ]
-    }
-  ],
-  "address": "https://192.168.128.11/reliablemessaging/reliablerequest"
+  "entry": [
+      {
+          "fullUrl": "{{request.baseUrl}}/{{request.path}}/EA3SAN94-17D1-4BE5-8D19-OXA46C9EC266",
+          "resource": {
+              "resourceType": "Endpoint",
+              "id": "EA3SAN94-17D1-4BE5-8D19-OXA46C9EC266",
+              "extension": [
+                {
+                  "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-SDS-ReliabilityConfiguration",
+                  "extension": [
+                    {
+                      "url": "nhsMHSSyncReplyMode",
+                      "valueString": "MSHSignalsOnly"
+                    },
+                    {
+                      "url": "nhsMHSRetryInterval",
+                      "valueString": "PT1M"
+                    },
+                    {
+                      "url": "nhsMHSRetries",
+                      "valueInteger": 2
+                    },
+                    {
+                      "url": "nhsMHSPersistDuration",
+                      "valueString": "PT5M"
+                    },
+                    {
+                      "url": "nhsMHSDuplicateElimination",
+                      "valueString": "always"
+                    },
+                    {
+                      "url": "nhsMHSAckRequested",
+                      "valueString": "always"
+                    }
+                  ]
+                }
+              ],
+              "identifier": [
+                {
+                  "system": "https://fhir.nhs.uk/Id/nhsEndpointServiceId",
+                  "value": "urn:nhs:names:services:psis:REPC_IN150016UK05"
+                },
+                {
+                  "system": "https://fhir.nhs.uk/Id/nhsMhsFQDN",
+                  "value": "192.168.128.11"
+                },
+                {
+                  "system": "https://fhir.nhs.uk/Id/nhsMhsPartyKey",
+                  "value": "YES-0000806"
+                },
+                {
+                  "system": "https://fhir.nhs.uk/Id/nhsMhsCPAId",
+                  "value": "S20001A000182"
+                },
+                {
+                  "system": "https://fhir.nhs.uk/Id/nhsSpineASID",
+                  "value": "227319907548"
+                }
+              ],
+              "status": "active",
+              "connectionType": {
+                "system": "http://terminology.hl7.org/CodeSystem/endpoint-connection-type",
+                "code": "hl7-fhir-msg",
+                "display": "HL7 FHIR Messaging"
+              },
+              "managingOrganization": {
+                "identifier": {
+                  "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+                  "value": "YES"
+                }
+              },
+              "payloadType": [
+                {
+                  "coding": [
+                    {
+                      "system": "http://terminology.hl7.org/CodeSystem/endpoint-payload-type",
+                      "code": "any",
+                      "display": "Any"
+                    }
+                  ]
+                }
+              ],
+              "address": "https://192.168.128.11/reliablemessaging/reliablerequest"
+            }
+      }
+  ]
 }
