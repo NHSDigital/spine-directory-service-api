@@ -51,7 +51,8 @@ class TestRoutingReliabilityRequestHandler(tornado.testing.AsyncHTTPTestCase):
         self.assertEqual(response.code, 200)
         self.assertEqual(expected, current)
         self.assertEqual(response.headers.get(HttpHeaders.CONTENT_TYPE, None), "application/fhir+json")
-        self.routing.get_routing_and_reliability.assert_called_with(test_request_handler.ORG_CODE, test_request_handler.SERVICE_ID)
+        self.routing.get_routing_and_reliability.assert_called_with(
+            test_request_handler.ORG_CODE, test_request_handler.SERVICE_ID, None)
 
     def test_get_returns_error(self):
         with self.subTest("Routing and reliability lookup error"):

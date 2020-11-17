@@ -25,14 +25,15 @@ class RoutingAndReliability(object):
             raise ValueError("MHS Attribute Lookup Handler not found")
         self.lookup = lookup_handler
 
-    async def get_routing_and_reliability(self, org_code, service_id):
+    async def get_routing_and_reliability(self, org_code, service_id, party_key):
         """Get the endpoint of the MHS registered for the specified org code and service ID.
 
         :param org_code:
         :param service_id:
+        :param party_key:
         :return:
         """
-        endpoint_details = await self.lookup.retrieve_mhs_attributes(org_code, service_id)
+        endpoint_details = await self.lookup.retrieve_mhs_attributes(org_code, service_id, party_key)
         return list(map(self._map_endpoint_details, endpoint_details))
 
     @staticmethod

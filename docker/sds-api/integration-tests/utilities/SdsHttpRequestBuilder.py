@@ -6,6 +6,7 @@ from requests import Response
 
 ORG_CODE_FHIR_IDENTIFIER = "https://fhir.nhs.uk/Id/ods-organization-code"
 SERVICE_ID_FHIR_IDENTIFIER = "https://fhir.nhs.uk/Id/nhsEndpointServiceId"
+PARTY_KEY_FHIR_IDENTIFIER = "https://fhir.nhs.uk/Id/nhsMhsPartyKey"
 
 
 class SdsHttpRequestBuilder(object):
@@ -30,6 +31,10 @@ class SdsHttpRequestBuilder(object):
 
     def with_service_id(self, service_id: str, fhir_code=SERVICE_ID_FHIR_IDENTIFIER):
         self.query_params['identifier'] = f"{fhir_code}|{service_id}"
+        return self
+
+    def with_party_key(self, party_key: str, fhir_code=SERVICE_ID_FHIR_IDENTIFIER):
+        self.query_params['identifier'] = f"{fhir_code}|{party_key}"
         return self
 
     def with_correlation_id(self, correlation_id: str):

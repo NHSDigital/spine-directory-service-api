@@ -9,7 +9,6 @@ import lookup.tests.ldap_mocks as mocks
 MHS_OBJECT_CLASS = "nhsMhs"
 
 PARTY_KEY = "AP4RTY-K33Y"
-ASID = "123456789"
 INTERACTION_ID = "urn:nhs:names:services:psis:MCCI_IN010000UK13"
 ODS_CODE = "ODSCODE1"
 
@@ -39,52 +38,17 @@ expected_mhs_attributes = [{
 class TestSDSClient(TestCase):
 
     @async_test
-    async def test_mhs_details_lookup(self):
-        client = mocks.mocked_sds_client()
-
-        result = await client._mhs_details_lookup(PARTY_KEY, INTERACTION_ID)
-        attributes = result[0]['attributes']
-
-        # Check attributes contents
-        for key, value in expected_mhs_attributes[0].items():
-            self.assertEqual(value, attributes[key])
-
-        # Assert exact number of attributes
-        self.assertEqual(len(attributes), len(expected_mhs_attributes[0]))
-
-    @async_test
-    async def test_accredited(self):
-        client = mocks.mocked_sds_client()
-
-        result = await client._accredited_system_lookup(ODS_CODE, INTERACTION_ID)
-
-        self.assertIsNotNone(result)
-        self.assertEqual(result[0]['attributes']['nhsMHSPartyKey'], PARTY_KEY)
-        self.assertEqual(result[0]['attributes']['uniqueIdentifier'][0], ASID)
-        self.assertEqual(len(result[0]['attributes']), 2)
-
-    @async_test
     async def test_get_mhs_lookup(self):
         client = mocks.mocked_sds_client()
 
         attributes = await client.get_mhs_details(ODS_CODE, INTERACTION_ID)
         expected = [copy(expected_mhs_attributes[0])]
-        expected[0]['uniqueIdentifier'] = ['123456789']
         # check values present
         for key, value in expected[0].items():
             self.assertEqual(value, attributes[0][key])
 
         # Assert exact number of attributes, minus the unique values
         self.assertEqual(len(attributes), len(expected_mhs_attributes))
-
-    @async_test
-    async def test_should_return_result_as_dictionary(self):
-        client = mocks.mocked_sds_client()
-
-        attributes = await client.get_mhs_details(ODS_CODE, INTERACTION_ID)
-
-        self.assertIsInstance(attributes, list)
-        self.assertIsInstance(attributes[0], dict)
 
     @async_test
     async def test_no_results(self):

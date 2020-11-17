@@ -7,7 +7,7 @@ import tornado.web
 
 ORG_CODE = "org"
 SERVICE_ID = "service"
-
+PARTY_KEY = "some_party_key"
 
 def test_get_handles_missing_params(self):
     with self.subTest("Missing Org Code"):

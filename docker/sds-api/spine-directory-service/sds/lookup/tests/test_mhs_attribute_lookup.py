@@ -1,7 +1,5 @@
 from unittest import TestCase
-from unittest import mock
 
-from utilities import test_utilities
 from utilities.test_utilities import async_test
 
 import lookup.mhs_attribute_lookup as mhs_attribute_lookup
@@ -35,7 +33,7 @@ expected_mhs_attributes = [{
     'nhsMhsFQDN': 'vpn-client-1411.opentest.hscic.gov.uk',
     'nhsMhsSvcIA': 'urn:nhs:names:services:psis:MCCI_IN010000UK13',
     'nhsProductKey': '7374',
-    'uniqueIdentifier': ['123456789']
+    'uniqueIdentifier': ['S918999410559']
 }]
 
 
@@ -45,7 +43,7 @@ class TestMHSAttributeLookup(TestCase):
     async def test_get_endpoint(self):
         handler = mhs_attribute_lookup.MHSAttributeLookup(mocks.mocked_sds_client())
 
-        attributes = await handler.retrieve_mhs_attributes(ODS_CODE, INTERACTION_ID)
+        attributes = await handler.retrieve_mhs_attributes(ODS_CODE, INTERACTION_ID, None)
 
         self.assertEqual(expected_mhs_attributes, attributes)
 

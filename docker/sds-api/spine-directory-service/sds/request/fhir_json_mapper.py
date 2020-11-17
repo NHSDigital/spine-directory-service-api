@@ -16,6 +16,7 @@ def build_bundle_resource(endpoints: List[Dict], base_url: str, full_url: str):
                 "url": full_url
             }
         ],
+        # TODO: endpoints dict can have multiple addresses inside and each must produce new resource
         "entry": list(map(lambda endpoint: _map_endpoint_to_entry(endpoint, base_url), endpoints))
     }
 

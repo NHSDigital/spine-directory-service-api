@@ -20,7 +20,7 @@ EXPECTED_ROUTING_AND_RELIABILITY = [{
     'nhsMHSSyncReplyMode': 'MSHSignalsOnly',
     'nhsMhsCPAId': 'S918999410559',
     'nhsMhsFQDN': 'vpn-client-1411.opentest.hscic.gov.uk',
-    'uniqueIdentifier': ['123456789']
+    'uniqueIdentifier': ['S918999410559']
 }]
 
 
@@ -30,20 +30,20 @@ class TestRoutingAndReliability(unittest.TestCase):
     async def test_get_routing_and_reliability(self):
         router = self._configure_routing_and_reliability()
 
-        mhs_route_details = await router.get_routing_and_reliability(ODS_CODE, INTERACTION_ID)
+        mhs_route_details = await router.get_routing_and_reliability(ODS_CODE, INTERACTION_ID, None)
 
         self.assertEqual(mhs_route_details, EXPECTED_ROUTING_AND_RELIABILITY)
 
     @async_test
     async def test_get_routing_bad_ods_code(self):
         router = self._configure_routing_and_reliability()
-        mhs_route_details = await router.get_routing_and_reliability("bad code", INTERACTION_ID)
+        mhs_route_details = await router.get_routing_and_reliability("bad code", INTERACTION_ID, None)
         self.assertEqual(mhs_route_details, [])
 
     @async_test
     async def test_get_routing_bad_interaction_id_no_result(self):
         router = self._configure_routing_and_reliability()
-        mhs_route_details = await router.get_routing_and_reliability(ODS_CODE, "bad interaction")
+        mhs_route_details = await router.get_routing_and_reliability(ODS_CODE, "bad interaction", None)
         self.assertEqual(mhs_route_details, [])
 
     @staticmethod

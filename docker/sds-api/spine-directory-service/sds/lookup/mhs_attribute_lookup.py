@@ -21,13 +21,14 @@ class MHSAttributeLookup(object):
             raise ValueError('sds client required')
         self.sds_client = client
 
-    async def retrieve_mhs_attributes(self, ods_code, interaction_id) -> List[Dict]:
+    async def retrieve_mhs_attributes(self, ods_code, interaction_id, party_key) -> List[Dict]:
         """Obtains the attributes of the MHS registered for the given ODS code and interaction ID.
         :param ods_code:
         :param interaction_id:
+        :param party_key:
         :return:
         """
-        endpoint_details = await self.sds_client.get_mhs_details(ods_code, interaction_id)
+        endpoint_details = await self.sds_client.get_mhs_details(ods_code, interaction_id, party_key)
         logger.info('Obtained {count} MHS details from sds for {ods_code} & {interaction_id}',
                     fparams={'count': len(endpoint_details), 'ods_code': ods_code, 'interaction_id': interaction_id})
 
