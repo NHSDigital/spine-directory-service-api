@@ -33,7 +33,7 @@
         </Step>
         </Request>
         <Response/>
-        <Condition>((proxy.pathsuffix MatchesPath "/endpoint") or (proxy.pathsuffix MatchesPath "/_status")) and (request.verb = "GET")</Condition>
+        <Condition>((proxy.pathsuffix MatchesPath "/Endpoint?org-code=YES&amp;service-id=urn:nhs:names:services:psis:REPC_IN150016UK05") or (proxy.pathsuffix MatchesPath "/_status")) and (request.verb = "GET")</Condition>
     </Flow>
     <Flow name="Flow.AuthOAuth">
       <Description/>
@@ -43,7 +43,7 @@
           </Step>
       </Request>
       <Response/>
-      <Condition>(proxy.pathsuffix MatchesPath "/endpoint") and (request.verb = "GET")</Condition>
+      <Condition>(proxy.pathsuffix MatchesPath "/Endpoint?org-code=YES&amp;service-id=urn:nhs:names:services:psis:REPC_IN150016UK05") and (request.verb = "GET")</Condition>
     </Flow>
     <Flow name="OptionsPreFlight">
       <Request/>
