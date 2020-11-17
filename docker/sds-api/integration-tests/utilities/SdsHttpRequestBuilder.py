@@ -26,15 +26,21 @@ class SdsHttpRequestBuilder(object):
         return self
 
     def with_org_code(self, org_code: str, fhir_code=ORG_CODE_FHIR_IDENTIFIER):
-        self.query_params['organization'] = f"{fhir_code}|{org_code}"
+        params = self.query_params.get('organization', [])
+        params.append(f"{fhir_code}|{org_code}")
+        self.query_params['organization'] = params
         return self
 
     def with_service_id(self, service_id: str, fhir_code=SERVICE_ID_FHIR_IDENTIFIER):
-        self.query_params['identifier'] = f"{fhir_code}|{service_id}"
+        params = self.query_params.get('identifier', [])
+        params.append(f"{fhir_code}|{service_id}")
+        self.query_params['identifier'] = params
         return self
 
-    def with_party_key(self, party_key: str, fhir_code=SERVICE_ID_FHIR_IDENTIFIER):
-        self.query_params['identifier'] = f"{fhir_code}|{party_key}"
+    def with_party_key(self, party_key: str, fhir_code=PARTY_KEY_FHIR_IDENTIFIER):
+        params = self.query_params.get('identifier', [])
+        params.append(f"{fhir_code}|{party_key}")
+        self.query_params['identifier'] = params
         return self
 
     def with_correlation_id(self, correlation_id: str):

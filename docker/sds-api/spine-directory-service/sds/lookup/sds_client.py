@@ -68,11 +68,11 @@ class SDSClient(object):
         ]
         search_filter = self._build_search_filter(query_parts)
 
-        result = await self._get_ldap_data(search_filter, mhs_attributes)
+        raw_result = await self._get_ldap_data(search_filter, mhs_attributes)
 
-        result = [single_result['attributes'] for single_result in result]
+        attributes_result = [single_result['attributes'] for single_result in raw_result]
         # TODO: initial code was setting MHS_ASID and MHS_PARTY_KEY on the results
-        return result
+        return attributes_result
 
     async def _get_ldap_data(self, search_filter: str, attributes: List[str]) -> List:
         self.connection.bind()

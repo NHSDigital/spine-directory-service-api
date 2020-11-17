@@ -17,6 +17,7 @@ class RoutingAndReliabilityHandlerTests(TestCase):
         response = request_builder \
             .with_org_code('YES') \
             .with_service_id('urn:nhs:names:services:psis:REPC_IN150016UK05') \
+            .with_party_key('YES-0000806') \
             .execute_get_expecting_success()
 
         self.assertEqual('application/fhir+json', response.headers['Content-Type'])
