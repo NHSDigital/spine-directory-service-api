@@ -26,6 +26,15 @@
       </Response>
       <Condition>(proxy.pathsuffix MatchesPath "/_ping") and ((request.verb = "GET") or (request.verb = "HEAD"))</Condition>
     </Flow>
+    <Flow name="Flow.AuthApiKey">
+      <Request>
+        <Step>
+        <Name>VerifyApiKey-Header</Name>
+        </Step>
+        </Request>
+        <Response/>
+        <Condition>((proxy.pathsuffix MatchesPath "/spine-directory/endpoint") or (proxy.pathsuffix MatchesPath "/_status")) and (request.verb = "GET")</Condition>
+    </Flow>
   </Flows>
   <PostClientFlow name="PostClientFlow">
     <Response>

@@ -21,4 +21,4 @@ docker_service:
         valueFrom: "/ptl/api-deployment/sds/ldap/ca-certs"
     health_check:
       matcher: "200"
-      path: "/healthcheck"
+      path: "/_status"
