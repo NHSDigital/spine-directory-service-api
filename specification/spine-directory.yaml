@@ -146,7 +146,7 @@ paths:
             application/fhir+json:
               schema:
                 allOf:
-                  - $ref: '#/components/schemas/Endpoint'
+                  - $ref: '#/components/schemas/Bundle'
         '400':
           description: Missing or invalid query parameter(s).
         '405':
@@ -163,15 +163,70 @@ paths:
           description: Upstream LDAP server request has timed out
 components:
   schemas:
+    Bundle:
+      type: object
+      description: "A FHIR Bundle with Enpoint resources"
+      required:
+        - type
+        - total
+        - link
+        - entry
+      example:
+        resourceType: "Bundle"
+        id: "2A87F0F9-065E-42A5-98D0-51E060BB7B12"
+        type: "searchset"
+        total: "1"
+        link:
+          - relation: "self"
+            url: "URL"
+        entry:
+          - fullUrl: "URL"
+            resource:
+              $ref: '#/components/schemas/Endpoint/example'
+      properties:
+        resourceType:
+          type: string
+          description: "FHIR Resource type. Always 'Bundle'."
+        id:
+          type: string
+          description: "Unique identifier for this search request."
+          format: uuid
+        type:
+          type: string
+          description: "Bundle content type. Always 'searchset'."
+        total:
+          type: integer
+          description: "Number of resources in 'bundle.entry' array"
+        link:
+          type: array
+          items:
+            type: object
+            properties:
+              relation:
+                type: string
+                description: "Always 'self'."
+              url:
+                type: string
+                description: "The full url that produced the data"
+        entry:
+          type: array
+          items:
+            type: object
+            properties:
+              fullUrl:
+                type: string
+                description: "Full url to the resource"
+              resource:
+                $ref: '#/components/schemas/Endpoint'
     Endpoint:
       type: object
-      description: "A FHIR Endpoint resource that includes routing and reliability information for the accredited system"
+      description: "A FHIR Enpoint resource that include routing and reliability information for the accredited system"
       required:
         - address
         - status
         - connectionType
         - payloadType
-      example: 
+      example:
         resourceType: "Endpoint"
         id: "f0f0e921-92ca-4a88-a550-2dbb36f703af"
         extension:
