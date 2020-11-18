@@ -83,21 +83,21 @@ class RoutingAndReliabilityHandlerTests(TestCase):
         response = SdsHttpRequestBuilder() \
             .with_org_code('YES') \
             .execute_get_expecting_bad_request_response()
-        assert_400_operation_outcome(response.content, "HTTP 400: Missing or invalid 'identifier' query parameter. Should be 'identifier=https://fhir.nhs.uk/Id/nhsEndpointServiceId|value'or 'identifier=https://fhir.nhs.uk/Id/nhsMhsPartyKey|value'")
+        assert_400_operation_outcome(response.content, "HTTP 400: Missing or invalid 'identifier' query parameter. Should be one of or both: ['identifier=https://fhir.nhs.uk/Id/nhsEndpointServiceId|value', 'identifier=https://fhir.nhs.uk/Id/nhsMhsPartyKey|value'")
 
         # empty service id
         response = SdsHttpRequestBuilder() \
             .with_org_code('YES') \
             .with_service_id('') \
             .execute_get_expecting_bad_request_response()
-        assert_400_operation_outcome(response.content, "HTTP 400: Missing or invalid 'identifier' query parameter. Should be 'identifier=https://fhir.nhs.uk/Id/nhsEndpointServiceId|value'or 'identifier=https://fhir.nhs.uk/Id/nhsMhsPartyKey|value'")
+        assert_400_operation_outcome(response.content, "HTTP 400: Missing or invalid 'identifier' query parameter. Should be one of or both: ['identifier=https://fhir.nhs.uk/Id/nhsEndpointServiceId|value', 'identifier=https://fhir.nhs.uk/Id/nhsMhsPartyKey|value'")
 
         # invalid fhir code for service id
         response = SdsHttpRequestBuilder() \
             .with_org_code('YES') \
             .with_service_id('urn:nhs:names:services:psis:REPC_IN150016UK05', fhir_code="something_else") \
             .execute_get_expecting_bad_request_response()
-        assert_400_operation_outcome(response.content, "HTTP 400: Missing or invalid 'identifier' query parameter. Should be 'identifier=https://fhir.nhs.uk/Id/nhsEndpointServiceId|value'or 'identifier=https://fhir.nhs.uk/Id/nhsMhsPartyKey|value'")
+        assert_400_operation_outcome(response.content, "HTTP 400: Missing or invalid 'identifier' query parameter. Should be one of or both: ['identifier=https://fhir.nhs.uk/Id/nhsEndpointServiceId|value', 'identifier=https://fhir.nhs.uk/Id/nhsMhsPartyKey|value'")
 
     def test_should_return_405_when_using_post(self):
         response = SdsHttpRequestBuilder() \
