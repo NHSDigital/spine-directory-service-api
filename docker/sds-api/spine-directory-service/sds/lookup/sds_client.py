@@ -2,7 +2,7 @@
 
 import ast
 import asyncio
-from typing import Dict, List
+from typing import Dict, List, Tuple, Optional
 
 import ldap3
 import ldap3.core.exceptions as ldap_exceptions
@@ -18,11 +18,14 @@ AS_OBJECT_CLASS = "nhsAs"
 MHS_PARTY_KEY = 'nhsMHSPartyKey'
 MHS_ASID = 'uniqueIdentifier'
 
-mhs_attributes = [
+MHS_ATTRIBUTES = [
     'nhsEPInteractionType', 'nhsIDCode', 'nhsMhsCPAId', 'nhsMHSEndPoint', 'nhsMhsFQDN',
     'nhsMHsIN', 'nhsMHSIsAuthenticated', 'nhsMHSPartyKey', 'nhsMHsSN', 'nhsMhsSvcIA', 'nhsProductKey',
     'uniqueIdentifier', 'nhsMHSAckRequested', 'nhsMHSActor', 'nhsMHSDuplicateElimination',
     'nhsMHSPersistDuration', 'nhsMHSRetries', 'nhsMHSRetryInterval', 'nhsMHSSyncReplyMode'
+]
+AS_ATTRIBUTES = [
+    'uniqueIdentifier', 'nhsIdCode', 'nhsAsClient', 'nhsMhsPartyKey', 'nhsAsSvcIA'
 ]
 
 
@@ -53,12 +56,12 @@ class SDSClient(object):
 
     async def get_mhs_details(self, ods_code: str, interaction_id: str = None, party_key: str = None) -> List[Dict]:
         """
-        Returns the mhs details for the given org code and interaction ID or party key.
+        Returns the mhs details for the given parameters
 
         :return: Dictionary of the attributes of the mhs associated with the given parameters
         """
-        if not interaction_id and not party_key:
-            raise SDSException("At least one of 'interaction_id' or 'party_key' must be provided")
+        if not ods_code or (not interaction_id and not party_key):
+            raise SDSException("org_code and at least one of 'interaction_id' or 'party_key' must be provided")
 
         query_parts = [
             ("nhsidcode", ods_code),
@@ -66,15 +69,32 @@ class SDSClient(object):
             ("nhsMhsSvcIA", interaction_id),
             ("nhsMHSPartyKey", party_key)
         ]
+        result = await self._get_ldap_data(query_parts, MHS_ATTRIBUTES)
+        return result
+
+    async def get_as_details(self, ods_code: str, interaction_id: str, managing_organization: str = None, party_key: str = None) -> List[Dict]:
+        """
+        Returns the device details for the given parameters
+
+        :return: Dictionary of the attributes of the device associated with the given parameters
+        """
+        if not ods_code or not interaction_id or (not managing_organization and not party_key):
+            raise SDSException("org_code and interaction_id and at least one of 'managing_organization' or 'party_key' must be provided")
+
+        query_parts = [
+            ("nhsIDCode", ods_code),
+            ("objectClass", "nhsAs"),
+            ("nhsAsSvcIA", interaction_id),
+            # TODO: can't use atm with Opentest as it lacks required schema attribute
+            # ("nhsMhsManufacturerOrg", managing_organization),
+            ("nhsMHSPartyKey", party_key)
+        ]
+        result = await self._get_ldap_data(query_parts, AS_ATTRIBUTES)
+        return result
+
+    async def _get_ldap_data(self, query_parts: List[Tuple[str, Optional[str]]], attributes: List[str]) -> List:
         search_filter = self._build_search_filter(query_parts)
 
-        raw_result = await self._get_ldap_data(search_filter, mhs_attributes)
-
-        attributes_result = [single_result['attributes'] for single_result in raw_result]
-        # TODO: initial code was setting MHS_ASID and MHS_PARTY_KEY on the results
-        return attributes_result
-
-    async def _get_ldap_data(self, search_filter: str, attributes: List[str]) -> List:
         self.connection.bind()
         message_id = self.connection.search(search_base=self.search_base,
                                             search_filter=search_filter,
@@ -85,7 +105,8 @@ class SDSClient(object):
         response = await self._get_query_result(message_id)
         logger.info("Found LDAP details for {message_id}", fparams={"message_id": message_id})
 
-        return response
+        attributes_result = [single_result['attributes'] for single_result in response]
+        return attributes_result
 
     async def _get_query_result(self, message_id: int) -> List:
         loop = asyncio.get_event_loop()

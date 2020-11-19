@@ -2,7 +2,7 @@ import json
 from os import path
 from unittest import TestCase
 
-from request.fhir_json_mapper import build_endpoint_resource
+from request.fhir_json_mapper import build_endpoint_resources
 from utilities import message_utilities
 
 FILE_PATH = path.join(path.dirname(__file__), "examples/SDS-Endpoint-Example.json")
@@ -47,11 +47,11 @@ class TestGetJsonFormat(TestCase):
 
     def test_get_json_format(self):
         example = json.loads(open(FILE_PATH, "r").read())
-        actual = build_endpoint_resource(LDAP_ATTRIBUTES, ORG_CODE, SERVICE_ID)
+        actual = build_endpoint_resources(LDAP_ATTRIBUTES, ORG_CODE, SERVICE_ID)
         actual = json.dumps(actual, indent=2)
         actual = json.loads(message_utilities.replace_uuid(actual, FIXED_UUID))
 
         self.assertEqual(example, actual)
 
     def test_get_json_format_with_empty_values_throws_no_exception(self):
-        build_endpoint_resource(COMBINED_INFO_EMPTY, ORG_CODE, SERVICE_ID)
+        build_endpoint_resources(COMBINED_INFO_EMPTY, ORG_CODE, SERVICE_ID)

@@ -9,8 +9,12 @@ from utilities.TestUtils import read_test_data_json, assert_400_operation_outcom
 
 class RoutingAndReliabilityHandlerTests(TestCase):
 
+    @staticmethod
+    def _sds_device_http_request_builder():
+        return SdsHttpRequestBuilder("/endpoint")
+
     def test_should_return_successful_response(self, request_builder_modifier=None):
-        request_builder = SdsHttpRequestBuilder()
+        request_builder = self._sds_device_http_request_builder()
         if request_builder_modifier is not None:
             request_builder_modifier(request_builder)
 
@@ -22,7 +26,7 @@ class RoutingAndReliabilityHandlerTests(TestCase):
 
         self.assertEqual('application/fhir+json', response.headers['Content-Type'])
 
-        expected_body = read_test_data_json("routing_reliability_response.json")
+        expected_body = read_test_data_json("endpoint.json")
         body = json.loads(response.content.decode('UTF-8'))
 
         # id is generated so we first check if existing one is an UUID
@@ -46,7 +50,7 @@ class RoutingAndReliabilityHandlerTests(TestCase):
         self.assertEqual(expected_body, body)
 
     def test_should_return_successful_response_when_there_are_no_results(self):
-        response = SdsHttpRequestBuilder()\
+        response = self._sds_device_http_request_builder()\
             .with_org_code('YES') \
             .with_service_id('non-existing') \
             .execute_get_expecting_success()
@@ -60,12 +64,12 @@ class RoutingAndReliabilityHandlerTests(TestCase):
 
     def test_should_return_400_when_query_parameters_are_missing(self):
         # all missing
-        response = SdsHttpRequestBuilder() \
+        response = self._sds_device_http_request_builder() \
             .execute_get_expecting_bad_request_response()
-        assert_400_operation_outcome(response.content, "HTTP 400: Bad Request (Missing argument organization)")
+        assert_400_operation_outcome(response.content, "HTTP 400: Missing or invalid 'organization' query parameter. Should be 'organization=https://fhir.nhs.uk/Id/ods-organization-code|value'")
 
         # empty org code
-        response = SdsHttpRequestBuilder() \
+        response = self._sds_device_http_request_builder() \
             .with_org_code('') \
             .with_service_id('') \
             .with_party_key('') \
@@ -73,34 +77,34 @@ class RoutingAndReliabilityHandlerTests(TestCase):
         assert_400_operation_outcome(response.content, "HTTP 400: Missing or invalid 'organization' query parameter. Should be 'organization=https://fhir.nhs.uk/Id/ods-organization-code|value'")
 
         # invalid fhir code for org code
-        response = SdsHttpRequestBuilder() \
+        response = self._sds_device_http_request_builder() \
             .with_org_code('YES', fhir_code="something_else") \
             .with_service_id('urn:nhs:names:services:psis:REPC_IN150016UK05') \
             .execute_get_expecting_bad_request_response()
         assert_400_operation_outcome(response.content, "HTTP 400: Missing or invalid 'organization' query parameter. Should be 'organization=https://fhir.nhs.uk/Id/ods-organization-code|value'")
 
         # missing service id
-        response = SdsHttpRequestBuilder() \
+        response = self._sds_device_http_request_builder() \
             .with_org_code('YES') \
             .execute_get_expecting_bad_request_response()
-        assert_400_operation_outcome(response.content, "HTTP 400: Missing or invalid 'identifier' query parameter. Should be one of or both: ['identifier=https://fhir.nhs.uk/Id/nhsEndpointServiceId|value', 'identifier=https://fhir.nhs.uk/Id/nhsMhsPartyKey|value'")
+        assert_400_operation_outcome(response.content, "HTTP 400: Missing or invalid 'identifier' query parameter. Should be one or both of: ['identifier=https://fhir.nhs.uk/Id/nhsEndpointServiceId|value', 'identifier=https://fhir.nhs.uk/Id/nhsMhsPartyKey|value'")
 
         # empty service id
-        response = SdsHttpRequestBuilder() \
+        response = self._sds_device_http_request_builder() \
             .with_org_code('YES') \
             .with_service_id('') \
             .execute_get_expecting_bad_request_response()
-        assert_400_operation_outcome(response.content, "HTTP 400: Missing or invalid 'identifier' query parameter. Should be one of or both: ['identifier=https://fhir.nhs.uk/Id/nhsEndpointServiceId|value', 'identifier=https://fhir.nhs.uk/Id/nhsMhsPartyKey|value'")
+        assert_400_operation_outcome(response.content, "HTTP 400: Missing or invalid 'identifier' query parameter. Should be one or both of: ['identifier=https://fhir.nhs.uk/Id/nhsEndpointServiceId|value', 'identifier=https://fhir.nhs.uk/Id/nhsMhsPartyKey|value'")
 
         # invalid fhir code for service id
-        response = SdsHttpRequestBuilder() \
+        response = self._sds_device_http_request_builder() \
             .with_org_code('YES') \
             .with_service_id('urn:nhs:names:services:psis:REPC_IN150016UK05', fhir_code="something_else") \
             .execute_get_expecting_bad_request_response()
-        assert_400_operation_outcome(response.content, "HTTP 400: Missing or invalid 'identifier' query parameter. Should be one of or both: ['identifier=https://fhir.nhs.uk/Id/nhsEndpointServiceId|value', 'identifier=https://fhir.nhs.uk/Id/nhsMhsPartyKey|value'")
+        assert_400_operation_outcome(response.content, "HTTP 400: Missing or invalid 'identifier' query parameter. Should be one or both of: ['identifier=https://fhir.nhs.uk/Id/nhsEndpointServiceId|value', 'identifier=https://fhir.nhs.uk/Id/nhsMhsPartyKey|value'")
 
     def test_should_return_405_when_using_post(self):
-        response = SdsHttpRequestBuilder() \
+        response = self._sds_device_http_request_builder() \
             .with_method("POST") \
             .with_org_code('YES') \
             .with_service_id('urn:nhs:names:services:psis:REPC_IN150016UK05') \
@@ -110,8 +114,8 @@ class RoutingAndReliabilityHandlerTests(TestCase):
         assert_405_operation_outcome(response.content)
 
     def test_should_return_404_when_calling_invalid_endpoint(self):
-        response = SdsHttpRequestBuilder() \
-            .with_custom_endpoint("something") \
+        response = self._sds_device_http_request_builder() \
+            .with_path("/something") \
             .with_org_code('YES') \
             .with_service_id('urn:nhs:names:services:psis:REPC_IN150016UK05') \
             .execute()
@@ -121,6 +125,6 @@ class RoutingAndReliabilityHandlerTests(TestCase):
 
     def test_endpoint_should_be_case_insensitive(self):
         def modify_request_builder(request_builder):
-            request_builder.sds_host = request_builder.sds_host.upper()
+            request_builder.path = request_builder.path.upper()
 
         self.test_should_return_successful_response(modify_request_builder)
