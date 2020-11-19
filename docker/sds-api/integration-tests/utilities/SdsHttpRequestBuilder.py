@@ -30,7 +30,7 @@ class SdsHttpRequestBuilder(object):
         return self
 
     def with_correlation_id(self, correlation_id: str):
-        self.headers["Correlation-Id"] = correlation_id
+        self.headers["X-Correlation-ID"] = correlation_id
         return self
 
     def execute(self) -> Response:
