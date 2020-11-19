@@ -5,7 +5,7 @@ from request.content_type_validator import get_valid_accept_type
 from request.error_handler import ErrorHandler
 from request.fhir_json_mapper import get_json_format
 from request.http_headers import HttpHeaders
-from utilities import timing, integration_adaptors_logger as log
+from utilities import timing, integration_adaptors_logger as log, mdc
 
 logger = log.IntegrationAdaptorsLogger(__name__)
 
@@ -33,3 +33,4 @@ class RoutingReliabilityRequestHandler(BaseHandler, ErrorHandler):
 
         self.write(get_json_format(routing_and_reliability, org_code, service_id))
         self.set_header(HttpHeaders.CONTENT_TYPE, accept_type)
+        self.set_header(HttpHeaders.X_CORRELATION_ID, mdc.correlation_id.get())
