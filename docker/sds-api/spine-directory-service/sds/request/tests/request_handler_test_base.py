@@ -85,13 +85,20 @@ class RequestHandlerTestBase(ABC, tornado.testing.AsyncHTTPTestCase):
 
             self.assertEqual(response.code, 406)
 
+    def _test_should_return_405_when_using_non_get(self, url: str):
+        for method in ["POST", "DELETE", "PUT", "OPTIONS"]:
+            with self.subTest(f"405 when using {method}"):
+                response = self.fetch(url, body="" if method in ["POST", "PUT"] else None, method=method)
+                self.assertEqual(response.code, 405)
+                self._assert_405_operation_outcome(response.body.decode())
+
     @staticmethod
     def _build_endpoint_url(org_code: Optional[str] = ORG_CODE, service_id: Optional[str] = SERVICE_ID, party_key: Optional[str] = PARTY_KEY):
         url = "/endpoint"
 
-        org_code = f"organization=https://fhir.nhs.uk/Id/ods-organization-code|{org_code}" if org_code else None
-        service_id = f"identifier=https://fhir.nhs.uk/Id/nhsEndpointServiceId|{service_id}" if service_id else None
-        party_key = f"identifier=https://fhir.nhs.uk/Id/nhsMhsPartyKey|{party_key}" if party_key else None
+        org_code = f"organization=https://fhir.nhs.uk/Id/ods-organization-code|{org_code}" if org_code is not None else None
+        service_id = f"identifier=https://fhir.nhs.uk/Id/nhsEndpointServiceId|{service_id}" if service_id is not None else None
+        party_key = f"identifier=https://fhir.nhs.uk/Id/nhsMhsPartyKey|{party_key}" if party_key is not None else None
 
         query_params = "&".join(filter(lambda query_param: query_param, [org_code, service_id, party_key]))
 
@@ -107,10 +114,10 @@ class RequestHandlerTestBase(ABC, tornado.testing.AsyncHTTPTestCase):
 
         url = "/device"
 
-        org_code = f"organization=https://fhir.nhs.uk/Id/ods-organization-code|{org_code}" if org_code else None
-        service_id = f"identifier=https://fhir.nhs.uk/Id/nhsEndpointServiceId|{service_id}" if service_id else None
-        party_key = f"identifier=https://fhir.nhs.uk/Id/nhsMhsPartyKey|{party_key}" if party_key else None
-        managing_organization = f"managing-organization=https://fhir.nhs.uk/Id/ods-organization-code|{managing_organization}" if managing_organization else None
+        org_code = f"organization=https://fhir.nhs.uk/Id/ods-organization-code|{org_code}" if org_code is not None else None
+        service_id = f"identifier=https://fhir.nhs.uk/Id/nhsEndpointServiceId|{service_id}" if service_id is not None else None
+        party_key = f"identifier=https://fhir.nhs.uk/Id/nhsMhsPartyKey|{party_key}" if party_key is not None else None
+        managing_organization = f"managing-organization=https://fhir.nhs.uk/Id/ods-organization-code|{managing_organization}" if managing_organization is not None else None
 
         query_params = "&".join(filter(lambda query_param: query_param, [org_code, service_id, party_key, managing_organization]))
 
@@ -132,3 +139,39 @@ class RequestHandlerTestBase(ABC, tornado.testing.AsyncHTTPTestCase):
         expected['link'][0]['url'] = current_link_url
 
         return current, expected
+
+    def _assert_400_operation_outcome(self, response_content, diagnostics):
+        operation_outcome = json.loads(response_content)
+        self.assertEqual(operation_outcome["resourceType"], "OperationOutcome")
+        issue = operation_outcome["issue"][0]
+        self.assertEqual(issue["severity"], "error")
+        self.assertEqual(issue["code"], "required")
+        self.assertEqual(issue["diagnostics"], diagnostics)
+        coding = issue["details"]["coding"][0]
+        self.assertEqual(coding["system"], 'https://fhir.nhs.uk/STU3/ValueSet/Spine-ErrorOrWarningCode-1')
+        self.assertEqual(coding["code"], 'BAD_REQUEST')
+        self.assertEqual(coding["display"], 'Bad request')
+
+    def _assert_405_operation_outcome(self, response_content):
+        operation_outcome = json.loads(response_content)
+        self.assertEqual(operation_outcome["resourceType"], "OperationOutcome")
+        issue = operation_outcome["issue"][0]
+        self.assertEqual(issue["severity"], "error")
+        self.assertEqual(issue["code"], "not-supported")
+        self.assertEqual(issue["diagnostics"], 'HTTP operation not supported')
+        coding = issue["details"]["coding"][0]
+        self.assertEqual(coding["system"], 'https://fhir.nhs.uk/STU3/ValueSet/Spine-ErrorOrWarningCode-1')
+        self.assertEqual(coding["code"], 'NOT_IMPLEMENTED')
+        self.assertEqual(coding["display"], 'Not implemented')
+
+    def _assert_500_operation_outcome(self, response_content):
+        operation_outcome = json.loads(response_content)
+        self.assertEqual(operation_outcome["resourceType"], "OperationOutcome")
+        issue = operation_outcome["issue"][0]
+        self.assertEqual(issue["severity"], "error")
+        self.assertEqual(issue["code"], "exception")
+        self.assertEqual(issue["diagnostics"], 'some error')
+        coding = issue["details"]["coding"][0]
+        self.assertEqual(coding["system"], 'https://fhir.nhs.uk/STU3/ValueSet/Spine-ErrorOrWarningCode-1')
+        self.assertEqual(coding["code"], 'INTERNAL_SERVER_ERROR')
+        self.assertEqual(coding["display"], 'Unexpected internal server error')

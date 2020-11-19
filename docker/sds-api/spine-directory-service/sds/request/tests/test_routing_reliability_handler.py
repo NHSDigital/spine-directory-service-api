@@ -7,7 +7,7 @@ ROUTING_AND_RELIABILITY_DETAILS = [{
     "nhsMHSEndPoint": [
         "https://192.168.128.11/sync-service"
     ],
-    "nhsMHSPartyKey": "YES-0000806",
+    "nhsMHSPartyKey": PARTY_KEY,
     "nhsMhsCPAId": "S20001A000168",
     "nhsMhsFQDN": "192.168.128.11",
     "uniqueIdentifier": [
@@ -18,7 +18,8 @@ ROUTING_AND_RELIABILITY_DETAILS = [{
     "nhsMHSPersistDuration": [],
     "nhsMHSRetries": [],
     "nhsMHSRetryInterval": [],
-    "nhsMHSSyncReplyMode": "None"
+    "nhsMHSSyncReplyMode": "None",
+    "nhsMhsSvcIA": SERVICE_ID
 }]
 
 
@@ -47,19 +48,26 @@ class TestRoutingReliabilityRequestHandler(RequestHandlerTestBase):
 
     def test_get_returns_error(self):
         with self.subTest("Lookup error"):
-            self.sds_client.get_mhs_details.side_effect = Exception
+            self.sds_client.get_mhs_details.side_effect = Exception("some error")
             response = self.fetch(self._build_endpoint_url(), method="GET")
             self.assertEqual(response.code, 500)
+            super()._assert_500_operation_outcome(response.body.decode())
 
     def test_get_handles_missing_params(self):
         with self.subTest("Missing Org Code"):
-            response = self.fetch(self._build_endpoint_url(org_code=None, service_id=SERVICE_ID), method="GET")
+            response = self.fetch(self._build_endpoint_url(org_code='', service_id=SERVICE_ID), method="GET")
+            # response = self.fetch(self._build_endpoint_url(org_code=None, service_id=SERVICE_ID), method="GET")
             self.assertEqual(response.code, 400)
+            super()._assert_400_operation_outcome(response.body.decode(), "HTTP 400: Missing or invalid 'organization' query parameter. Should be 'organization=https://fhir.nhs.uk/Id/ods-organization-code|value'")
 
         with self.subTest("Missing Service ID and party key"):
             response = self.fetch(self._build_endpoint_url(org_code=ORG_CODE, service_id=None, party_key=None), method="GET")
             self.assertEqual(response.code, 400)
+            super()._assert_400_operation_outcome(response.body.decode(), "HTTP 400: Missing or invalid 'identifier' query parameter. Should be one or both of: ['identifier=https://fhir.nhs.uk/Id/nhsEndpointServiceId|value', 'identifier=https://fhir.nhs.uk/Id/nhsMhsPartyKey|value'")
 
     def test_get_handles_different_accept_header(self):
         self.sds_client.get_mhs_details.return_value = test_utilities.awaitable(ROUTING_AND_RELIABILITY_DETAILS)
         super()._test_get_handles_different_accept_header(super()._build_endpoint_url(), EXPECTED_ENDPOINT_JSON_FILE_PATH)
+
+    def test_should_return_405_when_using_non_get(self):
+        super()._test_should_return_405_when_using_non_get(super()._build_endpoint_url())

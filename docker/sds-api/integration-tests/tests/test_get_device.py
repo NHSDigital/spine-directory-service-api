@@ -3,8 +3,7 @@ import re
 from unittest import TestCase
 
 from utilities.SdsHttpRequestBuilder import SdsHttpRequestBuilder
-from utilities.TestUtils import read_test_data_json, assert_400_operation_outcome, assert_405_operation_outcome, \
-    assert_404_operation_outcome
+from utilities.TestUtils import read_test_data_json, assert_404_operation_outcome
 
 
 class DeviceHandlerTests(TestCase):
@@ -16,7 +15,6 @@ class DeviceHandlerTests(TestCase):
         request_builder = self._sds_device_http_request_builder()
         if request_builder_modifier is not None:
             request_builder_modifier(request_builder)
-
         response = request_builder \
             .with_org_code('YES') \
             .with_service_id('urn:nhs:names:services:psis:REPC_IN150016UK05') \
@@ -63,45 +61,6 @@ class DeviceHandlerTests(TestCase):
 
         self.assertEqual(body["total"], 0)
         self.assertEqual(len(body["entry"]), 0)
-
-    # TODO: not sure if there must be at least 1 optional parameter
-    def test_should_return_400_when_query_parameters_are_missing(self):
-        # all empty
-        response = self._sds_device_http_request_builder() \
-            .with_org_code('') \
-            .with_service_id('') \
-            .with_managing_organization('') \
-            .with_party_key('') \
-            .execute_get_expecting_bad_request_response()
-        assert_400_operation_outcome(response.content, "HTTP 400: Missing or invalid 'organization' query parameter. Should be 'organization=https://fhir.nhs.uk/Id/ods-organization-code|value'")
-
-        # org_code empty
-        response = self._sds_device_http_request_builder() \
-            .with_org_code('') \
-            .with_service_id('urn:nhs:names:services:psis:REPC_IN150016UK05') \
-            .with_party_key('YES-0000806') \
-            .with_managing_organization('???') \
-            .execute_get_expecting_bad_request_response()
-        assert_400_operation_outcome(response.content, "HTTP 400: Missing or invalid 'organization' query parameter. Should be 'organization=https://fhir.nhs.uk/Id/ods-organization-code|value'")
-
-        # service_id empty
-        response = self._sds_device_http_request_builder() \
-            .with_org_code('YES') \
-            .with_service_id('') \
-            .with_party_key('YES-0000806') \
-            .with_managing_organization('???') \
-            .execute_get_expecting_bad_request_response()
-        assert_400_operation_outcome(response.content, "HTTP 400: Missing or invalid 'identifier' query parameter. Should be 'identifier=https://fhir.nhs.uk/Id/nhsEndpointServiceId|value'")
-
-    def test_should_return_405_when_using_post(self):
-        response = self._sds_device_http_request_builder() \
-            .with_method("POST") \
-            .with_org_code('YES') \
-            .with_service_id('urn:nhs:names:services:psis:REPC_IN150016UK05') \
-            .execute()
-
-        self.assertEqual(response.status_code, 405)
-        assert_405_operation_outcome(response.content)
 
     def test_should_return_404_when_calling_invalid_endpoint(self):
         response = self._sds_device_http_request_builder() \

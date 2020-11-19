@@ -78,8 +78,8 @@ class SDSClient(object):
 
         :return: Dictionary of the attributes of the device associated with the given parameters
         """
-        if not ods_code or not interaction_id or (not managing_organization and not party_key):
-            raise SDSException("org_code and interaction_id and at least one of 'managing_organization' or 'party_key' must be provided")
+        if not ods_code or not interaction_id:
+            raise SDSException("org_code and interaction_id must be provided")
 
         query_parts = [
             ("nhsIDCode", ods_code),

@@ -27,8 +27,6 @@ def _map_resource_to_bundle_entry(resource, base_url):
     }
 
 
-# TODO: service_id is optional
-# TODO: map party_key as well
 def build_endpoint_resources(ldap_attributes: Dict, org_code: str, service_id: Optional[str] = None) -> List[Dict]:
     def build_endpoint(address):
         return {
@@ -68,7 +66,7 @@ def build_device_resource(ldap_attributes: Dict, org_code: str, service_id: str,
         ],
         "identifier": [
             build_identifier(Url.NHS_SPINE_ASID, ldap_attributes['uniqueIdentifier'][0]),
-            build_identifier(Url.NHS_MHS_PARTYKEY_URL, party_key or ldap_attributes['nhsMhsPartyKey'][0]),
+            build_identifier(Url.NHS_MHS_PARTYKEY_URL, party_key or ldap_attributes['nhsMhsPartyKey']),
             build_identifier(Url.NHS_ENDPOINT_SERVICE_ID_URL, service_id),
         ],
         "owner": {
