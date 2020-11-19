@@ -6,10 +6,14 @@ import tornado
 
 from request import content_type_validator
 from request.http_headers import HttpHeaders
+from request.tracking_ids_headers_reader import read_tracking_id_headers
 from utilities import mdc
 
 
 class ErrorHandler(tornado.web.RequestHandler):
+
+    def initialize(self) -> None:
+        read_tracking_id_headers(self.request.headers)
 
     def prepare(self):
         raise tornado.web.HTTPError(status_code=404, reason="Invalid resource path.")
