@@ -21,5 +21,5 @@ def get_valid_accept_type(headers: HTTPHeaders):
         return accept_type
     else:
         logger.info("Invalid Accept header in request")
-        raise tornado.web.HTTPError(406, 'Invalid Accept header in request',
-                                    reason=f'Invalid Accept header in request, only: ' + str(valid_accept_types) + ' are allowed')
+        raise tornado.web.HTTPError(status_code=406,
+                                    log_message=f'Invalid Accept header in request, only: {valid_accept_types} are allowed')

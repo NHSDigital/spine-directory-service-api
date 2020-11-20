@@ -25,6 +25,8 @@ class TestGetJsonFormat(TestCase):
             read_tracking_id_headers(headers)
             self.assertEqual(mdc.correlation_id.get(), FIXED_UUID_LOWER_CASE)
 
+        mdc.correlation_id.set('')
+
         with self.subTest("Upper case UUID"):
             headers = HTTPHeaders()
             headers.add(CORRELATION_ID_HEADER, FIXED_UUID_UPPER_CASE)
@@ -43,4 +45,4 @@ class TestGetJsonFormat(TestCase):
             read_tracking_id_headers(headers)
         raised_exception = context.exception
         self.assertEqual(raised_exception.status_code, 400)
-        self.assertEqual(raised_exception.reason, "Invalid X-Correlation-ID header. Should be an UUIDv4 matching regex \'^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$\'")
+        self.assertEqual(raised_exception.log_message, "Invalid X-Correlation-ID header. Should be an UUIDv4 matching regex \'^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$\'")
