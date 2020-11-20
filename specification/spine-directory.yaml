@@ -100,15 +100,88 @@ servers:
   - url: 'https://sandbox.api.service.nhs.uk/spine-directory'
     description: Sandbox environment
 paths:
-  /Endpoint:
+  /Device:
     get:
       summary: Get accredited system details
+      operationId: getDevice
+      description: |
+        # Overview
+        Use this endpoint to get accredited systems information in SDS.
+        
+        This endpoint should return all matching accredited system objects which provides the following information:
+          * Accredited System Identifier
+          * Managing Organisation Code
+          * Client Code
+          * Party Key
+          * Service-Interactions
+        
+        To get the information, you must supply:
+          * organisation code
+          * service identifier
+        and may supply:
+          * managing organization identifier
+          * party key
+
+      parameters:
+        - in: query
+          name: organization
+          description: The organisation code for the NHS Spine instance that your Message Handling System is communicating with. Must be preceded with FHIR identifier (eg."organization=https://fhir.nhs.uk/Id/ods-organization-code|YES-0000806")
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: identifier
+          description: The service that is being contacted and the action that is required. Additionally optional MHS party key. Must be preceded with FHIR identifier (eg."identifier=https://fhir.nhs.uk/Id/nhsEndpointServiceId|urn:nhs:names:services:psis:REPC_IN150016UK05" or "identifier=https://fhir.nhs.uk/Id/nhsMhsPartyKey|YES-0000806"). See the Data section in this API Specification document for more information.
+          required: true
+          schema:
+            type: array
+            items: 
+              type: string
+          explode: true
+        - in: query
+          name: managing-organization
+          description: Manufacturer's organisation code - ODS code of the manufacturer's organisation (i.e. GP System supplier)
+          required: false
+          schema:
+            type: string
+        - in: header
+          name: X-Correlation-Id
+          description: UUID for request tracking
+          schema:
+            type: string
+            format: uuid
+          required: false
+      responses:
+        '200':
+          description: One or more accredited systems were found that match the search criteria.
+          content:
+            application/fhir+json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/DeviceBundle'
+        '400':
+          description: Missing or invalid query parameter(s).
+        '405':
+          description: Unsupported HTTP method. For this endpoint only GET is available
+        '404':
+          description: Invalid endpoint path
+        '406':
+          description: Unsupported media type
+        '500':
+          description: Unhandled internal server error
+        '502':
+          description: Upstream LDAP returned an unsupported responses
+        '504':
+          description: Upstream LDAP server request has timed out
+  /Endpoint:
+    get:
+      summary: Get routing and reliability details
       operationId: getEndpoint
       description: |
         # Overview
         Use this endpoint to get accredited systems routing and reliability information in SDS.
         
-        This endpoint should return a single matching accredited system object which provides the following information:
+        This endpoint should return all matching routing and reliability objects which provides the following information:
           * Endpoint Service ID
           * Message Handling System Party Key
           * Accredited System ID
@@ -146,7 +219,7 @@ paths:
             application/fhir+json:
               schema:
                 allOf:
-                  - $ref: '#/components/schemas/Bundle'
+                  - $ref: '#/components/schemas/EndpointBundle'
         '400':
           description: Missing or invalid query parameter(s).
         '405':
@@ -163,9 +236,9 @@ paths:
           description: Upstream LDAP server request has timed out
 components:
   schemas:
-    Bundle:
+    EndpointBundle:
       type: object
-      description: "A FHIR Bundle with Enpoint resources"
+      description: "A FHIR Bundle with Endpoint resources"
       required:
         - type
         - total
@@ -217,7 +290,64 @@ components:
                 type: string
                 description: "Full url to the resource"
               resource:
-                $ref: '#/components/schemas/Endpoint'
+                anyOf:
+                  - $ref: '#/components/schemas/Endpoint'
+    DeviceBundle:
+      type: object
+      description: "A FHIR Bundle with Device resources"
+      required:
+        - type
+        - total
+        - link
+        - entry
+      example:
+        resourceType: "Bundle"
+        id: "2A87F0F9-065E-42A5-98D0-51E060BB7B12"
+        type: "searchset"
+        total: "1"
+        link:
+          - relation: "self"
+            url: "URL"
+        entry:
+          - fullUrl: "URL"
+            resource:
+              $ref: '#/components/schemas/Device/example'
+      properties:
+        resourceType:
+          type: string
+          description: "FHIR Resource type. Always 'Bundle'."
+        id:
+          type: string
+          description: "Unique identifier for this search request."
+          format: uuid
+        type:
+          type: string
+          description: "Bundle content type. Always 'searchset'."
+        total:
+          type: integer
+          description: "Number of resources in 'bundle.entry' array"
+        link:
+          type: array
+          items:
+            type: object
+            properties:
+              relation:
+                type: string
+                description: "Always 'self'."
+              url:
+                type: string
+                description: "The full url that produced the data"
+        entry:
+          type: array
+          items:
+            type: object
+            properties:
+              fullUrl:
+                type: string
+                description: "Full url to the resource"
+              resource:
+                anyOf:
+                  - $ref: '#/components/schemas/Device'
     Endpoint:
       type: object
       description: "A FHIR Enpoint resource that include routing and reliability information for the accredited system"
@@ -354,3 +484,81 @@ components:
         address:
           type: string
           description: "The base URL for connecting to this endpoint"
+    Device:
+      type: object
+      description: "A FHIR Device resource information for the accredited system"
+      required:
+        - owner
+        - identifier
+        - extension
+      example:
+        resourceType: "Device"
+        id: "f0f0e921-92ca-4a88-a550-2dbb36f703af"
+        extension:
+          url: "https://fhir.nhs.uk/R4/StructureDefinition/Extension-SDS-ReliabilityConfiguration"
+          valueReference:
+            identifier:
+              system: "https://fhir.nhs.uk/Id/ods-organization-code"
+              value: "T10101"
+        identifier:
+        - system: "https://fhir.nhs.uk/Id/nhsSpineASID"
+          value: "227319907548"
+        - system: "https://fhir.nhs.uk/Id/nhsMhsPartyKey"
+          value: "R8008-0000806"
+        - system: "https://fhir.nhs.uk/Id/nhsEndpointServiceId"
+          value: "urn:nhs:names:services:psis:REPC_IN150016UK05"
+        owner:
+          identifier:
+            system: "https://fhir.nhs.uk/Id/ods-organization-code"
+            value: "8008"
+          display: "Some GP Practice"
+      properties:
+        resourceType:
+          type: string
+          description: "FHIR Resource type. Always 'Device'."
+        id:
+          type: string
+          description: "SDS’s unique identifier for this accredited system record."
+          format: uuid
+        extension:
+          type: array
+          description: "Additional content defined by implementations"
+          items:
+            type: object
+            properties:
+              url:
+                type: string
+                example: "https://fhir.nhs.uk/R4/StructureDefinition/Extension-SDS-ReliabilityConfiguration"
+              valueReference:
+                type: object
+                properties:
+                  identifier:
+                    type: object
+                    properties:
+                      system:
+                        type: string
+                      value:
+                        type: string
+        identifier:
+          type: array
+          description: "Identifies this device across multiple systems"
+          items: 
+            type: object
+            properties:
+              system:
+                type: string
+              value:
+                type: string
+        owner:
+          type: object
+          description: "Manufacturer's organisation details"
+          properties:
+            identifier:
+              type: object
+              properties:
+                system:
+                  type: string
+                value:
+                  type: string
+            display:
+              type: string
