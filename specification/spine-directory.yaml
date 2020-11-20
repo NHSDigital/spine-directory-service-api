@@ -128,7 +128,7 @@ paths:
             type: string
         - in: query
           name: identifier
-          description: The service that is being contacted and the action that is required. Must be preceded with FHIR identifier (eg."identifier=https://fhir.nhs.uk/Id/nhsEndpointServiceId|urn:nhs:names:services:psis:REPC_IN150016UK05"). See the Data section in this API Specification document for more information.
+          description: The service that is being contacted and the action that is required or the MHS party key or both in separate parameters. Must be preceded with FHIR identifier (eg."identifier=https://fhir.nhs.uk/Id/nhsEndpointServiceId|urn:nhs:names:services:psis:REPC_IN150016UK05" or "identifier=https://fhir.nhs.uk/Id/nhsMhsPartyKey|YES-0000806"). See the Data section in this API Specification document for more information.
           required: true
           schema:
             type: string
