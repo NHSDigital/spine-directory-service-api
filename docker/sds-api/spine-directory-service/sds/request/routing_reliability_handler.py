@@ -5,6 +5,7 @@ from request.content_type_validator import get_valid_accept_type
 from request.error_handler import ErrorHandler
 from request.fhir_json_mapper import get_json_format
 from request.http_headers import HttpHeaders
+from request.tracking_ids_headers_reader import read_tracking_id_headers
 from utilities import timing, integration_adaptors_logger as log, mdc
 
 logger = log.IntegrationAdaptorsLogger(__name__)
@@ -17,10 +18,12 @@ class RoutingReliabilityRequestHandler(BaseHandler, ErrorHandler):
         if self.request.method != "GET":
             raise tornado.web.HTTPError(
                 status_code=405,
-                reason="Method not allowed.")
+                log_message="Method not allowed.")
 
     @timing.time_request
     async def get(self):
+        read_tracking_id_headers(self.request.headers)
+
         org_code = self.get_query_argument("org-code")
         service_id = self.get_query_argument("service-id")
         accept_type = get_valid_accept_type(self.request.headers)
