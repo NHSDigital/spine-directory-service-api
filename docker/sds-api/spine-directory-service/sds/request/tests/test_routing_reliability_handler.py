@@ -55,8 +55,7 @@ class TestRoutingReliabilityRequestHandler(RequestHandlerTestBase):
 
     def test_get_handles_missing_params(self):
         with self.subTest("Missing Org Code"):
-            response = self.fetch(self._build_endpoint_url(org_code='', service_id=SERVICE_ID), method="GET")
-            # response = self.fetch(self._build_endpoint_url(org_code=None, service_id=SERVICE_ID), method="GET")
+            response = self.fetch(self._build_endpoint_url(org_code=None, service_id=SERVICE_ID), method="GET")
             self.assertEqual(response.code, 400)
             super()._assert_400_operation_outcome(response.body.decode(), "HTTP 400: Missing or invalid 'organization' query parameter. Should be 'organization=https://fhir.nhs.uk/Id/ods-organization-code|value'")
 

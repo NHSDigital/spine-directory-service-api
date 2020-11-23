@@ -2,8 +2,8 @@ from typing import Optional
 
 import tornado.web
 
-from request.tracking_ids_headers_reader import read_tracking_id_headers
 from lookup.sds_client import SDSClient
+from utilities import mdc, message_utilities
 
 ORG_CODE_QUERY_PARAMETER_NAME = "organization"
 IDENTIFIER_QUERY_PARAMETER_NAME = "identifier"
@@ -23,8 +23,8 @@ class BaseHandler(tornado.web.RequestHandler):
 
         :param sds_client: The sds client component to use to look up values in SDS.
         """
+        mdc.trace_id.set(message_utilities.get_uuid())
         self.sds_client = sds_client
-        read_tracking_id_headers(self.request.headers)
 
     def prepare(self):
         if self.request.method != "GET":
