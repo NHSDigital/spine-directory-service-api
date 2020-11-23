@@ -1,5 +1,6 @@
 import json
 import unittest.mock
+import uuid
 from os import path
 
 import fhirclient.models.endpoint as endpoint
@@ -55,6 +56,31 @@ class TestRoutingReliabilityRequestHandler(tornado.testing.AsyncHTTPTestCase):
         self.assertEqual(expected, json_with_fixed_uuid)
         self.assertEqual(response.headers.get(HttpHeaders.CONTENT_TYPE, None), "application/fhir+json")
         self.routing.get_routing_and_reliability.assert_called_with(test_request_handler.ORG_CODE, test_request_handler.SERVICE_ID)
+
+    def test_correlation_id_is_set_as_response_header(self):
+        with self.subTest("X-Correlation-ID is set on 200 response"):
+            correlation_id = str(uuid.uuid4()).upper()
+            self.routing.get_routing_and_reliability.return_value = test_utilities.awaitable(ROUTING_AND_RELIABILITY_DETAILS)
+            response = self.fetch(test_request_handler.build_url(),
+                                  method="GET", headers={'X-Correlation-ID': correlation_id})
+            self.assertEqual(response.code, 200)
+            self.assertEqual(response.headers.get('X-Correlation-ID'), correlation_id)
+
+        with self.subTest("X-Correlation-ID is set on 500 response"):
+            correlation_id = str(uuid.uuid4()).upper()
+            self.routing.get_routing_and_reliability.side_effect = Exception
+            response = self.fetch(test_request_handler.build_url(),
+                                  method="GET", headers={'X-Correlation-ID': correlation_id})
+            self.assertEqual(response.code, 500)
+            self.assertEqual(response.headers.get('X-Correlation-ID'), correlation_id)
+
+        with self.subTest("X-Correlation-ID is set on 400 response"):
+            correlation_id = str(uuid.uuid4()).upper()
+            response = self.fetch(
+                test_request_handler.build_url(org_code=None, service_id=test_request_handler.SERVICE_ID),
+                method="GET", headers={'X-Correlation-ID': correlation_id})
+            self.assertEqual(response.code, 400)
+            self.assertEqual(response.headers.get('X-Correlation-ID'), correlation_id)
 
     def test_get_returns_error(self):
         with self.subTest("Routing and reliability lookup error"):
