@@ -1,7 +1,7 @@
 import tornado.web
 
-from request.tracking_ids_headers_reader import read_tracking_id_headers
 from lookup import routing_reliability
+from utilities import mdc, message_utilities
 
 
 class BaseHandler(tornado.web.RequestHandler):
@@ -12,5 +12,5 @@ class BaseHandler(tornado.web.RequestHandler):
 
         :param routing: The routing and reliability component to use to look up values in SDS.
         """
+        mdc.trace_id.set(message_utilities.get_uuid())
         self.routing = routing
-        read_tracking_id_headers(self.request.headers)
