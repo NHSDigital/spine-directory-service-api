@@ -1,17 +1,16 @@
 import datetime as dt
 import logging
-
 import sys
+
 from logging import LogRecord
 from typing import Optional, Any
+
+from pythonjsonlogger import jsonlogger
 
 from utilities import config
 from utilities import mdc
 
-LOG_FORMAT_STRING = "[%(asctime)sZ] | %(levelname)s | %(process)d | %(correlation_id)s | %(name)s | %(message)s"
-
 _project_name = None
-_log_format = LOG_FORMAT_STRING
 
 
 def _check_for_insecure_log_level(log_level: str):
@@ -65,12 +64,13 @@ class IntegrationAdaptorsLogger(logging.LoggerAdapter):
         return message.format(**formatted_values)
 
 
-class CustomFormatter(logging.Formatter):
+class CustomFormatter(jsonlogger.JsonFormatter):
     def __init__(self):
-        super().__init__(fmt=_log_format, datefmt='%Y-%m-%dT%H:%M:%S.%f')
+        super().__init__(fmt='%(asctime)sZ %(levelname)s %(process)d %(correlation_id)s %(trace_id)s %(name)s %(message)s', datefmt='%Y-%m-%dT%H:%M:%S.%f')
 
     def format(self, record: LogRecord) -> str:
         record.correlation_id = mdc.correlation_id.get()
+        record.trace_id = mdc.trace_id.get()
 
         record.name = f'{_project_name}.{record.name}' if _project_name else record.name
 
@@ -89,19 +89,17 @@ def configure_logging(project_name: str = None):
     to stdout and sets the default log levels and format. This is expected to be called once at the start of a
     application.
     """
-    global _project_name, _log_format
+    global _project_name
     _project_name = project_name
-    _log_format = config.get_config("LOG_FORMAT", default=LOG_FORMAT_STRING)
 
     logger = logging.getLogger()
     log_level = config.get_config('LOG_LEVEL')
     logger.setLevel(log_level)
-    handler = logging.StreamHandler(sys.stdout)
-
+    json_handler = logging.StreamHandler(sys.stdout)
     formatter = CustomFormatter()
+    json_handler.setFormatter(formatter)
 
-    handler.setFormatter(formatter)
     logger.handlers = []
-    logger.addHandler(handler)
+    logger.addHandler(json_handler)
 
     _check_for_insecure_log_level(log_level)

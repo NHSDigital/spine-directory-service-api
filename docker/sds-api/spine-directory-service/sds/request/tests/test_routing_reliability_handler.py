@@ -1,12 +1,11 @@
 import json
 import unittest.mock
+import uuid
 from os import path
 
 import fhirclient.models.endpoint as endpoint
-import lxml
 import tornado.testing
 import tornado.web
-from lxml import etree
 
 from request import routing_reliability_handler
 from request.http_headers import HttpHeaders
@@ -15,7 +14,6 @@ from utilities import message_utilities
 from utilities import test_utilities
 
 FILE_PATH_JSON = path.join(path.dirname(__file__), "examples/routing_reliability_result.json")
-FILE_PATH_XML = path.join(path.dirname(__file__), "examples/routing_reliability_result.xml")
 FIXED_UUID = "f0f0e921-92ca-4a88-a550-2dbb36f703af"
 ROUTING_AND_RELIABILITY_DETAILS = {
     "nhsMHSEndPoint": [
@@ -58,6 +56,31 @@ class TestRoutingReliabilityRequestHandler(tornado.testing.AsyncHTTPTestCase):
         self.assertEqual(expected, json_with_fixed_uuid)
         self.assertEqual(response.headers.get(HttpHeaders.CONTENT_TYPE, None), "application/fhir+json")
         self.routing.get_routing_and_reliability.assert_called_with(test_request_handler.ORG_CODE, test_request_handler.SERVICE_ID)
+
+    def test_correlation_id_is_set_as_response_header(self):
+        with self.subTest("X-Correlation-ID is set on 200 response"):
+            correlation_id = str(uuid.uuid4()).upper()
+            self.routing.get_routing_and_reliability.return_value = test_utilities.awaitable(ROUTING_AND_RELIABILITY_DETAILS)
+            response = self.fetch(test_request_handler.build_url(),
+                                  method="GET", headers={'X-Correlation-ID': correlation_id})
+            self.assertEqual(response.code, 200)
+            self.assertEqual(response.headers.get('X-Correlation-ID'), correlation_id)
+
+        with self.subTest("X-Correlation-ID is set on 500 response"):
+            correlation_id = str(uuid.uuid4()).upper()
+            self.routing.get_routing_and_reliability.side_effect = Exception
+            response = self.fetch(test_request_handler.build_url(),
+                                  method="GET", headers={'X-Correlation-ID': correlation_id})
+            self.assertEqual(response.code, 500)
+            self.assertEqual(response.headers.get('X-Correlation-ID'), correlation_id)
+
+        with self.subTest("X-Correlation-ID is set on 400 response"):
+            correlation_id = str(uuid.uuid4()).upper()
+            response = self.fetch(
+                test_request_handler.build_url(org_code=None, service_id=test_request_handler.SERVICE_ID),
+                method="GET", headers={'X-Correlation-ID': correlation_id})
+            self.assertEqual(response.code, 400)
+            self.assertEqual(response.headers.get('X-Correlation-ID'), correlation_id)
 
     def test_get_returns_error(self):
         with self.subTest("Routing and reliability lookup error"):
@@ -111,25 +134,12 @@ class TestRoutingReliabilityRequestHandler(tornado.testing.AsyncHTTPTestCase):
             self.assertEqual(expected, json_with_fixed_uuid)
             self.assertEqual(response.headers.get(HttpHeaders.CONTENT_TYPE, None), "application/fhir+json")
 
-        with self.subTest("Accept header is application/fhir+xml"):
-            headers = {'Accept': 'application/fhir+xml'}
-            self.routing.get_routing_and_reliability.return_value = test_utilities.awaitable(ROUTING_AND_RELIABILITY_DETAILS)
-            response = self.fetch(test_request_handler.build_url(), method="GET", headers=headers)
-
-            body_with_fixed_uuid = message_utilities.replace_uuid(response.body.decode(), FIXED_UUID)
-            body_xml = etree.tostring(lxml.etree.fromstring(body_with_fixed_uuid))
-            expected = etree.tostring(etree.parse(FILE_PATH_XML))
-
-            self.assertEqual(response.code, 200)
-            self.assertEqual(expected, body_xml)
-            self.assertEqual(response.headers.get(HttpHeaders.CONTENT_TYPE, None), "application/fhir+xml")
-
         with self.subTest("Accept header is invalid"):
             headers = {'Accept': 'invalid-header'}
             self.routing.get_routing_and_reliability.return_value = test_utilities.awaitable(ROUTING_AND_RELIABILITY_DETAILS)
             response = self.fetch(test_request_handler.build_url(), method="GET", headers=headers)
 
-            self.assertEqual(response.code, 400)
+            self.assertEqual(response.code, 406)
 
     @staticmethod
     def endpoint_resource_validation(json_body: dict):
