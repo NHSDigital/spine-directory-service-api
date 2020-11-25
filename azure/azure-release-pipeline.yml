@@ -8,7 +8,6 @@ resources:
     - repository: common
       type: github
       name: NHSDigital/api-management-utils
-      ref: refs/heads/mm-apm-1552-api-gateway-client-cert-hosted-containers
       endpoint: NHSDigital
   pipelines:
   - pipeline: build_pipeline
@@ -33,6 +32,7 @@ extends:
     product_display_name: ${{ variables.product_display_name }}
     product_description: ${{ variables.product_description }}
     spec_file: ${{ variables.spec_file }}
+    portal_api_requires_callback_url: false
     apigee_deployments:
       - environment: internal-dev
         make_spec_visible: true
