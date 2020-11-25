@@ -121,7 +121,6 @@ paths:
         and may supply:
           * managing organization identifier
           * party key
-
       parameters:
         - in: query
           name: organization
@@ -159,6 +158,9 @@ paths:
               schema:
                 allOf:
                   - $ref: '#/components/schemas/DeviceBundle'
+              examples:
+                objectExample:
+                  $ref: '#/components/schemas/DeviceBundle/example'
         '400':
           description: Missing or invalid query parameter(s).
         '405':
@@ -191,7 +193,6 @@ paths:
         To get the information, you must supply:
           * organisation code
           * service identifier
-
       parameters:
         - in: query
           name: organization
@@ -220,6 +221,9 @@ paths:
               schema:
                 allOf:
                   - $ref: '#/components/schemas/EndpointBundle'
+              examples:
+                objectExample:
+                  $ref: '#/components/schemas/EndpointBundle/example'
         '400':
           description: Missing or invalid query parameter(s).
         '405':
