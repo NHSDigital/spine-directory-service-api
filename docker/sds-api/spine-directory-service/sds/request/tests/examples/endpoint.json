@@ -57,7 +57,7 @@
           },
           {
             "system": "https://fhir.nhs.uk/Id/nhsMhsPartyKey",
-            "value": "YES-0000806"
+            "value": "some_party_key"
           },
           {
             "system": "https://fhir.nhs.uk/Id/nhsMhsCPAId",
