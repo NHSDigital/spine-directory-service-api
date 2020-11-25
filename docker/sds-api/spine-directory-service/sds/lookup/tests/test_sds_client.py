@@ -87,7 +87,9 @@ class TestSDSClient(TestCase):
         attributes = await client.get_mhs_details("fake code", "fake interaction")
         self.assertEqual(attributes, [])
 
-        attributes = await client.get_as_details("fake code", "fake interaction", "fake manufacturer", "fake_party_key")
+        attributes = await client.get_as_details("fake code", "fake interaction", None, "fake_party_key")
+        # TODO: can't use atm with Opentest as it lacks required schema attribute
+        # attributes = await client.get_as_details("fake code", "fake interaction", "fake manufacturer", "fake_party_key")
         self.assertEqual(attributes, [])
 
     @async_test

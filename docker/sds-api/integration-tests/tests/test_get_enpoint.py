@@ -8,6 +8,10 @@ from utilities.TestUtils import read_test_data_json, assert_404_operation_outcom
 
 class RoutingAndReliabilityHandlerTests(TestCase):
 
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+        self.maxDiff = None
+
     @staticmethod
     def _sds_device_http_request_builder():
         return SdsHttpRequestBuilder("/endpoint")

@@ -49,34 +49,43 @@ def build_endpoint_resources(ldap_attributes: Dict, org_code: str, service_id: O
     return [build_endpoint(address) for address in ldap_attributes['nhsMHSEndPoint']]
 
 
-def build_device_resource(ldap_attributes: Dict, org_code: str, service_id: str, managing_organization: Optional[str] = None, party_key: Optional[str] = None) -> Dict:
-    return {
+def build_device_resource(ldap_attributes: Dict, service_id: str) -> Dict:
+    device = {
         "resourceType": "Device",
-        "id": message_utilities.get_uuid(),
-        "extension": [
+        "id": message_utilities.get_uuid()
+    }
+    if ldap_attributes.get('nhsIdCode'):
+        device["extension"] = [
             {
                 "url": Url.MANAGING_ORGANIZATION_EXTENSION_URL,
                 "valueReference": {
                     "identifier": {
                         "system": Url.MANAGING_ORGANIZATION_URL,
-                        "value": managing_organization or ldap_attributes['nhsMhsManufacturerOrg']
+                        "value": ldap_attributes['nhsIdCode']
                     }
                 }
             }
-        ],
-        "identifier": [
-            build_identifier(Url.NHS_SPINE_ASID, ldap_attributes['uniqueIdentifier'][0]),
-            build_identifier(Url.NHS_MHS_PARTYKEY_URL, party_key or ldap_attributes['nhsMhsPartyKey']),
-            build_identifier(Url.NHS_ENDPOINT_SERVICE_ID_URL, service_id),
-        ],
-        "owner": {
+        ]
+
+    identifiers = []
+    if ldap_attributes.get('uniqueIdentifier', [None])[0]:
+        identifiers.append(build_identifier(Url.NHS_SPINE_ASID, ldap_attributes['uniqueIdentifier'][0]))
+    if ldap_attributes.get('nhsMhsPartyKey'):
+        identifiers.append(build_identifier(Url.NHS_MHS_PARTYKEY_URL, ldap_attributes['nhsMhsPartyKey']))
+    if ldap_attributes.get('nhsAsSvcIA'):
+        identifiers.append(build_identifier(Url.NHS_ENDPOINT_SERVICE_ID_URL, service_id))
+    if identifiers:
+        device['identifier'] = identifiers
+
+    if ldap_attributes.get('nhsAsClient', [None])[0]:
+        device["owner"] = {
             "identifier": {
                 "system": Url.MANAGING_ORGANIZATION_URL,
-                "value": org_code
+                "value": ldap_attributes['nhsAsClient'][0]
             }
         }
-    }
 
+    return device
 
 def build_extension_array(ldap_attributes: Dict):
     return [{

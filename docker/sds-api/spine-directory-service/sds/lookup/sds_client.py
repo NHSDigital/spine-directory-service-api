@@ -10,6 +10,7 @@ import ldap3.core.exceptions as ldap_exceptions
 from lookup.sds_exception import SDSException
 from utilities import config
 from utilities import integration_adaptors_logger as log
+from utilities.string_utilities import str2bool
 
 logger = log.IntegrationAdaptorsLogger(__name__)
 
@@ -85,10 +86,14 @@ class SDSClient(object):
             ("nhsIDCode", ods_code),
             ("objectClass", "nhsAs"),
             ("nhsAsSvcIA", interaction_id),
-            # TODO: can't use atm with Opentest as it lacks required schema attribute
-            # ("nhsMhsManufacturerOrg", managing_organization),
+            ("nhsMhsManufacturerOrg", managing_organization),
             ("nhsMHSPartyKey", party_key)
         ]
+
+        # TODO: can't use atm with Opentest as it lacks required schema attribute
+        if str2bool(config.get_config('DISABLE_MANUFACTURER_ORG_SEARCH_PARAM', default=str(False))):
+            query_parts.remove(("nhsMhsManufacturerOrg", managing_organization))
+
         result = await self._get_ldap_data(query_parts, AS_ATTRIBUTES)
         return result
 

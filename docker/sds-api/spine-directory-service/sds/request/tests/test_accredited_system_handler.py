@@ -4,12 +4,15 @@ from utilities import test_utilities
 
 EXPECTED_DEVICE_JSON_FILE_PATH = path.join(path.dirname(__file__), "examples/device.json")
 ACCREDITED_SYSTEM_DETAILS = [{
-    "nhsMhsPartyKey": PARTY_KEY,
-    "nhsMhsCPAId": "S20001A000168",
+    "nhsIdCode": MANAGING_ORG,
     "uniqueIdentifier": [
         "928942012545"
     ],
-    "nhsMhsManufacturerOrg": MANAGING_ORG
+    "nhsMhsPartyKey": PARTY_KEY,
+    "nhsAsSvcIA": SERVICE_ID,
+    "nhsAsClient": [
+        ORG_CODE
+    ]
 }]
 
 

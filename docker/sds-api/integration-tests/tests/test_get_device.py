@@ -7,6 +7,11 @@ from utilities.TestUtils import read_test_data_json, assert_404_operation_outcom
 
 
 class DeviceHandlerTests(TestCase):
+
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+        self.maxDiff = None
+
     @staticmethod
     def _sds_device_http_request_builder():
         return SdsHttpRequestBuilder("/device")
@@ -19,7 +24,7 @@ class DeviceHandlerTests(TestCase):
             .with_org_code('YES') \
             .with_service_id('urn:nhs:names:services:psis:REPC_IN150016UK05') \
             .with_party_key('YES-0000806') \
-            .with_managing_organization('???') \
+            .with_managing_organization('YES') \
             .execute_get_expecting_success()
 
         self.assertEqual('application/fhir+json', response.headers['Content-Type'])
@@ -52,7 +57,7 @@ class DeviceHandlerTests(TestCase):
             .with_org_code('YES') \
             .with_service_id('non-existing') \
             .with_party_key('YES-0000806') \
-            .with_managing_organization('???') \
+            .with_managing_organization('YES') \
             .execute_get_expecting_success()
 
         self.assertEqual('application/fhir+json', response.headers['Content-Type'])

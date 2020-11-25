@@ -39,7 +39,7 @@ class AccreditedSystemRequestHandler(BaseHandler, ErrorHandler):
 
         accept_type = get_valid_accept_type(self.request.headers)
 
-        logger.info("Looking up accredited system information. {org_code}, {service_id}, {managing_organization}, {party_key}",
+        logger.info("Looking up accredited system information for {org_code}, {service_id}, {managing_organization}, {party_key}",
                     fparams={"org_code": org_code, "service_id": service_id, 'managing_organization': managing_organization, 'party_key': party_key})
         ldap_result = await self.sds_client.get_as_details(org_code, service_id, managing_organization, party_key)
         logger.info("Obtained accredited system information. {ldap_result}",
@@ -48,7 +48,7 @@ class AccreditedSystemRequestHandler(BaseHandler, ErrorHandler):
         base_url = f"{self.request.protocol}://{self.request.host}{self.request.path}/"
         full_url = unquote(self.request.full_url())
 
-        devices = [build_device_resource(ldap_attributes, org_code, service_id, managing_organization, party_key) for ldap_attributes in ldap_result]
+        devices = [build_device_resource(ldap_attributes, service_id) for ldap_attributes in ldap_result]
 
         bundle = build_bundle_resource(devices, base_url, full_url)
 

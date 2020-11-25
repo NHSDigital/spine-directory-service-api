@@ -21,7 +21,7 @@
             "valueReference": {
               "identifier": {
                 "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-                "value": "???"
+                "value": "YES"
               }
             }
           }
