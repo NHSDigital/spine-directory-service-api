@@ -157,9 +157,8 @@ paths:
             application/fhir+json:
               schema:
                 $ref: '#/components/schemas/DeviceBundle'
-              examples:
-                'device bundle':
-                  $ref: '#/components/schemas/DeviceBundle/example'
+              example:
+                'foo': 'bar'
         '400':
           description: Missing or invalid query parameter(s).
         '405':
