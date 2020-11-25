@@ -156,9 +156,10 @@ paths:
           content:
             application/fhir+json:
               schema:
-                $ref: '#/components/schemas/DeviceBundle'
-              example:
-                'foo': 'bar'
+                $ref: 'components/schemas/DeviceBundle.yaml'
+              examples:
+                'device bundle':
+                  $ref: 'components/examples/DeviceBundle.yaml'
         '400':
           description: Missing or invalid query parameter(s).
         '405':
@@ -237,61 +238,6 @@ paths:
           description: Upstream LDAP server request has timed out
 components:
   schemas:
-    DeviceBundle:
-      type: object
-      description: "A FHIR Bundle with Device resources"
-      required:
-        - type
-        - total
-        - link
-        - entry
-      example:
-        resourceType: "Bundle"
-        id: "2A87F0F9-065E-42A5-98D0-51E060BB7B12"
-        type: "searchset"
-        total: "1"
-        link:
-          - relation: "self"
-            url: "URL"
-        entry:
-          - fullUrl: "URL"
-            resource:
-              $ref: '#/components/schemas/Device/example'
-      properties:
-        resourceType:
-          type: string
-          description: "FHIR Resource type. Always 'Bundle'."
-        id:
-          type: string
-          description: "Unique identifier for this search request."
-          format: uuid
-        type:
-          type: string
-          description: "Bundle content type. Always 'searchset'."
-        total:
-          type: integer
-          description: "Number of resources in 'bundle.entry' array"
-        link:
-          type: array
-          items:
-            type: object
-            properties:
-              relation:
-                type: string
-                description: "Always 'self'."
-              url:
-                type: string
-                description: "The full url that produced the data"
-        entry:
-          type: array
-          items:
-            type: object
-            properties:
-              fullUrl:
-                type: string
-                description: "Full url to the resource"
-              resource:
-                $ref: '#/components/schemas/Device'
     EndpointBundle:
       type: object
       description: "A FHIR Bundle with Endpoint resources"
@@ -483,81 +429,3 @@ components:
         address:
           type: string
           description: "The base URL for connecting to this endpoint"
-    Device:
-      type: object
-      description: "A FHIR Device resource information for the accredited system"
-      required:
-        - owner
-        - identifier
-        - extension
-      example:
-        resourceType: "Device"
-        id: "f0f0e921-92ca-4a88-a550-2dbb36f703af"
-        extension:
-          url: "https://fhir.nhs.uk/R4/StructureDefinition/Extension-SDS-ReliabilityConfiguration"
-          valueReference:
-            identifier:
-              system: "https://fhir.nhs.uk/Id/ods-organization-code"
-              value: "T10101"
-        identifier:
-        - system: "https://fhir.nhs.uk/Id/nhsSpineASID"
-          value: "227319907548"
-        - system: "https://fhir.nhs.uk/Id/nhsMhsPartyKey"
-          value: "R8008-0000806"
-        - system: "https://fhir.nhs.uk/Id/nhsEndpointServiceId"
-          value: "urn:nhs:names:services:psis:REPC_IN150016UK05"
-        owner:
-          identifier:
-            system: "https://fhir.nhs.uk/Id/ods-organization-code"
-            value: "8008"
-          display: "Some GP Practice"
-      properties:
-        resourceType:
-          type: string
-          description: "FHIR Resource type. Always 'Device'."
-        id:
-          type: string
-          description: "SDS’s unique identifier for this accredited system record."
-          format: uuid
-        extension:
-          type: array
-          description: "Additional content defined by implementations"
-          items:
-            type: object
-            properties:
-              url:
-                type: string
-                example: "https://fhir.nhs.uk/R4/StructureDefinition/Extension-SDS-ReliabilityConfiguration"
-              valueReference:
-                type: object
-                properties:
-                  identifier:
-                    type: object
-                    properties:
-                      system:
-                        type: string
-                      value:
-                        type: string
-        identifier:
-          type: array
-          description: "Identifies this device across multiple systems"
-          items: 
-            type: object
-            properties:
-              system:
-                type: string
-              value:
-                type: string
-        owner:
-          type: object
-          description: "Manufacturer's organisation details"
-          properties:
-            identifier:
-              type: object
-              properties:
-                system:
-                  type: string
-                value:
-                  type: string
-            display:
-              type: string
