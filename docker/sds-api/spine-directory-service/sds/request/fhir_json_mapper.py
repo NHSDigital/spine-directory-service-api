@@ -1,40 +1,45 @@
-from typing import Dict, List
+from typing import Dict, List, Optional
 
 from request.mapper_urls import MapperUrls as Url
 from utilities import message_utilities
 
 
-def build_bundle_resource(endpoints: List[Dict], base_url: str, full_url: str):
+def build_bundle_resource(resources: List[Dict], base_url: str, full_url: str):
     return {
         "resourceType": "Bundle",
         "id": message_utilities.get_uuid(),
         "type": "searchset",
-        "total": len(endpoints),
+        "total": len(resources),
         "link": [
             {
                 "relation": "self",
                 "url": full_url
             }
         ],
-        # TODO: endpoints dict can have multiple addresses inside and each must produce new resource
-        "entry": list(map(lambda endpoint: _map_endpoint_to_entry(endpoint, base_url), endpoints))
+        "entry": list(map(lambda resource: _map_resource_to_bundle_entry(resource, base_url), resources))
     }
 
 
-def _map_endpoint_to_entry(endpoint, base_url):
+def _map_resource_to_bundle_entry(resource, base_url):
     return {
-        "fullUrl": base_url + endpoint["id"],
-        "resource": endpoint
+        "fullUrl": base_url + resource["id"],
+        "resource": resource
     }
 
 
-def build_endpoint_resource(ldap_attributes: Dict, org_code: str, service_id: str) -> List[Dict]:
+def build_endpoint_resources(ldap_attributes: Dict, org_code: str, service_id: Optional[str] = None) -> List[Dict]:
     def build_endpoint(address):
         return {
             "resourceType": "Endpoint",
             "id": message_utilities.get_uuid(),
             "extension": build_extension_array(ldap_attributes),
-            "identifier": build_identifier_array(ldap_attributes, service_id),
+            "identifier": [
+                build_identifier(Url.NHS_ENDPOINT_SERVICE_ID_URL, service_id or ldap_attributes['nhsMhsSvcIA']),
+                build_identifier(Url.NHS_MHS_FQDN_URL, array_to_string(ldap_attributes, "nhsMhsFQDN")),
+                build_identifier(Url.NHS_MHS_PARTYKEY_URL, array_to_string(ldap_attributes, "nhsMHSPartyKey")),
+                build_identifier(Url.NHS_MHS_CPAID_URL, array_to_string(ldap_attributes, "nhsMhsCPAId")),
+                build_identifier(Url.NHS_SPINE_MHS_URL, array_to_string(ldap_attributes, "uniqueIdentifier"))
+            ],
             "status": "active",
             "connectionType": build_connection_type(),
             "managingOrganization": build_managing_organization(org_code),
@@ -43,6 +48,44 @@ def build_endpoint_resource(ldap_attributes: Dict, org_code: str, service_id: st
         }
     return [build_endpoint(address) for address in ldap_attributes['nhsMHSEndPoint']]
 
+
+def build_device_resource(ldap_attributes: Dict, service_id: str) -> Dict:
+    device = {
+        "resourceType": "Device",
+        "id": message_utilities.get_uuid()
+    }
+    if ldap_attributes.get('nhsIdCode'):
+        device["extension"] = [
+            {
+                "url": Url.MANAGING_ORGANIZATION_EXTENSION_URL,
+                "valueReference": {
+                    "identifier": {
+                        "system": Url.MANAGING_ORGANIZATION_URL,
+                        "value": ldap_attributes['nhsIdCode']
+                    }
+                }
+            }
+        ]
+
+    identifiers = []
+    if ldap_attributes.get('uniqueIdentifier', [None])[0]:
+        identifiers.append(build_identifier(Url.NHS_SPINE_ASID, ldap_attributes['uniqueIdentifier'][0]))
+    if ldap_attributes.get('nhsMhsPartyKey'):
+        identifiers.append(build_identifier(Url.NHS_MHS_PARTYKEY_URL, ldap_attributes['nhsMhsPartyKey']))
+    if ldap_attributes.get('nhsAsSvcIA'):
+        identifiers.append(build_identifier(Url.NHS_ENDPOINT_SERVICE_ID_URL, service_id))
+    if identifiers:
+        device['identifier'] = identifiers
+
+    if ldap_attributes.get('nhsAsClient', [None])[0]:
+        device["owner"] = {
+            "identifier": {
+                "system": Url.MANAGING_ORGANIZATION_URL,
+                "value": ldap_attributes['nhsAsClient'][0]
+            }
+        }
+
+    return device
 
 def build_extension_array(ldap_attributes: Dict):
     return [{
@@ -71,16 +114,6 @@ def build_int_extension(url: str, value: str, ldap_attributes: Dict):
         "url": url,
         "valueInteger": string_to_int(array_to_string(ldap_attributes, value))
     }
-
-
-def build_identifier_array(ldap_attributes: Dict, service_id: str):
-    return [
-        build_identifier(Url.NHS_ENDPOINT_SERVICE_ID_URL, service_id),
-        build_identifier(Url.NHS_MHS_FQDN_URL, array_to_string(ldap_attributes, "nhsMhsFQDN")),
-        build_identifier(Url.NHS_MHS_PARTYKEY_URL, array_to_string(ldap_attributes, "nhsMHSPartyKey")),
-        build_identifier(Url.NHS_MHS_CPAID_URL, array_to_string(ldap_attributes, "nhsMhsCPAId")),
-        build_identifier(Url.NHS_SPINE_MHS_URL, array_to_string(ldap_attributes, "uniqueIdentifier"))
-    ]
 
 
 def build_identifier(system: str, value: str):

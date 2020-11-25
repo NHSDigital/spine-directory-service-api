@@ -7,9 +7,8 @@ from tornado import httputil
 from tornado.routing import Matcher
 
 import lookup.sds_client_factory
-from lookup import mhs_attribute_lookup, routing_reliability
-from request import healthcheck_handler
-from request import routing_reliability_handler
+from lookup.sds_client import SDSClient
+from request import healthcheck_handler, routing_reliability_handler, accredited_system_handler
 from request.error_handler import ErrorHandler
 from utilities import config, secrets
 from utilities import integration_adaptors_logger as log
@@ -17,21 +16,10 @@ from utilities import integration_adaptors_logger as log
 logger = log.IntegrationAdaptorsLogger(__name__)
 
 
-def initialise_routing() -> routing_reliability.RoutingAndReliability:
-    """Initialise the routing and reliability component to be used for SDS queries.
-
-    :return:
-    """
-    client = lookup.sds_client_factory.get_sds_client()
-    attribute_lookup = mhs_attribute_lookup.MHSAttributeLookup(client=client)
-    routing = routing_reliability.RoutingAndReliability(attribute_lookup)
-    return routing
-
-
-def start_tornado_server(routing: routing_reliability.RoutingAndReliability) -> None:
+def start_tornado_server(sds_client: SDSClient) -> None:
     """Start the Tornado server
 
-    :param routing: The routing/reliability component to be used when servicing requests.
+    :param sds_client: The sds client component to be used when servicing requests.
     """
 
     class CaseInsensitiveRouteMatcher(Matcher):
@@ -42,9 +30,10 @@ def start_tornado_server(routing: routing_reliability.RoutingAndReliability) -> 
         def match(self, request: httputil.HTTPServerRequest) -> Optional[Dict[str, Any]]:
             return {} if request.path.lower() == self.path.lower() else None
 
-    handler_dependencies = {"routing": routing}
+    handler_dependencies = {"sds_client": sds_client}
     application = tornado.web.Application([
         (CaseInsensitiveRouteMatcher("/endpoint"), routing_reliability_handler.RoutingReliabilityRequestHandler, handler_dependencies),
+        (CaseInsensitiveRouteMatcher("/device"), accredited_system_handler.AccreditedSystemRequestHandler, handler_dependencies),
         (CaseInsensitiveRouteMatcher("/healthcheck"), healthcheck_handler.HealthcheckHandler)
     ], default_handler_class=ErrorHandler)
     server = tornado.httpserver.HTTPServer(application)
@@ -69,8 +58,8 @@ def main():
     secrets.setup_secret_config("SDS")
     log.configure_logging('sds')
 
-    routing = initialise_routing()
-    start_tornado_server(routing)
+    sds_client = lookup.sds_client_factory.get_sds_client()
+    start_tornado_server(sds_client)
 
 
 if __name__ == "__main__":
