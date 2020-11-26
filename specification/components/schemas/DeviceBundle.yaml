@@ -2,7 +2,6 @@ type: object
 properties:
   resourceType:
     type: string
-    description: "FHIR Resource type. Always 'Bundle'."
     default: "Bundle"
   id:
     type: string
@@ -11,6 +10,7 @@ properties:
   type:
     type: string
     description: "Bundle content type. Always 'searchset'."
+    default: "searchset"
   total:
     type: integer
     description: "Number of resources in 'bundle.entry' array"

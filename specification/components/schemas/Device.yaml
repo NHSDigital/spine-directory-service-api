@@ -3,7 +3,6 @@ description: "A FHIR Device resource information for the accredited system"
 properties:
   resourceType:
     type: string
-    description: "FHIR Resource type. Always 'Device'."
     example: "Device"
   id:
     type: string
