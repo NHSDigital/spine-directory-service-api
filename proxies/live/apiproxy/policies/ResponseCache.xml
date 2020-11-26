@@ -3,6 +3,7 @@
     <DisplayName>Response Cache SDS</DisplayName>
     <Properties/>
     <CacheKey>
+        <KeyFragment ref="request.verb"/>
         <KeyFragment ref="request.path"/>
         <KeyFragment ref="request.queryparam.organization"/>
         <KeyFragment ref="request.queryparam.identifier.values"/>
