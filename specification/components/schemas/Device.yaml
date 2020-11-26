@@ -3,12 +3,12 @@ description: "A FHIR Device resource information for the accredited system"
 properties:
   resourceType:
     type: string
-    example: "Device"
+    default: "Device"
   id:
     type: string
     description: "SDS’s unique identifier for this accredited system record."
     format: uuid
-    example: "f0f0e921-92ca-4a88-a550-2dbb36f703af"
+    example: "F0F0E921-92CA-4A88-A550-2DBB36F703AF"
   extension:
     type: array
     description: "Additional content defined by implementations"
@@ -17,7 +17,6 @@ properties:
       properties:
         url:
           type: string
-          example: "https://fhir.nhs.uk/R4/StructureDefinition/Extension-SDS-ReliabilityConfiguration"
         valueReference:
           type: object
           properties:

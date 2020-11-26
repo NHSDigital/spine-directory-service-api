@@ -9,11 +9,9 @@ properties:
     format: uuid
   type:
     type: string
-    description: "Bundle content type. Always 'searchset'."
     default: "searchset"
   total:
     type: integer
-    description: "Number of resources in 'bundle.entry' array"
   link:
     type: array
     items:
@@ -21,7 +19,6 @@ properties:
       properties:
         relation:
           type: string
-          description: "Always 'self'."
           default: "self"
         url:
           type: string
@@ -33,6 +30,6 @@ properties:
       properties:
         fullUrl:
           type: string
-          description: "Full url to the resource"
+          description: "Full url of the resource"
         resource:
           $ref: 'Device.yaml'
