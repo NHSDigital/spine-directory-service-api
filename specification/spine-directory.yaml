@@ -219,7 +219,7 @@ paths:
               schema:
                 $ref: 'components/schemas/EndpointBundle.yaml'
               example:
-                $ref: 'components/examples/EndpointBundle.yaml'
+                $ref: 'components/examples/EndpointBundle.json'
         '400':
           description: Missing or invalid query parameter(s).
         '405':
