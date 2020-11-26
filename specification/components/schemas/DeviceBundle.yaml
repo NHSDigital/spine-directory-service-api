@@ -1,14 +1,9 @@
 type: object
-description: "A FHIR Bundle with Device resources"
-required:
-  - type
-  - total
-  - link
-  - entry
 properties:
   resourceType:
     type: string
     description: "FHIR Resource type. Always 'Bundle'."
+    default: "Bundle"
   id:
     type: string
     description: "Unique identifier for this search request."
@@ -27,6 +22,7 @@ properties:
         relation:
           type: string
           description: "Always 'self'."
+          default: "self"
         url:
           type: string
           description: "The full url that produced the data"
@@ -39,4 +35,4 @@ properties:
           type: string
           description: "Full url to the resource"
         resource:
-          $ref: 'Device.yaml'
+          $ref: 'components/schemas/Device.yaml'

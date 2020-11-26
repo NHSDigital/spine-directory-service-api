@@ -156,7 +156,44 @@ paths:
           content:
             application/fhir+json:
               schema:
-                $ref: 'components/schemas/DeviceBundle.yaml'
+                type: object
+                properties:
+                  resourceType:
+                    type: string
+                    description: "FHIR Resource type. Always 'Bundle'."
+                    default: "Bundle"
+                  id:
+                    type: string
+                    description: "Unique identifier for this search request."
+                    format: uuid
+                  type:
+                    type: string
+                    description: "Bundle content type. Always 'searchset'."
+                  total:
+                    type: integer
+                    description: "Number of resources in 'bundle.entry' array"
+                  link:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        relation:
+                          type: string
+                          description: "Always 'self'."
+                          default: "self"
+                        url:
+                          type: string
+                          description: "The full url that produced the data"
+                  entry:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        fullUrl:
+                          type: string
+                          description: "Full url to the resource"
+                        resource:
+                          $ref: 'components/schemas/Device.yaml'
               examples:
                 'device bundle':
                   $ref: 'components/examples/DeviceBundle.yaml'
