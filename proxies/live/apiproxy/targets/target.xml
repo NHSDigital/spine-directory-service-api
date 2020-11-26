@@ -10,16 +10,11 @@
       <Step>
         <Name>SpikeArrest</Name>
       </Step>
-    </Request>
-  </PreFlow>
-  <PostFlow name="PostFlow">
-    <Request/>
-    <Response>
       <Step>
         <Name>Response-Cache-SDS</Name>
       </Step>
-    </Response>
-  </PostFlow>
+    </Request>
+  </PreFlow>
   <HTTPTargetConnection>
     <Properties>
       <!-- Whitelist the 'expected' error code responses so the responses pass unhindered to caller
