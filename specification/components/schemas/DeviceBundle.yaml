@@ -35,4 +35,4 @@ properties:
           type: string
           description: "Full url to the resource"
         resource:
-          $ref: 'components/schemas/Device.yaml'
+          $ref: 'Device.yaml'
