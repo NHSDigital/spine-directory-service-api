@@ -1,13 +1,13 @@
 {
     "resourceType": "Device",
-    "id": "<TO_REPLACE>",
+    "id": "F0F0E921-92CA-4A88-A550-2DBB36F703AF",
     "extension": [
       {
-        "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-SDS-ManagingOrganisation",
+        "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-SDS-ReliabilityConfiguration",
         "valueReference": {
           "identifier": {
             "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-            "value": "YES"
+            "value": "T10101"
           }
         }
       }
@@ -15,11 +15,11 @@
     "identifier": [
       {
         "system": "https://fhir.nhs.uk/Id/nhsSpineASID",
-        "value": "928942012545"
+        "value": "227319907548"
       },
       {
         "system": "https://fhir.nhs.uk/Id/nhsMhsPartyKey",
-        "value": "YES-0000806"
+        "value": "R8008-0000806"
       },
       {
         "system": "https://fhir.nhs.uk/Id/nhsEndpointServiceId",
@@ -29,7 +29,7 @@
     "owner": {
       "identifier": {
         "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-        "value": "YES"
+        "value": "R8008"
       }
     }
   }
