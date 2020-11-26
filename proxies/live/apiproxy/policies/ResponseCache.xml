@@ -12,7 +12,7 @@
         <TimeOfDay/>
         <TimeoutInSeconds ref="">900</TimeoutInSeconds>
     </ExpirySettings>
-    <SkipCacheLookup/>
+    <SkipCacheLookup>request.header.cache-control = "no-cache"</SkipCacheLookup>
     <SkipCachePopulation/>
     <CacheLookupTimeoutInSeconds>30</CacheLookupTimeoutInSeconds>
     <ExcludeErrorResponse>true</ExcludeErrorResponse>
