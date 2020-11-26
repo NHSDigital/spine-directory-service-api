@@ -1,0 +1,21 @@
+{
+    "resourceType": "Bundle",
+    "id": "<TO_REPLACE>",
+    "type": "searchset",
+    "total": 1,
+    "link": [
+      {
+        "relation": "self",
+        "url": "<TO_REPLACE>"
+      }
+    ],
+    "entry": [
+      {
+        "fullUrl": "<TO_REPLACE>",
+        "resource": {
+            "$ref": "Device.json"
+        }
+      }
+    ]
+  }
+  
