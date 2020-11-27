@@ -110,7 +110,7 @@ class LogEntry:
     def _unpack(self, log_line: str):
         value = json.loads(log_line)
         self.time = value['asctime']
-        self.level = value['levelname']
+        self.level = value['level']
         self.process_id = value['process']
         self.correlation_id = value['correlation_id']
         self.name = value['name']
