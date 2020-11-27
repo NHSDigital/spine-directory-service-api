@@ -3,6 +3,8 @@
     <DisplayName>Response Cache SDS</DisplayName>
     <Properties/>
     <CacheKey>
+        <KeyFragment ref="request.verb"/>
+        <KeyFragment ref="request.path"/>
         <KeyFragment ref="request.queryparam.org-code"/>
         <KeyFragment ref="request.queryparam.service-id"/>
     </CacheKey>
@@ -12,7 +14,7 @@
         <TimeOfDay/>
         <TimeoutInSeconds ref="">900</TimeoutInSeconds>
     </ExpirySettings>
-    <SkipCacheLookup/>
+    <SkipCacheLookup>request.header.cache-control = "no-cache"</SkipCacheLookup>
     <SkipCachePopulation/>
     <CacheLookupTimeoutInSeconds>30</CacheLookupTimeoutInSeconds>
     <ExcludeErrorResponse>true</ExcludeErrorResponse>
