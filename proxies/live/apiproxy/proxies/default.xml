@@ -20,7 +20,7 @@
       <Condition>(proxy.pathsuffix MatchesPath "/_ping") and ((request.verb = "GET") or (request.verb = "HEAD"))</Condition>
     </Flow>
   </Flows>
-  <Flow name="StatusEndpoint">
+  <!-- <Flow name="StatusEndpoint">
     <Description/>
     <Request>
       <Step>
@@ -40,7 +40,7 @@
       </Step>
     </Response>
     <Condition>(proxy.pathsuffix MatchesPath "/_status") and ((request.verb = "GET") or (request.verb = "HEAD"))</Condition>
-  </Flow>
+  </Flow> -->
   <PostClientFlow name="PostClientFlow">
     <Response>
       <Step>
@@ -58,9 +58,9 @@
   <RouteRule name="NoRoutePing">
     <Condition>(proxy.pathsuffix MatchesPath "/_ping") and ((request.verb = "GET") or (request.verb = "HEAD"))</Condition>
   </RouteRule>
-  <RouteRule name="NoRouteStatus">
+  <!-- <RouteRule name="NoRouteStatus">
     <Condition>(proxy.pathsuffix MatchesPath "/_status") and ((request.verb = "GET") or (request.verb = "HEAD"))</Condition>
-  </RouteRule>
+  </RouteRule> -->
   <RouteRule name="target">
     <TargetEndpoint>target</TargetEndpoint>
   </RouteRule>
