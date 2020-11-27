@@ -24,6 +24,7 @@ class ErrorHandler(tornado.web.RequestHandler):
         read_tracking_id_headers(self.request.headers, raise_error=False)
 
         operation_outcome = None
+        additional_headers = []
         if status_code == 400:
             _, exception, _ = kwargs['exc_info']
             operation_outcome = OperationOutcome([Issue(Severity.error, Code.required, [SpineCodings.BAD_REQUEST],
@@ -32,6 +33,7 @@ class ErrorHandler(tornado.web.RequestHandler):
             operation_outcome = OperationOutcome([Issue(Severity.error, Code.not_found, [SpineCodings.NOT_IMPLEMENTED],
                                                         diagnostics="HTTP endpoint not found")])
         elif status_code == 405:
+            additional_headers.append(("Allow", "GET"))
             operation_outcome = OperationOutcome([Issue(Severity.error, Code.not_supported, [SpineCodings.NOT_IMPLEMENTED],
                                                         diagnostics="HTTP operation not supported")])
         elif status_code == 406:
@@ -62,6 +64,7 @@ class ErrorHandler(tornado.web.RequestHandler):
             content_type = content_type_validator.APPLICATION_FHIR_JSON
             serialized = operation_outcome.to_json()
             self.set_header(HttpHeaders.CONTENT_TYPE, content_type)
+            [self.set_header(kv[0], kv[1]) for kv in additional_headers]
             self.write(serialized)
         else:
             super().write_error(status_code, **kwargs)

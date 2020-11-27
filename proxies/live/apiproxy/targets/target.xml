@@ -10,11 +10,14 @@
       <Step>
         <Name>SpikeArrest</Name>
       </Step>
+      <Step>
+        <Name>Response-Cache-SDS</Name>
+      </Step>
     </Request>
   </PreFlow>
-  <PostFlow name="PostFlow">
-    <Request/>
-    <Response>
+  <PostFlow name="PostFlow">	
+    <Request/>	
+    <Response>	
       <Step>
         <Name>Response-Cache-SDS</Name>
       </Step>
