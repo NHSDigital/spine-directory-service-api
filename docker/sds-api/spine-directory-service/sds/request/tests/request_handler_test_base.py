@@ -19,6 +19,11 @@ FIXED_UUID = "f0f0e921-92ca-4a88-a550-2dbb36f703af"
 
 
 class RequestHandlerTestBase(ABC, tornado.testing.AsyncHTTPTestCase):
+
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+        self.maxDiff = None
+
     def get_app(self):
         self.sds_client = unittest.mock.Mock()
 
@@ -124,19 +129,26 @@ class RequestHandlerTestBase(ABC, tornado.testing.AsyncHTTPTestCase):
         url = f"{url}?{query_params}" if query_params else url
         return url
 
-    @staticmethod
-    def _get_current_and_expected_body(response, expected_file_path):
+    def _get_current_and_expected_body(self, response, expected_file_path):
         current = json.loads(message_utilities.replace_uuid(response.body.decode(), FIXED_UUID))
+        current_entries = current["entry"]
         current_id = current['id']
         current_link_url = current['link'][0]['url']
-        current_entry_full_url = current["entry"][0]["fullUrl"]
-        current_resource_id = current["entry"][0]["resource"]["id"]
 
         expected = json.loads(open(expected_file_path, "r").read())
+        expected_entries = expected["entry"]
         expected['id'] = current_id
-        expected["entry"][0]["fullUrl"] = current_entry_full_url
-        expected["entry"][0]["resource"]["id"] = current_resource_id
         expected['link'][0]['url'] = current_link_url
+
+        self.assertEqual(len(current_entries), len(expected_entries))
+
+        for i in range(0, len(current_entries)):
+            current_entry = current_entries[i]
+            current_entry_full_url = current_entry["fullUrl"]
+            current_resource_id = current_entry["resource"]["id"]
+            expected_entry = expected_entries[i]
+            expected_entry["fullUrl"] = current_entry_full_url
+            expected_entry["resource"]["id"] = current_resource_id
 
         return current, expected
 
