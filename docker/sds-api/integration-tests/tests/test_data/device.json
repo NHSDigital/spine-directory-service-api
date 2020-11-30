@@ -46,6 +46,9 @@
             "value": "YES"
           }
         }
+      },
+      "search": {
+        "mode": "match"
       }
     }
   ]

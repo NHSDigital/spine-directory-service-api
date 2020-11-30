@@ -23,7 +23,10 @@ def build_bundle_resource(resources: List[Dict], base_url: str, full_url: str):
 def _map_resource_to_bundle_entry(resource, base_url):
     return {
         "fullUrl": base_url + resource["id"],
-        "resource": resource
+        "resource": resource,
+        "search": {
+            "mode": "match"
+        }
     }
 
 

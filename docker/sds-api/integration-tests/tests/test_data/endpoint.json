@@ -92,6 +92,9 @@
           }
         ],
         "address": "https://msg.opentest.hscic.gov.uk/reliablemessaging/reliablerequest"
+      },
+      "search": {
+        "mode": "match"
       }
     }
   ]
