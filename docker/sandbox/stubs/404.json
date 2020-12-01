@@ -1,0 +1,20 @@
+{
+  "resourceType": "OperationOutcome",
+  "id": "<TO_REPLACE>",
+  "issue": [
+    {
+      "severity": "error",
+      "code": "not-found",
+      "details": {
+        "coding": [
+          {
+            "system": "https://fhir.nhs.uk/STU3/ValueSet/Spine-ErrorOrWarningCode-1",
+            "code": "NOT_IMPLEMENTED",
+            "display": "Not implemented"
+          }
+        ]
+      },
+      "diagnostics": "HTTP endpoint not found"
+    }
+  ]
+}
