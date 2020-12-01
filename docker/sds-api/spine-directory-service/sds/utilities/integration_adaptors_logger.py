@@ -66,11 +66,12 @@ class IntegrationAdaptorsLogger(logging.LoggerAdapter):
 
 class CustomFormatter(jsonlogger.JsonFormatter):
     def __init__(self):
-        super().__init__(fmt='%(asctime)sZ %(levelname)s %(process)d %(correlation_id)s %(trace_id)s %(name)s %(message)s', datefmt='%Y-%m-%dT%H:%M:%S.%f')
+        super().__init__(fmt='%(asctime)sZ %(level)s %(process)d %(correlation_id)s %(trace_id)s %(name)s %(message)s', datefmt='%Y-%m-%dT%H:%M:%S.%f')
 
     def format(self, record: LogRecord) -> str:
         record.correlation_id = mdc.correlation_id.get()
         record.trace_id = mdc.trace_id.get()
+        record.level = record.levelname
 
         record.name = f'{_project_name}.{record.name}' if _project_name else record.name
 

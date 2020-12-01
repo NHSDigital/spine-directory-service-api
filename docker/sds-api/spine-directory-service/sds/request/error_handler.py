@@ -13,10 +13,6 @@ from utilities import mdc, message_utilities
 class ErrorHandler(tornado.web.RequestHandler):
 
     def initialize(self) -> None:
-        """Initialise this request handler with the provided configuration values.
-
-        :param routing: The routing and reliability component to use to look up values in SDS.
-        """
         mdc.trace_id.set(message_utilities.get_uuid())
 
     def prepare(self):

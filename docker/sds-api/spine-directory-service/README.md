@@ -51,3 +51,4 @@ within the boundary of your infrastructure.
 
 For information targeted at developers making use of the SDS Adaptor, please refer to [SDS Adaptor developer notes](sds-adaptor-dev-notes.md).
 For just test-driving the SDS Adaptor check [how to run SDS Adaptor locally](running-sds-adaptor-locally.md).
+
