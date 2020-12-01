@@ -36,7 +36,7 @@
           "identifier": [
             {
               "system": "https://fhir.nhs.uk/Id/nhsSpineASID",
-              "value": "895674567897"
+              "value": "928942012545"
             },
             {
               "system": "https://fhir.nhs.uk/Id/nhsMhsPartyKey",
@@ -44,7 +44,7 @@
             },
             {
               "system": "https://fhir.nhs.uk/Id/nhsEndpointServiceId",
-              "value": "urn:oasis:names:tc:ebxml-msg:service:Ping"
+              "value": "urn:nhs:names:services:psis:REPC_IN150016UK05"
             }
           ],
           "owner": {

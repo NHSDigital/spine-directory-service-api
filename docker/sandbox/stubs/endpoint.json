@@ -59,7 +59,7 @@
             },
             {
               "system": "https://fhir.nhs.uk/Id/nhsMhsFQDN",
-              "value": "msg.int.spine2.ncrs.nhs.uk"
+              "value": "msg.opentest.hscic.gov.uk"
             },
             {
               "system": "https://fhir.nhs.uk/Id/nhsMhsPartyKey",
@@ -97,7 +97,7 @@
               ]
             }
           ],
-          "address": "https://msg.int.spine2.ncrs.nhs.uk/reliablemessaging/reliablerequest"
+          "address": "https://msg.opentest.hscic.gov.uk/reliablemessaging/reliablerequest"
         },
         "search": {
           "mode": "match"

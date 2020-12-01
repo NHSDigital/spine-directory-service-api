@@ -22,19 +22,11 @@ def start_tornado_server(sds_client: SDSClient) -> None:
     :param sds_client: The sds client component to be used when servicing requests.
     """
 
-    class CaseInsensitiveRouteMatcher(Matcher):
-        def __init__(self, path) -> None:
-            super().__init__()
-            self.path = path
-
-        def match(self, request: httputil.HTTPServerRequest) -> Optional[Dict[str, Any]]:
-            return {} if request.path.lower() == self.path.lower() else None
-
     handler_dependencies = {"sds_client": sds_client}
     application = tornado.web.Application([
-        (CaseInsensitiveRouteMatcher("/endpoint"), routing_reliability_handler.RoutingReliabilityRequestHandler, handler_dependencies),
-        (CaseInsensitiveRouteMatcher("/device"), accredited_system_handler.AccreditedSystemRequestHandler, handler_dependencies),
-        (CaseInsensitiveRouteMatcher("/healthcheck"), healthcheck_handler.HealthcheckHandler)
+        ("/Endpoint", routing_reliability_handler.RoutingReliabilityRequestHandler, handler_dependencies),
+        ("/Device", accredited_system_handler.AccreditedSystemRequestHandler, handler_dependencies),
+        ("/healthcheck", healthcheck_handler.HealthcheckHandler)
     ], default_handler_class=ErrorHandler)
     server = tornado.httpserver.HTTPServer(application)
     server_port = int(config.get_config('SERVER_PORT', default='9000'))
