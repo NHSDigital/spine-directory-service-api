@@ -5,8 +5,9 @@
     <CacheKey>
         <KeyFragment ref="request.verb"/>
         <KeyFragment ref="request.path"/>
-        <KeyFragment ref="request.queryparam.org-code"/>
-        <KeyFragment ref="request.queryparam.service-id"/>
+        <KeyFragment ref="request.queryparam.organization"/>
+        <KeyFragment ref="request.queryparam.identifier.values"/>
+        <KeyFragment ref="request.queryparam.managing-organization"/>
     </CacheKey>
     <Scope>Exclusive</Scope>
     <ExpirySettings>

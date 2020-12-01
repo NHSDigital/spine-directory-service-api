@@ -1,0 +1,36 @@
+type: object
+description: "A FHIR Bundle with Endpoint resources"
+properties:
+  resourceType:
+    type: string
+    default: "Bundle"
+  id:
+    type: string
+    description: "Unique identifier for this search request."
+    format: uuid
+  type:
+    type: string
+    default: "searchset"
+  total:
+    type: integer
+  link:
+    type: array
+    items:
+      type: object
+      properties:
+        relation:
+          type: string
+          default: "self"
+        url:
+          type: string
+          description: "The full url that produced the data"
+  entry:
+    type: array
+    items:
+      type: object
+      properties:
+        fullUrl:
+          type: string
+          description: "Full url of the resource"
+        resource:
+          $ref: 'Endpoint.yaml'
