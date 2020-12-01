@@ -24,7 +24,7 @@ MANAGING_ORGANIZATION_FHIR_IDENTIFIER = "https://fhir.nhs.uk/Id/ods-organization
 
 @app.route('/healthcheck')
 def healthcheck():
-    return {'status': 'OK'}
+    return ""
 
 
 @app.route('/Endpoint', methods=['GET'])
@@ -126,4 +126,4 @@ def not_acceptable(error):
 
 if __name__ == '__main__':
     port = os.getenv("SDS_SANDBOX_SERVER_PORT") or 5000
-    app.run(port=port)
+    app.run(host="0.0.0.0", port=port)

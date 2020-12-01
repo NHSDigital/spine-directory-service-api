@@ -1,5 +1,21 @@
-FROM rodolpheche/wiremock
+FROM python:3.7-slim as base
 
-COPY stubs /home/wiremock
+RUN apt-get update && \
+    apt-get install build-essential -y
 
-CMD ["java", "-cp", "/var/wiremock/lib/*:/var/wiremock/extensions/*", "com.github.tomakehurst.wiremock.standalone.WireMockServerRunner", "--port", "9000", "--global-response-templating"]
+RUN mkdir -p /usr/src/app/spine-directory-service/sandbox
+
+COPY Pipfile /usr/src/app
+COPY Pipfile.lock /usr/src/app
+
+RUN pip install pipenv
+
+COPY / /usr/src/app/spine-directory-service/sandbox
+
+WORKDIR /usr/src/app/spine-directory-service/sandbox
+
+RUN pipenv install --deploy --ignore-pipfile
+
+EXPOSE 5000
+
+ENTRYPOINT pipenv run start
