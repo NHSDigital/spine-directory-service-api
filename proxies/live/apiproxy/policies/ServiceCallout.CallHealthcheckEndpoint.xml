@@ -7,12 +7,7 @@
     </Request>
     <Response>healthcheckResponse</Response>
     <HTTPTargetConnection>
-        <SSLInfo>
-            <Enabled>true</Enabled>
-        </SSLInfo>
-        <LoadBalancer>
-            <Server name="ig3"/>
-        </LoadBalancer>
+        {{ HOSTED_TARGET_CONNECTION }}
         <Path>/healthcheck</Path>
     </HTTPTargetConnection>
     <Timeout>20000</Timeout>
