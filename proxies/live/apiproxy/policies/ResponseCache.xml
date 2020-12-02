@@ -5,8 +5,9 @@
     <CacheKey>
         <KeyFragment ref="request.verb"/>
         <KeyFragment ref="request.path"/>
-        <KeyFragment ref="request.queryparam.org-code"/>
-        <KeyFragment ref="request.queryparam.service-id"/>
+        <KeyFragment ref="request.queryparam.organization"/>
+        <KeyFragment ref="request.queryparam.identifier.values"/>
+        <KeyFragment ref="request.queryparam.managing-organization"/>
     </CacheKey>
     <Scope>Exclusive</Scope>
     <ExpirySettings>
@@ -14,8 +15,8 @@
         <TimeOfDay/>
         <TimeoutInSeconds ref="">900</TimeoutInSeconds>
     </ExpirySettings>
-    <SkipCacheLookup>request.header.cache-control = "no-cache"</SkipCacheLookup>
-    <SkipCachePopulation/>
+    <SkipCacheLookup>(request.header.cache-control = "no-cache") or (request.path  = "/_ping") or (request.path = "/_status") or (request.path  = "/healthcheck")</SkipCacheLookup>
+    <SkipCachePopulation>(request.header.cache-control = "no-cache") or (request.path  = "/_ping") or (request.path = "/_status") or (request.path  = "/healthcheck")</SkipCachePopulation>
     <CacheLookupTimeoutInSeconds>30</CacheLookupTimeoutInSeconds>
     <ExcludeErrorResponse>true</ExcludeErrorResponse>
     <UseAcceptHeader>true</UseAcceptHeader>

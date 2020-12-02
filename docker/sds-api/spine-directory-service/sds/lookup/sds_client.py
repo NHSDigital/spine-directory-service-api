@@ -2,15 +2,15 @@
 
 import ast
 import asyncio
-from typing import Dict, List
+from typing import Dict, List, Tuple, Optional
 
 import ldap3
 import ldap3.core.exceptions as ldap_exceptions
 
-import lookup.sds_exception as sds_exception
-from lookup import sds_connection_factory
+from lookup.sds_exception import SDSException
 from utilities import config
 from utilities import integration_adaptors_logger as log
+from utilities.string_utilities import str2bool
 
 logger = log.IntegrationAdaptorsLogger(__name__)
 
@@ -19,11 +19,14 @@ AS_OBJECT_CLASS = "nhsAs"
 MHS_PARTY_KEY = 'nhsMHSPartyKey'
 MHS_ASID = 'uniqueIdentifier'
 
-mhs_attributes = [
+MHS_ATTRIBUTES = [
     'nhsEPInteractionType', 'nhsIDCode', 'nhsMhsCPAId', 'nhsMHSEndPoint', 'nhsMhsFQDN',
     'nhsMHsIN', 'nhsMHSIsAuthenticated', 'nhsMHSPartyKey', 'nhsMHsSN', 'nhsMhsSvcIA', 'nhsProductKey',
     'uniqueIdentifier', 'nhsMHSAckRequested', 'nhsMHSActor', 'nhsMHSDuplicateElimination',
     'nhsMHSPersistDuration', 'nhsMHSRetries', 'nhsMHSRetryInterval', 'nhsMHSSyncReplyMode'
+]
+AS_ATTRIBUTES = [
+    'uniqueIdentifier', 'nhsIdCode', 'nhsAsClient', 'nhsMhsPartyKey', 'nhsAsSvcIA'
 ]
 
 
@@ -46,95 +49,69 @@ class SDSClient(object):
         self.timeout = timeout
         self.search_base = search_base
 
-    async def get_mhs_details(self, ods_code: str, interaction_id: str) -> Dict:
+    @staticmethod
+    def _build_search_filter(query_parts):
+        search_filter = " ".join(map(lambda kv: f"({kv[0]}={kv[1]})", filter(lambda kv: kv[1] is not None, query_parts)))
+        search_filter = f"(&{search_filter})"
+        return search_filter
+
+    async def get_mhs_details(self, ods_code: str, interaction_id: str = None, party_key: str = None) -> List[Dict]:
         """
-        Returns the mhs details for the given org code and interaction ID.
+        Returns the mhs details for the given parameters
 
         :return: Dictionary of the attributes of the mhs associated with the given parameters
         """
+        if not ods_code or (not interaction_id and not party_key):
+            raise SDSException("org_code and at least one of 'interaction_id' or 'party_key' must be provided")
 
-        accredited_system_lookup = await self._accredited_system_lookup(ods_code, interaction_id)
+        query_parts = [
+            ("nhsidcode", ods_code),
+            ("objectClass", "nhsMhs"),
+            ("nhsMhsSvcIA", interaction_id),
+            ("nhsMHSPartyKey", party_key)
+        ]
+        result = await self._get_ldap_data(query_parts, MHS_ATTRIBUTES)
+        return result
 
-        if not accredited_system_lookup:
-            logger.error("Failed to find accredited system details for {ods_code} & {interaction_id}",
-                         fparams={"ods_code": ods_code, "interaction_id": interaction_id})
-            raise sds_exception.SDSException('No response from accredited system lookup')
-
-        if len(accredited_system_lookup) > 1:
-            logger.warning("More than one accredited system details returned on inputs: {ods_code} & "
-                           "{interaction_id}", fparams={"ods_code": ods_code, "interaction_id": interaction_id})
-
-        # As per the spec exactly one result should be returned
-        response = accredited_system_lookup[0]
-        party_key = response['attributes'][MHS_PARTY_KEY]
-
-        asid = response['attributes'].get(MHS_ASID)
-
-        details = await self._mhs_details_lookup(party_key, interaction_id)
-
-        if not details:
-            logger.error("No mhs details returned for {party_key} & {interaction_id}",
-                         fparams={"party_key": party_key, "interaction_id": interaction_id})
-            raise sds_exception.SDSException(f'No mhs details returned for party key: '
-                                             f'{party_key} and interaction id : {interaction_id}')
-        if len(details) > 1:
-            logger.warning("More than one mhs details returned on inputs: {ods_code} & {interaction_id}",
-                           fparams={"ods_code": ods_code, "interaction_id": interaction_id})
-
-        details[0]['attributes'][MHS_ASID] = asid
-        return dict(details[0]['attributes'])
-
-    async def _accredited_system_lookup(self, ods_code: str, interaction_id: str) -> List:
+    async def get_as_details(self, ods_code: str, interaction_id: str, managing_organization: str = None, party_key: str = None) -> List[Dict]:
         """
-        Used to find an accredited system, the result contains the nhsMhsPartyKey.
-        This can then be used to find an MHS endpoint
-        :return: endpoint details - filtered to only contain nhsMHSPartyKey
-        """
+        Returns the device details for the given parameters
 
-        search_filter = f"(&(nhsIDCode={ods_code}) (objectClass={AS_OBJECT_CLASS}) (nhsAsSvcIA={interaction_id}))"
+        :return: Dictionary of the attributes of the device associated with the given parameters
+        """
+        if not ods_code or not interaction_id:
+            raise SDSException("org_code and interaction_id must be provided")
+
+        query_parts = [
+            ("nhsIDCode", ods_code),
+            ("objectClass", "nhsAs"),
+            ("nhsAsSvcIA", interaction_id),
+            ("nhsMhsManufacturerOrg", managing_organization),
+            ("nhsMHSPartyKey", party_key)
+        ]
+
+        # TODO: can't use atm with Opentest as it lacks required schema attribute
+        if str2bool(config.get_config('DISABLE_MANUFACTURER_ORG_SEARCH_PARAM', default=str(False))):
+            query_parts.remove(("nhsMhsManufacturerOrg", managing_organization))
+
+        result = await self._get_ldap_data(query_parts, AS_ATTRIBUTES)
+        return result
+
+    async def _get_ldap_data(self, query_parts: List[Tuple[str, Optional[str]]], attributes: List[str]) -> List:
+        search_filter = self._build_search_filter(query_parts)
+
         self.connection.bind()
-        try:
-            message_id = self.connection.search(search_base=self.search_base,
-                                            search_filter=search_filter,
-                                            attributes=[MHS_PARTY_KEY, MHS_ASID])
-            logger.info("{message_id} - for query: {ods_code} {interaction_id}",
-                    fparams={"message_id": message_id, "ods_code": ods_code, "interaction_id": interaction_id})
-        except ldap_exceptions.LDAPExceptionError as e:
-            logger.exception(e)
-            logger.info("LDAP error occurred trying to reconnect")
-            self.connection = sds_connection_factory.create_connection()
-            self.connection.bind()
-            message_id = self.connection.search(search_base=self.search_base,
-                                                search_filter=search_filter,
-                                                attributes=[MHS_PARTY_KEY, MHS_ASID])
-            logger.info("{message_id} - for query: {ods_code} {interaction_id}",
-                        fparams={"message_id": message_id, "ods_code": ods_code, "interaction_id": interaction_id})
-
-        response = await self._get_query_result(message_id)
-        logger.info("Found accredited supplier details for {message_id}", fparams={"message_id": message_id})
-
-        return response
-
-    async def _mhs_details_lookup(self, party_key: str, interaction_id: str) -> List:
-        """
-        Given a party key and an interaction id, this will return an object containing the attributes of that party key,
-        including the endpoint address
-        :return: all the endpoint details
-        """
-        search_filter = f"(&(objectClass={MHS_OBJECT_CLASS})" \
-            f" ({MHS_PARTY_KEY}={party_key})" \
-            f" (nhsMhsSvcIA={interaction_id}))"
         message_id = self.connection.search(search_base=self.search_base,
                                             search_filter=search_filter,
-                                            attributes=mhs_attributes)
-
-        logger.info("{message_id} - for query: {party_key} {interaction_id}",
-                    fparams={"message_id": message_id, "party_key": party_key, "interaction_id": interaction_id})
+                                            attributes=attributes)
+        logger.info("Received LDAP query {message_id} - for query: {search_filter}",
+                    fparams={"message_id": message_id, "search_filter": search_filter})
 
         response = await self._get_query_result(message_id)
-        logger.info("Found mhs details for {message_id}", fparams={"message_id": message_id})
+        logger.info("Found LDAP details for {message_id}", fparams={"message_id": message_id})
 
-        return response
+        attributes_result = [single_result['attributes'] for single_result in response]
+        return attributes_result
 
     async def _get_query_result(self, message_id: int) -> List:
         loop = asyncio.get_event_loop()

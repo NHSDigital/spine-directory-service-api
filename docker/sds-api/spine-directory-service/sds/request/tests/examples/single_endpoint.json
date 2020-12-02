@@ -1,0 +1,101 @@
+{
+  "resourceType": "Bundle",
+  "id": "f0f0e921-92ca-4a88-a550-2dbb36f703af",
+  "type": "searchset",
+  "total": 1,
+  "link": [
+    {
+      "relation": "self",
+      "url": "http://127.0.0.1:58411/?organization=https://fhir.nhs.uk/Id/ods-organization-code|org&identifier=https://fhir.nhs.uk/Id/nhsEndpointServiceId|service"
+    }
+  ],
+  "entry": [
+    {
+      "fullUrl": "http://127.0.0.1:58411//f0f0e921-92ca-4a88-a550-2dbb36f703af",
+      "resource": {
+        "resourceType": "Endpoint",
+        "id": "f0f0e921-92ca-4a88-a550-2dbb36f703af",
+        "extension": [
+          {
+            "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-SDS-ReliabilityConfiguration",
+            "extension": [
+              {
+                "url": "nhsMHSSyncReplyMode",
+                "valueString": "None"
+              },
+              {
+                "url": "nhsMHSRetryInterval",
+                "valueString": ""
+              },
+              {
+                "url": "nhsMHSRetries",
+                "valueInteger": 0
+              },
+              {
+                "url": "nhsMHSPersistDuration",
+                "valueString": ""
+              },
+              {
+                "url": "nhsMHSDuplicateElimination",
+                "valueString": "never"
+              },
+              {
+                "url": "nhsMHSAckRequested",
+                "valueString": "never"
+              }
+            ]
+          }
+        ],
+        "identifier": [
+          {
+            "system": "https://fhir.nhs.uk/Id/nhsEndpointServiceId",
+            "value": "service"
+          },
+          {
+            "system": "https://fhir.nhs.uk/Id/nhsMhsFQDN",
+            "value": "192.168.128.11"
+          },
+          {
+            "system": "https://fhir.nhs.uk/Id/nhsMhsPartyKey",
+            "value": "some_party_key"
+          },
+          {
+            "system": "https://fhir.nhs.uk/Id/nhsMhsCPAId",
+            "value": "S20001A000168"
+          },
+          {
+            "system": "https://fhir.nhs.uk/Id/nhsSpineMHS",
+            "value": "928942012545"
+          }
+        ],
+        "status": "active",
+        "connectionType": {
+          "system": "http://terminology.hl7.org/CodeSystem/endpoint-connection-type",
+          "code": "hl7-fhir-msg",
+          "display": "HL7 FHIR Messaging"
+        },
+        "managingOrganization": {
+          "identifier": {
+            "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+            "value": "org"
+          }
+        },
+        "payloadType": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/endpoint-payload-type",
+                "code": "any",
+                "display": "Any"
+              }
+            ]
+          }
+        ],
+        "address": "https://192.168.128.11/sync-service"
+      },
+      "search": {
+        "mode": "match"
+      }
+    }
+  ]
+}
