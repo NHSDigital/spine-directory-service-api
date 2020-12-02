@@ -30,7 +30,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{environment}}/endpoint?org-code={{org-code}}&service-id={{service-id}}",
+					"raw": "{{environment}}/endpoint?organization=https://fhir.nhs.uk/Id/ods-organization-code|{{org-code}}&identifier=https://fhir.nhs.uk/Id/nhsEndpointServiceId|{{service-id}}",
 					"host": [
 						"{{environment}}"
 					],
@@ -84,7 +84,7 @@
 					}
 				],
 				"url": {
-					"raw": "{{environment}}/endpoint?org-code={{org-code}}&service-id={{service-id}}",
+					"raw": "{{environment}}/endpoint?organization=https://fhir.nhs.uk/Id/ods-organization-code|{{org-code}}&identifier=https://fhir.nhs.uk/Id/nhsEndpointServiceId|{{service-id}}",
 					"host": [
 						"{{environment}}"
 					],
@@ -136,7 +136,7 @@
 					}
 				],
 				"url": {
-					"raw": "{{environment}}/endpoint?org-code={{org-code}}",
+					"raw": "{{environment}}/endpoint?organization={{organization}}",
 					"host": [
 						"{{environment}}"
 					],
@@ -145,8 +145,8 @@
 					],
 					"query": [
 						{
-							"key": "org-code",
-							"value": "{{org-code}}"
+							"key": "organization",
+							"value": "{{organization}}"
 						}
 					]
 				},
@@ -251,7 +251,7 @@
 					}
 				],
 				"url": {
-					"raw": "{{environment}}/endpoint?org-code={{org-code}}&service-id={{service-id}}",
+					"raw": "{{environment}}/endpoint?organization=https://fhir.nhs.uk/Id/ods-organization-code|{{org-code}}&identifier=https://fhir.nhs.uk/Id/nhsEndpointServiceId|{{service-id}}",
 					"host": [
 						"{{environment}}"
 					],
