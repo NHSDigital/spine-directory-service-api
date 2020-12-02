@@ -125,5 +125,5 @@ def not_acceptable(error):
 
 
 if __name__ == '__main__':
-    port = os.getenv("SDS_SANDBOX_SERVER_PORT") or 5000
+    port = os.getenv("SDS_SANDBOX_SERVER_PORT") or 9000
     app.run(host="0.0.0.0", port=port)
