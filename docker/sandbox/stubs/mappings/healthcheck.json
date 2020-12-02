@@ -5,6 +5,6 @@
   },
   "response": {
     "status": 200,
-    "body" : "The only response this endpoint returns2."
+    "body" : "The only response this endpoint returns3."
   }
 }
