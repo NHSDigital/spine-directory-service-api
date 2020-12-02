@@ -7,12 +7,14 @@
     </Request>
     <Response>healthcheckResponse</Response>
     <HTTPTargetConnection>
-        <SSLInfo>
+        <!-- <SSLInfo>
             <Enabled>true</Enabled>
-        </SSLInfo>
-        <LoadBalancer>
+        </SSLInfo> -->
+        <!-- <LoadBalancer>
             <Server name="target"/>
-        </LoadBalancer>
+        </LoadBalancer> -->
+        <!-- <URL>{application.basepath}</URL> -->
+        {{ HOSTED_TARGET_CONNECTION }}
         <Path>/healthcheck</Path>
     </HTTPTargetConnection>
     <Timeout>20000</Timeout>
