@@ -16,6 +16,6 @@ WORKDIR /usr/src/app/spine-directory-service/sandbox
 
 RUN pipenv install --deploy --ignore-pipfile
 
-EXPOSE 5000
+EXPOSE 9000
 
 ENTRYPOINT pipenv run start
