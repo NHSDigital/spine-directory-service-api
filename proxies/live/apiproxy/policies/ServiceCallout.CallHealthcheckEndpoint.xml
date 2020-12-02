@@ -7,8 +7,17 @@
     </Request>
     <Response>healthcheckResponse</Response>
     <HTTPTargetConnection>
-        <!-- {{ HOSTED_TARGET_CONNECTION }} -->
-        <Path>{proxy.basepath}/healthcheck</Path>
+        <!-- {{ HOSTED_TARGET_CONNECTION }}
+        sds-111/healthcheck
+        <Path>{proxy.basepath}/healthcheck</Path> -->
+
+        <SSLInfo>
+            <Enabled>true</Enabled>
+        </SSLInfo>
+        <LoadBalancer>
+            <Server name="hosted-apis"/>
+        </LoadBalancer>
+        <Path>/sds-111/healthcheck</Path>
     </HTTPTargetConnection>
     <Timeout>20000</Timeout>
 </ServiceCallout>
