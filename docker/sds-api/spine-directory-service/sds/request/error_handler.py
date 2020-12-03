@@ -30,7 +30,7 @@ class ErrorHandler(tornado.web.RequestHandler):
             operation_outcome = OperationOutcome([Issue(Severity.error, Code.required, [SpineCodings.BAD_REQUEST],
                                                         diagnostics=str(exception))])
         elif status_code == 404:
-            operation_outcome = OperationOutcome([Issue(Severity.error, Code.not_found, [SpineCodings.NOT_IMPLEMENTED],
+            operation_outcome = OperationOutcome([Issue(Severity.error, Code.not_found, [SpineCodings.NO_RECORD_FOUND],
                                                         diagnostics="HTTP endpoint not found")])
         elif status_code == 405:
             additional_headers.append(("Allow", "GET"))

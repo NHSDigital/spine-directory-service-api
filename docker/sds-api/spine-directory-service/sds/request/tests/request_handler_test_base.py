@@ -84,8 +84,18 @@ class RequestHandlerTestBase(ABC, tornado.testing.AsyncHTTPTestCase):
             self.assertEqual(expected, current)
             self.assertEqual(response.headers.get(HttpHeaders.CONTENT_TYPE, None), "application/fhir+json")
 
+        with self.subTest("Accept header can have multiple values and one must be valid"):
+            headers = {'Accept': ',  ,  text/plain , application/fhir+JSON'}
+            response = self.fetch(url, method="GET", headers=headers)
+
+            current, expected = self._get_current_and_expected_body(response, expected_json_file_path)
+
+            self.assertEqual(response.code, 200)
+            self.assertEqual(expected, current)
+            self.assertEqual(response.headers.get(HttpHeaders.CONTENT_TYPE, None), "application/fhir+json")
+
         with self.subTest("Accept header is invalid"):
-            headers = {'Accept': 'invalid-header'}
+            headers = {'Accept': 'text/plain,application/xml'}
             response = self.fetch(url, method="GET", headers=headers)
 
             self.assertEqual(response.code, 406)
@@ -95,6 +105,7 @@ class RequestHandlerTestBase(ABC, tornado.testing.AsyncHTTPTestCase):
             with self.subTest(f"405 when using {method}"):
                 response = self.fetch(url, body="" if method in ["POST", "PUT"] else None, method=method)
                 self.assertEqual(response.code, 405)
+                self.assertEqual(response.headers.get("Allow"), "GET")
                 self._assert_405_operation_outcome(response.body.decode())
 
     @staticmethod

@@ -14,14 +14,10 @@ class RoutingAndReliabilityHandlerTests(TestCase):
 
     @staticmethod
     def _sds_device_http_request_builder():
-        return SdsHttpRequestBuilder("/endpoint")
+        return SdsHttpRequestBuilder("/Endpoint")
 
-    def test_should_return_successful_response(self, request_builder_modifier=None):
-        request_builder = self._sds_device_http_request_builder()
-        if request_builder_modifier is not None:
-            request_builder_modifier(request_builder)
-
-        response = request_builder \
+    def test_should_return_successful_response(self):
+        response = self._sds_device_http_request_builder() \
             .with_org_code('YES') \
             .with_service_id('urn:nhs:names:services:psis:REPC_IN150016UK05') \
             .with_party_key('YES-0000806') \
@@ -42,7 +38,7 @@ class RoutingAndReliabilityHandlerTests(TestCase):
         uuidRegex = re.compile('^[A-F0-9]{8}-?[A-F0-9]{4}-?[A-F0-9]{4}-?[A-F0-9]{4}-?[A-F0-9]{12}')
         self.assertTrue(bool(uuidRegex.match(current_id)))
         self.assertTrue(bool(uuidRegex.match(current_resource_id)))
-        fullUrlRegex = re.compile('^(http:\/\/localhost:9000\/(endpoint|ENDPOINT)\/)([A-F0-9]{8}-?[A-F0-9]{4}-?[A-F0-9]{4}-?[A-F0-9]{4}-?[A-F0-9]{12})')
+        fullUrlRegex = re.compile('^(http:\/\/localhost:9000\/Endpoint\/)([A-F0-9]{8}-?[A-F0-9]{4}-?[A-F0-9]{4}-?[A-F0-9]{4}-?[A-F0-9]{12})')
         self.assertTrue(bool(fullUrlRegex.match(current_entry_full_url)))
 
         expected_body['id'] = current_id
@@ -75,8 +71,14 @@ class RoutingAndReliabilityHandlerTests(TestCase):
         self.assertEqual(response.status_code, 404)
         assert_404_operation_outcome(response.content)
 
-    def test_endpoint_should_be_case_insensitive(self):
-        def modify_request_builder(request_builder):
-            request_builder.path = request_builder.path.upper()
+    def test_endpoint_should_be_case_sensitive(self):
+        builder = self._sds_device_http_request_builder()
+        builder.path = builder.path.lower()
 
-        self.test_should_return_successful_response(modify_request_builder)
+        response = builder \
+            .with_org_code('YES') \
+            .with_service_id('urn:nhs:names:services:psis:REPC_IN150016UK05') \
+            .execute()
+
+        self.assertEqual(response.status_code, 404)
+        assert_404_operation_outcome(response.content)

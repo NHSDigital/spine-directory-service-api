@@ -120,3 +120,27 @@ Successful deployment of the API Proxy requires:
  1. A *Target Server* named `spine-directory-target`
 
 :bulb: For Sandbox-running environments (`test`) these need to be present for successful deployment but can be set to empty/dummy values.
+
+### Sandbox
+
+Sandbox environment mimics real service behaviour - both correct HTTP 200 and client error responses 4xx codes.
+Both /Endpoint and /Device has built in one response with data that can be fetched using query parameters specified below. All other combinations result with empty FHIR bundle simulating no result found.
+
+1. `/Endpoint`
+- `organization=https://fhir.nhs.uk/Id/ods-organization-code|YES`
+- `identifier=https://fhir.nhs.uk/Id/nhsEndpointServiceId|urn:nhs:names:services:psis:REPC_IN150016UK05`
+- `identifier=https://fhir.nhs.uk/Id/nhsMhsPartyKey|YES-0000806`
+
+Query parametere `organization` is mandatory. At least one `identifier` must be present.
+
+Example: `/Endpoint?organization=https://fhir.nhs.uk/Id/ods-organization-code|YES&identifier=https://fhir.nhs.uk/Id/nhsEndpointServiceId|urn:nhs:names:services:psis:REPC_IN150016UK05&identifier=https://fhir.nhs.uk/Id/nhsMhsPartyKey|YES-0000806`
+
+2. `/Device`
+- `organization=https://fhir.nhs.uk/Id/ods-organization-code|YES`
+- `identifier=https://fhir.nhs.uk/Id/nhsEndpointServiceId|urn:nhs:names:services:psis:REPC_IN150016UK05`
+- `identifier=https://fhir.nhs.uk/Id/nhsMhsPartyKey|YES-0000806`
+- `managing-organization=https://fhir.nhs.uk/Id/ods-organization-code|YES`
+
+Query parameters `organization` and `identifier(https://fhir.nhs.uk/Id/nhsEndpointServiceId)` are mandatory. One or both `identifier(https://fhir.nhs.uk/Id/nhsMhsPartyKey)` and `managing-organization` can be supplied.
+
+Example: `/Device?organization=https://fhir.nhs.uk/Id/ods-organization-code|YES&identifier=https://fhir.nhs.uk/Id/nhsEndpointServiceId|urn:nhs:names:services:psis:REPC_IN150016UK05&identifier=https://fhir.nhs.uk/Id/nhsMhsPartyKey|YES-0000806&managing-organization=https://fhir.nhs.uk/Id/ods-organization-code|YES`
