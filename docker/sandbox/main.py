@@ -35,7 +35,7 @@ def endpoint():
     service_id = get_optional_query_param(IDENTIFIER_QUERY_PARAMETER_NAME, SERVICE_ID_FHIR_IDENTIFIER)
     party_key = get_optional_query_param(IDENTIFIER_QUERY_PARAMETER_NAME, PARTY_KEY_FHIR_IDENTIFIER)
 
-    check_accept_header()
+    accept_type = check_accept_header()
 
     if not service_id and not party_key:
         abort(400, f"HTTP 400: Missing or invalid '{IDENTIFIER_QUERY_PARAMETER_NAME}' query parameter. "
@@ -50,7 +50,7 @@ def endpoint():
 
     return Response(
         json.dumps(bundle, indent=2, sort_keys=False),
-        content_type=FHIR_CONTENT_TYPE,
+        content_type=accept_type,
         headers={"X-Correlation-ID": correlation_id})
 
 
@@ -63,7 +63,7 @@ def device():
     party_key = get_optional_query_param(IDENTIFIER_QUERY_PARAMETER_NAME, PARTY_KEY_FHIR_IDENTIFIER)
     managing_organization = get_optional_query_param(MANAGING_ORGANIZATION_QUERY_PARAMETER_NAME, MANAGING_ORGANIZATION_FHIR_IDENTIFIER)
 
-    check_accept_header()
+    accept_type = check_accept_header()
 
     if DEVICE_QUERY_PARAMETERS.match(organization, service_id, party_key, managing_organization):
         bundle = build_bundle(DEVICE_RESPONSE_TEMPLATE)
@@ -72,7 +72,7 @@ def device():
 
     return Response(
         json.dumps(bundle, indent=2, sort_keys=False),
-        content_type=FHIR_CONTENT_TYPE,
+        content_type=accept_type,
         headers={"X-Correlation-ID": correlation_id})
 
 
