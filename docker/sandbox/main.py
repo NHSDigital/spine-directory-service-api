@@ -116,7 +116,9 @@ def page_not_found(error):
 
 @app.errorhandler(405)
 def method_not_allowed(error):
-    return _operation_outcome_error_handler(OPERATION_OUTCOME_405_TEMPLATE, error.code)
+    response = _operation_outcome_error_handler(OPERATION_OUTCOME_405_TEMPLATE, error.code)
+    response.headers.add("Allow", "GET")
+    return response
 
 
 @app.errorhandler(406)

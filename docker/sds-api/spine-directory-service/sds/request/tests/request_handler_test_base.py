@@ -105,6 +105,7 @@ class RequestHandlerTestBase(ABC, tornado.testing.AsyncHTTPTestCase):
             with self.subTest(f"405 when using {method}"):
                 response = self.fetch(url, body="" if method in ["POST", "PUT"] else None, method=method)
                 self.assertEqual(response.code, 405)
+                self.assertEqual(response.headers.get("Allow"), "GET")
                 self._assert_405_operation_outcome(response.body.decode())
 
     @staticmethod
