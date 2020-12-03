@@ -9,8 +9,8 @@
         "coding": [
           {
             "system": "https://fhir.nhs.uk/STU3/ValueSet/Spine-ErrorOrWarningCode-1",
-            "code": "NOT_IMPLEMENTED",
-            "display": "Not implemented"
+            "code": "NO_RECORD_FOUND",
+            "display": "No record found"
           }
         ]
       },

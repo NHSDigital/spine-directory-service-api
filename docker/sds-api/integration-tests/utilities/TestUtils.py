@@ -21,5 +21,5 @@ def assert_404_operation_outcome(response_content):
     assertions.assertEqual(issue["diagnostics"], 'HTTP endpoint not found')
     coding = issue["details"]["coding"][0]
     assertions.assertEqual(coding["system"], 'https://fhir.nhs.uk/STU3/ValueSet/Spine-ErrorOrWarningCode-1')
-    assertions.assertEqual(coding["code"], 'NOT_IMPLEMENTED')
-    assertions.assertEqual(coding["display"], 'Not implemented')
+    assertions.assertEqual(coding["code"], 'NO_RECORD_FOUND')
+    assertions.assertEqual(coding["display"], 'No record found')
