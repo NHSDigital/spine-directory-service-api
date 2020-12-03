@@ -29,14 +29,6 @@ class AccreditedSystemRequestHandler(BaseHandler, ErrorHandler):
         managing_organization = self.get_optional_query_param(MANAGING_ORGANIZATION_QUERY_PARAMETER_NAME, MANAGING_ORGANIZATION_FHIR_IDENTIFIER)
         party_key = self.get_optional_query_param(IDENTIFIER_QUERY_PARAMETER_NAME, PARTY_KEY_FHIR_IDENTIFIER)
 
-        if not org_code or not service_id:
-            raise tornado.web.HTTPError(
-                status_code=400,
-                reason=f"Missing or invalid '{ORG_CODE_QUERY_PARAMETER_NAME}' or '{IDENTIFIER_QUERY_PARAMETER_NAME}' query parameter. "
-                       f"Should be one or both of: ["
-                       f"'{ORG_CODE_QUERY_PARAMETER_NAME}={ORG_CODE_FHIR_IDENTIFIER}|value', "
-                       f"'{IDENTIFIER_QUERY_PARAMETER_NAME}={SERVICE_ID_FHIR_IDENTIFIER}|value'")
-
         accept_type = get_valid_accept_type(self.request.headers)
 
         logger.info("Looking up accredited system information for {org_code}, {service_id}, {managing_organization}, {party_key}",

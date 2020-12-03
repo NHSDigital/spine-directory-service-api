@@ -45,3 +45,9 @@ extends:
       - /ptl/api-deployment/sds/ldap/private-key
       - /ptl/api-deployment/sds/ldap/client-cert
       - /ptl/api-deployment/sds/ldap/ca-certs
+    apigee_deployments:
+      - environment: internal-dev
+        make_spec_visible: true
+      - environment: internal-dev-sandbox
+        proxy_path: sandbox
+

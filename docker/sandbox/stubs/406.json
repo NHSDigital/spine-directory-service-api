@@ -1,0 +1,20 @@
+{
+  "resourceType": "OperationOutcome",
+  "id": "<TO_REPLACE>",
+  "issue": [
+    {
+      "severity": "error",
+      "code": "not-supported",
+      "details": {
+        "coding": [
+          {
+            "system": "https://fhir.nhs.uk/STU3/ValueSet/Spine-ErrorOrWarningCode-1",
+            "code": "MISSING_OR_INVALID_HEADER",
+            "display": "There is a required header missing or invalid"
+          }
+        ]
+      },
+      "diagnostics": "Accept type not supported"
+    }
+  ]
+}

@@ -1,0 +1,63 @@
+{
+  "query_parameters": {
+    "organization": "YES",
+    "service_id": "urn:nhs:names:services:psis:REPC_IN150016UK05",
+    "party_key": "YES-0000806",
+    "managing_organization": "YES"
+  },
+  "response_body": {
+    "resourceType": "Bundle",
+    "id": "<TO_REPLACE>",
+    "type": "searchset",
+    "total": 1,
+    "link": [
+      {
+        "relation": "self",
+        "url": "<TO_REPLACE>"
+      }
+    ],
+    "entry": [
+      {
+        "fullUrl": "<TO_REPLACE>",
+        "resource": {
+          "resourceType": "Device",
+          "id": "<TO_REPLACE>",
+          "extension": [
+            {
+              "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-SDS-ManagingOrganisation",
+              "valueReference": {
+                "identifier": {
+                  "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+                  "value": "YES"
+                }
+              }
+            }
+          ],
+          "identifier": [
+            {
+              "system": "https://fhir.nhs.uk/Id/nhsSpineASID",
+              "value": "928942012545"
+            },
+            {
+              "system": "https://fhir.nhs.uk/Id/nhsMhsPartyKey",
+              "value": "YES-0000806"
+            },
+            {
+              "system": "https://fhir.nhs.uk/Id/nhsEndpointServiceId",
+              "value": "urn:nhs:names:services:psis:REPC_IN150016UK05"
+            }
+          ],
+          "owner": {
+            "identifier": {
+              "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+              "value": "YES"
+            }
+          }
+        },
+        "search": {
+          "mode": "match"
+        }
+      }
+    ]
+  }
+}
