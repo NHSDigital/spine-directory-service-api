@@ -26,7 +26,7 @@ MHS_ATTRIBUTES = [
     'nhsMHSPersistDuration', 'nhsMHSRetries', 'nhsMHSRetryInterval', 'nhsMHSSyncReplyMode'
 ]
 AS_ATTRIBUTES = [
-    'uniqueIdentifier', 'nhsIdCode', 'nhsAsClient', 'nhsMhsPartyKey', 'nhsAsSvcIA'
+    'uniqueIdentifier', 'nhsIdCode', 'nhsAsClient', 'nhsMhsPartyKey', 'nhsAsSvcIA', 'nhsMhsManufacturerOrg'
 ]
 
 # TODO: can't use atm with Opentest as it lacks required schema attribute
