@@ -26,8 +26,13 @@ MHS_ATTRIBUTES = [
     'nhsMHSPersistDuration', 'nhsMHSRetries', 'nhsMHSRetryInterval', 'nhsMHSSyncReplyMode'
 ]
 AS_ATTRIBUTES = [
-    'uniqueIdentifier', 'nhsIdCode', 'nhsAsClient', 'nhsMhsPartyKey', 'nhsAsSvcIA', 'nhsMhsManufacturerOrg'
+    'uniqueIdentifier', 'nhsIdCode', 'nhsAsClient', 'nhsMhsPartyKey', 'nhsAsSvcIA'
 ]
+
+# TODO: can't use atm with Opentest as it lacks required schema attribute
+if str2bool(config.get_config('DISABLE_MANUFACTURER_ORG_SEARCH_PARAM', default=str(False))) \
+   and "nhsMhsManufacturerOrg" in AS_ATTRIBUTES:
+    AS_ATTRIBUTES.remove("nhsMhsManufacturerOrg")
 
 
 class SDSClient(object):
