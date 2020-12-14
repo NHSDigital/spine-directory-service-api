@@ -1,5 +1,5 @@
 from copy import copy
-from unittest import TestCase
+from unittest import TestCase, skip
 
 from utilities.test_utilities import async_test
 
@@ -53,6 +53,7 @@ EXPECTED_DEVICE_ATTRIBUTES = [
 ]
 
 
+@skip
 class TestSDSClient(TestCase):
 
     @async_test
