@@ -26,7 +26,7 @@ MHS_ATTRIBUTES = [
     'nhsMHSPersistDuration', 'nhsMHSRetries', 'nhsMHSRetryInterval', 'nhsMHSSyncReplyMode'
 ]
 AS_ATTRIBUTES = [
-    'uniqueIdentifier', 'nhsIdCode', 'nhsAsClient', 'nhsMhsPartyKey', 'nhsAsSvcIA'
+    'uniqueIdentifier', 'nhsIdCode', 'nhsAsClient', 'nhsMhsPartyKey', 'nhsAsSvcIA', 'nhsMhsManufacturerOrg'
 ]
 
 
@@ -109,7 +109,7 @@ class SDSClient(object):
 
         response = await self._get_query_result(message_id)
         logger.info("Found LDAP details for {message_id}", fparams={"message_id": message_id})
-
+        logger.debug("LDAP {response}", fparams={"response": response})
         attributes_result = [single_result['attributes'] for single_result in response]
         return attributes_result
 
