@@ -34,3 +34,10 @@ properties:
           description: "Full url of the resource"
         resource:
           $ref: 'Endpoint.yaml'
+        search:
+          type: object
+          description: "Search operation description"
+          properties:
+            mode:
+              type: string
+              default: "match"

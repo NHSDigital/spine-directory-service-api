@@ -14,6 +14,9 @@
             "fullUrl": "https://api.service.nhs.uk/spine-directory-service/Device/F0F0E921-92CA-4A88-A550-2DBB36F703AF",
             "resource": {
                 "$ref": "Device.json"
+            },
+            "search": {
+                "mode": "match"
             }
         }
     ]
