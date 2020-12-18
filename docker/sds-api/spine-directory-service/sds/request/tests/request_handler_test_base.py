@@ -109,14 +109,13 @@ class RequestHandlerTestBase(ABC, tornado.testing.AsyncHTTPTestCase):
                 self._assert_405_operation_outcome(response.body.decode())
 
     @staticmethod
-    def _build_endpoint_url(org_code: Optional[str] = ORG_CODE, service_id: Optional[str] = SERVICE_ID, party_key: Optional[str] = PARTY_KEY):
+    def _build_endpoint_url(org_code: Optional[str] = ORG_CODE, service_id: Optional[str] = SERVICE_ID):
         url = "/endpoint"
 
         org_code = f"organization=https://fhir.nhs.uk/Id/ods-organization-code|{org_code}" if org_code is not None else None
         service_id = f"identifier=https://fhir.nhs.uk/Id/nhsEndpointServiceId|{service_id}" if service_id is not None else None
-        party_key = f"identifier=https://fhir.nhs.uk/Id/nhsMhsPartyKey|{party_key}" if party_key is not None else None
 
-        query_params = "&".join(filter(lambda query_param: query_param, [org_code, service_id, party_key]))
+        query_params = "&".join(filter(lambda query_param: query_param, [org_code, service_id]))
 
         url = f"{url}?{query_params}" if query_params else url
         return url

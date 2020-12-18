@@ -52,14 +52,14 @@ class TestRoutingReliabilityRequestHandler(RequestHandlerTestBase):
 
         super()._test_get(super()._build_endpoint_url(), EXPECTED_SINGLE_ENDPOINT_JSON_FILE_PATH)
 
-        self.sds_client.get_mhs_details.assert_called_with(ORG_CODE, SERVICE_ID, PARTY_KEY)
+        self.sds_client.get_mhs_details.assert_called_with(ORG_CODE, SERVICE_ID)
 
     def test_get_multiple(self):
         self.sds_client.get_mhs_details.return_value = test_utilities.awaitable(MULTIPLE_ROUTING_AND_RELIABILITY_DETAILS)
 
         super()._test_get(super()._build_endpoint_url(), EXPECTED_MULTIPLE_ENDPOINTS_JSON_FILE_PATH)
 
-        self.sds_client.get_mhs_details.assert_called_with(ORG_CODE, SERVICE_ID, PARTY_KEY)
+        self.sds_client.get_mhs_details.assert_called_with(ORG_CODE, SERVICE_ID)
 
     def test_correlation_id_is_set_as_response_header(self):
         def mock200():
@@ -70,7 +70,7 @@ class TestRoutingReliabilityRequestHandler(RequestHandlerTestBase):
 
         super()._test_correlation_id_is_set_as_response_header(
             self._build_endpoint_url(),
-            self._build_endpoint_url(org_code=None, service_id=SERVICE_ID, party_key=PARTY_KEY),
+            self._build_endpoint_url(org_code=None, service_id=SERVICE_ID),
             mock200,
             mock500
         )
@@ -90,12 +90,12 @@ class TestRoutingReliabilityRequestHandler(RequestHandlerTestBase):
                 response.body.decode(),
                 "HTTP 400: Missing or invalid 'organization' query parameter. Should be 'organization=https://fhir.nhs.uk/Id/ods-organization-code|value'")
 
-        with self.subTest("Missing Service ID and party key"):
-            response = self.fetch(self._build_endpoint_url(org_code=ORG_CODE, service_id=None, party_key=None), method="GET")
+        with self.subTest("Missing Service ID"):
+            response = self.fetch(self._build_endpoint_url(org_code=ORG_CODE, service_id=None), method="GET")
             self.assertEqual(response.code, 400)
             super()._assert_400_operation_outcome(
                 response.body.decode(),
-                "HTTP 400: Missing or invalid 'identifier' query parameter. Should be one or both of: ['identifier=https://fhir.nhs.uk/Id/nhsEndpointServiceId|value', 'identifier=https://fhir.nhs.uk/Id/nhsMhsPartyKey|value'")
+                "HTTP 400: Missing or invalid 'identifier' query parameter. Should be 'identifier=https://fhir.nhs.uk/Id/nhsEndpointServiceId|value'")
 
     def test_get_handles_different_accept_header(self):
         self.sds_client.get_mhs_details.return_value = test_utilities.awaitable(SINGLE_ROUTING_AND_RELIABILITY_DETAILS)
