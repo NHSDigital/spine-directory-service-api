@@ -16,11 +16,12 @@ SINGLE_ROUTING_AND_RELIABILITY_DETAILS = [{
     ],
     "nhsMHSAckRequested": "never",
     "nhsMHSDuplicateElimination": "never",
-    "nhsMHSPersistDuration": [],
-    "nhsMHSRetries": [],
-    "nhsMHSRetryInterval": [],
-    "nhsMHSSyncReplyMode": "None",
-    "nhsMhsSvcIA": SERVICE_ID
+    "nhsMHSPersistDuration": "",
+    "nhsMHSRetries": "",
+    "nhsMHSRetryInterval": "",
+    "nhsMHSSyncReplyMode": "",
+    "nhsMhsSvcIA": SERVICE_ID,
+    "nhsIDCode": ORG_CODE
 }]
 
 MULTIPLE_ROUTING_AND_RELIABILITY_DETAILS = SINGLE_ROUTING_AND_RELIABILITY_DETAILS.copy()
@@ -37,11 +38,12 @@ MULTIPLE_ROUTING_AND_RELIABILITY_DETAILS.append({
     ],
     "nhsMHSAckRequested": "never",
     "nhsMHSDuplicateElimination": "never",
-    "nhsMHSPersistDuration": [],
-    "nhsMHSRetries": [],
-    "nhsMHSRetryInterval": [],
-    "nhsMHSSyncReplyMode": "None",
-    "nhsMhsSvcIA": SERVICE_ID
+    "nhsMHSPersistDuration": "",
+    "nhsMHSRetries": "",
+    "nhsMHSRetryInterval": "",
+    "nhsMHSSyncReplyMode": "",
+    "nhsMhsSvcIA": SERVICE_ID,
+    "nhsIDCode": ORG_CODE
 })
 
 

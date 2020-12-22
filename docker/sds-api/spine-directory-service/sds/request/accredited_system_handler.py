@@ -40,7 +40,7 @@ class AccreditedSystemRequestHandler(BaseHandler, ErrorHandler):
         base_url = f"{self.request.protocol}://{self.request.host}{self.request.path}/"
         full_url = unquote(self.request.full_url())
 
-        devices = [build_device_resource(ldap_attributes, service_id) for ldap_attributes in ldap_result]
+        devices = [build_device_resource(ldap_attributes) for ldap_attributes in ldap_result]
 
         bundle = build_bundle_resource(devices, base_url, full_url)
 

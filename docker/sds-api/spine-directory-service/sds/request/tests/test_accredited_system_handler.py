@@ -10,7 +10,7 @@ SINGLE_ACCREDITED_SYSTEM_DETAILS = [{
         "928942012545"
     ],
     "nhsMhsPartyKey": PARTY_KEY,
-    "nhsAsSvcIA": SERVICE_ID,
+    "nhsAsSvcIA": [ SERVICE_ID ],
     "nhsAsClient": [
         ORG_CODE
     ]
@@ -23,7 +23,7 @@ MULTIPLE_ACCREDITED_SYSTEM_DETAILS.append({
         "928942012545_second"
     ],
     "nhsMhsPartyKey": PARTY_KEY + "_second",
-    "nhsAsSvcIA": SERVICE_ID,
+    "nhsAsSvcIA": [ SERVICE_ID ],
     "nhsAsClient": [
         ORG_CODE
     ]

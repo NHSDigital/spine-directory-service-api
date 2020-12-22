@@ -20,22 +20,6 @@
             "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-SDS-ReliabilityConfiguration",
             "extension": [
               {
-                "url": "nhsMHSSyncReplyMode",
-                "valueString": "None"
-              },
-              {
-                "url": "nhsMHSRetryInterval",
-                "valueString": ""
-              },
-              {
-                "url": "nhsMHSRetries",
-                "valueInteger": 0
-              },
-              {
-                "url": "nhsMHSPersistDuration",
-                "valueString": ""
-              },
-              {
                 "url": "nhsMHSDuplicateElimination",
                 "valueString": "never"
               },
@@ -107,22 +91,6 @@
             "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-SDS-ReliabilityConfiguration",
             "extension": [
               {
-                "url": "nhsMHSSyncReplyMode",
-                "valueString": "None"
-              },
-              {
-                "url": "nhsMHSRetryInterval",
-                "valueString": ""
-              },
-              {
-                "url": "nhsMHSRetries",
-                "valueInteger": 0
-              },
-              {
-                "url": "nhsMHSPersistDuration",
-                "valueString": ""
-              },
-              {
                 "url": "nhsMHSDuplicateElimination",
                 "valueString": "never"
               },
@@ -193,22 +161,6 @@
           {
             "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-SDS-ReliabilityConfiguration",
             "extension": [
-              {
-                "url": "nhsMHSSyncReplyMode",
-                "valueString": "None"
-              },
-              {
-                "url": "nhsMHSRetryInterval",
-                "valueString": ""
-              },
-              {
-                "url": "nhsMHSRetries",
-                "valueInteger": 0
-              },
-              {
-                "url": "nhsMHSPersistDuration",
-                "valueString": ""
-              },
               {
                 "url": "nhsMHSDuplicateElimination",
                 "valueString": "never"
