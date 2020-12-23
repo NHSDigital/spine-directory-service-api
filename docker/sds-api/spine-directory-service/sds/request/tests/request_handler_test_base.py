@@ -17,6 +17,8 @@ PARTY_KEY = "some_party_key"
 MANAGING_ORG = "some_manufacturer"
 FIXED_UUID = "f0f0e921-92ca-4a88-a550-2dbb36f703af"
 
+DEVICE_PATH = "/device"
+
 
 class RequestHandlerTestBase(ABC, tornado.testing.AsyncHTTPTestCase):
 
@@ -109,7 +111,9 @@ class RequestHandlerTestBase(ABC, tornado.testing.AsyncHTTPTestCase):
                 self._assert_405_operation_outcome(response.body.decode())
 
     @staticmethod
-    def _build_endpoint_url(org_code: Optional[str] = ORG_CODE, service_id: Optional[str] = SERVICE_ID):
+    def _build_endpoint_url(
+            org_code: Optional[str] = ORG_CODE,
+            service_id: Optional[str] = SERVICE_ID):
         url = "/endpoint"
 
         org_code = f"organization=https://fhir.nhs.uk/Id/ods-organization-code|{org_code}" if org_code is not None else None
@@ -127,7 +131,7 @@ class RequestHandlerTestBase(ABC, tornado.testing.AsyncHTTPTestCase):
             party_key: Optional[str] = PARTY_KEY,
             managing_organization: Optional[str] = MANAGING_ORG):
 
-        url = "/device"
+        path = DEVICE_PATH
 
         org_code = f"organization=https://fhir.nhs.uk/Id/ods-organization-code|{org_code}" if org_code is not None else None
         service_id = f"identifier=https://fhir.nhs.uk/Id/nhsEndpointServiceId|{service_id}" if service_id is not None else None
@@ -136,8 +140,8 @@ class RequestHandlerTestBase(ABC, tornado.testing.AsyncHTTPTestCase):
 
         query_params = "&".join(filter(lambda query_param: query_param, [org_code, service_id, party_key, managing_organization]))
 
-        url = f"{url}?{query_params}" if query_params else url
-        return url
+        path = f"{path}?{query_params}" if query_params else path
+        return path
 
     def _get_current_and_expected_body(self, response, expected_file_path):
         current = json.loads(message_utilities.replace_uuid(response.body.decode(), FIXED_UUID))

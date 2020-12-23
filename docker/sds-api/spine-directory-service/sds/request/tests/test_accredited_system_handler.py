@@ -100,6 +100,17 @@ class TestAccreditedSystemHandler(RequestHandlerTestBase):
                 response.body.decode(),
                 "HTTP 400: Missing or invalid 'identifier' query parameter. Should be 'identifier=https://fhir.nhs.uk/Id/nhsEndpointServiceId|value'")
 
+        for all_combinations in [[(x, y) for y in ['', 'fhir', 'fhir|', f'fhir|value']] for x in ['identifier', 'managing-organization']]:
+            for query_parameter_name, value in all_combinations:
+                with self.subTest(f"Invalid {query_parameter_name} fhir identifier with value '{value}'"):
+                    base_url = self._build_device_url(org_code=ORG_CODE, service_id=SERVICE_ID)
+                    url = f"{base_url}&{query_parameter_name}={value}"
+                    response = self.fetch(url, method="GET")
+                    self.assertEqual(response.code, 400)
+                    super()._assert_400_operation_outcome(
+                        response.body.decode(),
+                        f"HTTP 400: Unsupported query parameter(s): {query_parameter_name}={value}")
+
     def test_get_handles_different_accept_header(self):
         self.sds_client.get_as_details.return_value = test_utilities.awaitable(SINGLE_ACCREDITED_SYSTEM_DETAILS)
         super()._test_get_handles_different_accept_header(

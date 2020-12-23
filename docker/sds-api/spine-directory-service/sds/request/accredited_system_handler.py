@@ -1,7 +1,5 @@
 import json
 
-import tornado
-from tornado.web import MissingArgumentError
 from urllib.parse import unquote
 
 from request.base_handler import BaseHandler, ORG_CODE_QUERY_PARAMETER_NAME, ORG_CODE_FHIR_IDENTIFIER, \
@@ -26,6 +24,14 @@ class AccreditedSystemRequestHandler(BaseHandler, ErrorHandler):
 
         org_code = self.get_required_query_param(ORG_CODE_QUERY_PARAMETER_NAME, ORG_CODE_FHIR_IDENTIFIER)
         service_id = self.get_required_query_param(IDENTIFIER_QUERY_PARAMETER_NAME, SERVICE_ID_FHIR_IDENTIFIER)
+
+        self.validate_optional_query_parameters(
+            IDENTIFIER_QUERY_PARAMETER_NAME,
+            {PARTY_KEY_FHIR_IDENTIFIER, SERVICE_ID_FHIR_IDENTIFIER})
+        self.validate_optional_query_parameters(
+            MANAGING_ORGANIZATION_QUERY_PARAMETER_NAME,
+            {MANAGING_ORGANIZATION_FHIR_IDENTIFIER})
+
         managing_organization = self.get_optional_query_param(MANAGING_ORGANIZATION_QUERY_PARAMETER_NAME, MANAGING_ORGANIZATION_FHIR_IDENTIFIER)
         party_key = self.get_optional_query_param(IDENTIFIER_QUERY_PARAMETER_NAME, PARTY_KEY_FHIR_IDENTIFIER)
 
