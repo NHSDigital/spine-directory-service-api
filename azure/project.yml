@@ -1,6 +1,6 @@
 variables:
   service_name: spine-directory-service
-  service_base_path: spine-directory/R4/FHIR
+  service_base_path: spine-directory/FHIR/R4
   short_service_name: sds
   product_display_name: Spine Directory Service
   product_description: " "
