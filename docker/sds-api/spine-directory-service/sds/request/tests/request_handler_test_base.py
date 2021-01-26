@@ -117,7 +117,7 @@ class RequestHandlerTestBase(ABC, tornado.testing.AsyncHTTPTestCase):
         url = "/endpoint"
 
         org_code = f"organization=https://fhir.nhs.uk/Id/ods-organization-code|{org_code}" if org_code is not None else None
-        service_id = f"identifier=https://fhir.nhs.uk/Id/nhsEndpointServiceId|{service_id}" if service_id is not None else None
+        service_id = f"identifier=https://fhir.nhs.uk/Id/nhsServiceInteractionId|{service_id}" if service_id is not None else None
 
         query_params = "&".join(filter(lambda query_param: query_param, [org_code, service_id]))
 
@@ -134,7 +134,7 @@ class RequestHandlerTestBase(ABC, tornado.testing.AsyncHTTPTestCase):
         path = DEVICE_PATH
 
         org_code = f"organization=https://fhir.nhs.uk/Id/ods-organization-code|{org_code}" if org_code is not None else None
-        service_id = f"identifier=https://fhir.nhs.uk/Id/nhsEndpointServiceId|{service_id}" if service_id is not None else None
+        service_id = f"identifier=https://fhir.nhs.uk/Id/nhsServiceInteractionId|{service_id}" if service_id is not None else None
         party_key = f"identifier=https://fhir.nhs.uk/Id/nhsMhsPartyKey|{party_key}" if party_key is not None else None
         managing_organization = f"managing-organization=https://fhir.nhs.uk/Id/ods-organization-code|{managing_organization}" if managing_organization is not None else None
 

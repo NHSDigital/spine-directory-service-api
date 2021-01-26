@@ -1,7 +1,10 @@
 from typing import Dict, List, Optional
 
+from request.base_handler import SERVICE_ID_FHIR_IDENTIFIER
 from request.mapper_urls import MapperUrls as Url
 from utilities import message_utilities
+
+SERVICE_ID_FHIR_IDENTIFIER = "https://fhir.nhs.uk/Id/nhsServiceInteractionId"
 
 
 def build_bundle_resource(resources: List[Dict], base_url: str, full_url: str):
@@ -50,13 +53,21 @@ def build_endpoint_resources(ldap_attributes: Dict) -> List[Dict]:
         if identifiers:
             result["identifier"] = identifiers
 
-        extensions = _build_extension_array(ldap_attributes)
-        extensions = list(filter(lambda item: item, extensions))
-        if extensions:
-            result["extension"] = [{
+        extensions = []
+        reliability_configuration_extensions = _build_extension_array(ldap_attributes)
+        reliability_configuration_extensions = list(filter(lambda item: item, reliability_configuration_extensions))
+        if reliability_configuration_extensions:
+            extensions.append({
                 "url": Url.EXTENSION_URL,
-                "extension": extensions
-            }]
+                "extension": reliability_configuration_extensions
+            })
+        interaction_id = ldap_attributes.get("nhsMhsSvcIA")
+        if interaction_id:
+            extensions.append(_build_value_reference_extension(
+                Url.SDS_SERVICE_INTERACTION_ID_URL, SERVICE_ID_FHIR_IDENTIFIER, interaction_id))
+
+        if extensions:
+            result["extension"] = extensions
 
         return result
     return [build_endpoint(address) for address in ldap_attributes['nhsMHSEndPoint']]
@@ -67,33 +78,33 @@ def build_device_resource(ldap_attributes: Dict) -> Dict:
         "resourceType": "Device",
         "id": message_utilities.get_uuid()
     }
-    managing_organization = ldap_attributes.get('nhsIdCode')
-    if managing_organization:
-        device["extension"] = [
-            {
-                "url": Url.MANAGING_ORGANIZATION_EXTENSION_URL,
-                "valueReference": {
-                    "identifier": {
-                        "system": Url.MANAGING_ORGANIZATION_URL,
-                        "value": managing_organization
-                    }
-                }
-            }
-        ]
 
     identifiers = []
-    unique_identifier = (ldap_attributes.get('uniqueIdentifier') or [None])[0]
+    unique_identifier = ldap_attributes.get('uniqueIdentifier')
+    if len(unique_identifier) > 1:
+        raise ValueError("LDAP returned more than 1 'uniqueIdentifier' attribute")
+    unique_identifier = (unique_identifier or [None])[0]
     if unique_identifier:
         identifiers.append(build_identifier(Url.NHS_SPINE_ASID, unique_identifier))
     party_key = ldap_attributes.get('nhsMhsPartyKey')
     if party_key:
         identifiers.append(build_identifier(Url.NHS_MHS_PARTYKEY_URL, party_key))
-    #TODO: should this be a coma separated list or something else?
-    service_id = ",".join(ldap_attributes.get('nhsAsSvcIA'))
-    if service_id:
-        identifiers.append(build_identifier(Url.NHS_ENDPOINT_SERVICE_ID_URL, service_id))
     if identifiers:
         device['identifier'] = identifiers
+
+    extension = []
+    managing_organization = ldap_attributes.get('nhsIdCode')
+    if managing_organization:
+        extension.append(
+            _build_value_reference_extension(
+                Url.MANAGING_ORGANIZATION_EXTENSION_URL, Url.MANAGING_ORGANIZATION_URL, managing_organization))
+    service_id_extensions = list(map(
+        lambda v: _build_value_reference_extension(Url.SDS_SERVICE_INTERACTION_ID_URL, SERVICE_ID_FHIR_IDENTIFIER, v),
+        ldap_attributes.get('nhsAsSvcIA')))
+    if service_id_extensions:
+        extension += service_id_extensions
+    if extension:
+        device['extension'] = extension
 
     client_id = (ldap_attributes.get('nhsAsClient') or [None])[0]
     if client_id:
@@ -108,12 +119,15 @@ def build_device_resource(ldap_attributes: Dict) -> Dict:
 
 
 def _build_identifier_array(ldap_attributes: Dict):
+    unique_identifiers = ldap_attributes.get("uniqueIdentifier")
+    if len(unique_identifiers) > 1:
+        raise ValueError("LDAP returned more than 1 'uniqueIdentifier' attribute")
+
     return [
-        build_identifier(Url.NHS_ENDPOINT_SERVICE_ID_URL, ldap_attributes.get("nhsMhsSvcIA")),
         build_identifier(Url.NHS_MHS_FQDN_URL, ldap_attributes.get("nhsMhsFQDN")),
         build_identifier(Url.NHS_MHS_PARTYKEY_URL, ldap_attributes.get("nhsMHSPartyKey")),
         build_identifier(Url.NHS_MHS_CPAID_URL, ldap_attributes.get("nhsMhsCPAId")),
-        build_identifier(Url.NHS_SPINE_MHS_URL, (ldap_attributes.get("uniqueIdentifier") or [None])[0])
+        build_identifier(Url.NHS_MHS_ID, (unique_identifiers or [None])[0])
     ]
 
 
@@ -124,7 +138,8 @@ def _build_extension_array(ldap_attributes: Dict):
         _build_int_extension("nhsMHSRetries", ldap_attributes.get("nhsMHSRetries")),
         _build_string_extension("nhsMHSPersistDuration", ldap_attributes.get("nhsMHSPersistDuration")),
         _build_string_extension("nhsMHSDuplicateElimination", ldap_attributes.get("nhsMHSDuplicateElimination")),
-        _build_string_extension("nhsMHSAckRequested", ldap_attributes.get("nhsMHSAckRequested"))
+        _build_string_extension("nhsMHSAckRequested", ldap_attributes.get("nhsMHSAckRequested")),
+        _build_string_extension("nhsServiceInteractionId", ldap_attributes.get("nhsMhsSvcIA"))
     ]
 
 
@@ -132,6 +147,18 @@ def _build_string_extension(url: str, value: str):
     return {
         "url": url,
         "valueString": value
+    } if value else None
+
+
+def _build_value_reference_extension(url: str, system: str, value: str):
+    return {
+        "url": url,
+        "valueReference": {
+            "identifier": {
+                "system": system,
+                "value": value
+            }
+        }
     } if value else None
 
 

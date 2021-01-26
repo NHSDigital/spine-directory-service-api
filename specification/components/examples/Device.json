@@ -3,11 +3,20 @@
     "id": "F0F0E921-92CA-4A88-A550-2DBB36F703AF",
     "extension": [
         {
-            "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-SDS-ReliabilityConfiguration",
+            "url": "https://fhir.nhs.uk/StructureDefinition/Extension-SDS-ManufacturingOrganisation",
             "valueReference": {
                 "identifier": {
                     "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-                    "value": "T10101"
+                    "value": "YES"
+                }
+            }
+        },
+        {
+            "url": "https://fhir.nhs.uk/StructureDefinition/Extension-SDS-NhsServiceInteractionId",
+            "valueReference": {
+                "identifier": {
+                    "system": "https://fhir.nhs.uk/Id/nhsServiceInteractionId",
+                    "value": "urn:nhs:names:services:alerts:COMT_IN000001UK01"
                 }
             }
         }
@@ -15,15 +24,11 @@
     "identifier": [
         {
             "system": "https://fhir.nhs.uk/Id/nhsSpineASID",
-            "value": "227319907548"
+            "value": "928942012545"
         },
         {
             "system": "https://fhir.nhs.uk/Id/nhsMhsPartyKey",
-            "value": "R8008-0000806"
-        },
-        {
-            "system": "https://fhir.nhs.uk/Id/nhsEndpointServiceId",
-            "value": "urn:nhs:names:services:psis:REPC_IN150016UK05"
+            "value": "YES-0000806"
         }
     ],
     "owner": {

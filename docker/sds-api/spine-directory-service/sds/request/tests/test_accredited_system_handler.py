@@ -91,14 +91,14 @@ class TestAccreditedSystemHandler(RequestHandlerTestBase):
             self.assertEqual(response.code, 400)
             super()._assert_400_operation_outcome(
                 response.body.decode(),
-                "HTTP 400: Missing or invalid 'identifier' query parameter. Should be 'identifier=https://fhir.nhs.uk/Id/nhsEndpointServiceId|value'")
+                "HTTP 400: Missing or invalid 'identifier' query parameter. Should be 'identifier=https://fhir.nhs.uk/Id/nhsServiceInteractionId|value'")
 
         with self.subTest("Empty Service ID"):
             response = self.fetch(self._build_device_url(org_code=ORG_CODE, service_id=''), method="GET")
             self.assertEqual(response.code, 400)
             super()._assert_400_operation_outcome(
                 response.body.decode(),
-                "HTTP 400: Missing or invalid 'identifier' query parameter. Should be 'identifier=https://fhir.nhs.uk/Id/nhsEndpointServiceId|value'")
+                "HTTP 400: Missing or invalid 'identifier' query parameter. Should be 'identifier=https://fhir.nhs.uk/Id/nhsServiceInteractionId|value'")
 
         for all_combinations in [[(x, y) for y in ['', 'fhir', 'fhir|', f'fhir|value']] for x in ['identifier', 'managing-organization']]:
             for query_parameter_name, value in all_combinations:

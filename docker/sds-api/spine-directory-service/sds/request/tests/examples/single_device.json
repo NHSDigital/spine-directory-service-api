@@ -1,31 +1,20 @@
 {
   "resourceType": "Bundle",
   "id": "f0f0e921-92ca-4a88-a550-2dbb36f703af",
+  "type": "searchset",
+  "total": 1,
   "link": [
     {
       "relation": "self",
-      "url": "http://127.0.0.1:50745/device?organization=https://fhir.nhs.uk/Id/ods-organization-code|org&identifier=https://fhir.nhs.uk/Id/nhsEndpointServiceId|service&identifier=https://fhir.nhs.uk/Id/nhsMhsPartyKey|some_party_key&managing-organization=https://fhir.nhs.uk/Id/ods-organization-code|some_manufacturer"
+      "url": "http://127.0.0.1:61191/device?organization=https://fhir.nhs.uk/Id/ods-organization-code|org&identifier=https://fhir.nhs.uk/Id/nhsServiceInteractionId|service&identifier=https://fhir.nhs.uk/Id/nhsMhsPartyKey|some_party_key&managing-organization=https://fhir.nhs.uk/Id/ods-organization-code|some_manufacturer"
     }
   ],
-  "type": "searchset",
-  "total": 1,
   "entry": [
     {
-      "fullUrl": "http://127.0.0.1:50745/device/f0f0e921-92ca-4a88-a550-2dbb36f703af",
+      "fullUrl": "http://127.0.0.1:61191/device/f0f0e921-92ca-4a88-a550-2dbb36f703af",
       "resource": {
         "resourceType": "Device",
         "id": "f0f0e921-92ca-4a88-a550-2dbb36f703af",
-        "extension": [
-          {
-            "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-SDS-ManagingOrganisation",
-            "valueReference": {
-              "identifier": {
-                "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-                "value": "some_manufacturer"
-              }
-            }
-          }
-        ],
         "identifier": [
           {
             "system": "https://fhir.nhs.uk/Id/nhsSpineASID",
@@ -34,10 +23,26 @@
           {
             "system": "https://fhir.nhs.uk/Id/nhsMhsPartyKey",
             "value": "some_party_key"
+          }
+        ],
+        "extension": [
+          {
+            "url": "https://fhir.nhs.uk/StructureDefinition/Extension-SDS-ManufacturingOrganisation",
+            "valueReference": {
+              "identifier": {
+                "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+                "value": "some_manufacturer"
+              }
+            }
           },
           {
-            "system": "https://fhir.nhs.uk/Id/nhsEndpointServiceId",
-            "value": "service"
+            "url": "https://fhir.nhs.uk/StructureDefinition/Extension-SDS-NhsServiceInteractionId",
+            "valueReference": {
+              "identifier": {
+                "system": "https://fhir.nhs.uk/Id/nhsServiceInteractionId",
+                "value": "service"
+              }
+            }
           }
         ],
         "owner": {
