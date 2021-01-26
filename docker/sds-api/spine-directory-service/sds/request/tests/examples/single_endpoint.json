@@ -68,10 +68,6 @@
               {
                 "url": "nhsMHSAckRequested",
                 "valueString": "never"
-              },
-              {
-                "url": "nhsServiceInteractionId",
-                "valueString": "service"
               }
             ]
           },

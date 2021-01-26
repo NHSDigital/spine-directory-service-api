@@ -138,8 +138,7 @@ def _build_extension_array(ldap_attributes: Dict):
         _build_int_extension("nhsMHSRetries", ldap_attributes.get("nhsMHSRetries")),
         _build_string_extension("nhsMHSPersistDuration", ldap_attributes.get("nhsMHSPersistDuration")),
         _build_string_extension("nhsMHSDuplicateElimination", ldap_attributes.get("nhsMHSDuplicateElimination")),
-        _build_string_extension("nhsMHSAckRequested", ldap_attributes.get("nhsMHSAckRequested")),
-        _build_string_extension("nhsServiceInteractionId", ldap_attributes.get("nhsMhsSvcIA"))
+        _build_string_extension("nhsMHSAckRequested", ldap_attributes.get("nhsMHSAckRequested"))
     ]
 
 

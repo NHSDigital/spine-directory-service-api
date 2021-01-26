@@ -68,10 +68,6 @@
               {
                 "url": "nhsMHSAckRequested",
                 "valueString": "never"
-              },
-              {
-                "url": "nhsServiceInteractionId",
-                "valueString": "service"
               }
             ]
           },
@@ -148,10 +144,6 @@
               {
                 "url": "nhsMHSAckRequested",
                 "valueString": "never"
-              },
-              {
-                "url": "nhsServiceInteractionId",
-                "valueString": "service"
               }
             ]
           },
@@ -228,10 +220,6 @@
               {
                 "url": "nhsMHSAckRequested",
                 "valueString": "never"
-              },
-              {
-                "url": "nhsServiceInteractionId",
-                "valueString": "service"
               }
             ]
           },
