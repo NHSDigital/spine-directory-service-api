@@ -55,19 +55,20 @@ class SDSClient(object):
         search_filter = f"(&{search_filter})"
         return search_filter
 
-    async def get_mhs_details(self, ods_code: str, interaction_id: str = None) -> List[Dict]:
+    async def get_mhs_details(self, ods_code: str, interaction_id: str = None, party_key: str = None) -> List[Dict]:
         """
         Returns the mhs details for the given parameters
 
         :return: Dictionary of the attributes of the mhs associated with the given parameters
         """
-        if not ods_code or not interaction_id:
-            raise SDSException("org_code and 'interaction_id' must be provided")
+        if not ods_code or (not interaction_id and not party_key):
+            raise SDSException("org_code and at least one of 'interaction_id' or 'party_key' must be provided")
 
         query_parts = [
             ("nhsIDCode", ods_code),
             ("objectClass", "nhsMhs"),
-            ("nhsMhsSvcIA", interaction_id)
+            ("nhsMhsSvcIA", interaction_id),
+            ("nhsMHSPartyKey", party_key)
         ]
         result = await self._get_ldap_data(query_parts, MHS_ATTRIBUTES)
         return result

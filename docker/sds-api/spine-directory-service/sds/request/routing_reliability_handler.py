@@ -5,7 +5,7 @@ from tornado.web import MissingArgumentError
 from urllib.parse import unquote
 
 from request.base_handler import BaseHandler, ORG_CODE_QUERY_PARAMETER_NAME, ORG_CODE_FHIR_IDENTIFIER, \
-    IDENTIFIER_QUERY_PARAMETER_NAME, SERVICE_ID_FHIR_IDENTIFIER
+    IDENTIFIER_QUERY_PARAMETER_NAME, SERVICE_ID_FHIR_IDENTIFIER, PARTY_KEY_FHIR_IDENTIFIER
 from request.content_type_validator import get_valid_accept_type
 from request.error_handler import ErrorHandler
 from request.fhir_json_mapper import build_endpoint_resources, build_bundle_resource
@@ -30,13 +30,22 @@ class RoutingReliabilityRequestHandler(BaseHandler, ErrorHandler):
         read_tracking_id_headers(self.request.headers)
 
         org_code = self.get_required_query_param(ORG_CODE_QUERY_PARAMETER_NAME, ORG_CODE_FHIR_IDENTIFIER)
-        service_id = self.get_required_query_param(IDENTIFIER_QUERY_PARAMETER_NAME, SERVICE_ID_FHIR_IDENTIFIER)
+        service_id = self.get_optional_query_param(IDENTIFIER_QUERY_PARAMETER_NAME, SERVICE_ID_FHIR_IDENTIFIER)
+        party_key = self.get_optional_query_param(IDENTIFIER_QUERY_PARAMETER_NAME, PARTY_KEY_FHIR_IDENTIFIER)
+
+        if not service_id and not party_key:
+            raise tornado.web.HTTPError(
+                status_code=400,
+                reason=f"Missing or invalid '{IDENTIFIER_QUERY_PARAMETER_NAME}' query parameter. "
+                       f"Should be one or both of: ["
+                       f"'{IDENTIFIER_QUERY_PARAMETER_NAME}={SERVICE_ID_FHIR_IDENTIFIER}|value', "
+                       f"'{IDENTIFIER_QUERY_PARAMETER_NAME}={PARTY_KEY_FHIR_IDENTIFIER}|value'")
 
         accept_type = get_valid_accept_type(self.request.headers)
 
-        logger.info("Looking up routing and reliability information. {org_code}, {service_id}",
-                    fparams={"org_code": org_code, "service_id": service_id})
-        ldap_result = await self.sds_client.get_mhs_details(org_code, service_id)
+        logger.info("Looking up routing and reliability information. {org_code}, {service_id}, {party_key}",
+                    fparams={"org_code": org_code, "service_id": service_id, "party_key": party_key})
+        ldap_result = await self.sds_client.get_mhs_details(org_code, service_id, party_key)
         logger.info("Obtained routing and reliability information. {ldap_result}",
                     fparams={"ldap_result": ldap_result})
 
