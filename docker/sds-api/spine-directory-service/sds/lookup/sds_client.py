@@ -130,7 +130,7 @@ class SDSMockClient:
         self.pause_duration = int(config.get_config('MOCK_LDAP_PAUSE', default="0"))
         self.mock_data = self._read_mock_data()
 
-    async def get_mhs_details(self, ods_code: str, interaction_id: str) -> Dict:
+    async def get_mhs_details(self, ods_code: str, interaction_id: str, party_key: str) -> Dict:
         if self.pause_duration != 0:
             logger.debug("Sleeping for %sms", self.pause_duration)
             await asyncio.sleep(self.pause_duration / 1000)
