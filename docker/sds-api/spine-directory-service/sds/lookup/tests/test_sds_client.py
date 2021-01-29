@@ -15,13 +15,10 @@ ODS_CODE = "ODSCODE1"
 AS_INTERACTION_ID = "urn:nhs:names:services:psis:REPC_IN150016UK05"
 
 expected_mhs_attributes = [{
-    'nhsEPInteractionType': 'HL7',
     'nhsIDCode': 'ODSCODE1',
     'nhsMHSAckRequested': 'always',
-    'nhsMHSActor': ['urn:oasis:names:tc:ebxml-msg:actor:toPartyMSH'],
     'nhsMHSDuplicateElimination': 'always',
     'nhsMHSEndPoint': ['https://vpn-client-1411.opentest.hscic.gov.uk/'],
-    'nhsMHSIsAuthenticated': 'transient',
     'nhsMHSPartyKey': 'AP4RTY-K33Y',
     'nhsMHSPersistDuration': 'PT5M',
     'nhsMHSRetries': '2',
@@ -32,7 +29,6 @@ expected_mhs_attributes = [{
     'nhsMhsCPAId': 'S918999410559',
     'nhsMhsFQDN': 'vpn-client-1411.opentest.hscic.gov.uk',
     'nhsMhsSvcIA': 'urn:nhs:names:services:psis:MCCI_IN010000UK13',
-    'nhsProductKey': '7374',
     'uniqueIdentifier': ['S918999410559'],
 }]
 

@@ -20,9 +20,9 @@ MHS_PARTY_KEY = 'nhsMHSPartyKey'
 MHS_ASID = 'uniqueIdentifier'
 
 MHS_ATTRIBUTES = [
-    'nhsEPInteractionType', 'nhsIDCode', 'nhsMhsCPAId', 'nhsMHSEndPoint', 'nhsMhsFQDN',
-    'nhsMHsIN', 'nhsMHSIsAuthenticated', 'nhsMHSPartyKey', 'nhsMHsSN', 'nhsMhsSvcIA', 'nhsProductKey',
-    'uniqueIdentifier', 'nhsMHSAckRequested', 'nhsMHSActor', 'nhsMHSDuplicateElimination',
+    'nhsIDCode', 'nhsMhsCPAId', 'nhsMHSEndPoint', 'nhsMhsFQDN',
+    'nhsMHsIN', 'nhsMHSPartyKey', 'nhsMHsSN', 'nhsMhsSvcIA',
+    'uniqueIdentifier', 'nhsMHSAckRequested', 'nhsMHSDuplicateElimination',
     'nhsMHSPersistDuration', 'nhsMHSRetries', 'nhsMHSRetryInterval', 'nhsMHSSyncReplyMode'
 ]
 AS_ATTRIBUTES = [
@@ -65,7 +65,7 @@ class SDSClient(object):
             raise SDSException("org_code and at least one of 'interaction_id' or 'party_key' must be provided")
 
         query_parts = [
-            ("nhsidcode", ods_code),
+            ("nhsIDCode", ods_code),
             ("objectClass", "nhsMhs"),
             ("nhsMhsSvcIA", interaction_id),
             ("nhsMHSPartyKey", party_key)

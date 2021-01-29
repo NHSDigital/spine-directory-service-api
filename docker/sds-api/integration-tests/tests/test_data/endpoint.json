@@ -17,7 +17,7 @@
         "id": "<TO_REPLACE>",
         "extension": [
           {
-            "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-SDS-ReliabilityConfiguration",
+            "url": "https://fhir.nhs.uk/StructureDefinition/Extension-SDS-ReliabilityConfiguration",
             "extension": [
               {
                 "url": "nhsMHSSyncReplyMode",
@@ -44,13 +44,18 @@
                 "valueString": "always"
               }
             ]
+          },
+          {
+            "url": "https://fhir.nhs.uk/StructureDefinition/Extension-SDS-NhsServiceInteractionId",
+            "valueReference": {
+              "identifier": {
+                "system": "https://fhir.nhs.uk/Id/nhsServiceInteractionId",
+                "value": "urn:nhs:names:services:psis:REPC_IN150016UK05"
+              }
+            }
           }
         ],
         "identifier": [
-          {
-            "system": "https://fhir.nhs.uk/Id/nhsEndpointServiceId",
-            "value": "urn:nhs:names:services:psis:REPC_IN150016UK05"
-          },
           {
             "system": "https://fhir.nhs.uk/Id/nhsMhsFQDN",
             "value": "msg.opentest.hscic.gov.uk"
@@ -64,7 +69,7 @@
             "value": "S20001A000182"
           },
           {
-            "system": "https://fhir.nhs.uk/Id/nhsSpineMHS",
+            "system": "https://fhir.nhs.uk/Id/nhsMHSId",
             "value": "S20001A000182"
           }
         ],

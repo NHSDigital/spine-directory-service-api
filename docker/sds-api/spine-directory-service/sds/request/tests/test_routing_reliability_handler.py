@@ -16,11 +16,12 @@ SINGLE_ROUTING_AND_RELIABILITY_DETAILS = [{
     ],
     "nhsMHSAckRequested": "never",
     "nhsMHSDuplicateElimination": "never",
-    "nhsMHSPersistDuration": [],
-    "nhsMHSRetries": [],
-    "nhsMHSRetryInterval": [],
-    "nhsMHSSyncReplyMode": "None",
-    "nhsMhsSvcIA": SERVICE_ID
+    "nhsMHSPersistDuration": "",
+    "nhsMHSRetries": "",
+    "nhsMHSRetryInterval": "",
+    "nhsMHSSyncReplyMode": "",
+    "nhsMhsSvcIA": SERVICE_ID,
+    "nhsIDCode": ORG_CODE
 }]
 
 MULTIPLE_ROUTING_AND_RELIABILITY_DETAILS = SINGLE_ROUTING_AND_RELIABILITY_DETAILS.copy()
@@ -37,11 +38,12 @@ MULTIPLE_ROUTING_AND_RELIABILITY_DETAILS.append({
     ],
     "nhsMHSAckRequested": "never",
     "nhsMHSDuplicateElimination": "never",
-    "nhsMHSPersistDuration": [],
-    "nhsMHSRetries": [],
-    "nhsMHSRetryInterval": [],
-    "nhsMHSSyncReplyMode": "None",
-    "nhsMhsSvcIA": SERVICE_ID
+    "nhsMHSPersistDuration": "",
+    "nhsMHSRetries": "",
+    "nhsMHSRetryInterval": "",
+    "nhsMHSSyncReplyMode": "",
+    "nhsMhsSvcIA": SERVICE_ID,
+    "nhsIDCode": ORG_CODE
 })
 
 
@@ -95,7 +97,7 @@ class TestRoutingReliabilityRequestHandler(RequestHandlerTestBase):
             self.assertEqual(response.code, 400)
             super()._assert_400_operation_outcome(
                 response.body.decode(),
-                "HTTP 400: Missing or invalid 'identifier' query parameter. Should be one or both of: ['identifier=https://fhir.nhs.uk/Id/nhsEndpointServiceId|value', 'identifier=https://fhir.nhs.uk/Id/nhsMhsPartyKey|value'")
+                "HTTP 400: Missing or invalid 'identifier' query parameter. Should be one or both of: ['identifier=https://fhir.nhs.uk/Id/nhsServiceInteractionId|value', 'identifier=https://fhir.nhs.uk/Id/nhsMhsPartyKey|value'")
 
     def test_get_handles_different_accept_header(self):
         self.sds_client.get_mhs_details.return_value = test_utilities.awaitable(SINGLE_ROUTING_AND_RELIABILITY_DETAILS)

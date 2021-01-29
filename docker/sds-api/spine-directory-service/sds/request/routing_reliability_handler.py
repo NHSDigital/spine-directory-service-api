@@ -54,7 +54,7 @@ class RoutingReliabilityRequestHandler(BaseHandler, ErrorHandler):
 
         endpoints = []
         for ldap_attributes in ldap_result:
-            endpoints += build_endpoint_resources(ldap_attributes, org_code)
+            endpoints += build_endpoint_resources(ldap_attributes)
 
         bundle = build_bundle_resource(endpoints, base_url, full_url)
 

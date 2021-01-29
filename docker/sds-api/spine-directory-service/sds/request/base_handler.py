@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, Set
 
 import tornado.web
 
@@ -10,7 +10,7 @@ IDENTIFIER_QUERY_PARAMETER_NAME = "identifier"
 MANAGING_ORGANIZATION_QUERY_PARAMETER_NAME = "managing-organization"
 
 ORG_CODE_FHIR_IDENTIFIER = "https://fhir.nhs.uk/Id/ods-organization-code"
-SERVICE_ID_FHIR_IDENTIFIER = "https://fhir.nhs.uk/Id/nhsEndpointServiceId"
+SERVICE_ID_FHIR_IDENTIFIER = "https://fhir.nhs.uk/Id/nhsServiceInteractionId"
 PARTY_KEY_FHIR_IDENTIFIER = "https://fhir.nhs.uk/Id/nhsMhsPartyKey"
 MANAGING_ORGANIZATION_FHIR_IDENTIFIER = "https://fhir.nhs.uk/Id/ods-organization-code"
 
@@ -42,9 +42,25 @@ class BaseHandler(tornado.web.RequestHandler):
 
     def get_optional_query_param(self, query_param_name: str, fhir_identifier: str) -> Optional[str]:
         values = list(filter(
-            lambda value: "|" in value and value.split("|")[0] == fhir_identifier and value.split("|")[1],
+            lambda value: "|" in value and value.split("|")[0] == fhir_identifier and value[value.index("|") + 1:].strip(),
             self.get_query_arguments(query_param_name)))
 
         last_value = values and values[-1]
         result_value = (last_value and last_value[last_value.index("|") + 1:]) or None
         return result_value
+
+    def validate_optional_query_parameters(self, query_param_name: str, valid_fhir_identifiers: Set[str]):
+        all_values = self.get_query_arguments(query_param_name)
+
+        values_without_pipe = list(map(lambda value: f"{query_param_name}={value}", filter(lambda value: "|" not in value, all_values)))
+        if values_without_pipe:
+            raise tornado.web.HTTPError(
+                status_code=400,
+                reason=f"Unsupported query parameter(s): {', '.join(values_without_pipe)}")
+
+        invalid_fhir_identifier = [x for x in all_values if x.split("|")[0] not in valid_fhir_identifiers]
+        invalid_fhir_identifier = list(map(lambda value: f"{query_param_name}={value}", invalid_fhir_identifier))
+        if invalid_fhir_identifier:
+            raise tornado.web.HTTPError(
+                status_code=400,
+                reason=f"Unsupported query parameter(s): {', '.join(invalid_fhir_identifier)}")
