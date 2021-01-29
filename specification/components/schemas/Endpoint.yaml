@@ -8,33 +8,6 @@ properties:
     type: string
     description: "SDS’s unique identifier for this accredited system record."
     format: uuid
-  extension:
-    type: array
-    description: "Additional content defined by implementations"
-    items:
-      type: object
-      properties:
-        url:
-          type: string
-        extension:
-          type: array
-          items:
-            type: object
-            properties:
-              url:
-                type: string
-              valueString:
-                type: string
-  identifier:
-    type: array
-    description: "Identifies this endpoint across multiple systems"
-    items: 
-      type: object
-      properties:
-        system:
-          type: string
-        value:
-          type: string
   status:
     type: string
     default: "active"
@@ -50,17 +23,6 @@ properties:
         type: string
       display:
         type: string
-  managingOrganization:
-    type: object
-    description: "Organization that manages this endpoint (might not be the organization that exposes the endpoint)"
-    properties:
-      identifier:
-        type: object
-        properties:
-          system:
-            type: string
-          value:
-            type: string
   payloadType:
     type: array
     description: "The type of content that may be used at this endpoint (e.g. XDS Discharge summaries)"
@@ -81,3 +43,41 @@ properties:
   address:
     type: string
     description: "The base URL for connecting to this endpoint"
+  managingOrganization:
+    type: object
+    description: "Organization that manages this endpoint (might not be the organization that exposes the endpoint)"
+    properties:
+      identifier:
+        type: object
+        properties:
+          system:
+            type: string
+          value:
+            type: string
+  identifier:
+    type: array
+    description: "Identifies this endpoint across multiple systems"
+    items: 
+      type: object
+      properties:
+        system:
+          type: string
+        value:
+          type: string
+  extension:
+    type: array
+    description: "Additional content defined by implementations"
+    items:
+      type: object
+      properties:
+        url:
+          type: string
+        extension:
+          type: array
+          items:
+            type: object
+            properties:
+              url:
+                type: string
+              valueString:
+                type: string
