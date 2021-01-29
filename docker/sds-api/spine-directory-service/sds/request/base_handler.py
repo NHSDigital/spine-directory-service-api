@@ -35,7 +35,7 @@ class BaseHandler(tornado.web.RequestHandler):
     def get_required_query_param(self, query_param_name: str, fhir_identifier: str) -> Optional[str]:
         value = self.get_optional_query_param(query_param_name, fhir_identifier)
         if not value:
-            self.raise_illegal_mandatory_query_param_error(query_param_name, fhir_identifier)
+            self._raise_invalid_query_param_error(query_param_name, fhir_identifier)
         return value
 
     def get_optional_query_param(self, query_param_name: str, fhir_identifier: str) -> Optional[str]:
@@ -47,23 +47,15 @@ class BaseHandler(tornado.web.RequestHandler):
         result_value = (last_value and last_value[last_value.index("|") + 1:]) or None
         return result_value
 
-    def validate_optional_query_parameters(self, query_param_name: str, valid_fhir_identifiers: Set[str]):
-        all_values = self.get_query_arguments(query_param_name)
-
-        values_without_pipe = list(map(lambda value: f"{query_param_name}={value}", filter(lambda value: "|" not in value, all_values)))
-        if values_without_pipe:
-            raise tornado.web.HTTPError(
-                status_code=400,
-                log_message=f"Unsupported query parameter(s): {', '.join(values_without_pipe)}")
-
-        invalid_fhir_identifier = [x for x in all_values if x.split("|")[0] not in valid_fhir_identifiers]
-        invalid_fhir_identifier = list(map(lambda value: f"{query_param_name}={value}", invalid_fhir_identifier))
-        if invalid_fhir_identifier:
-            raise tornado.web.HTTPError(
-                status_code=400,
-                log_message=f"Unsupported query parameter(s): {', '.join(invalid_fhir_identifier)}")
-
-    def raise_illegal_mandatory_query_param_error(self, query_param_name, fhir_identifier):
+    def _raise_invalid_query_param_error(self, query_param_name, fhir_identifier):
         raise tornado.web.HTTPError(
             status_code=400,
             log_message=f"Missing or invalid '{query_param_name}' query parameter. Should be '{query_param_name}={fhir_identifier}|value'")
+
+    def _raise_invalid_identifier_query_param_error(self):
+        raise tornado.web.HTTPError(
+            status_code=400,
+            log_message=f"Missing or invalid '{IDENTIFIER_QUERY_PARAMETER_NAME}' query parameter. "
+                        f"Should be one or both of: ["
+                        f"'{IDENTIFIER_QUERY_PARAMETER_NAME}={SERVICE_ID_FHIR_IDENTIFIER}|value', "
+                        f"'{IDENTIFIER_QUERY_PARAMETER_NAME}={PARTY_KEY_FHIR_IDENTIFIER}|value'")

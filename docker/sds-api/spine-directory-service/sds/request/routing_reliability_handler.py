@@ -36,7 +36,7 @@ class RoutingReliabilityRequestHandler(BaseHandler, ErrorHandler):
         party_key = self.get_optional_query_param(IDENTIFIER_QUERY_PARAMETER_NAME, PARTY_KEY_FHIR_IDENTIFIER)
 
         if not service_id and not party_key:
-            self._raise_illegal_identifier_query_param_error()
+            self._raise_invalid_identifier_query_param_error()
 
         accept_type = get_valid_accept_type(self.request.headers)
 
@@ -70,16 +70,8 @@ class RoutingReliabilityRequestHandler(BaseHandler, ErrorHandler):
                 query_param_value = query_param_value.decode("utf-8")
                 if query_param == ORG_CODE_QUERY_PARAMETER_NAME \
                         and not query_param_value.startswith(f"{ORG_CODE_FHIR_IDENTIFIER}|"):
-                    self.raise_illegal_mandatory_query_param_error(ORG_CODE_QUERY_PARAMETER_NAME, ORG_CODE_FHIR_IDENTIFIER)
+                    self._raise_invalid_query_param_error(ORG_CODE_QUERY_PARAMETER_NAME, ORG_CODE_FHIR_IDENTIFIER)
                 if query_param == IDENTIFIER_QUERY_PARAMETER_NAME \
                         and not query_param_value.startswith(f"{SERVICE_ID_FHIR_IDENTIFIER}|") \
                         and not query_param_value.startswith(f"{PARTY_KEY_FHIR_IDENTIFIER}|"):
-                    self._raise_illegal_identifier_query_param_error()
-
-    def _raise_illegal_identifier_query_param_error(self):
-        raise tornado.web.HTTPError(
-            status_code=400,
-            log_message=f"Missing or invalid '{IDENTIFIER_QUERY_PARAMETER_NAME}' query parameter. "
-                   f"Should be one or both of: ["
-                   f"'{IDENTIFIER_QUERY_PARAMETER_NAME}={SERVICE_ID_FHIR_IDENTIFIER}|value', "
-                   f"'{IDENTIFIER_QUERY_PARAMETER_NAME}={PARTY_KEY_FHIR_IDENTIFIER}|value'")
+                    self._raise_invalid_identifier_query_param_error()
