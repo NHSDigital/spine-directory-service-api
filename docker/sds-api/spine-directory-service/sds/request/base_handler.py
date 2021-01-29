@@ -30,14 +30,12 @@ class BaseHandler(tornado.web.RequestHandler):
         if self.request.method != "GET":
             raise tornado.web.HTTPError(
                 status_code=405,
-                reason="Method not allowed.")
+                log_message="Method not allowed.")
 
     def get_required_query_param(self, query_param_name: str, fhir_identifier: str) -> Optional[str]:
         value = self.get_optional_query_param(query_param_name, fhir_identifier)
         if not value:
-            raise tornado.web.HTTPError(
-                status_code=400,
-                reason=f"Missing or invalid '{query_param_name}' query parameter. Should be '{query_param_name}={fhir_identifier}|value'")
+            self.raise_illegal_mandatory_query_param_error(query_param_name, fhir_identifier)
         return value
 
     def get_optional_query_param(self, query_param_name: str, fhir_identifier: str) -> Optional[str]:
@@ -56,11 +54,16 @@ class BaseHandler(tornado.web.RequestHandler):
         if values_without_pipe:
             raise tornado.web.HTTPError(
                 status_code=400,
-                reason=f"Unsupported query parameter(s): {', '.join(values_without_pipe)}")
+                log_message=f"Unsupported query parameter(s): {', '.join(values_without_pipe)}")
 
         invalid_fhir_identifier = [x for x in all_values if x.split("|")[0] not in valid_fhir_identifiers]
         invalid_fhir_identifier = list(map(lambda value: f"{query_param_name}={value}", invalid_fhir_identifier))
         if invalid_fhir_identifier:
             raise tornado.web.HTTPError(
                 status_code=400,
-                reason=f"Unsupported query parameter(s): {', '.join(invalid_fhir_identifier)}")
+                log_message=f"Unsupported query parameter(s): {', '.join(invalid_fhir_identifier)}")
+
+    def raise_illegal_mandatory_query_param_error(self, query_param_name, fhir_identifier):
+        raise tornado.web.HTTPError(
+            status_code=400,
+            log_message=f"Missing or invalid '{query_param_name}' query parameter. Should be '{query_param_name}={fhir_identifier}|value'")
