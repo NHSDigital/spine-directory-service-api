@@ -9,7 +9,9 @@ docker_service:
       - name: SDS_LOG_LEVEL
         value: NOTSET
       - name: SDS_MOCK_LDAP_RESPONSE
-        value: "True"
+        value: "TRUE"
+      - name: SDS_MOCK_LDAP_MODE
+        value: "FIRST"
     health_check:
       matcher: "200"
       path: "/healthcheck"
