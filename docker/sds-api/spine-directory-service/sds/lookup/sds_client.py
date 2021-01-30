@@ -129,7 +129,7 @@ class SDSMockClient:
 
     def __init__(self):
         self.pause_duration = int(config.get_config('MOCK_LDAP_PAUSE', default="0"))
-        self.mode = config.get_config('MOCK_LDAP_MODE').upper()
+        self.mode = config.get_config('MOCK_LDAP_MODE', default="STRICT").upper()
         self.mock_mhs_data = None
         self.mock_as_data = None
         self._read_mock_data()

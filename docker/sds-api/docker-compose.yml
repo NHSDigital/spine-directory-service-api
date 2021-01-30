@@ -12,3 +12,4 @@ services:
       - SDS_LDAP_DISABLE_TLS=True
       - SDS_MOCK_LDAP_RESPONSE
       - SDS_MOCK_LDAP_PAUSE
+      - SDS_MOCK_LDAP_MODE
