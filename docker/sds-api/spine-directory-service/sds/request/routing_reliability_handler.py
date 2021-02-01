@@ -29,17 +29,14 @@ class RoutingReliabilityRequestHandler(BaseHandler, ErrorHandler):
     async def get(self):
         read_tracking_id_headers(self.request.headers)
 
+        self._validate_query_params()
+
         org_code = self.get_required_query_param(ORG_CODE_QUERY_PARAMETER_NAME, ORG_CODE_FHIR_IDENTIFIER)
         service_id = self.get_optional_query_param(IDENTIFIER_QUERY_PARAMETER_NAME, SERVICE_ID_FHIR_IDENTIFIER)
         party_key = self.get_optional_query_param(IDENTIFIER_QUERY_PARAMETER_NAME, PARTY_KEY_FHIR_IDENTIFIER)
 
         if not service_id and not party_key:
-            raise tornado.web.HTTPError(
-                status_code=400,
-                reason=f"Missing or invalid '{IDENTIFIER_QUERY_PARAMETER_NAME}' query parameter. "
-                       f"Should be one or both of: ["
-                       f"'{IDENTIFIER_QUERY_PARAMETER_NAME}={SERVICE_ID_FHIR_IDENTIFIER}|value', "
-                       f"'{IDENTIFIER_QUERY_PARAMETER_NAME}={PARTY_KEY_FHIR_IDENTIFIER}|value'")
+            self._raise_invalid_identifier_query_param_error()
 
         accept_type = get_valid_accept_type(self.request.headers)
 
@@ -61,3 +58,20 @@ class RoutingReliabilityRequestHandler(BaseHandler, ErrorHandler):
         self.write(json.dumps(bundle, indent=2, sort_keys=False))
         self.set_header(HttpHeaders.CONTENT_TYPE, accept_type)
         self.set_header(HttpHeaders.X_CORRELATION_ID, mdc.correlation_id.get())
+
+    def _validate_query_params(self):
+        query_params = self.request.arguments
+        for query_param in query_params.keys():
+            if query_param not in [ORG_CODE_QUERY_PARAMETER_NAME, IDENTIFIER_QUERY_PARAMETER_NAME]:
+                raise tornado.web.HTTPError(
+                    status_code=400,
+                    log_message=f"Illegal query parameter '{query_param}'")
+            for query_param_value in query_params[query_param]:
+                query_param_value = query_param_value.decode("utf-8")
+                if query_param == ORG_CODE_QUERY_PARAMETER_NAME \
+                        and not query_param_value.startswith(f"{ORG_CODE_FHIR_IDENTIFIER}|"):
+                    self._raise_invalid_query_param_error(ORG_CODE_QUERY_PARAMETER_NAME, ORG_CODE_FHIR_IDENTIFIER)
+                if query_param == IDENTIFIER_QUERY_PARAMETER_NAME \
+                        and not query_param_value.startswith(f"{SERVICE_ID_FHIR_IDENTIFIER}|") \
+                        and not query_param_value.startswith(f"{PARTY_KEY_FHIR_IDENTIFIER}|"):
+                    self._raise_invalid_identifier_query_param_error()

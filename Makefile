@@ -14,7 +14,6 @@ install-hooks:
 
 lint:
 	# npm run lint
-	# cd docker/sandbox && npm run lint && cd ..
 	# cd docker/adaptor && npm run lint && cd ..
 	# poetry run flake8 **/*.py
 	# find -name '*.sh' | grep -v node_modules | xargs shellcheck

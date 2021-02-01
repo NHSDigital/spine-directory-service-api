@@ -52,33 +52,3 @@ class TestBaseHandler(TestCase):
                 self.assertRaises(
                     tornado.web.HTTPError,
                     self.base_handler.get_required_query_param, "identifier", "fhir1")
-
-    def test_should_pass_query_parameter_validation(self):
-        valid_query_parameters = [
-            ["fhir1|value1", "fhir2|value2"],
-            ["fhir1|", "fhir2|value2"],
-            ["fhir1|", "fhir2|"],
-            ["fhir1||", "fhir2| "],
-        ]
-
-        for invalid_query_parameter in valid_query_parameters:
-            with self.subTest(f"Valid query parameters: {invalid_query_parameter}"):
-                self.base_handler.get_query_arguments = \
-                    TestBaseHandler.build_get_query_arguments_mock("identifier", invalid_query_parameter)
-                self.base_handler.validate_optional_query_parameters("identifier", SUPPORTED_IDENTIFIERS)
-
-    def test_should_fail_query_parameter_validation(self):
-        invalid_query_parameters = [
-            ["fhir1", "fhir2|value2"],
-            ["fhir3", "fhir2|value2"],
-            ["fhir3|", "fhir2|value2"],
-            ["fhir3|value3", "fhir2|value2"],
-        ]
-
-        for invalid_query_parameter in invalid_query_parameters:
-            with self.subTest(f"Invalid query parameters: {invalid_query_parameter}"):
-                self.base_handler.get_query_arguments = \
-                    TestBaseHandler.build_get_query_arguments_mock("identifier", invalid_query_parameter)
-                self.assertRaises(
-                    tornado.web.HTTPError,
-                    self.base_handler.validate_optional_query_parameters, "identifier", SUPPORTED_IDENTIFIERS)

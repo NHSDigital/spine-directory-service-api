@@ -2,6 +2,7 @@
 
 import ast
 import asyncio
+import random
 from typing import Dict, List, Tuple, Optional
 
 import ldap3
@@ -128,16 +129,63 @@ class SDSMockClient:
 
     def __init__(self):
         self.pause_duration = int(config.get_config('MOCK_LDAP_PAUSE', default="0"))
-        self.mock_data = self._read_mock_data()
+        self.mode = config.get_config('MOCK_LDAP_MODE', default="STRICT").upper()
+        self.mock_mhs_data = None
+        self.mock_as_data = None
+        self._read_mock_data()
 
-    async def get_mhs_details(self, ods_code: str, interaction_id: str) -> Dict:
+    async def get_mhs_details(self, ods_code: str, interaction_id: str, party_key: str) -> List[Dict]:
+        if ods_code is None or interaction_id is None and party_key is None:
+            raise ValueError
+
         if self.pause_duration != 0:
             logger.debug("Sleeping for %sms", self.pause_duration)
             await asyncio.sleep(self.pause_duration / 1000)
-        return self.mock_data
+
+        if self.mode == "STRICT":
+            return list(filter(lambda x: self._filter_mhs(x, ods_code, interaction_id, party_key), self.mock_mhs_data))
+        elif self.mode == "RANDOM":
+            return [random.choice(self.mock_mhs_data)]
+        elif self.mode == "FIRST":
+            return [self.mock_mhs_data[0]]
+        else:
+            raise ValueError
+
+    async def get_as_details(self, ods_code: str, interaction_id: str, managing_organization: str = None, party_key: str = None) -> List[Dict]:
+        if ods_code is None or interaction_id is None:
+            raise ValueError
+
+        if self.pause_duration != 0:
+            logger.debug("Sleeping for %sms", self.pause_duration)
+            await asyncio.sleep(self.pause_duration / 1000)
+
+        if self.mode == "STRICT":
+            return list(filter(lambda x: self._filter_as(x, ods_code, interaction_id, managing_organization, party_key), self.mock_as_data))
+        elif self.mode == "RANDOM":
+            return [random.choice(self.mock_as_data)]
+        elif self.mode == "FIRST":
+            return [self.mock_as_data[0]]
+        else:
+            raise ValueError
 
     @staticmethod
-    def _read_mock_data():
-        with open('./lookup/mock_data/sds_response.json', 'r') as f:
+    def _filter_mhs(entry: Dict, ods_code: str, interaction_id: str, party_key: str):
+        return entry['nhsIDCode'] == ods_code \
+            and (interaction_id is None or entry['nhsMhsSvcIA'] == interaction_id) \
+            and (party_key is None or entry['nhsMHSPartyKey'] == party_key)
+
+    @staticmethod
+    def _filter_as(entry: Dict, ods_code: str, interaction_id: str, managing_organization: str = None, party_key: str = None):
+        return entry['nhsIDCode'] == ods_code \
+            and interaction_id in entry['nhsAsSvcIA'] \
+            and (party_key is None or entry['nhsMHSPartyKey'] == party_key) \
+            and (managing_organization is None or entry['nhsMhsManufacturerOrg'] == managing_organization)
+
+    def _read_mock_data(self):
+        with open('./lookup/mock_data/sds_mhs_response.json', 'r') as f:
             data = f.read()
-            return ast.literal_eval(data)
+            self.mock_mhs_data = ast.literal_eval(data)
+
+        with open('./lookup/mock_data/sds_as_response.json', 'r') as f:
+            data = f.read()
+            self.mock_as_data = ast.literal_eval(data)

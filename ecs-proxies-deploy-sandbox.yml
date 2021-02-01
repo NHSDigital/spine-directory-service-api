@@ -3,9 +3,15 @@
 #docker_service_memory: 512
 
 docker_service:
-
-  - name: sds-sandbox
+  - name: sds-api
     expose: true
+    environment:
+      - name: SDS_LOG_LEVEL
+        value: NOTSET
+      - name: SDS_MOCK_LDAP_RESPONSE
+        value: "TRUE"
+      - name: SDS_MOCK_LDAP_MODE
+        value: "STRICT"
     health_check:
       matcher: "200"
       path: "/healthcheck"

@@ -77,39 +77,48 @@ class TestAccreditedSystemHandler(RequestHandlerTestBase):
             self.assertEqual(response.code, 400)
             super()._assert_400_operation_outcome(
                 response.body.decode(),
-                "HTTP 400: Missing or invalid 'organization' query parameter. Should be 'organization=https://fhir.nhs.uk/Id/ods-organization-code|value'")
+                "HTTP 400: Bad Request (Missing or invalid 'organization' query parameter. Should be 'organization=https://fhir.nhs.uk/Id/ods-organization-code|value')")
 
         with self.subTest("Empty Org Code"):
             response = self.fetch(self._build_device_url(org_code='', service_id=SERVICE_ID), method="GET")
             self.assertEqual(response.code, 400)
             super()._assert_400_operation_outcome(
                 response.body.decode(),
-                "HTTP 400: Missing or invalid 'organization' query parameter. Should be 'organization=https://fhir.nhs.uk/Id/ods-organization-code|value'")
+                "HTTP 400: Bad Request (Missing or invalid 'organization' query parameter. Should be 'organization=https://fhir.nhs.uk/Id/ods-organization-code|value')")
 
         with self.subTest("Missing Service ID"):
             response = self.fetch(self._build_device_url(org_code=ORG_CODE, service_id=None), method="GET")
             self.assertEqual(response.code, 400)
             super()._assert_400_operation_outcome(
                 response.body.decode(),
-                "HTTP 400: Missing or invalid 'identifier' query parameter. Should be 'identifier=https://fhir.nhs.uk/Id/nhsServiceInteractionId|value'")
+                "HTTP 400: Bad Request (Missing or invalid 'identifier' query parameter. Should be 'identifier=https://fhir.nhs.uk/Id/nhsServiceInteractionId|value')")
 
         with self.subTest("Empty Service ID"):
             response = self.fetch(self._build_device_url(org_code=ORG_CODE, service_id=''), method="GET")
             self.assertEqual(response.code, 400)
             super()._assert_400_operation_outcome(
                 response.body.decode(),
-                "HTTP 400: Missing or invalid 'identifier' query parameter. Should be 'identifier=https://fhir.nhs.uk/Id/nhsServiceInteractionId|value'")
+                "HTTP 400: Bad Request (Missing or invalid 'identifier' query parameter. Should be 'identifier=https://fhir.nhs.uk/Id/nhsServiceInteractionId|value')")
 
-        for all_combinations in [[(x, y) for y in ['', 'fhir', 'fhir|', f'fhir|value']] for x in ['identifier', 'managing-organization']]:
-            for query_parameter_name, value in all_combinations:
-                with self.subTest(f"Invalid {query_parameter_name} fhir identifier with value '{value}'"):
-                    base_url = self._build_device_url(org_code=ORG_CODE, service_id=SERVICE_ID)
-                    url = f"{base_url}&{query_parameter_name}={value}"
-                    response = self.fetch(url, method="GET")
-                    self.assertEqual(response.code, 400)
-                    super()._assert_400_operation_outcome(
-                        response.body.decode(),
-                        f"HTTP 400: Unsupported query parameter(s): {query_parameter_name}={value}")
+        for value in ['', 'fhir', 'fhir|', f'fhir|value']:
+            with self.subTest(f"Invalid optional identifier with value '{value}'"):
+                base_url = self._build_device_url(org_code=ORG_CODE, service_id=SERVICE_ID)
+                url = f"{base_url}&identifier={value}"
+                response = self.fetch(url, method="GET")
+                self.assertEqual(response.code, 400)
+                super()._assert_400_operation_outcome(
+                    response.body.decode(),
+                    f"HTTP 400: Bad Request (Missing or invalid 'identifier' query parameter. Should be one or both of: ['identifier=https://fhir.nhs.uk/Id/nhsServiceInteractionId|value', 'identifier=https://fhir.nhs.uk/Id/nhsMhsPartyKey|value')")
+
+        for value in ['', 'fhir', 'fhir|', f'fhir|value']:
+            with self.subTest(f"Invalid managing-organization with value '{value}'"):
+                base_url = self._build_device_url(org_code=ORG_CODE, service_id=SERVICE_ID)
+                url = f"{base_url}&managing-organization={value}"
+                response = self.fetch(url, method="GET")
+                self.assertEqual(response.code, 400)
+                super()._assert_400_operation_outcome(
+                    response.body.decode(),
+                    f"HTTP 400: Bad Request (Missing or invalid 'managing-organization' query parameter. Should be 'managing-organization=https://fhir.nhs.uk/Id/ods-organization-code|value')")
 
     def test_get_handles_different_accept_header(self):
         self.sds_client.get_as_details.return_value = test_utilities.awaitable(SINGLE_ACCREDITED_SYSTEM_DETAILS)
