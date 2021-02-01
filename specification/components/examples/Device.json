@@ -1,40 +1,49 @@
 {
-    "resourceType": "Device",
-    "id": "F0F0E921-92CA-4A88-A550-2DBB36F703AF",
-    "extension": [
-        {
-            "url": "https://fhir.nhs.uk/StructureDefinition/Extension-SDS-ManufacturingOrganisation",
-            "valueReference": {
-                "identifier": {
-                    "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-                    "value": "YES"
-                }
-            }
-        },
-        {
-            "url": "https://fhir.nhs.uk/StructureDefinition/Extension-SDS-NhsServiceInteractionId",
-            "valueReference": {
-                "identifier": {
-                    "system": "https://fhir.nhs.uk/Id/nhsServiceInteractionId",
-                    "value": "urn:nhs:names:services:alerts:COMT_IN000001UK01"
-                }
-            }
-        }
-    ],
-    "identifier": [
-        {
-            "system": "https://fhir.nhs.uk/Id/nhsSpineASID",
-            "value": "928942012545"
-        },
-        {
-            "system": "https://fhir.nhs.uk/Id/nhsMhsPartyKey",
-            "value": "YES-0000806"
-        }
-    ],
-    "owner": {
-        "identifier": {
-            "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-            "value": "R8008"
-        }
-    }
+  "resourceType": "Device",
+  "id": "0E512499-E65C-4AE9-BEEC-224917FCDE94",
+  "identifier": [
+      {
+          "system": "https://fhir.nhs.uk/Id/nhsSpineASID",
+          "value": "200000000985"
+      },
+      {
+          "system": "https://fhir.nhs.uk/Id/nhsMhsPartyKey",
+          "value": "A20047-821870"
+      }
+  ],
+  "extension": [
+      {
+          "url": "https://fhir.nhs.uk/StructureDefinition/Extension-SDS-ManufacturingOrganisation",
+          "valueReference": {
+              "identifier": {
+                  "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+                  "value": "A20047"
+              }
+          }
+      },
+      {
+          "url": "https://fhir.nhs.uk/StructureDefinition/Extension-SDS-NhsServiceInteractionId",
+          "valueReference": {
+              "identifier": {
+                  "system": "https://fhir.nhs.uk/Id/nhsServiceInteractionId",
+                  "value": "urn:nhs:names:services:gpconnect:fhir:operation:gpc.getcarerecord"
+              }
+          }
+      },
+      {
+          "url": "https://fhir.nhs.uk/StructureDefinition/Extension-SDS-NhsServiceInteractionId",
+          "valueReference": {
+              "identifier": {
+                  "system": "https://fhir.nhs.uk/Id/nhsServiceInteractionId",
+                  "value": "urn:nhs:names:services:gpconnect:fhir:rest:read:location"
+              }
+          }
+      }
+  ],
+  "owner": {
+      "identifier": {
+          "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+          "value": "A20047"
+      }
+  }
 }

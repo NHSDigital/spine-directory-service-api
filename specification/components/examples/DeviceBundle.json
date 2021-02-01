@@ -1,23 +1,23 @@
 {
-    "resourceType": "Bundle",
-    "id": "2A87F0F9-065E-42A5-98D0-51E060BB7B12",
-    "type": "searchset",
-    "total": 1,
-    "link": [
-        {
-            "relation": "self",
-            "url": "https://api.service.nhs.uk/spine-directory-service/Device?organization=https://fhir.nhs.uk/Id/ods-organization-code|R8008&identifier=https://fhir.nhs.uk/Id/nhsEndpointServiceId|urn:nhs:names:services:psis:REPC_IN150016UK05&identifier=https://fhir.nhs.uk/Id/nhsMhsPartyKey|R8008-0000806"
-        }
-    ],
-    "entry": [
-        {
-            "fullUrl": "https://api.service.nhs.uk/spine-directory-service/Device/F0F0E921-92CA-4A88-A550-2DBB36F703AF",
-            "resource": {
-                "$ref": "Device.json"
-            },
-            "search": {
-                "mode": "match"
-            }
-        }
-    ]
+  "resourceType": "Bundle",
+  "id": "9A05D8C6-587D-4CD7-B360-C5560961C01F",
+  "type": "searchset",
+  "total": 1,
+  "link": [
+      {
+          "relation": "self",
+          "url": "http://internal-dev.apis.ptl.api.platform.nhs.uk/Device?organization=https://fhir.nhs.uk/Id/ods-organization-code|A20047&identifier=https://fhir.nhs.uk/Id/nhsServiceInteractionId|urn:nhs:names:services:gpconnect:fhir:rest:search:patient&identifier=https://fhir.nhs.uk/Id/nhsMhsPartyKey|A20047-821870&managing-organization=https://fhir.nhs.uk/Id/ods-organization-code|X26"
+      }
+  ],
+  "entry": [
+      {
+          "fullUrl": "http://internal-dev.apis.ptl.api.platform.nhs.uk/Device/0E512499-E65C-4AE9-BEEC-224917FCDE94",
+          "resource": {
+            "$ref": "Device.json"
+          },
+          "search": {
+              "mode": "match"
+          }
+      }
+  ]
 }
