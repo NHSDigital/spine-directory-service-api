@@ -74,6 +74,24 @@ class SDSClient(object):
         result = await self._get_ldap_data(query_parts, MHS_ATTRIBUTES)
         return result
 
+    async def get_gpc_structured_details(self, ods_code: str, interaction_id: str = None, party_key: str = None) -> List[Dict]:
+        """
+        Returns the gpc structured details for the given parameters
+
+        :return: Dictionary of the attributes of the mhs associated with the given parameters
+        """
+        if not ods_code or (not interaction_id and not party_key):
+            raise SDSException("org_code and at least one of 'interaction_id' or 'party_key' must be provided")
+
+        query_parts = [
+            ("nhsIDCode", ods_code),
+            ("objectClass", "nhsMhs"),
+            ("nhsMhsSvcIA", interaction_id),
+            ("nhsMHSPartyKey", party_key)
+        ]
+        result = await self._get_ldap_data(query_parts, MHS_ATTRIBUTES)
+        return result
+
     async def get_as_details(self, ods_code: str, interaction_id: str, managing_organization: str = None, party_key: str = None) -> List[Dict]:
         """
         Returns the device details for the given parameters
@@ -168,6 +186,23 @@ class SDSMockClient:
         else:
             raise ValueError
 
+    async def get_gpc_structured_details(self, ods_code: str, interaction_id: str, managing_organization: str = None, party_key: str = None) -> List[Dict]:
+        if ods_code is None or interaction_id is None:
+            raise ValueError
+
+        if self.pause_duration != 0:
+            logger.debug("Sleeping for %sms", self.pause_duration)
+            await asyncio.sleep(self.pause_duration / 1000)
+
+        if self.mode == "STRICT":
+            return list(filter(lambda x: self._filter_as(x, ods_code, interaction_id, managing_organization, party_key), self.mock_as_data))
+        elif self.mode == "RANDOM":
+            return [random.choice(self.mock_gpc_structured_data)]
+        elif self.mode == "FIRST":
+            return [self.mock_gpc_structured_data[0]]
+        else:
+            raise ValueError
+
     @staticmethod
     def _filter_mhs(entry: Dict, ods_code: str, interaction_id: str, party_key: str):
         return entry['nhsIDCode'] == ods_code \
@@ -196,4 +231,4 @@ class SDSMockClient:
 
         with open('./lookup/mock_data/sds_gpc_get_structured.json', 'r') as f:
             data = f.read()
-            self.mock_gpc_data = ast.literal_eval(data)
+            self.mock_gpc_structured_data = ast.literal_eval(data)
