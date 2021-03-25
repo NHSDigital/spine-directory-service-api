@@ -80,6 +80,7 @@ class SDSClient(object):
 
         :return: Dictionary of the attributes of the mhs associated with the given parameters
         """
+        logger.info("Debugging log structured called")
         if not ods_code or (not interaction_id and not party_key):
             raise SDSException("org_code and at least one of 'interaction_id' or 'party_key' must be provided")
 
