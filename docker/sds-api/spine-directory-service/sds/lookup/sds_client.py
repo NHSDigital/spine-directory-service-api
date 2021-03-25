@@ -188,6 +188,7 @@ class SDSMockClient:
             raise ValueError
 
     async def get_gpc_structured_details(self, ods_code: str, interaction_id: str, managing_organization: str = None, party_key: str = None) -> List[Dict]:
+        logger.info("Debugging log structured called")
         if ods_code is None or interaction_id is None:
             raise ValueError
 
@@ -225,10 +226,6 @@ class SDSMockClient:
         with open('./lookup/mock_data/sds_as_response.json', 'r') as f:
             data = f.read()
             self.mock_as_data = ast.literal_eval(data)
-
-        with open('./lookup/mock_data/sds_gpc_response.json', 'r') as f:
-            data = f.read()
-            self.mock_gpc_data = ast.literal_eval(data)
 
         with open('./lookup/mock_data/sds_gpc_get_structured.json', 'r') as f:
             data = f.read()
