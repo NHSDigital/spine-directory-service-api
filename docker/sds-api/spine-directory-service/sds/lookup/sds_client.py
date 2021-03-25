@@ -193,3 +193,7 @@ class SDSMockClient:
         with open('./lookup/mock_data/sds_gpc_response.json', 'r') as f:
             data = f.read()
             self.mock_gpc_data = ast.literal_eval(data)
+
+        with open('.lookup/mock_data/sds_gpc_get_structured.json', 'r') as f:
+            data = f.read()
+            self.mock_gpc_data = ast.literal_eval(data)
