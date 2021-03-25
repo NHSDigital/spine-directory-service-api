@@ -6,7 +6,7 @@
       "nhsMHSSyncReplyMode": "MSHSignalsOnly",
       "nhsMHSAckRequested": "always",
       "nhsMHSDuplicateElimination": "always",
-      "nhsMHsSN": "urn:nhs:names:services:psis",
+      "nhsMHsSN": "urn:nhs:names:services:gpconnect",
       "nhsMhsCPAId": "S20001A000182",
       "nhsMHSRetries": "2",
       "nhsIDCode": "YES",
