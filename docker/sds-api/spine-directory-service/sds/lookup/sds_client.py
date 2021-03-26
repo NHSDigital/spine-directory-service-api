@@ -151,6 +151,7 @@ class SDSMockClient:
         self.mode = config.get_config('MOCK_LDAP_MODE', default="STRICT").upper()
         self.mock_mhs_data = None
         self.mock_as_data = None
+        self.mock_gpc_structured_data = None
         self._read_mock_data()
 
     async def get_mhs_details(self, ods_code: str, interaction_id: str, party_key: str) -> List[Dict]:
