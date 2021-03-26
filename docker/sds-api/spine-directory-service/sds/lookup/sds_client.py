@@ -188,7 +188,6 @@ class SDSMockClient:
             raise ValueError
 
     async def get_gpc_structured_details(self, ods_code: str, interaction_id: str, managing_organization: str = None, party_key: str = None) -> List[Dict]:
-        logger.info("Debugging log structured called")
         if ods_code is None or interaction_id is None:
             raise ValueError
 
@@ -197,7 +196,7 @@ class SDSMockClient:
             await asyncio.sleep(self.pause_duration / 1000)
 
         if self.mode == "STRICT":
-            return list(filter(lambda x: self._filter_as(x, ods_code, interaction_id, managing_organization, party_key), self.mock_as_data))
+            return list(filter(lambda x: self._filter_as(x, ods_code, interaction_id, managing_organization, party_key), self.mock_gpc_structured_data))
         elif self.mode == "RANDOM":
             return [random.choice(self.mock_gpc_structured_data)]
         elif self.mode == "FIRST":
