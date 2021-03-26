@@ -42,10 +42,11 @@ class RoutingReliabilityRequestHandler(BaseHandler, ErrorHandler):
 
         logger.info("Testing Looking up routing and reliability information. {org_code}, {service_id}, {party_key}",
                     fparams={"org_code": org_code, "service_id": service_id, "party_key": party_key})
-        ldap_result = await self.sds_client.get_mhs_details(org_code, service_id, party_key)
-        
-        if not ldap_result: 
-            ldap_result = await self.sds_client.get_gpc_structured_details(org_code, service_id, party_key)
+
+        ldap_result = await self.sds_client.get_gpc_details(org_code, service_id, party_key)
+
+        if not ldap_result:
+            ldap_result = await self.sds_client.get_mhs_details(org_code, service_id, party_key)
 
         logger.info("Obtained routing and reliability information. {ldap_result}",
                     fparams={"ldap_result": ldap_result})

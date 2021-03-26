@@ -12,7 +12,7 @@ When mock response is enabled, service will use predefined response for every re
 Fake data is defined at
 `./sds/lookup/mock_data/sds_mhs_response.json`
 `./sds/lookup/mock_data/sds_as_response.json`
-`./sds/lookup/mock_data/sds_gpc_get_structured.json`
+`./sds/lookup/mock_data/sds_gpc_response.json`
 
 # Simulating slow LDAP response
 

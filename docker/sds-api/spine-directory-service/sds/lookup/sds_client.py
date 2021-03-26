@@ -26,6 +26,9 @@ MHS_ATTRIBUTES = [
     'uniqueIdentifier', 'nhsMHSAckRequested', 'nhsMHSDuplicateElimination',
     'nhsMHSPersistDuration', 'nhsMHSRetries', 'nhsMHSRetryInterval', 'nhsMHSSyncReplyMode'
 ]
+GPC_ATTRIBUTES = [
+    'nhsIDCode', 'nhsMHSEndPoint', 'nhsMHSPartyKey', 'nhsGpcSvcIA', 'uniqueIdentifier'
+]
 AS_ATTRIBUTES = [
     'uniqueIdentifier', 'nhsIdCode', 'nhsAsClient', 'nhsMhsPartyKey', 'nhsAsSvcIA'
 ]
@@ -74,7 +77,7 @@ class SDSClient(object):
         result = await self._get_ldap_data(query_parts, MHS_ATTRIBUTES)
         return result
 
-    async def get_gpc_structured_details(self, ods_code: str, interaction_id: str = None, party_key: str = None) -> List[Dict]:
+    async def get_gpc_details(self, ods_code: str, interaction_id: str = None, party_key: str = None) -> List[Dict]:
         """
         Returns the gpc structured details for the given parameters
 
@@ -86,11 +89,11 @@ class SDSClient(object):
 
         query_parts = [
             ("nhsIDCode", ods_code),
-            ("objectClass", "nhsMhs"),
-            ("nhsMhsSvcIA", interaction_id),
+            ("objectClass", "nhsGpc"),
+            ("nhsGpcSvcIA", interaction_id),
             ("nhsMHSPartyKey", party_key)
         ]
-        result = await self._get_ldap_data(query_parts, MHS_ATTRIBUTES)
+        result = await self._get_ldap_data(query_parts, GPC_ATTRIBUTES)
         return result
 
     async def get_as_details(self, ods_code: str, interaction_id: str, managing_organization: str = None, party_key: str = None) -> List[Dict]:
@@ -151,7 +154,7 @@ class SDSMockClient:
         self.mode = config.get_config('MOCK_LDAP_MODE', default="STRICT").upper()
         self.mock_mhs_data = None
         self.mock_as_data = None
-        self.mock_gpc_structured_data = None
+        self.mock_gpc_data = None
         self._read_mock_data()
 
     async def get_mhs_details(self, ods_code: str, interaction_id: str, party_key: str) -> List[Dict]:
@@ -188,8 +191,8 @@ class SDSMockClient:
         else:
             raise ValueError
 
-    async def get_gpc_structured_details(self, ods_code: str, interaction_id: str, managing_organization: str = None, party_key: str = None) -> List[Dict]:
-        if ods_code is None or interaction_id is None:
+    async def get_gpc_details(self, ods_code: str, interaction_id: str, party_key: str) -> List[Dict]:
+        if ods_code is None or interaction_id is None and party_key is None:
             raise ValueError
 
         if self.pause_duration != 0:
@@ -197,19 +200,25 @@ class SDSMockClient:
             await asyncio.sleep(self.pause_duration / 1000)
 
         if self.mode == "STRICT":
-            return list(filter(lambda x: self._filter_as(x, ods_code, interaction_id, managing_organization, party_key), self.mock_gpc_structured_data))
+            return list(filter(lambda x: self._filter_gpc(x, ods_code, interaction_id, party_key), self.mock_gpc_data))
         elif self.mode == "RANDOM":
-            return [random.choice(self.mock_gpc_structured_data)]
+            return [random.choice(self.mock_gpc_data)]
         elif self.mode == "FIRST":
-            return [self.mock_gpc_structured_data[0]]
+            return [self.mock_gpc_data[0]]
         else:
             raise ValueError
 
     @staticmethod
     def _filter_mhs(entry: Dict, ods_code: str, interaction_id: str, party_key: str):
         return entry['nhsIDCode'] == ods_code \
-            and (interaction_id is None or entry['nhsMhsSvcIA'] == interaction_id) \
+            and (interaction_id in entry['nhsMhsSvcIA']) \
             and (party_key is None or entry['nhsMHSPartyKey'] == party_key)
+
+    @staticmethod
+    def _filter_gpc(entry: Dict, ods_code: str, interaction_id: str, party_key: str):
+        return entry['nhsIDCode'] == ods_code \
+               and (interaction_id in entry['nhsGpcSvcIA']) \
+               and (party_key is None or entry['nhsMHSPartyKey'] == party_key)
 
     @staticmethod
     def _filter_as(entry: Dict, ods_code: str, interaction_id: str, managing_organization: str = None, party_key: str = None):
@@ -227,6 +236,6 @@ class SDSMockClient:
             data = f.read()
             self.mock_as_data = ast.literal_eval(data)
 
-        with open('./lookup/mock_data/sds_gpc_get_structured.json', 'r') as f:
+        with open('./lookup/mock_data/sds_gpc_response.json', 'r') as f:
             data = f.read()
-            self.mock_gpc_structured_data = ast.literal_eval(data)
+            self.mock_gpc_data = ast.literal_eval(data)
