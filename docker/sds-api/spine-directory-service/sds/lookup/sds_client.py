@@ -132,7 +132,6 @@ class SDSMockClient:
         self.mode = config.get_config('MOCK_LDAP_MODE', default="STRICT").upper()
         self.mock_mhs_data = None
         self.mock_as_data = None
-        self.mock_gpc_data = None
         self._read_mock_data()
 
     async def get_mhs_details(self, ods_code: str, interaction_id: str, party_key: str) -> List[Dict]:
@@ -145,18 +144,12 @@ class SDSMockClient:
 
         if self.mode == "STRICT":
             response = list(filter(lambda x: self._filter_mhs(x, ods_code, interaction_id, party_key), self.mock_mhs_data))
-            if not response:
-                response = list(filter(lambda x: self._filter_mhs(x, ods_code, interaction_id, party_key), self.mock_gpc_data))
             return response
         elif self.mode == "RANDOM":
             response = [random.choice(self.mock_mhs_data)]
-            if not response:
-                response = [random.choice(self.mock_gpc_data)]
             return response
         elif self.mode == "FIRST":
             response = [self.mock_mhs_data[0]]
-            if not response:
-                response = [self.mock_gpc_data[0]]
             return response
         else:
             raise ValueError
@@ -199,7 +192,3 @@ class SDSMockClient:
         with open('./lookup/mock_data/sds_as_response.json', 'r') as f:
             data = f.read()
             self.mock_as_data = ast.literal_eval(data)
-
-        with open('./lookup/mock_data/sds_gpc_response.json', 'r') as f:
-            data = f.read()
-            self.mock_gpc_data = ast.literal_eval(data)
