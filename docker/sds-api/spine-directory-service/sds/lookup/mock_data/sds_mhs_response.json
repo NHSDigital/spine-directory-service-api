@@ -26,10 +26,46 @@
     ],
     "nhsIDCode": "B82617",
     "nhsMhsSvcIA": [
-      "urn:nhs:names:services:gpconnect:fhir:operation:gpc.getstructuredrecord-1",
-      "urn:nhs:names:services:gpconnect:documents:fhir:rest:search:documentreference-1",
-      "urn:nhs:names:services:gpconnect:documents:fhir:rest:search:patient-1",
       "urn:nhs:names:services:gpconnect:documents:fhir:rest:read:binary-1"
+    ],
+    "nhsMHSPartyKey": "B82617-0000806",
+    "nhsMHSEndPoint": [
+      "https://orange.testlab.nhs.uk/B82617/STU3/1/gpconnect/"
+    ]
+  },
+  {
+    "uniqueIdentifier": [
+      "227319907549"
+    ],
+    "nhsIDCode": "B82617",
+    "nhsMhsSvcIA": [
+      "urn:nhs:names:services:gpconnect:documents:fhir:rest:search:patient-1"
+    ],
+    "nhsMHSPartyKey": "B82617-0000806",
+    "nhsMHSEndPoint": [
+      "https://orange.testlab.nhs.uk/B82617/STU3/1/gpconnect/"
+    ]
+  },
+  {
+    "uniqueIdentifier": [
+      "227319907549"
+    ],
+    "nhsIDCode": "B82617",
+    "nhsMhsSvcIA": [
+      "urn:nhs:names:services:gpconnect:documents:fhir:rest:search:documentreference-1"
+    ],
+    "nhsMHSPartyKey": "B82617-0000806",
+    "nhsMHSEndPoint": [
+      "https://orange.testlab.nhs.uk/B82617/STU3/1/gpconnect/"
+    ]
+  },
+  {
+    "uniqueIdentifier": [
+      "227319907549"
+    ],
+    "nhsIDCode": "B82617",
+    "nhsMhsSvcIA": [
+      "urn:nhs:names:services:gpconnect:fhir:operation:gpc.getstructuredrecord-1"
     ],
     "nhsMHSPartyKey": "B82617-0000806",
     "nhsMHSEndPoint": [
