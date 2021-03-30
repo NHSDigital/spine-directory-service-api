@@ -14,11 +14,11 @@ docker_service:
       - name: SDS_LDAP_URL
         valueFrom: "/ptl/platform-common/cis/ldap-uri"
       - name: SDS_SECRET_CLIENT_KEY
-        valueFrom: "arn:aws:secretsmanager:eu-west-2:958002497996:secret:ptl/cis/ldap.nis1.national.ncrs.nhs.uk/key"
+        valueFrom: "arn:aws:secretsmanager:eu-west-2:{{ PTL_ACCOUNT_ID }}:secret:ptl/cis/ldap.nis1.national.ncrs.nhs.uk/key"
       - name: SDS_SECRET_CLIENT_CERT
-        valueFrom: "arn:aws:secretsmanager:eu-west-2:958002497996:secret:ptl/cis/ldap.nis1.national.ncrs.nhs.uk/crt"
+        valueFrom: "arn:aws:secretsmanager:eu-west-2:{{ PTL_ACCOUNT_ID }}:secret:ptl/cis/ldap.nis1.national.ncrs.nhs.uk/crt"
       - name: SDS_SECRET_CA_CERTS
-        valueFrom: "arn:aws:secretsmanager:eu-west-2:958002497996:secret:ptl/veit07.devspineservices.nhs.uk/root-ca/crt"
+        valueFrom: "arn:aws:secretsmanager:eu-west-2:{{ PTL_ACCOUNT_ID }}:secret:ptl/veit07.devspineservices.nhs.uk/root-ca/crt"
     health_check:
       matcher: "200"
       path: "/healthcheck"
