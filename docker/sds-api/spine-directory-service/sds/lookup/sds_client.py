@@ -171,7 +171,7 @@ class SDSMockClient:
     @staticmethod
     def _filter_mhs(entry: Dict, ods_code: str, interaction_id: str, party_key: str):
         return entry['nhsIDCode'] == ods_code \
-            and (interaction_id is None or entry['nhsMhsSvcIA'] == interaction_id) \
+            and (interaction_id in entry['nhsMhsSvcIA']) \
             and (party_key is None or entry['nhsMHSPartyKey'] == party_key)
 
     @staticmethod
