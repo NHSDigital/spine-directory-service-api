@@ -4,7 +4,7 @@
       "227319907548"
     ],
     "nhsIDCode": "B82617",
-    "nhsGpcSvcIA": [
+    "nhsMhsSvcIA": [
       "urn:nhs:names:services:gpconnect:fhir:operation:gpc.getstructuredrecord-1",
       "urn:nhs:names:services:gpconnect:documents:fhir:rest:search:documentreference-1",
       "urn:nhs:names:services:gpconnect:documents:fhir:rest:search:patient-1",

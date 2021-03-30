@@ -26,9 +26,6 @@ MHS_ATTRIBUTES = [
     'uniqueIdentifier', 'nhsMHSAckRequested', 'nhsMHSDuplicateElimination',
     'nhsMHSPersistDuration', 'nhsMHSRetries', 'nhsMHSRetryInterval', 'nhsMHSSyncReplyMode'
 ]
-GPC_ATTRIBUTES = [
-    'nhsIDCode', 'nhsMHSEndPoint', 'nhsMHSPartyKey', 'nhsGpcSvcIA', 'uniqueIdentifier'
-]
 AS_ATTRIBUTES = [
     'uniqueIdentifier', 'nhsIdCode', 'nhsAsClient', 'nhsMhsPartyKey', 'nhsAsSvcIA'
 ]
@@ -75,25 +72,6 @@ class SDSClient(object):
             ("nhsMHSPartyKey", party_key)
         ]
         result = await self._get_ldap_data(query_parts, MHS_ATTRIBUTES)
-        return result
-
-    async def get_gpc_details(self, ods_code: str, interaction_id: str = None, party_key: str = None) -> List[Dict]:
-        """
-        Returns the gpc structured details for the given parameters
-
-        :return: Dictionary of the attributes of the mhs associated with the given parameters
-        """
-        logger.info("Debugging log structured called")
-        if not ods_code or (not interaction_id and not party_key):
-            raise SDSException("org_code and at least one of 'interaction_id' or 'party_key' must be provided")
-
-        query_parts = [
-            ("nhsIDCode", ods_code),
-            ("objectClass", "nhsGpc"),
-            ("nhsGpcSvcIA", interaction_id),
-            ("nhsMHSPartyKey", party_key)
-        ]
-        result = await self._get_ldap_data(query_parts, GPC_ATTRIBUTES)
         return result
 
     async def get_as_details(self, ods_code: str, interaction_id: str, managing_organization: str = None, party_key: str = None) -> List[Dict]:
@@ -166,11 +144,20 @@ class SDSMockClient:
             await asyncio.sleep(self.pause_duration / 1000)
 
         if self.mode == "STRICT":
-            return list(filter(lambda x: self._filter_mhs(x, ods_code, interaction_id, party_key), self.mock_mhs_data))
+            response = list(filter(lambda x: self._filter_mhs(x, ods_code, interaction_id, party_key), self.mock_mhs_data))
+            if not response:
+                response = list(filter(lambda x: self._filter_mhs(x, ods_code, interaction_id, party_key), self.mock_gpc_data))
+            return response
         elif self.mode == "RANDOM":
-            return [random.choice(self.mock_mhs_data)]
+            response = [random.choice(self.mock_mhs_data)]
+            if not response:
+                response = [random.choice(self.mock_gpc_data)]
+            return response
         elif self.mode == "FIRST":
-            return [self.mock_mhs_data[0]]
+            response = [self.mock_mhs_data[0]]
+            if not response:
+                response = [self.mock_gpc_data[0]]
+            return response
         else:
             raise ValueError
 
@@ -191,34 +178,11 @@ class SDSMockClient:
         else:
             raise ValueError
 
-    async def get_gpc_details(self, ods_code: str, interaction_id: str, party_key: str) -> List[Dict]:
-        if ods_code is None or interaction_id is None and party_key is None:
-            raise ValueError
-
-        if self.pause_duration != 0:
-            logger.debug("Sleeping for %sms", self.pause_duration)
-            await asyncio.sleep(self.pause_duration / 1000)
-
-        if self.mode == "STRICT":
-            return list(filter(lambda x: self._filter_gpc(x, ods_code, interaction_id, party_key), self.mock_gpc_data))
-        elif self.mode == "RANDOM":
-            return [random.choice(self.mock_gpc_data)]
-        elif self.mode == "FIRST":
-            return [self.mock_gpc_data[0]]
-        else:
-            raise ValueError
-
     @staticmethod
     def _filter_mhs(entry: Dict, ods_code: str, interaction_id: str, party_key: str):
         return entry['nhsIDCode'] == ods_code \
             and (interaction_id in entry['nhsMhsSvcIA']) \
             and (party_key is None or entry['nhsMHSPartyKey'] == party_key)
-
-    @staticmethod
-    def _filter_gpc(entry: Dict, ods_code: str, interaction_id: str, party_key: str):
-        return entry['nhsIDCode'] == ods_code \
-               and (interaction_id in entry['nhsGpcSvcIA']) \
-               and (party_key is None or entry['nhsMHSPartyKey'] == party_key)
 
     @staticmethod
     def _filter_as(entry: Dict, ods_code: str, interaction_id: str, managing_organization: str = None, party_key: str = None):
