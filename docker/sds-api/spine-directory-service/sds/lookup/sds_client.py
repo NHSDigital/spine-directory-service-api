@@ -143,14 +143,11 @@ class SDSMockClient:
             await asyncio.sleep(self.pause_duration / 1000)
 
         if self.mode == "STRICT":
-            response = list(filter(lambda x: self._filter_mhs(x, ods_code, interaction_id, party_key), self.mock_mhs_data))
-            return response
+            return list(filter(lambda x: self._filter_mhs(x, ods_code, interaction_id, party_key), self.mock_mhs_data))
         elif self.mode == "RANDOM":
-            response = [random.choice(self.mock_mhs_data)]
-            return response
+            return [random.choice(self.mock_mhs_data)]
         elif self.mode == "FIRST":
-            response = [self.mock_mhs_data[0]]
-            return response
+            return [self.mock_mhs_data[0]]
         else:
             raise ValueError
 
