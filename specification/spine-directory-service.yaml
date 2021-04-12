@@ -26,10 +26,10 @@ info:
     Please see [System topologies](https://developer.nhs.uk/apis/gpconnect-0-7-2/integration_system_topologies.html) for more details on the allocation of ASIDs and Party Keys. 
     
     ## API status 
-    This API is in [alpha](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#api-status), meaning:
-    - the API is available in our sandbox and integration test environments.
-    - the API is not yet available for production use. 
-    - we might make breaking changes.
+    This API is in [beta](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#api-status), meaning:
+    - the API is available in our sandbox and integration test environments
+    - the API is not yet available for production use
+    - we might make breaking changes, but only if we cannot avoid it, and we'll give advance notice
     
     To see our roadmap, or to suggest, comment or vote on features for this API, see our [interactive product backlog.](https://nhs-digital-api-management.featureupvote.com/?order=popular&filter=all&tag=sds-fhir-api)
     
