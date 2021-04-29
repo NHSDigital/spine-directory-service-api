@@ -6,12 +6,12 @@
   "link": [
     {
       "relation": "self",
-      "url": "http://internal-dev.apis.ptl.api.platform.nhs.uk/Endpoint?organization=https://fhir.nhs.uk/Id/ods-organization-code|YES&identifier=https://fhir.nhs.uk/Id/nhsServiceInteractionId|urn:nhs:names:services:psis:REPC_IN150016UK05&identifier=https://fhir.nhs.uk/Id/nhsMhsPartyKeey|A20047-821870"
+      "url": "https://int.api.service.nhs.uk/spine-directory/FHIR/R4/Endpoint?organization=https://fhir.nhs.uk/Id/ods-organization-code|YES&identifier=https://fhir.nhs.uk/Id/nhsServiceInteractionId|urn:nhs:names:services:psis:REPC_IN150016UK05&identifier=https://fhir.nhs.uk/Id/nhsMhsPartyKeey|A20047-821870"
     }
   ],
   "entry": [
     {
-      "fullUrl": "http://internal-dev.apis.ptl.api.platform.nhs.uk/Endpoint/08CE3BFB-5055-422B-9AE5-80DF6F4E1C61",
+      "fullUrl": "https://int.api.service.nhs.uk/spine-directory/FHIR/R4/Endpoint/08CE3BFB-5055-422B-9AE5-80DF6F4E1C61",
       "resource": {
         "$ref": "Endpoint.json"
       },
