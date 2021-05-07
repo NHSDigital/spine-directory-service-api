@@ -51,7 +51,7 @@ extends:
         make_spec_visible: true
       - environment: internal-dev-sandbox
         proxy_path: sandbox
-    # post_deploy:
-    #   - bash: |
-    #       echo "Running post deploy from azure-pr-pipeline.yaml"
-    #     displayName: "PR smoke test"
+    post_deploy:
+      - bash: |
+          echo "Running post deploy from azure-pr-pipeline.yaml"
+        displayName: "PR smoke test"
