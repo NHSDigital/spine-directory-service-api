@@ -60,3 +60,50 @@ extends:
         depends_on:
             - internal_qa
             - internal_qa_sandbox
+    post_deploy:
+      # - bash: |
+      #     if [[ "$(APIGEE_ENVIRONMENT)" != "internal-dev" ]]; then
+      #       echo "##vso[task.setvariable variable=run_e2e_tests]false"
+      #     else
+      #       echo "##vso[task.setvariable variable=run_e2e_tests]true"
+      #     fi
+      #   displayName: Check to run e2e tests
+      # - task: DockerInstaller@0
+      #   displayName: Install docker
+      #   inputs:
+      #     dockerVersion: 17.09.0-ce
+      #     releaseType: stable
+      #   condition: and(succeeded(), eq(variables['run_smoke_tests'], 'true'))
+
+      # - bash: |
+      #    if [[ -d "$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)/signature-provider/specs" ]]; then
+      #     echo "##vso[task.setvariable variable=run_smoke_tests]true"
+      #    else
+      #     echo "##vso[task.setvariable variable=run_smoke_tests]false"
+      #    fi
+      #   displayName: Check for smoke tests
+      - bash: |
+          # Poll deploying API until our deployed version matches the release version
+          url="https://$APIGEE_ENVIRONMENT.api.service.nhs.uk/$SERVICE_BASE_PATH/_status"
+          interval_in_seconds=5
+          releaseCommit="$(Build.SourceVersion)"
+          printf "\nPolling %s every %s seconds, until commit is: %s\n" "$url" "$interval_in_seconds" "$releaseCommit"
+          attempts=0
+          success=0
+          until [ $attempts -eq 60 ]
+          do
+          responseData=$(curl -H "apiKey: $(status-endpoint-api-key)" "$url" -s)
+          deployedCommit=$(echo "$responseData" | jq -r ".commitId")
+          if [ "$deployedCommit" == "$releaseCommit" ]; then
+              success=1
+              break;
+          fi;
+          ((attempts=attempts+1))
+          sleep $interval_in_seconds;
+          done
+          if [ $success == 0 ]
+          then
+              echo "API was not ready in time"
+              exit 255
+          fi
+        displayName: Wait for API to be available
