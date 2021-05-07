@@ -28,8 +28,8 @@ extends:
   parameters:
     service_name: ${{ variables.service_name }}
     short_service_name: ${{ variables.short_service_name }}
-  post_deploy:
-    - bash: |
-        echo "Running post deploy from azure-build-pipeline.yaml"
-      displayName: "Build smoke test"
+  # post_deploy:
+  #   - bash: |
+  #       echo "Running post deploy from azure-build-pipeline.yaml"
+  #     displayName: "Build smoke test"
 
