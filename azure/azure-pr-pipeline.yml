@@ -54,4 +54,5 @@ extends:
     post_deploy:
       - bash: |
           echo "Running post deploy from azure-pr-pipeline.yaml"
+          printenv
         displayName: "PR smoke test"
