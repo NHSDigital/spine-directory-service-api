@@ -1,5 +1,11 @@
 SHELL=/bin/bash -euo pipefail
 
+guard-%:
+	@ if [ "${${*}}" = "" ]; then \
+		echo "Environment variable $* not set"; \
+		exit 1; \
+	fi
+
 install: install-node install-python install-hooks
 
 install-python:
@@ -69,5 +75,10 @@ release: clean publish build-proxy
 	cp ecs-proxies-deploy.yml dist/ecs-deploy-ref.yml
 #	cp ecs-proxies-deploy.yml dist/ecs-deploy-prod.yml
 
-test:
-	echo "TODO: add tests"
+pytest-guards: guard-SERVICE_BASE_PATH guard-APIGEE_ENVIRONMENT guard-SOURCE_COMMIT_ID guard-STATUS_ENDPOINT_API_KEY
+
+smoketest: pytest-guards
+	poetry run pytest -v --junitxml=smoketest-report.xml -s -m smoketest
+
+e2etest: pytest-guards
+	poetry run pytest -v --junitxml=e2e-report.xml -s -m e2e
