@@ -53,6 +53,8 @@ extends:
         proxy_path: sandbox
     post_deploy:
       - bash: |
-          echo "Running post deploy from azure-pr-pipeline.yaml"
+          echo "Env vars:"
           printenv
+          echo "Other vars:"
+          echo "$(status-endpoint-api-key)"
         displayName: "PR smoke test"
