@@ -37,12 +37,6 @@ extends:
           displayName: cache node modules
         - task: s3-cache-action@1
           inputs:
-            key: 'node modules | ${{ variables.service_name }} | ${{ variables.service_name }}/sandbox/package-lock.json'
-            location: '${{ variables.service_name }}/sandbox/node_modules'
-            debug: true
-          displayName: cache sandbox node modules
-        - task: s3-cache-action@1
-          inputs:
             key: 'poetry | ${{ variables.service_name }} | ${{ variables.service_name }}/poetry.lock'
             location: '${{ variables.service_name }}/.venv'
             debug: true
