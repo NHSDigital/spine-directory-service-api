@@ -1,4 +1,5 @@
 import os
+import pytest
 
 @pytest.mark.e2e
 @pytest.mark.smoketest
