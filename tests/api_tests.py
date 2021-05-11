@@ -20,4 +20,7 @@ ENV_VARS = [
 @pytest.mark.asyncio
 async def test_test():
     for env_var in ENV_VARS:
-        print('{key}: {value}'.format(key=env_var, value=os.environ[env_var]))
+        if env_var in os.environ:
+            print('{key}: {value}'.format(key=env_var, value=os.environ[env_var]))
+        else:
+            print('{key} env var not set'.format(key=env_var))
