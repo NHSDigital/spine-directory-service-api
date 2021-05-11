@@ -20,4 +20,4 @@ ENV_VARS = [
 @pytest.mark.asyncio
 async def test_test():
     for env_var in ENV_VARS:
-        print('{key}: {value}'.format(key=env_var, value=os.environ['APIGEE_ENVIRONMENT']))
+        print('{key}: {value}'.format(key=env_var, value=os.environ[env_var]))
