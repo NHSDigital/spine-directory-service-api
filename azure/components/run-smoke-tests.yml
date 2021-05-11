@@ -1,5 +1,8 @@
 steps:
   - bash: |
+      echo("Listing available files:")
+      ls -al
+  - bash: |
       export RELEASE_RELEASEID=$(Build.BuildId)
       export SOURCE_COMMIT_ID=$(Build.SourceVersion)
       export APIGEE_ENVIRONMENT="$(ENVIRONMENT)"
