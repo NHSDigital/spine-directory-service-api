@@ -67,7 +67,8 @@ _dist_include="pytest.ini poetry.lock poetry.toml pyproject.toml Makefile build/
 
 release: clean publish build-proxy
 	mkdir -p dist
-	cp -r build/. dist
+	for f in $(_dist_include); do cp -r $$f dist; done
+	# cp -r build/. dist
 	cp ecs-proxies-deploy.yml dist/ecs-deploy-internal-dev.yml
 	cp ecs-proxies-deploy.yml dist/ecs-deploy-internal-qa.yml
 	cp ecs-proxies-deploy-sandbox.yml dist/ecs-deploy-internal-qa-sandbox.yml
@@ -76,6 +77,10 @@ release: clean publish build-proxy
 	cp ecs-proxies-deploy.yml dist/ecs-deploy-int.yml
 	cp ecs-proxies-deploy.yml dist/ecs-deploy-ref.yml
 #	cp ecs-proxies-deploy.yml dist/ecs-deploy-prod.yml
+
+dist: release
+
+test: smoketest sandboxtest e2etest
 
 pytest-guards: guard-SERVICE_BASE_PATH guard-APIGEE_ENVIRONMENT guard-SOURCE_COMMIT_ID guard-STATUS_ENDPOINT_API_KEY
 
