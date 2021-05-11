@@ -1,7 +1,7 @@
 steps:
   - bash: |
-      ls -al
-      ls ./tests/ -al
+      ls ./spine-directory-service/ -al
+      ls ./spine-directory-service/tests/ -al
   - bash: |
       export RELEASE_RELEASEID=$(Build.BuildId)
       export SOURCE_COMMIT_ID=$(Build.SourceVersion)
