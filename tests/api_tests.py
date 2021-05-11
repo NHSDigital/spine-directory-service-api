@@ -3,6 +3,7 @@ import pytest
 
 @pytest.mark.e2e
 @pytest.mark.smoketest
+@pytest.mark.asyncio
 async def test_test():
     print(os.environ['APIGEE_ENVIRONMENT'])
     print(os.environ['SERVICE_BASE_PATH'])
