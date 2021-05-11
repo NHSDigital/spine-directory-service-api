@@ -23,6 +23,11 @@ def get_env(variable_name: str) -> str:
 
 
 @pytest.fixture(scope="session")
+def api_test_config() -> APITestSessionConfig:
+    return APITestSessionConfig()
+
+
+@pytest.fixture(scope="session")
 def test_app():
     """Setup & Teardown an app-restricted app for this api"""
     app = ApigeeApiDeveloperApps()
