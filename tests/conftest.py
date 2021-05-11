@@ -11,6 +11,17 @@ from api_test_utils.apigee_api_products import ApigeeApiProducts
 from api_test_utils.oauth_helper import OauthHelper
 
 
+def get_env(variable_name: str) -> str:
+    """Returns a environment variable"""
+    try:
+        var = os.environ[variable_name]
+        if not var:
+            raise RuntimeError(f"Variable is null, Check {variable_name}.")
+        return var
+    except KeyError:
+        raise RuntimeError(f"Variable is not set, Check {variable_name}.")
+
+
 @pytest.fixture(scope="session")
 def test_app():
     """Setup & Teardown an app-restricted app for this api"""
