@@ -1,9 +1,10 @@
 from typing import List
 from uuid import uuid4
 from time import time, sleep
+from tests import conftest
 import pytest
 import os
-from tests import conftest
+
 from aiohttp import ClientResponse
 from api_test_utils import env
 from api_test_utils import poll_until
@@ -47,10 +48,9 @@ async def test_test():
             print('{key} env var not set'.format(key=env_var))
 
 
-
 @pytest.mark.smoketest
 @pytest.mark.asyncio
-async def e2e_test(test_app, api_client: APISessionClient):
+async def test_e2e(test_app, api_client: APISessionClient):
     # correlation_id = str(uuid4())
     # authorised_headers["X-Correlation-ID"] = correlation_id
     authorised_headers = {
