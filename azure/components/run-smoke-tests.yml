@@ -1,7 +1,7 @@
 steps:
   - bash: |
-      ls ./spine-directory-service/ -al
-      ls ./spine-directory-service/tests/ -al
+      ls ./spine-directory-service/spine-directory-service-feature-NIAD-1292-smoke-tests+33166/ -al
+      ls ./spine-directory-service/spine-directory-service-feature-NIAD-1292-smoke-tests+33166/tests/ -al
   - bash: |
       export RELEASE_RELEASEID=$(Build.BuildId)
       export SOURCE_COMMIT_ID=$(Build.SourceVersion)
