@@ -46,30 +46,17 @@ ENDPOINT_PARTY_KEY_FHIR_IDENTIFIER = 'https://fhir.nhs.uk/Id/nhsMhsPartyKey'
 @pytest.mark.parametrize(
     "request_data",
     [
-        # # condition 1: Endpoint mandatory query parameters present
-        # {
-        #     'endpoint': 'Endpoint',
-        #     'query_params': {
-        #         'organization': f'{ENDPOINT_ORGANIZATION_FHIR_IDENTIFIER}|123456',
-        #         'identifier': f'{ENDPOINT_INTERACTION_ID_FHIR_IDENTIFIER}|urn:nhs:names:services:gpconnect:documents:fhir:rest:search:documentreference-1',
-        #     },
-        #     'status_code': 200,
-        #     'resource_type': 'Bundle'
-        # },
-        # # condition 2: Endpoint optional query parameters present
-        # {
-        #     'endpoint': 'Endpoint',
-        #     'query_params': {
-        #         'organization': f'{ENDPOINT_ORGANIZATION_FHIR_IDENTIFIER}|123456',
-        #         'identifier': [
-        #             f'{ENDPOINT_INTERACTION_ID_FHIR_IDENTIFIER}|urn:nhs:names:services:gpconnect:documents:fhir:rest:search:documentreference-1',
-        #             f'{ENDPOINT_PARTY_KEY_FHIR_IDENTIFIER}|L85016-822104',
-        #         ]
-        #     },
-        #     'status_code': 200,
-        #     'resource_type': 'Bundle'
-        # },
-        # condition 3: Endpoint unsupported query parameters present
+        # condition 1: Endpoint mandatory query parameters present
+        {
+            'endpoint': 'Endpoint',
+            'query_params': {
+                'organization': f'{ENDPOINT_ORGANIZATION_FHIR_IDENTIFIER}|123456',
+                'identifier': f'{ENDPOINT_INTERACTION_ID_FHIR_IDENTIFIER}|urn:nhs:names:services:gpconnect:documents:fhir:rest:search:documentreference-1',
+            },
+            'status_code': 200,
+            'resource_type': 'Bundle'
+        },
+        # condition 2: Endpoint optional query parameters present
         {
             'endpoint': 'Endpoint',
             'query_params': {
@@ -77,27 +64,40 @@ ENDPOINT_PARTY_KEY_FHIR_IDENTIFIER = 'https://fhir.nhs.uk/Id/nhsMhsPartyKey'
                 'identifier': [
                     f'{ENDPOINT_INTERACTION_ID_FHIR_IDENTIFIER}|urn:nhs:names:services:gpconnect:documents:fhir:rest:search:documentreference-1',
                     f'{ENDPOINT_PARTY_KEY_FHIR_IDENTIFIER}|L85016-822104',
-                ],
-                'unsupported': 'unsupported_parameter_value',
+                ]
             },
-            'status_code': 400,
-            'resource_type': 'OperationOutcome'
+            'status_code': 200,
+            'resource_type': 'Bundle'
         },
-        # condition 4: Endpoint missing mandatory query parameters
-        {
-            'endpoint': 'Endpoint',
-            'query_params': {
-                'identifier': f'{ENDPOINT_PARTY_KEY_FHIR_IDENTIFIER}|L85016-822104',
-            },
-            'status_code': 400,
-            'resource_type': 'OperationOutcome'
-        },
+        # condition 3: Endpoint unsupported query parameters present
+        # {
+        #     'endpoint': 'Endpoint',
+        #     'query_params': {
+        #         'organization': f'{ENDPOINT_ORGANIZATION_FHIR_IDENTIFIER}|123456',
+        #         'identifier': [
+        #             f'{ENDPOINT_INTERACTION_ID_FHIR_IDENTIFIER}|urn:nhs:names:services:gpconnect:documents:fhir:rest:search:documentreference-1',
+        #             f'{ENDPOINT_PARTY_KEY_FHIR_IDENTIFIER}|L85016-822104',
+        #         ],
+        #         'unsupported': 'unsupported_parameter_value',
+        #     },
+        #     'status_code': 400,
+        #     'resource_type': 'OperationOutcome'
+        # },
+        # # condition 4: Endpoint missing mandatory query parameters
+        # {
+        #     'endpoint': 'Endpoint',
+        #     'query_params': {
+        #         'identifier': f'{ENDPOINT_PARTY_KEY_FHIR_IDENTIFIER}|L85016-822104',
+        #     },
+        #     'status_code': 400,
+        #     'resource_type': 'OperationOutcome'
+        # },
     ],
     ids=[
-        # 'Endpoint mandatory query parameters present', 
-        # 'Endpoint optional query parameters present',
-        'Endpoint unsupported query parameters present',
-        'Endpoint missing mandatory query parameters'
+        'Endpoint mandatory query parameters present', 
+        'Endpoint optional query parameters present',
+        # 'Endpoint unsupported query parameters present',
+        # 'Endpoint missing mandatory query parameters'
     ]
 )
 # def test_test(request_data: dict):
