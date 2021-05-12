@@ -41,7 +41,8 @@ ENV_VARS = [
 # OAUTH_BASE_URI: https://internal-dev.api.service.nhs.uk
 
 def _valid_uri() -> str:
-    base_path = conftest.get_env('SERVICE_BASE_PATH')
+    # base_path = conftest.get_env('SERVICE_BASE_PATH')
+    base_path = '/FHIR/R4-pr-155'
     path = '/Endpoint?organization=https://fhir.nhs.uk/Id/ods-organization-code|L85016&identifier=https://fhir.nhs.uk/Id/nhsServiceInteractionId|urn:nhs:names:services:gpconnect:documents:fhir:rest:search:documentreference-1'
     return base_path + path
     # https://internal-dev.api.service.nhs.ukspine-directory/FHIR/R4-pr-155
