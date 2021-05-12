@@ -42,9 +42,10 @@ ENV_VARS = [
 
 def _valid_uri() -> str:
     # base_path = conftest.get_env('SERVICE_BASE_PATH')
-    base_path = 'FHIR/R4-pr-155'
+    # base_path = 'FHIR/R4-pr-155'
     path = '/Endpoint?organization=https://fhir.nhs.uk/Id/ods-organization-code|L85016&identifier=https://fhir.nhs.uk/Id/nhsServiceInteractionId|urn:nhs:names:services:gpconnect:documents:fhir:rest:search:documentreference-1'
-    return base_path + path
+    # return base_path + path
+    return path
     # https://internal-dev.api.service.nhs.ukspine-directory/FHIR/R4-pr-155
     # spine-directory/FHIR/R4-pr-155
     # return 'FHIR/R4/Endpoint?organization=https://fhir.nhs.uk/Id/ods-organization-code|L85016&identifier=https://fhir.nhs.uk/Id/nhsServiceInteractionId|urn:nhs:names:services:gpconnect:documents:fhir:rest:search:documentreference-1'
