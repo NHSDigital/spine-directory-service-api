@@ -100,7 +100,7 @@ async def test_e2e(test_app, api_client: APISessionClient, request_data):
 
     uri = _build_test_path(request_data['endpoint'], request_data['query_params'])
 
-    print(f'\ntest params:\n\turi: {uri}\n\texpected status_code: {str(request_data['status_code'])}')
+    print(f'\ntest params:\n\turi: {uri}\n\texpected status_code: {str(request_data["status_code"])}')
 
     async with api_client.get(
         uri,
