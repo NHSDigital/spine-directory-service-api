@@ -35,12 +35,8 @@ def test_app():
     loop.run_until_complete(
         app.setup_app(
             api_products=[get_env("APIGEE_PRODUCT")],
-            # custom_attributes={
-                # "jwks-resource-url": "https://raw.githubusercontent.com/NHSDigital/identity-service-jwks/main/jwks/internal-dev/9baed6f4-1361-4a8e-8531-1f8426e3aba8.json"  # noqa
-            # },
         )
     )
-    # app.oauth = OauthHelper(app.client_id, app.client_secret, app.callback_url)
     yield app
     loop.run_until_complete(app.destroy_app())
 
