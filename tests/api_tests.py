@@ -34,6 +34,11 @@ ENDPOINT_ORGANIZATION_FHIR_IDENTIFIER = 'https://fhir.nhs.uk/Id/ods-organization
 ENDPOINT_INTERACTION_ID_FHIR_IDENTIFIER = 'https://fhir.nhs.uk/Id/nhsServiceInteractionId'
 ENDPOINT_PARTY_KEY_FHIR_IDENTIFIER = 'https://fhir.nhs.uk/Id/nhsMhsPartyKey'
 
+DEVICE_ORGANIZATION_FHIR_IDENTIFIER = 'https://fhir.nhs.uk/Id/ods-organization-code|YES'
+DEVICE_INTERACTION_ID_FHIR_IDENTIFIER = 'https://fhir.nhs.uk/Id/nhsServiceInteractionId'
+DEVICE_PARTY_KEY_FHIR_IDENTIFIER = 'https://fhir.nhs.uk/Id/nhsMhsPartyKey'
+DEVICE_MANAGING_ORGANIZATION_FHIR_IDENTIFIER = 'https://fhir.nhs.uk/Id/ods-organization-code'
+
 
 @pytest.mark.e2e
 @pytest.mark.smoketest
@@ -49,7 +54,6 @@ ENDPOINT_PARTY_KEY_FHIR_IDENTIFIER = 'https://fhir.nhs.uk/Id/nhsMhsPartyKey'
                 'identifier': f'{ENDPOINT_INTERACTION_ID_FHIR_IDENTIFIER}|urn:nhs:names:services:gpconnect:documents:fhir:rest:search:documentreference-1',
             },
             'status_code': 200,
-            'resource_type': 'Bundle'
         },
         # condition 2: Endpoint optional query parameters present
         {
@@ -62,7 +66,6 @@ ENDPOINT_PARTY_KEY_FHIR_IDENTIFIER = 'https://fhir.nhs.uk/Id/nhsMhsPartyKey'
                 ]
             },
             'status_code': 200,
-            'resource_type': 'Bundle'
         },
         # condition 3: Endpoint unsupported query parameters present
         {
@@ -76,7 +79,6 @@ ENDPOINT_PARTY_KEY_FHIR_IDENTIFIER = 'https://fhir.nhs.uk/Id/nhsMhsPartyKey'
                 'unsupported': 'unsupported_parameter_value',
             },
             'status_code': 400,
-            'resource_type': 'OperationOutcome'
         },
         # condition 4: Endpoint missing mandatory query parameters
         {
@@ -85,7 +87,74 @@ ENDPOINT_PARTY_KEY_FHIR_IDENTIFIER = 'https://fhir.nhs.uk/Id/nhsMhsPartyKey'
                 'identifier': f'{ENDPOINT_PARTY_KEY_FHIR_IDENTIFIER}|L85016-822104',
             },
             'status_code': 400,
-            'resource_type': 'OperationOutcome'
+        },
+        # condition 5: Endpoint invalid fhir identifier on mandatory query parameter
+        {
+            'endpoint': 'Endpoint',
+            'query_params': {
+                'organization': 'test|123456',
+                'identifier': f'{ENDPOINT_INTERACTION_ID_FHIR_IDENTIFIER}|urn:nhs:names:services:gpconnect:documents:fhir:rest:search:documentreference-1',
+            },
+            'status_code': 400,
+        },
+
+        # condition 6: Device mandatory query parameters present
+        {
+            'endpoint': 'Device',
+            'query_params': {
+                'organization': f'{DEVICE_ORGANIZATION_FHIR_IDENTIFIER}|123456',
+                'identifier': f'{DEVICE_INTERACTION_ID_FHIR_IDENTIFIER}|urn:nhs:names:services:psis:REPC_IN150016UK05',
+            },
+            'status_code': 200,
+        },
+        # condition 7: Device optional query parameters present
+        {
+            'endpoint': 'Device',
+            'query_params': {
+                'organization': f'{DEVICE_INTERACTION_ID_FHIR_IDENTIFIER}|123456',
+                'identifier': [
+                    f'{DEVICE_INTERACTION_ID_FHIR_IDENTIFIER}|urn:nhs:names:services:psis:REPC_IN150016UK05',
+                    f'{DEVICE_PARTY_KEY_FHIR_IDENTIFIER}|L85016-822104',
+                ],
+                'managing-organization': f'{DEVICE_MANAGING_ORGANIZATION_FHIR_IDENTIFIER}|YES',
+            },
+            'status_code': 200,
+        },
+        # condition 8: Device unsupported query parameters present
+        {
+            'endpoint': 'Device',
+            'query_params': {
+                'organization': f'{DEVICE_INTERACTION_ID_FHIR_IDENTIFIER}|123456',
+                'identifier': [
+                    f'{DEVICE_INTERACTION_ID_FHIR_IDENTIFIER}|urn:nhs:names:services:psis:REPC_IN150016UK05',
+                    f'{DEVICE_PARTY_KEY_FHIR_IDENTIFIER}|L85016-822104',
+                ],
+                'managing-organization': f'{DEVICE_MANAGING_ORGANIZATION_FHIR_IDENTIFIER}|YES',
+                'unsupported': 'unsupported_parameter_value',
+            },
+            'status_code': 400,
+        },
+        # condition 9: Device missing mandatory query parameters
+        {
+            'endpoint': 'Device',
+            'query_params': {
+                'identifier': [
+                    f'{DEVICE_INTERACTION_ID_FHIR_IDENTIFIER}|urn:nhs:names:services:psis:REPC_IN150016UK05',
+                    f'{DEVICE_PARTY_KEY_FHIR_IDENTIFIER}|L85016-822104',
+                ],
+                'managing-organization': f'{DEVICE_MANAGING_ORGANIZATION_FHIR_IDENTIFIER}|YES',
+                'unsupported': 'unsupported_parameter_value',
+            },
+            'status_code': 400,
+        },
+        # condition 10: Device invalid fhir identifier on mandatory query parameter
+        {
+            'endpoint': 'Device',
+            'query_params': {
+                'organization': 'test|123456',
+                'identifier': f'{DEVICE_INTERACTION_ID_FHIR_IDENTIFIER}|urn:nhs:names:services:psis:REPC_IN150016UK05',
+            },
+            'status_code': 400,
         },
     ]
 )
@@ -101,19 +170,19 @@ async def test_e2e(test_app, api_client: APISessionClient, request_data):
 
     uri = _build_test_path(request_data['endpoint'], request_data['query_params'])
 
-    # print(f'\ntest params:\n\turi: {uri}\n\texpected status_code: {str(request_data["status_code"])}')
-
     async with api_client.get(
         uri,
         headers=headers,
         allow_retries=True
     ) as resp:
-        # print('actual status_code: ' + str(resp.status))
         assert resp.status == request_data['status_code']
         body = await resp.json()
         assert 'x-correlation-id' in resp.headers, resp.headers
         assert resp.headers['x-correlation-id'] == correlation_id
-        assert body['resourceType'] == request_data['resource_type'], body
-        if body['resourceType'] == 'Bundle':
+        resource_type = body['resourceType']
+        if resp.status == 200:
+            assert resource_type == 'Bundle'
             assert len(body['entry']) == 0, body
             assert body['total'] == 0, body
+        else:
+            assert resource_type == 'OperationOutcome'
