@@ -46,29 +46,29 @@ ENDPOINT_PARTY_KEY_FHIR_IDENTIFIER = 'https://fhir.nhs.uk/Id/nhsMhsPartyKey'
 @pytest.mark.parametrize(
     "request_data",
     [
-        # condition 1: Endpoint mandatory query parameters present
-        {
-            'endpoint': 'Endpoint',
-            'query_params': {
-                'organization': f'{ENDPOINT_ORGANIZATION_FHIR_IDENTIFIER}|123456',
-                'identifier': f'{ENDPOINT_INTERACTION_ID_FHIR_IDENTIFIER}|urn:nhs:names:services:gpconnect:documents:fhir:rest:search:documentreference-1',
-            },
-            'status_code': 200,
-            'resource_type': 'Bundle'
-        },
-        # condition 2: Endpoint optional query parameters present
-        {
-            'endpoint': 'Endpoint',
-            'query_params': {
-                'organization': f'{ENDPOINT_ORGANIZATION_FHIR_IDENTIFIER}|123456',
-                'identifier': [
-                    f'{ENDPOINT_INTERACTION_ID_FHIR_IDENTIFIER}|urn:nhs:names:services:gpconnect:documents:fhir:rest:search:documentreference-1',
-                    f'{ENDPOINT_PARTY_KEY_FHIR_IDENTIFIER}|L85016-822104',
-                ]
-            },
-            'status_code': 200,
-            'resource_type': 'Bundle'
-        },
+        # # condition 1: Endpoint mandatory query parameters present
+        # {
+        #     'endpoint': 'Endpoint',
+        #     'query_params': {
+        #         'organization': f'{ENDPOINT_ORGANIZATION_FHIR_IDENTIFIER}|123456',
+        #         'identifier': f'{ENDPOINT_INTERACTION_ID_FHIR_IDENTIFIER}|urn:nhs:names:services:gpconnect:documents:fhir:rest:search:documentreference-1',
+        #     },
+        #     'status_code': 200,
+        #     'resource_type': 'Bundle'
+        # },
+        # # condition 2: Endpoint optional query parameters present
+        # {
+        #     'endpoint': 'Endpoint',
+        #     'query_params': {
+        #         'organization': f'{ENDPOINT_ORGANIZATION_FHIR_IDENTIFIER}|123456',
+        #         'identifier': [
+        #             f'{ENDPOINT_INTERACTION_ID_FHIR_IDENTIFIER}|urn:nhs:names:services:gpconnect:documents:fhir:rest:search:documentreference-1',
+        #             f'{ENDPOINT_PARTY_KEY_FHIR_IDENTIFIER}|L85016-822104',
+        #         ]
+        #     },
+        #     'status_code': 200,
+        #     'resource_type': 'Bundle'
+        # },
         # condition 3: Endpoint unsupported query parameters present
         {
             'endpoint': 'Endpoint',
@@ -83,21 +83,21 @@ ENDPOINT_PARTY_KEY_FHIR_IDENTIFIER = 'https://fhir.nhs.uk/Id/nhsMhsPartyKey'
             'status_code': 400,
             'resource_type': 'OperationOutcome'
         },
-        # condition 4: Endpoint missing mandatory query parameters
-        {
-            'endpoint': 'Endpoint',
-            'query_params': {
-                'identifier': f'{ENDPOINT_PARTY_KEY_FHIR_IDENTIFIER}|L85016-822104',
-            },
-            'status_code': 400,
-            'resource_type': 'OperationOutcome'
-        },
+        # # condition 4: Endpoint missing mandatory query parameters
+        # {
+        #     'endpoint': 'Endpoint',
+        #     'query_params': {
+        #         'identifier': f'{ENDPOINT_PARTY_KEY_FHIR_IDENTIFIER}|L85016-822104',
+        #     },
+        #     'status_code': 400,
+        #     'resource_type': 'OperationOutcome'
+        # },
     ],
     ids=[
-        'Endpoint mandatory query parameters present', 
-        'Endpoint optional query parameters present',
+        # 'Endpoint mandatory query parameters present', 
+        # 'Endpoint optional query parameters present',
         'Endpoint unsupported query parameters present',
-        'Endpoint missing mandatory query parameters'
+        # 'Endpoint missing mandatory query parameters'
     ]
 )
 # def test_test(request_data: dict):
@@ -118,6 +118,7 @@ async def test_e2e(test_app, api_client: APISessionClient, request_data):
         headers=headers,
         allow_retries=True
     ) as resp:
+        print('actual=' + str(resp.status) + " expected=" + str(request_data['status_code']))
         assert resp.status == request_data['status_code']
         body = await resp.json()
         assert 'x-correlation-id' in resp.headers, resp.headers
