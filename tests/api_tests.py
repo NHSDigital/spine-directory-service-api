@@ -97,7 +97,7 @@ ENDPOINT_PARTY_KEY_FHIR_IDENTIFIER = 'https://fhir.nhs.uk/Id/nhsMhsPartyKey'
         # 'Endpoint mandatory query parameters present', 
         # 'Endpoint optional query parameters present',
         'Endpoint unsupported query parameters present',
-        # 'Endpoint missing mandatory query parameters'
+        'Endpoint missing mandatory query parameters'
     ]
 )
 # def test_test(request_data: dict):
