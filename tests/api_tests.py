@@ -63,11 +63,9 @@ async def test_test():
 @pytest.mark.smoketest
 @pytest.mark.asyncio
 async def test_e2e(test_app, api_client: APISessionClient):
-    print("base_uri = " + self.base_uri)
+    print("base_uri = " + api_client.base_uri)
     print("valid_uri = " + _valid_uri())
 
-    # correlation_id = str(uuid4())
-    # authorised_headers["X-Correlation-ID"] = correlation_id
     print("client_id = " + str(test_app.client_id))
     print("test_app = " + str(test_app))
     print("api_client = " + str(api_client))
