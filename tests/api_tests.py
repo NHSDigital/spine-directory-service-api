@@ -60,8 +60,6 @@ async def test_e2e(test_app, api_client: APISessionClient):
         'apikey': test_app.client_id
     }
 
-    # authorised_headers["NHSD-User-Identity"] = conftest.nhs_login_id_token(test_app)
-
     async with api_client.get(
         _valid_uri(),
         headers=authorised_headers,
