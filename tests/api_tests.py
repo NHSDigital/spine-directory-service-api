@@ -33,9 +33,20 @@ ENV_VARS = [
 # def _valid_uri(nhs_number, procedure_code) -> str:
 #     return _base_valid_uri(nhs_number) + f"&procedure-code:below={procedure_code}"
 
+# APIGEE_ENVIRONMENT: internal-dev
+# SERVICE_BASE_PATH: spine-directory/FHIR/R4-pr-155
+# STATUS_ENDPOINT_API_KEY: ***
+# APIGEE_PRODUCT: spine-directory-service-pr-155
+# OAUTH_PROXY: oauth2
+# OAUTH_BASE_URI: https://internal-dev.api.service.nhs.uk
 
 def _valid_uri() -> str:
-    return f"FHIR/R4/Endpoint?organization=https://fhir.nhs.uk/Id/ods-organization-code|L85016&identifier=https://fhir.nhs.uk/Id/nhsServiceInteractionId|urn:nhs:names:services:gpconnect:documents:fhir:rest:search:documentreference-1"
+    base_path = conftest.get_env('SERVICE_BASE_PATH')
+    path = '/Endpoint?organization=https://fhir.nhs.uk/Id/ods-organization-code|L85016&identifier=https://fhir.nhs.uk/Id/nhsServiceInteractionId|urn:nhs:names:services:gpconnect:documents:fhir:rest:search:documentreference-1'
+    return base_path + path
+    # https://internal-dev.api.service.nhs.ukspine-directory/FHIR/R4-pr-155
+    # spine-directory/FHIR/R4-pr-155
+    # return 'FHIR/R4/Endpoint?organization=https://fhir.nhs.uk/Id/ods-organization-code|L85016&identifier=https://fhir.nhs.uk/Id/nhsServiceInteractionId|urn:nhs:names:services:gpconnect:documents:fhir:rest:search:documentreference-1'
 
 
 @pytest.mark.smoketest
