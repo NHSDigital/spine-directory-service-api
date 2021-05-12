@@ -70,19 +70,19 @@ ENDPOINT_PARTY_KEY_FHIR_IDENTIFIER = 'https://fhir.nhs.uk/Id/nhsMhsPartyKey'
         #     'resource_type': 'Bundle'
         # },
         # condition 3: Endpoint unsupported query parameters present
-        # {
-        #     'endpoint': 'Endpoint',
-        #     'query_params': {
-        #         'organization': f'{ENDPOINT_ORGANIZATION_FHIR_IDENTIFIER}|123456',
-        #         'identifier': [
-        #             f'{ENDPOINT_INTERACTION_ID_FHIR_IDENTIFIER}|urn:nhs:names:services:gpconnect:documents:fhir:rest:search:documentreference-1',
-        #             f'{ENDPOINT_PARTY_KEY_FHIR_IDENTIFIER}|L85016-822104',
-        #         ],
-        #         'unsupported': 'unsupported_parameter_value',
-        #     },
-        #     'status_code': 400,
-        #     'resource_type': 'OperationOutcome'
-        # },
+        {
+            'endpoint': 'Endpoint',
+            'query_params': {
+                'organization': f'{ENDPOINT_ORGANIZATION_FHIR_IDENTIFIER}|123456',
+                'identifier': [
+                    f'{ENDPOINT_INTERACTION_ID_FHIR_IDENTIFIER}|urn:nhs:names:services:gpconnect:documents:fhir:rest:search:documentreference-1',
+                    f'{ENDPOINT_PARTY_KEY_FHIR_IDENTIFIER}|L85016-822104',
+                ],
+                'unsupported': 'unsupported_parameter_value',
+            },
+            'status_code': 400,
+            'resource_type': 'OperationOutcome'
+        },
         # condition 4: Endpoint missing mandatory query parameters
         {
             'endpoint': 'Endpoint',
