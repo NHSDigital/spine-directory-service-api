@@ -95,19 +95,20 @@ async def test_e2e(test_app, api_client: APISessionClient, request_data):
     correlation_id = str(uuid4())
     headers = {
         'apikey': test_app.client_id,
-        'x-correlation-id': correlation_id
+        'x-correlation-id': correlation_id,
+        'cache-control': 'no-cache',
     }
 
     uri = _build_test_path(request_data['endpoint'], request_data['query_params'])
 
-    print(f'\ntest params:\n\turi: {uri}\n\texpected status_code: {str(request_data["status_code"])}')
+    # print(f'\ntest params:\n\turi: {uri}\n\texpected status_code: {str(request_data["status_code"])}')
 
     async with api_client.get(
         uri,
         headers=headers,
         allow_retries=True
     ) as resp:
-        print('actual status_code: ' + str(resp.status))
+        # print('actual status_code: ' + str(resp.status))
         assert resp.status == request_data['status_code']
         body = await resp.json()
         assert 'x-correlation-id' in resp.headers, resp.headers
