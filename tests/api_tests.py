@@ -53,6 +53,9 @@ async def test_test():
 async def test_e2e(test_app, api_client: APISessionClient):
     # correlation_id = str(uuid4())
     # authorised_headers["X-Correlation-ID"] = correlation_id
+    print("client_id = " + str(test_app.client_id))
+    print("test_app = " + str(test_app))
+    print("api_client = " + str(api_client))
     authorised_headers = {
         'apikey': test_app.client_id
     }
@@ -61,8 +64,7 @@ async def test_e2e(test_app, api_client: APISessionClient):
 
     async with api_client.get(
         _valid_uri(),
-        # _valid_uri("9912003888", "90640007"),
-        # headers=authorised_headers,
+        headers=authorised_headers,
         allow_retries=True
     ) as resp:
         assert resp.status == 200
