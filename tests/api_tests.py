@@ -42,7 +42,7 @@ ENV_VARS = [
 
 def _valid_uri() -> str:
     # base_path = conftest.get_env('SERVICE_BASE_PATH')
-    base_path = '/FHIR/R4-pr-155'
+    base_path = 'FHIR/R4-pr-155'
     path = '/Endpoint?organization=https://fhir.nhs.uk/Id/ods-organization-code|L85016&identifier=https://fhir.nhs.uk/Id/nhsServiceInteractionId|urn:nhs:names:services:gpconnect:documents:fhir:rest:search:documentreference-1'
     return base_path + path
     # https://internal-dev.api.service.nhs.ukspine-directory/FHIR/R4-pr-155
@@ -63,6 +63,9 @@ async def test_test():
 @pytest.mark.smoketest
 @pytest.mark.asyncio
 async def test_e2e(test_app, api_client: APISessionClient):
+    print("base_uri = " + self.base_uri)
+    print("valid_uri = " + _valid_uri())
+
     # correlation_id = str(uuid4())
     # authorised_headers["X-Correlation-ID"] = correlation_id
     print("client_id = " + str(test_app.client_id))
