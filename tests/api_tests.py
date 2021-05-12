@@ -78,7 +78,7 @@ ENDPOINT_PARTY_KEY_FHIR_IDENTIFIER = 'https://fhir.nhs.uk/Id/nhsMhsPartyKey'
                     f'{ENDPOINT_INTERACTION_ID_FHIR_IDENTIFIER}|urn:nhs:names:services:gpconnect:documents:fhir:rest:search:documentreference-1',
                     f'{ENDPOINT_PARTY_KEY_FHIR_IDENTIFIER}|L85016-822104',
                 ],
-                'unsupported': 'unsupported_parameter_value'
+                'unsupported': 'unsupported_parameter_value',
             },
             'status_code': 400,
             'resource_type': 'OperationOutcome'
@@ -110,6 +110,8 @@ async def test_e2e(test_app, api_client: APISessionClient, request_data):
     }
 
     uri = _build_test_path(request_data['endpoint'], request_data['query_params'])
+
+    print('path tested: ' + uri)
 
     async with api_client.get(
         uri,
