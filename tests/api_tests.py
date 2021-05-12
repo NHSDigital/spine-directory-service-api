@@ -111,7 +111,7 @@ DEVICE_MANAGING_ORGANIZATION_FHIR_IDENTIFIER = 'https://fhir.nhs.uk/Id/ods-organ
         {
             'endpoint': 'Device',
             'query_params': {
-                'organization': f'{DEVICE_INTERACTION_ID_FHIR_IDENTIFIER}|123456',
+                'organization': f'{DEVICE_ORGANIZATION_FHIR_IDENTIFIER}|123456',
                 'identifier': [
                     f'{DEVICE_INTERACTION_ID_FHIR_IDENTIFIER}|urn:nhs:names:services:psis:REPC_IN150016UK05',
                     f'{DEVICE_PARTY_KEY_FHIR_IDENTIFIER}|L85016-822104',
@@ -124,7 +124,7 @@ DEVICE_MANAGING_ORGANIZATION_FHIR_IDENTIFIER = 'https://fhir.nhs.uk/Id/ods-organ
         {
             'endpoint': 'Device',
             'query_params': {
-                'organization': f'{DEVICE_INTERACTION_ID_FHIR_IDENTIFIER}|123456',
+                'organization': f'{DEVICE_ORGANIZATION_FHIR_IDENTIFIER}|123456',
                 'identifier': [
                     f'{DEVICE_INTERACTION_ID_FHIR_IDENTIFIER}|urn:nhs:names:services:psis:REPC_IN150016UK05',
                     f'{DEVICE_PARTY_KEY_FHIR_IDENTIFIER}|L85016-822104',
