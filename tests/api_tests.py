@@ -11,11 +11,6 @@ from api_test_utils.api_session_client import APISessionClient
 from api_test_utils.api_test_session_config import APITestSessionConfig
 
 
-def _valid_uri() -> str:
-    path = 'Endpoint?organization=https://fhir.nhs.uk/Id/ods-organization-code|L85016&identifier=https://fhir.nhs.uk/Id/nhsServiceInteractionId|urn:nhs:names:services:gpconnect:documents:fhir:rest:search:documentreference-1'
-    return path
-
-
 def _build_test_path(endpoint: str, query_params: dict) -> str:
     def _map_kv(kv: tuple):
         (key, values) = kv
@@ -70,34 +65,28 @@ ENDPOINT_PARTY_KEY_FHIR_IDENTIFIER = 'https://fhir.nhs.uk/Id/nhsMhsPartyKey'
             'resource_type': 'Bundle'
         },
         # condition 3: Endpoint unsupported query parameters present
-        # {
-        #     'endpoint': 'Endpoint',
-        #     'query_params': {
-        #         'organization': f'{ENDPOINT_ORGANIZATION_FHIR_IDENTIFIER}|123456',
-        #         'identifier': [
-        #             f'{ENDPOINT_INTERACTION_ID_FHIR_IDENTIFIER}|urn:nhs:names:services:gpconnect:documents:fhir:rest:search:documentreference-1',
-        #             f'{ENDPOINT_PARTY_KEY_FHIR_IDENTIFIER}|L85016-822104',
-        #         ],
-        #         'unsupported': 'unsupported_parameter_value',
-        #     },
-        #     'status_code': 400,
-        #     'resource_type': 'OperationOutcome'
-        # },
-        # # condition 4: Endpoint missing mandatory query parameters
-        # {
-        #     'endpoint': 'Endpoint',
-        #     'query_params': {
-        #         'identifier': f'{ENDPOINT_PARTY_KEY_FHIR_IDENTIFIER}|L85016-822104',
-        #     },
-        #     'status_code': 400,
-        #     'resource_type': 'OperationOutcome'
-        # },
-    ],
-    ids=[
-        'Endpoint mandatory query parameters present', 
-        'Endpoint optional query parameters present',
-        # 'Endpoint unsupported query parameters present',
-        # 'Endpoint missing mandatory query parameters'
+        {
+            'endpoint': 'Endpoint',
+            'query_params': {
+                'organization': f'{ENDPOINT_ORGANIZATION_FHIR_IDENTIFIER}|123456',
+                'identifier': [
+                    f'{ENDPOINT_INTERACTION_ID_FHIR_IDENTIFIER}|urn:nhs:names:services:gpconnect:documents:fhir:rest:search:documentreference-1',
+                    f'{ENDPOINT_PARTY_KEY_FHIR_IDENTIFIER}|L85016-822104',
+                ],
+                'unsupported': 'unsupported_parameter_value',
+            },
+            'status_code': 400,
+            'resource_type': 'OperationOutcome'
+        },
+        # condition 4: Endpoint missing mandatory query parameters
+        {
+            'endpoint': 'Endpoint',
+            'query_params': {
+                'identifier': f'{ENDPOINT_PARTY_KEY_FHIR_IDENTIFIER}|L85016-822104',
+            },
+            'status_code': 400,
+            'resource_type': 'OperationOutcome'
+        },
     ]
 )
 # def test_test(request_data: dict):
@@ -111,14 +100,14 @@ async def test_e2e(test_app, api_client: APISessionClient, request_data):
 
     uri = _build_test_path(request_data['endpoint'], request_data['query_params'])
 
-    print('path tested: ' + uri)
+    print(f'\ntest params:\n\turi: {uri}\n\texpected status_code: {str(request_data['status_code'])}')
 
     async with api_client.get(
         uri,
         headers=headers,
         allow_retries=True
     ) as resp:
-        print('actual=' + str(resp.status) + " expected=" + str(request_data['status_code']))
+        print('actual status_code: ' + str(resp.status))
         assert resp.status == request_data['status_code']
         body = await resp.json()
         assert 'x-correlation-id' in resp.headers, resp.headers
