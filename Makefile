@@ -13,7 +13,6 @@ install-python:
 
 install-node:
 	npm install
-	# cd sandbox && npm install
 
 install-hooks:
 	cp scripts/pre-commit .git/hooks/pre-commit
@@ -57,9 +56,6 @@ deploy-spec:
 format:
 	poetry run black **/*.py
 
-sandbox:
-	cd sandbox && npm run start
-
 build-proxy:
 	scripts/build_proxy.sh
 
@@ -79,10 +75,7 @@ release: clean publish build-proxy
 
 dist: release
 
-test: smoketest sandboxtest e2etest
-
-sandboxtest:
-	make --no-print-directory -C sandbox test-report
+test: smoketest e2etest
 
 pytest-guards: guard-SERVICE_BASE_PATH guard-APIGEE_ENVIRONMENT guard-SOURCE_COMMIT_ID guard-STATUS_ENDPOINT_API_KEY
 
