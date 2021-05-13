@@ -108,7 +108,6 @@ async def test_wait_for_status(api_client: APISessionClient, api_test_config: AP
 
 
 @pytest.mark.e2e
-@pytest.mark.smoketest
 @pytest.mark.asyncio
 @pytest.mark.parametrize("endpoint", ["Endpoint", "Device"])
 async def test_endpoints_are_secured(api_client: APISessionClient, endpoint):
@@ -119,8 +118,6 @@ async def test_endpoints_are_secured(api_client: APISessionClient, endpoint):
 
 
 @pytest.mark.e2e
-
-@pytest.mark.smoketest
 @pytest.mark.asyncio
 @pytest.mark.parametrize(
     "request_data",
@@ -176,7 +173,6 @@ async def test_endpoints_are_secured(api_client: APISessionClient, endpoint):
             },
             'status_code': 400,
         },
-
         # condition 6: Device mandatory query parameters present
         {
             'endpoint': 'Device',
@@ -235,9 +231,21 @@ async def test_endpoints_are_secured(api_client: APISessionClient, endpoint):
             },
             'status_code': 400,
         },
+    ],
+    ids=[
+        'condition 1: Endpoint mandatory query parameters present',
+        'condition 2: Endpoint optional query parameters present',
+        'condition 3: Endpoint unsupported query parameters present',
+        'condition 4: Endpoint missing mandatory query parameters',
+        'condition 5: Endpoint invalid fhir identifier on mandatory query parameter',
+        'condition 6: Device mandatory query parameters present',
+        'condition 7: Device optional query parameters present',
+        'condition 8: Device unsupported query parameters present',
+        'condition 9: Device missing mandatory query parameters',
+        'condition 10: Device invalid fhir identifier on mandatory query parameter',
     ]
 )
-async def test_happy_path(test_app, api_client: APISessionClient, request_data):
+async def test_endpoints(test_app, api_client: APISessionClient, request_data):
     correlation_id = str(uuid4())
     headers = {
         'apikey': test_app.client_id,

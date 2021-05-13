@@ -26,7 +26,7 @@
           <Name>KeyValueMapOperations.GetCommonSecureVariables</Name>
         </Step>
         <Step>
-          <Condition>private.apigee.status-endpoint-api-key NotEquals request.header.apikey</Condition>
+          <Condition>request.header.apikey = null or private.apigee.status-endpoint-api-key != request.header.apikey</Condition>
           <Name>RaiseFault.401Unauthorized</Name>
         </Step>
         <Step>
