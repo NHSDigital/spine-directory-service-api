@@ -41,5 +41,5 @@ extends:
             location: '${{ variables.service_name }}/.venv'
             debug: true
           displayName: cache python dependencies
-    # post_ecs_push:
-    #   - template: templates/run-sandbox-tests.yml
+    post_ecs_push:
+      - template: templates/run-sandbox-tests.yml

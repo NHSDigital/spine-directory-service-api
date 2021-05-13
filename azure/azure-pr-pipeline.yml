@@ -52,7 +52,12 @@ extends:
         post_deploy:
           - template: ./templates/run-tests.yml
             parameters:
-              # e2e_tests: true
+              e2e_tests: true
               smoke_tests: true
       - environment: internal-dev-sandbox
         proxy_path: sandbox
+        post_deploy:
+          - template: ./templates/run-tests.yml
+            parameters:
+              e2e_tests: true
+              smoke_tests: true

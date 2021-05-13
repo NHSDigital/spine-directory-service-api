@@ -25,7 +25,6 @@ steps:
   # Smoketests
   - ${{ if parameters.smoke_tests }}:
     - template: ../components/run-smoke-tests.yml
-
   # e2e tests
-  # - ${{ if parameters.e2e_tests }}:
-  #   - template: ../components/run-e2e-tests.yml
+  - ${{ if parameters.e2e_tests }}:
+    - template: ../components/run-e2e-tests.yml

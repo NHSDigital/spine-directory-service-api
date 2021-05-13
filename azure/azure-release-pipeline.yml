@@ -37,56 +37,56 @@ extends:
     apigee_deployments:
       - environment: internal-dev
         make_spec_visible: true
+        post_deploy:
+          - template: ./templates/run-tests.yml
+            parameters:
+              e2e_tests: true
+              smoke_tests: true
       - environment: internal-qa
         make_spec_visible: true
+        post_deploy:
+          - template: ./templates/run-tests.yml
+            parameters:
+              smoke_tests: true
       - environment: internal-qa-sandbox
         make_spec_visible: true
         proxy_path: sandbox
+        post_deploy:
+          - template: ./templates/run-tests.yml
+            parameters:
+              smoke_tests: true
       - environment: ref
         depends_on:
           - internal_qa
           - internal_qa_sandbox
+        post_deploy:
+          - template: ./templates/run-tests.yml
+            parameters:
+              smoke_tests: true
       - environment: int
         make_spec_visible: true
         depends_on:
           - internal_qa
           - internal_qa_sandbox
+        post_deploy:
+          - template: ./templates/run-tests.yml
+            parameters:
+              smoke_tests: true
       - environment: sandbox
         proxy_path: sandbox
         depends_on:
             - internal_qa
             - internal_qa_sandbox
+        post_deploy:
+          - template: ./templates/run-tests.yml
+            parameters:
+              smoke_tests: true
       - environment: prod
         depends_on:
             - internal_qa
             - internal_qa_sandbox
-    # post_deploy:
-    #   - bash: |
-    #       echo "Running post deploy from azure-release-pipeline.yaml"
-    #     displayName: "Release smoke test"
-    post_deploy:
-      - bash: |
-          # Poll deploying API until our deployed version matches the release version
-          url="https://$APIGEE_ENVIRONMENT.api.service.nhs.uk/$SERVICE_BASE_PATH/_status"
-          interval_in_seconds=5
-          releaseCommit="$(Build.SourceVersion)"
-          printf "\nPolling %s every %s seconds, until commit is: %s\n" "$url" "$interval_in_seconds" "$releaseCommit"
-          attempts=0
-          success=0
-          until [ $attempts -eq 60 ]
-          do
-          responseData=$(curl -H "apiKey: $(status-endpoint-api-key)" "$url" -s)
-          deployedCommit=$(echo "$responseData" | jq -r ".commitId")
-          if [ "$deployedCommit" == "$releaseCommit" ]; then
-              success=1
-              break;
-          fi;
-          ((attempts=attempts+1))
-          sleep $interval_in_seconds;
-          done
-          if [ $success == 0 ]
-          then
-              echo "API was not ready in time"
-              exit 255
-          fi
-        displayName: Wait for API to be available
+        post_deploy:
+          - template: ./templates/run-tests.yml
+            parameters:
+              smoke_tests: true
+
