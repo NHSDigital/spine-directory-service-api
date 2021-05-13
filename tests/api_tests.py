@@ -73,8 +73,6 @@ async def test_wait_for_ping(api_client: APISessionClient, api_test_config: APIT
 async def test_check_status_is_secured(api_client: APISessionClient):
     async with api_client.get("_status", allow_retries=True) as resp:
         assert resp.status == 401
-        body = await resp.json()
-        assert body['resourceType'] == 'OperationOutcome'
 
 
 @pytest.mark.e2e
