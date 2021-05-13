@@ -4,6 +4,9 @@
     <Payload>{"version":"{{ DEPLOYED_VERSION }}","revision":"{apiproxy.revision}","releaseId":"{{ RELEASE_RELEASEID }}","commitId":"{{ SOURCE_COMMIT_ID }}"}</Payload>
     <StatusCode>200</StatusCode>
     <Verb>GET</Verb>
+    <Headers>
+      <Header name="Content-Type">application/json</Header>
+    </Headers>
     <Version>1.1</Version>
   </Set>
   <AssignTo createNew="false" transport="http" type="request"/>
