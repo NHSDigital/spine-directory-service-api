@@ -1,0 +1,11 @@
+steps:
+  - bash: |
+      make sandboxtest
+    workingDirectory: $(Pipeline.Workspace)/s/$(SERVICE_NAME)
+    displayName: run sandbox tests
+  - task: PublishTestResults@2
+    displayName: 'Publish sandbox test results'
+    condition: always()
+    inputs:
+      testResultsFiles: '$(Pipeline.Workspace)/s/$(SERVICE_NAME)/reports/tests/sandbox.xml'
+      failTaskOnFailedTests: true
