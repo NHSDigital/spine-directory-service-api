@@ -125,7 +125,7 @@ paths:
       parameters:
         - in: query
           name: organization
-          description: The organisation code for the NHS Spine instance that your Message Handling System is communicating with. Must be preceded with FHIR identifier (eg."organization=https://fhir.nhs.uk/Id/ods-organization-code|YES-0000806")
+          description: The organisation code for the NHS Spine instance that your Message Handling System is communicating with. Must be preceded with FHIR identifier (eg."organization=https://fhir.nhs.uk/Id/ods-organization-code|YES")
           required: true
           schema:
             type: string
@@ -198,7 +198,7 @@ paths:
       parameters:
         - in: query
           name: organization
-          description: The organisation code for the NHS Spine instance that your Message Handling System is communicating with. Must be preceded with FHIR identifier (eg."organization=https://fhir.nhs.uk/Id/ods-organization-code|YES-0000806")
+          description: The organisation code for the NHS Spine instance that your Message Handling System is communicating with. Must be preceded with FHIR identifier (eg."organization=https://fhir.nhs.uk/Id/ods-organization-code|YES")
           required: true
           schema:
             type: string
