@@ -7,7 +7,7 @@
         <KeyFragment ref="request.path"/>
         <KeyFragment ref="request.queryparam.organization"/>
         <KeyFragment ref="request.queryparam.identifier.values"/>
-        <KeyFragment ref="request.queryparam.managing-organization"/>
+        <KeyFragment ref="request.queryparam.manufacturing-organization"/>
     </CacheKey>
     <Scope>Exclusive</Scope>
     <ExpirySettings>

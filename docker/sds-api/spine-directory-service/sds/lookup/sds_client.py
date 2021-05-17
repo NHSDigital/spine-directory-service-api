@@ -74,7 +74,7 @@ class SDSClient(object):
         result = await self._get_ldap_data(query_parts, MHS_ATTRIBUTES)
         return result
 
-    async def get_as_details(self, ods_code: str, interaction_id: str, managing_organization: str = None, party_key: str = None) -> List[Dict]:
+    async def get_as_details(self, ods_code: str, interaction_id: str, manufacturing_organization: str = None, party_key: str = None) -> List[Dict]:
         """
         Returns the device details for the given parameters
 
@@ -87,13 +87,13 @@ class SDSClient(object):
             ("nhsIDCode", ods_code),
             ("objectClass", "nhsAs"),
             ("nhsAsSvcIA", interaction_id),
-            ("nhsMhsManufacturerOrg", managing_organization),
+            ("nhsMhsManufacturerOrg", manufacturing_organization),
             ("nhsMHSPartyKey", party_key)
         ]
 
         # TODO: can't use atm with Opentest as it lacks required schema attribute
         if str2bool(config.get_config('DISABLE_MANUFACTURER_ORG_SEARCH_PARAM', default=str(False))):
-            query_parts.remove(("nhsMhsManufacturerOrg", managing_organization))
+            query_parts.remove(("nhsMhsManufacturerOrg", manufacturing_organization))
 
         result = await self._get_ldap_data(query_parts, AS_ATTRIBUTES)
         return result
@@ -151,7 +151,7 @@ class SDSMockClient:
         else:
             raise ValueError
 
-    async def get_as_details(self, ods_code: str, interaction_id: str, managing_organization: str = None, party_key: str = None) -> List[Dict]:
+    async def get_as_details(self, ods_code: str, interaction_id: str, manufacturing_organization: str = None, party_key: str = None) -> List[Dict]:
         if ods_code is None or interaction_id is None:
             raise ValueError
 
@@ -160,7 +160,7 @@ class SDSMockClient:
             await asyncio.sleep(self.pause_duration / 1000)
 
         if self.mode == "STRICT":
-            return list(filter(lambda x: self._filter_as(x, ods_code, interaction_id, managing_organization, party_key), self.mock_as_data))
+            return list(filter(lambda x: self._filter_as(x, ods_code, interaction_id, manufacturing_organization, party_key), self.mock_as_data))
         elif self.mode == "RANDOM":
             return [random.choice(self.mock_as_data)]
         elif self.mode == "FIRST":
@@ -175,11 +175,11 @@ class SDSMockClient:
             and (party_key is None or entry['nhsMHSPartyKey'] == party_key)
 
     @staticmethod
-    def _filter_as(entry: Dict, ods_code: str, interaction_id: str, managing_organization: str = None, party_key: str = None):
+    def _filter_as(entry: Dict, ods_code: str, interaction_id: str, manufacturing_organization: str = None, party_key: str = None):
         return entry['nhsIDCode'] == ods_code \
             and interaction_id in entry['nhsAsSvcIA'] \
             and (party_key is None or entry['nhsMHSPartyKey'] == party_key) \
-            and (managing_organization is None or entry['nhsMhsManufacturerOrg'] == managing_organization)
+            and (manufacturing_organization is None or entry['nhsMhsManufacturerOrg'] == manufacturing_organization)
 
     def _read_mock_data(self):
         with open('./lookup/mock_data/sds_mhs_response.json', 'r') as f:

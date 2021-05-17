@@ -110,7 +110,7 @@ paths:
         
         This endpoint should return all matching accredited system objects which provides the following information:
           * Accredited System Identifier
-          * Managing Organisation Code
+          * Manufacturing Organisation Code
           * Client Code
           * Party Key
           * Service-Interactions
@@ -120,7 +120,7 @@ paths:
           * service identifier
         
         and may supply:
-          * managing organization identifier
+          * manufacturing organization identifier
           * party key
       parameters:
         - in: query
@@ -139,7 +139,7 @@ paths:
               type: string
           explode: true
         - in: query
-          name: managing-organization
+          name: manufacturing-organization
           description: Manufacturer's organisation code - ODS code of the manufacturer's organisation (i.e. GP System supplier)
           required: false
           schema:

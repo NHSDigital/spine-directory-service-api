@@ -7,7 +7,7 @@ from requests import Response
 ORG_CODE_FHIR_IDENTIFIER = "https://fhir.nhs.uk/Id/ods-organization-code"
 SERVICE_ID_FHIR_IDENTIFIER = "https://fhir.nhs.uk/Id/nhsServiceInteractionId"
 PARTY_KEY_FHIR_IDENTIFIER = "https://fhir.nhs.uk/Id/nhsMhsPartyKey"
-MANAGING_ORGANIZATION_FHIR_IDENTIFIER = "https://fhir.nhs.uk/Id/ods-organization-code"
+MANUFACTURING_ORGANIZATION_FHIR_IDENTIFIER = "https://fhir.nhs.uk/Id/ods-organization-code"
 
 
 class SdsHttpRequestBuilder:
@@ -45,10 +45,10 @@ class SdsHttpRequestBuilder:
         self.query_params['identifier'] = params
         return self
 
-    def with_managing_organization(self, managing_organization: str, fhir_code=MANAGING_ORGANIZATION_FHIR_IDENTIFIER):
-        params = self.query_params.get('managing-organization', [])
-        params.append(f"{fhir_code}|{managing_organization}")
-        self.query_params['managing-organization'] = params
+    def with_manufacturing_organization(self, manufacturing_organization: str, fhir_code=MANUFACTURING_ORGANIZATION_FHIR_IDENTIFIER):
+        params = self.query_params.get('manufacturing-organization', [])
+        params.append(f"{fhir_code}|{manufacturing_organization}")
+        self.query_params['manufacturing-organization'] = params
         return self
 
     def with_correlation_id(self, correlation_id: str):

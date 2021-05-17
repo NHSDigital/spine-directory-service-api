@@ -6,7 +6,7 @@
   "link": [
       {
           "relation": "self",
-          "url": "https://int.api.service.nhs.uk/spine-directory/FHIR/R4/Device?organization=https://fhir.nhs.uk/Id/ods-organization-code|A20047&identifier=https://fhir.nhs.uk/Id/nhsServiceInteractionId|urn:nhs:names:services:gpconnect:fhir:rest:search:patient&identifier=https://fhir.nhs.uk/Id/nhsMhsPartyKey|A20047-821870&managing-organization=https://fhir.nhs.uk/Id/ods-organization-code|X26"
+          "url": "https://int.api.service.nhs.uk/spine-directory/FHIR/R4/Device?organization=https://fhir.nhs.uk/Id/ods-organization-code|A20047&identifier=https://fhir.nhs.uk/Id/nhsServiceInteractionId|urn:nhs:names:services:gpconnect:fhir:rest:search:patient&identifier=https://fhir.nhs.uk/Id/nhsMhsPartyKey|A20047-821870&manufacturing-organization=https://fhir.nhs.uk/Id/ods-organization-code|X26"
       }
   ],
   "entry": [

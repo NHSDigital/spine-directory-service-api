@@ -14,7 +14,7 @@ from utilities import message_utilities
 ORG_CODE = "org"
 SERVICE_ID = "service"
 PARTY_KEY = "some_party_key"
-MANAGING_ORG = "some_manufacturer"
+MANUFACTURING_ORG = "some_manufacturer"
 FIXED_UUID = "f0f0e921-92ca-4a88-a550-2dbb36f703af"
 
 DEVICE_PATH = "/device"
@@ -127,16 +127,16 @@ class RequestHandlerTestBase(ABC, tornado.testing.AsyncHTTPTestCase):
             org_code: Optional[str] = ORG_CODE,
             service_id: Optional[str] = SERVICE_ID,
             party_key: Optional[str] = PARTY_KEY,
-            managing_organization: Optional[str] = MANAGING_ORG):
+            manufacturing_organization: Optional[str] = MANUFACTURING_ORG):
 
         path = DEVICE_PATH
 
         org_code = f"organization=https://fhir.nhs.uk/Id/ods-organization-code|{org_code}" if org_code is not None else None
         service_id = f"identifier=https://fhir.nhs.uk/Id/nhsServiceInteractionId|{service_id}" if service_id is not None else None
         party_key = f"identifier=https://fhir.nhs.uk/Id/nhsMhsPartyKey|{party_key}" if party_key is not None else None
-        managing_organization = f"managing-organization=https://fhir.nhs.uk/Id/ods-organization-code|{managing_organization}" if managing_organization is not None else None
+        manufacturing_organization = f"manufacturing-organization=https://fhir.nhs.uk/Id/ods-organization-code|{manufacturing_organization}" if manufacturing_organization is not None else None
 
-        query_params = "&".join(filter(lambda query_param: query_param, [org_code, service_id, party_key, managing_organization]))
+        query_params = "&".join(filter(lambda query_param: query_param, [org_code, service_id, party_key, manufacturing_organization]))
 
         path = f"{path}?{query_params}" if query_params else path
         return path

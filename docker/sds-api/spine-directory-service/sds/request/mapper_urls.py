@@ -1,6 +1,6 @@
 class MapperUrls:
     EXTENSION_URL = "https://fhir.nhs.uk/StructureDefinition/Extension-SDS-ReliabilityConfiguration"
-    MANAGING_ORGANIZATION_EXTENSION_URL = "https://fhir.nhs.uk/StructureDefinition/Extension-SDS-ManufacturingOrganisation"
+    MANUFACTURING_ORGANIZATION_EXTENSION_URL = "https://fhir.nhs.uk/StructureDefinition/Extension-SDS-ManufacturingOrganisation"
     NHS_MHS_FQDN_URL = "https://fhir.nhs.uk/Id/nhsMhsFQDN"
     NHS_MHS_PARTYKEY_URL = "https://fhir.nhs.uk/Id/nhsMhsPartyKey"
     NHS_MHS_CPAID_URL = "https://fhir.nhs.uk/Id/nhsMhsCPAId"
@@ -8,5 +8,6 @@ class MapperUrls:
     NHS_SPINE_ASID = "https://fhir.nhs.uk/Id/nhsSpineASID"
     CONNECTION_TYPE_URL = "http://terminology.hl7.org/CodeSystem/endpoint-connection-type"
     MANAGING_ORGANIZATION_URL = "https://fhir.nhs.uk/Id/ods-organization-code"
+    MANUFACTURING_ORGANIZATION_URL = "https://fhir.nhs.uk/Id/ods-organization-code"
     PAYLOAD_TYPE_URL = "http://terminology.hl7.org/CodeSystem/endpoint-payload-type"
     SDS_SERVICE_INTERACTION_ID_URL = "https://fhir.nhs.uk/StructureDefinition/Extension-SDS-NhsServiceInteractionId"

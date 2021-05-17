@@ -6,7 +6,7 @@
   "link": [
     {
       "relation": "self",
-      "url": "http://127.0.0.1:61191/device?organization=https://fhir.nhs.uk/Id/ods-organization-code|org&identifier=https://fhir.nhs.uk/Id/nhsServiceInteractionId|service&identifier=https://fhir.nhs.uk/Id/nhsMhsPartyKey|some_party_key&managing-organization=https://fhir.nhs.uk/Id/ods-organization-code|some_manufacturer"
+      "url": "http://127.0.0.1:61191/device?organization=https://fhir.nhs.uk/Id/ods-organization-code|org&identifier=https://fhir.nhs.uk/Id/nhsServiceInteractionId|service&identifier=https://fhir.nhs.uk/Id/nhsMhsPartyKey|some_party_key&manufacturing-organization=https://fhir.nhs.uk/Id/ods-organization-code|some_manufacturer"
     }
   ],
   "entry": [
