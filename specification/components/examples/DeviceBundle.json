@@ -1,0 +1,23 @@
+{
+  "resourceType": "Bundle",
+  "id": "9A05D8C6-587D-4CD7-B360-C5560961C01F",
+  "type": "searchset",
+  "total": 1,
+  "link": [
+      {
+          "relation": "self",
+          "url": "https://int.api.service.nhs.uk/spine-directory/FHIR/R4/Device?organization=https://fhir.nhs.uk/Id/ods-organization-code|A20047&identifier=https://fhir.nhs.uk/Id/nhsServiceInteractionId|urn:nhs:names:services:gpconnect:fhir:rest:search:patient&identifier=https://fhir.nhs.uk/Id/nhsMhsPartyKey|A20047-821870&managing-organization=https://fhir.nhs.uk/Id/ods-organization-code|X26"
+      }
+  ],
+  "entry": [
+      {
+          "fullUrl": "https://int.api.service.nhs.uk/spine-directory/FHIR/R4/Device/0E512499-E65C-4AE9-BEEC-224917FCDE94",
+          "resource": {
+            "$ref": "Device.json"
+          },
+          "search": {
+              "mode": "match"
+          }
+      }
+  ]
+}

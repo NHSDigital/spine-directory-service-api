@@ -1,42 +1,33 @@
+from typing import Optional, Dict, Any
+
 import tornado.httpserver
 import tornado.ioloop
 import tornado.web
+from tornado import httputil
+from tornado.routing import Matcher
 
-from request import healthcheck_handler
+import lookup.sds_client_factory
+from lookup.sds_client import SDSClient
+from request import healthcheck_handler, routing_reliability_handler, accredited_system_handler
+from request.error_handler import ErrorHandler
 from utilities import config, secrets
 from utilities import integration_adaptors_logger as log
-
-from lookup import sds_client, mhs_attribute_lookup, routing_reliability, \
-    sds_connection_factory
-from request import routing_reliability_handler
 
 logger = log.IntegrationAdaptorsLogger(__name__)
 
 
-def initialise_routing(search_base: str) -> routing_reliability.RoutingAndReliability:
-    """Initialise the routing and reliability component to be used for SDS queries.
-
-    :param search_base: The LDAP location to use as the base of SDS searched. e.g. ou=services,o=nhs.
-    :return:
-    """
-    sds_connection = sds_connection_factory.create_connection()
-
-    client = sds_client.SDSClient(sds_connection, search_base)
-    attribute_lookup = mhs_attribute_lookup.MHSAttributeLookup(client=client)
-    routing = routing_reliability.RoutingAndReliability(attribute_lookup)
-    return routing
-
-
-def start_tornado_server(routing: routing_reliability.RoutingAndReliability) -> None:
+def start_tornado_server(sds_client: SDSClient) -> None:
     """Start the Tornado server
 
-    :param routing: The routing/reliability component to be used when servicing requests.
+    :param sds_client: The sds client component to be used when servicing requests.
     """
-    handler_dependencies = {"routing": routing}
+
+    handler_dependencies = {"sds_client": sds_client}
     application = tornado.web.Application([
-        ("/endpoint", routing_reliability_handler.RoutingReliabilityRequestHandler, handler_dependencies),
+        ("/Endpoint", routing_reliability_handler.RoutingReliabilityRequestHandler, handler_dependencies),
+        ("/Device", accredited_system_handler.AccreditedSystemRequestHandler, handler_dependencies),
         ("/healthcheck", healthcheck_handler.HealthcheckHandler)
-    ])
+    ], default_handler_class=ErrorHandler)
     server = tornado.httpserver.HTTPServer(application)
     server_port = int(config.get_config('SERVER_PORT', default='9000'))
     server.listen(server_port)
@@ -59,8 +50,8 @@ def main():
     secrets.setup_secret_config("SDS")
     log.configure_logging('sds')
 
-    routing = initialise_routing(search_base=config.get_config("LDAP_SEARCH_BASE"))
-    start_tornado_server(routing)
+    sds_client = lookup.sds_client_factory.get_sds_client()
+    start_tornado_server(sds_client)
 
 
 if __name__ == "__main__":

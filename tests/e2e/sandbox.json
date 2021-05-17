@@ -174,54 +174,6 @@
 				"description": "Returns 200 and FHIR JSON Endpoint"
 			},
 			"response": []
-		},
-		{
-			"name": "Accept Header FHIR+XML",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"id": "fb23e858-acaf-4aca-a6f3-e7e488836115",
-						"exec": [
-							""
-						],
-						"type": "text/javascript"
-					}
-				},
-				{
-					"listen": "prerequest",
-					"script": {
-						"id": "3677c163-1134-464c-999e-90cf564b0ac2",
-						"exec": [
-							"var expected_response_xml = \"\";",
-							"",
-							"pm.environment.set(\"expected_fhir_xml_response\", expected_response_xml);"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "GET",
-				"header": [
-					{
-						"key": "Accept",
-						"type": "text",
-						"value": "application/fhir+xml"
-					}
-				],
-				"url": {
-					"raw": "{{environment}}/endpoint",
-					"host": [
-						"{{environment}}"
-					],
-					"path": [
-						"endpoint"
-					]
-				},
-				"description": "Returns 200 and FHIR XML Endpoint"
-			},
-			"response": []
 		}
 	],
 	"protocolProfileBehavior": {}

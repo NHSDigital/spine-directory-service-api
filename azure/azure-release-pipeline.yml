@@ -8,6 +8,7 @@ resources:
     - repository: common
       type: github
       name: NHSDigital/api-management-utils
+      ref: refs/heads/edge
       endpoint: NHSDigital
   pipelines:
   - pipeline: build_pipeline
@@ -18,7 +19,7 @@ resources:
           - refs/tags/v*
 
 pool:
-  vmImage: 'ubuntu-latest'
+  name: 'AWS-ECS'
 
 variables:
   - template: project.yml
@@ -32,16 +33,21 @@ extends:
     product_display_name: ${{ variables.product_display_name }}
     product_description: ${{ variables.product_description }}
     spec_file: ${{ variables.spec_file }}
+    portal_api_requires_callback_url: false
     apigee_deployments:
       - environment: internal-dev
+        make_spec_visible: true
       - environment: internal-qa
+        make_spec_visible: true
       - environment: internal-qa-sandbox
+        make_spec_visible: true
         proxy_path: sandbox
       - environment: ref
         depends_on:
           - internal_qa
           - internal_qa_sandbox
       - environment: int
+        make_spec_visible: true
         depends_on:
           - internal_qa
           - internal_qa_sandbox

@@ -1,0 +1,250 @@
+# This is an OpenAPI Specification (https://swagger.io/specification/)
+# for the Spine Directory Service (SDS) API
+# owned by NHS Digital (https://digital.nhs.uk/)
+openapi: 3.0.0
+info:
+  version: "{VERSION}"
+  title: Spine Directory Service API
+  description: |
+    ## Overview
+    Use this API to access details of systems registered in the Spine Directory Service (SDS).
+    
+    You can:
+    - get accredited system details
+
+    You cannot currently use this API to:
+    - search for organisations
+    - search for people
+    
+    ### Accredited system records 
+    Every system that connects to the Spine has one or more “Accredited System” (AS) records in SDS, identified by an Accredited System Identifier (ASID). 
+    This ASID is unique to a system deployed in a specific organisation, so the same application deployed into three NHS organisations would typically be represented as three unique ASIDs. 
+    
+    ### MHS records and endpoints 
+    Every GP Connect system also has one or more “MHS” records (or message handling server record), identified by Party Key and [Interaction ID](https://developer.nhs.uk/apis/gpconnect-0-7-2/integration_interaction_ids.html). 
+    MHS records of GP Connect provider systems contain the endpoint of the target practice, as defined by the [FHIR service root URL](https://developer.nhs.uk/apis/gpconnect-0-7-2/development_fhir_api_guidance.html#service-root-url). 
+    Please see [System topologies](https://developer.nhs.uk/apis/gpconnect-0-7-2/integration_system_topologies.html) for more details on the allocation of ASIDs and Party Keys. 
+    
+    ## API status 
+    This API is in [beta](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#api-status), meaning:
+    - the API is available in our sandbox and integration test environments
+    - the API is not yet available for production use
+    - we might make breaking changes, but only if we cannot avoid it, and we'll give advance notice
+    
+    To see our roadmap, or to suggest, comment or vote on features for this API, see our [interactive product backlog.](https://nhs-digital-api-management.featureupvote.com/?order=popular&filter=all&tag=sds-fhir-api)
+    
+    If you have any other queries, please [contact us](https://digital.nhs.uk/developer/help-and-support).
+
+    ## Technology 
+    This API is [RESTful](https://digital.nhs.uk/developer/guides-and-documentation/api-technologies-at-nhs-digital#basic-rest).
+
+    It also conforms to the [FHIR](https://digital.nhs.uk/developer/guides-and-documentation/api-technologies-at-nhs-digital#fhir) global standard for health care data exchange.Specifically, it is aligned with [FHIR UK Core](https://digital.nhs.uk/services/fhir-uk-core), which is built on FHIR Release 4. You don’t need to know much about FHIR to use this API - FHIR APIs are just RESTful APIs that follow specific rules. In particular:
+    - resource names are capitalised and singular, for example `/Endpoint` not `/endpoints`
+    
+    Errors handling in this API follows [NHS guidelines](https://nhsconnect.github.io/FHIR-SpineCore/resources_error_handling.html) and produces an [OperationOutcome](https://fhir.nhs.uk/STU3/StructureDefinition/Spine-OperationOutcome-1) FHIR resource response with appropriate HTTP code
+    
+    ## Network access
+    This API is available on the internet and, indirectly, on the [Health and Social Care Network (HSCN).](https://digital.nhs.uk/services/health-and-social-care-network)
+    
+    For more details see [Network access for APIs](https://digital.nhs.uk/developer/guides-and-documentation/network-access-for-apis).
+    
+    ## Security and Authorisation 
+    This API uses the Application-restricted pattern.  
+
+    In this pattern, you authenticate your application by including an API key with each API request. The API key is unique to your application.
+
+    For more details, including detailed technical integration instructions, see [Security and Authorisation - Application-restricted RESTful APIs - API key authentication](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation/application-restricted-restful-apis-api-key-authentication) page within the NHS Digital Portal.
+
+    ## Environments and testing 
+    | Environment       | Base URL                                                       
+    | ----------------- | ---------------------------------------------------------------------|
+    | Sandbox           | `https://sandbox.api.service.nhs.uk/spine-directory/FHIR/R4`         |
+    | Integration test  | `https://int.api.service.nhs.uk/spine-directory/FHIR/R4`             |
+    
+    ### Sandbox testing
+    Our [sandbox environment](https://digital.nhs.uk/developer/guides-and-documentation/testing#sandbox-testing):
+    * is for early developer testing
+    * only covers a limited set of scenarios
+    * is open-access, so does not allow you to test authorisation
+    
+    For more details on sandbox testing, or to try out the sandbox using our \"Try this API\" feature, see the documentation for each endpoint.
+    
+    ## Integration testing 
+    Our [integration test environment](https://digital.nhs.uk/developer/guides-and-documentation/testing#integration-testing): 
+    - is for formal integration testing.
+    - includes application authentication
+    
+    ## Data
+    The data used will be dependant on the service you are trying to access. See [Spine Services and Interaction IDs](https://nhsconnect.github.io/FHIR-SpineCore/security_interaction_ids.html)
+
+    For more details see [integration testing with our RESTful APIs](https://digital.nhs.uk/developer/guides-and-documentation/testing#integration-testing-with-our-restful-apis).
+
+    ## Related APIs
+    The following APIs are related to this one:
+    - [Spine Directory Service - LDAP API](https://digital.nhs.uk/developer/api-catalogue/spine-directory-service-ldap) - Access details of organisations, people and systems registered in the Spine Directory Service (SDS) using our LDAP API.
+    
+    ## Legal Use
+    This API can only be used where there is a legal basis to do so. Make sure you have a valid use case before you go too far with your development.
+
+    You must do this before you can go live (see ‘Onboarding’ below). 
+    
+    ## Onboarding
+    You need to get your software approved by us before it can go live with this API. We call this onboarding. The onboarding process can sometimes be quite long, so it’s worth planning well ahead.
+    This API is not yet available for onboarding.
+
+  contact:
+    name: Spine Directory Service API Support
+    url: 'https://digital.nhs.uk/developer/help-and-support'
+    email: api.management@nhs.net
+servers:
+  - url: 'https://sandbox.api.service.nhs.uk/spine-directory/FHIR/R4'
+    description: Sandbox environment
+paths:
+  /Device:
+    get:
+      summary: Get accredited system details
+      operationId: getDevice
+      description: |
+        # Overview
+        Use this endpoint to get accredited systems information in SDS.
+        
+        This endpoint should return all matching accredited system objects which provides the following information:
+          * Accredited System Identifier
+          * Managing Organisation Code
+          * Client Code
+          * Party Key
+          * Service-Interactions
+        
+        To get the information, you must supply:
+          * organisation code
+          * service identifier
+        
+        and may supply:
+          * managing organization identifier
+          * party key
+      parameters:
+        - in: query
+          name: organization
+          description: The organisation code for the NHS Spine instance that your Message Handling System is communicating with. Must be preceded with FHIR identifier (eg."organization=https://fhir.nhs.uk/Id/ods-organization-code|YES-0000806")
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: identifier
+          description: "The service that is being contacted and the action that is required. Additionally optional MHS party key as a second occurance of this parameter. Both must be preceded with FHIR identifier (eg. service id: 'identifier=https://fhir.nhs.uk/Id/nhsServiceInteractionId|urn:nhs:names:services:gpconnect:fhir:rest:search:patient' ; party key: 'identifier=https://fhir.nhs.uk/Id/nhsMhsPartyKey|YES-0000806'). See the Data section in this API Specification document for more information."
+          required: true
+          schema:
+            type: array
+            items: 
+              type: string
+          explode: true
+        - in: query
+          name: managing-organization
+          description: Manufacturer's organisation code - ODS code of the manufacturer's organisation (i.e. GP System supplier)
+          required: false
+          schema:
+            type: string
+        - in: header
+          name: X-Correlation-Id
+          description: UUID for request tracking
+          schema:
+            type: string
+            format: uuid
+          required: false
+      responses:
+        '200':
+          description: Valid request that returns all accredited systems found that match the search criteria (which may be 0).
+          content:
+            application/fhir+json:
+              schema:
+                $ref: 'components/schemas/DeviceBundle.yaml'
+              example:
+                $ref: 'components/examples/DeviceBundle.json'
+        '400':
+          description: Missing or invalid query parameter(s).
+        '405':
+          description: Unsupported HTTP method. For this endpoint only GET is available
+        '404':
+          description: Invalid endpoint path
+        '406':
+          description: Unsupported media type
+        '500':
+          description: Unhandled internal server error
+        '502':
+          description: Upstream LDAP returned an unsupported responses
+        '504':
+          description: Upstream LDAP server request has timed out
+  /Endpoint:
+    get:
+      summary: Get routing and reliability details
+      operationId: getEndpoint
+      description: |
+        # Overview
+        Use this endpoint to get accredited systems routing and reliability information in SDS.
+        
+        This endpoint should return all matching routing and reliability objects which provides the following information:
+          * Endpoint Service ID
+          * Message Handling System Party Key
+          * Accredited System ID
+          * Endpoint URL
+          * Fully Qualified Domain Name of the Message Handling System
+        
+        To get the information, you must supply:
+          * organisation code
+
+        And at least one of the following:
+          * service identifier
+          * party key
+      parameters:
+        - in: query
+          name: organization
+          description: The organisation code for the NHS Spine instance that your Message Handling System is communicating with. Must be preceded with FHIR identifier (eg."organization=https://fhir.nhs.uk/Id/ods-organization-code|YES-0000806")
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: identifier
+          description: "The service that is being contacted and the action that is required, or the MHS Party Key (or both, as separate occurences of this parameter). Must be preceded with FHIR identifier (eg. service id 'identifier=https://fhir.nhs.uk/Id/nhsEndpointServiceId|urn:nhs:names:services:psis:REPC_IN150016UK05' ; party key: 'https://fhir.nhs.uk/Id/nhsMhsPartyKey|A20047-821870'). See the Data section in this API Specification document for more information."
+          required: true
+          schema:
+            type: string
+        - in: header
+          name: X-Correlation-Id
+          description: UUID for request tracking
+          schema:
+            type: string
+            format: uuid
+          required: false
+      responses:
+        '200':
+          description: Valid request that returns all accredited systems found that match the search criteria (which may be 0).
+          content:
+            application/fhir+json:
+              schema:
+                $ref: 'components/schemas/EndpointBundle.yaml'
+              example:
+                $ref: 'components/examples/EndpointBundle.json'
+        '400':
+          description: Missing or invalid query parameter(s).
+        '405':
+          description: Unsupported HTTP method. For this endpoint only GET is available
+        '404':
+          description: Invalid endpoint path
+        '406':
+          description: Unsupported media type
+        '500':
+          description: Unhandled internal server error
+        '502':
+          description: Upstream LDAP returned an unsupported responses
+        '504':
+          description: Upstream LDAP server request has timed out
+components:
+  schemas:
+    DeviceBundle:
+      $ref: components/schemas/DeviceBundle.yaml
+    Device:
+      $ref: components/schemas/Device.yaml
+    EndpointBundle:
+      $ref: components/schemas/EndpointBundle.yaml
+    Endpoint:
+      $ref: components/schemas/Endpoint.yaml

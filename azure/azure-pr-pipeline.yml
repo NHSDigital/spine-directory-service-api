@@ -8,6 +8,7 @@ resources:
     - repository: common
       type: github
       name: NHSDigital/api-management-utils
+      ref: refs/heads/edge
       endpoint: NHSDigital
   pipelines:
   - pipeline: build_pipeline
@@ -20,7 +21,7 @@ resources:
           - refs/tags/v*
 
 pool:
-  vmImage: 'ubuntu-latest'
+  name: 'AWS-ECS'
 
 variables:
   - template: project.yml
@@ -34,6 +35,8 @@ extends:
     product_display_name: ${{ variables.product_display_name }}
     product_description: ${{ variables.product_description }}
     spec_file: ${{ variables.spec_file }}
+    portal_api_requires_callback_url: false
+    make_spec_visible: true
     deploy_review_sandbox: true
     secret_ids:
       - ptl/cis/ldap.nis1.national.ncrs.nhs.uk/key
@@ -43,3 +46,9 @@ extends:
       - /ptl/api-deployment/sds/ldap/private-key
       - /ptl/api-deployment/sds/ldap/client-cert
       - /ptl/api-deployment/sds/ldap/ca-certs
+    apigee_deployments:
+      - environment: internal-dev
+        make_spec_visible: true
+      - environment: internal-dev-sandbox
+        proxy_path: sandbox
+

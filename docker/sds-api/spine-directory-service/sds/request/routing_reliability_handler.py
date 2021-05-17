@@ -1,42 +1,77 @@
-from request.base_handler import BaseHandler
+import json
+
+import tornado
+from tornado.web import MissingArgumentError
+from urllib.parse import unquote
+
+from request.base_handler import BaseHandler, ORG_CODE_QUERY_PARAMETER_NAME, ORG_CODE_FHIR_IDENTIFIER, \
+    IDENTIFIER_QUERY_PARAMETER_NAME, SERVICE_ID_FHIR_IDENTIFIER, PARTY_KEY_FHIR_IDENTIFIER
 from request.content_type_validator import get_valid_accept_type
+from request.error_handler import ErrorHandler
+from request.fhir_json_mapper import build_endpoint_resources, build_bundle_resource
 from request.http_headers import HttpHeaders
-from request.fhir_json_mapper import get_json_format
-from request.fhir_xml_mapper import get_xml_format
-from utilities import timing, integration_adaptors_logger as log
+from request.tracking_ids_headers_reader import read_tracking_id_headers
+from utilities import timing, integration_adaptors_logger as log, mdc
 
 logger = log.IntegrationAdaptorsLogger(__name__)
 
 
-class RoutingReliabilityRequestHandler(BaseHandler):
+class RoutingReliabilityRequestHandler(BaseHandler, ErrorHandler):
     """A handler for requests to obtain combined routing and reliability information."""
+
+    def prepare(self):
+        if self.request.method != "GET":
+            raise tornado.web.HTTPError(
+                status_code=405,
+                log_message="Method not allowed.")
 
     @timing.time_request
     async def get(self):
-        org_code = self.get_query_argument("org-code")
-        service_id = self.get_query_argument("service-id")
-        content_type = get_valid_accept_type(self.request.headers)
+        read_tracking_id_headers(self.request.headers)
 
-        # TODO: could be run in parallel
+        self._validate_query_params()
 
-        logger.info("Looking up routing information. {org_code}, {service_id}",
-                    fparams={"org_code": org_code, "service_id": service_id})
-        routing_info = await self.routing.get_end_point(org_code, service_id)
-        logger.info("Obtained routing information. {routing_information}",
-                    fparams={"routing_information": routing_info})
+        org_code = self.get_required_query_param(ORG_CODE_QUERY_PARAMETER_NAME, ORG_CODE_FHIR_IDENTIFIER)
+        service_id = self.get_optional_query_param(IDENTIFIER_QUERY_PARAMETER_NAME, SERVICE_ID_FHIR_IDENTIFIER)
+        party_key = self.get_optional_query_param(IDENTIFIER_QUERY_PARAMETER_NAME, PARTY_KEY_FHIR_IDENTIFIER)
 
-        logger.info("Looking up reliability information. {org_code}, {service_id}",
-                    fparams={"org_code": org_code, "service_id": service_id})
-        reliability_info = await self.routing.get_reliability(org_code, service_id)
-        logger.info("Obtained reliability information. {reliability_information}",
-                    fparams={"reliability_information": reliability_info})
+        if not service_id and not party_key:
+            self._raise_invalid_identifier_query_param_error()
 
-        combined_info = {**routing_info, **reliability_info}
-        logger.info("Combined routing and reliability information. {routing_reliability_information}",
-                    fparams={"routing_reliability_information": combined_info})
+        accept_type = get_valid_accept_type(self.request.headers)
 
-        if content_type == 'application/fhir+xml':
-            self.write(get_xml_format(combined_info, org_code, service_id))
-        else:
-            self.write(get_json_format(combined_info, org_code, service_id))
-        self.set_header(HttpHeaders.CONTENT_TYPE, content_type)
+        logger.info("Looking up routing and reliability information. {org_code}, {service_id}, {party_key}",
+                    fparams={"org_code": org_code, "service_id": service_id, "party_key": party_key})
+        ldap_result = await self.sds_client.get_mhs_details(org_code, service_id, party_key)
+        logger.info("Obtained routing and reliability information. {ldap_result}",
+                    fparams={"ldap_result": ldap_result})
+
+        base_url = f"{self.request.protocol}://{self.request.host}{self.request.path}/"
+        full_url = unquote(self.request.full_url())
+
+        endpoints = []
+        for ldap_attributes in ldap_result:
+            endpoints += build_endpoint_resources(ldap_attributes)
+
+        bundle = build_bundle_resource(endpoints, base_url, full_url)
+
+        self.write(json.dumps(bundle, indent=2, sort_keys=False))
+        self.set_header(HttpHeaders.CONTENT_TYPE, accept_type)
+        self.set_header(HttpHeaders.X_CORRELATION_ID, mdc.correlation_id.get())
+
+    def _validate_query_params(self):
+        query_params = self.request.arguments
+        for query_param in query_params.keys():
+            if query_param not in [ORG_CODE_QUERY_PARAMETER_NAME, IDENTIFIER_QUERY_PARAMETER_NAME]:
+                raise tornado.web.HTTPError(
+                    status_code=400,
+                    log_message=f"Illegal query parameter '{query_param}'")
+            for query_param_value in query_params[query_param]:
+                query_param_value = query_param_value.decode("utf-8")
+                if query_param == ORG_CODE_QUERY_PARAMETER_NAME \
+                        and not query_param_value.startswith(f"{ORG_CODE_FHIR_IDENTIFIER}|"):
+                    self._raise_invalid_query_param_error(ORG_CODE_QUERY_PARAMETER_NAME, ORG_CODE_FHIR_IDENTIFIER)
+                if query_param == IDENTIFIER_QUERY_PARAMETER_NAME \
+                        and not query_param_value.startswith(f"{SERVICE_ID_FHIR_IDENTIFIER}|") \
+                        and not query_param_value.startswith(f"{PARTY_KEY_FHIR_IDENTIFIER}|"):
+                    self._raise_invalid_identifier_query_param_error()

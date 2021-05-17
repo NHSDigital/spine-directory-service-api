@@ -14,7 +14,6 @@ install-hooks:
 
 lint:
 	# npm run lint
-	# cd docker/sandbox && npm run lint && cd ..
 	# cd docker/adaptor && npm run lint && cd ..
 	# poetry run flake8 **/*.py
 	# find -name '*.sh' | grep -v node_modules | xargs shellcheck
@@ -32,7 +31,7 @@ serve:
 
 generate-examples: publish clean
 	mkdir -p build/examples
-	poetry run python scripts/generate_examples.py build/spine-directory.json build/examples
+	poetry run python scripts/generate_examples.py build/spine-directory-service.json build/examples
 	scripts/duplicate_examples.sh
 
 update-examples: generate-examples
@@ -65,6 +64,7 @@ release: clean publish build-proxy
 	cp ecs-proxies-deploy.yml dist/ecs-deploy-internal-qa.yml
 	cp ecs-proxies-deploy-sandbox.yml dist/ecs-deploy-internal-qa-sandbox.yml
 	cp ecs-proxies-deploy-sandbox.yml dist/ecs-deploy-sandbox.yml
+	cp ecs-proxies-deploy-sandbox.yml dist/ecs-deploy-internal-dev-sandbox.yml
 	cp ecs-proxies-deploy.yml dist/ecs-deploy-int.yml
 	cp ecs-proxies-deploy.yml dist/ecs-deploy-ref.yml
 #	cp ecs-proxies-deploy.yml dist/ecs-deploy-prod.yml

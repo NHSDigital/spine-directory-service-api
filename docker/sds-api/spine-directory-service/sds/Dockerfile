@@ -1,4 +1,7 @@
-FROM nhsdev/nia-spine-directory-service-base:1.0.0
+FROM python:3.7-slim as base
+
+RUN apt-get update && \
+    apt-get install build-essential -y
 
 RUN mkdir -p /usr/src/app/spine-directory-service/sds
 

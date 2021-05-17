@@ -4,25 +4,59 @@ import unittest
 import requests
 from requests import Response
 
+ORG_CODE_FHIR_IDENTIFIER = "https://fhir.nhs.uk/Id/ods-organization-code"
+SERVICE_ID_FHIR_IDENTIFIER = "https://fhir.nhs.uk/Id/nhsServiceInteractionId"
+PARTY_KEY_FHIR_IDENTIFIER = "https://fhir.nhs.uk/Id/nhsMhsPartyKey"
+MANAGING_ORGANIZATION_FHIR_IDENTIFIER = "https://fhir.nhs.uk/Id/ods-organization-code"
 
-class SdsHttpRequestBuilder(object):
-    def __init__(self):
+
+class SdsHttpRequestBuilder:
+    def __init__(self, path: str):
+        self.method = "GET"
         self.headers = {}
         self.query_params = {}
-        self.sds_host = os.environ.get('SDS_ADDRESS', 'http://localhost:9000/endpoint')
+        self.path = path
+        self.sds_host = os.environ.get('SDS_ADDRESS', 'http://localhost:9000')
         self.assertions = unittest.TestCase('__init__')
 
-    def with_org_code(self, org_code: str):
-        self.query_params['org-code'] = org_code
+    def with_path(self, path):
+        self.path = path
         return self
 
-    def with_service_id(self, service_id: str):
-        self.query_params['service-id'] = service_id
+    def with_method(self, method):
+        self.method = method
+        return self
+
+    def with_org_code(self, org_code: str, fhir_code=ORG_CODE_FHIR_IDENTIFIER):
+        params = self.query_params.get('organization', [])
+        params.append(f"{fhir_code}|{org_code}")
+        self.query_params['organization'] = params
+        return self
+
+    def with_service_id(self, service_id: str, fhir_code=SERVICE_ID_FHIR_IDENTIFIER):
+        params = self.query_params.get('identifier', [])
+        params.append(f"{fhir_code}|{service_id}")
+        self.query_params['identifier'] = params
+        return self
+
+    def with_party_key(self, party_key: str, fhir_code=PARTY_KEY_FHIR_IDENTIFIER):
+        params = self.query_params.get('identifier', [])
+        params.append(f"{fhir_code}|{party_key}")
+        self.query_params['identifier'] = params
+        return self
+
+    def with_managing_organization(self, managing_organization: str, fhir_code=MANAGING_ORGANIZATION_FHIR_IDENTIFIER):
+        params = self.query_params.get('managing-organization', [])
+        params.append(f"{fhir_code}|{managing_organization}")
+        self.query_params['managing-organization'] = params
         return self
 
     def with_correlation_id(self, correlation_id: str):
-        self.headers["Correlation-Id"] = correlation_id
+        self.headers["X-Correlation-ID"] = correlation_id
         return self
+
+    def execute(self) -> Response:
+        return self._execute_request()
 
     def execute_get_expecting_success(self) -> Response:
         response = self._execute_request()
@@ -49,4 +83,9 @@ class SdsHttpRequestBuilder(object):
         return response
 
     def _execute_request(self) -> Response:
-        return requests.get(self.sds_host, params=self.query_params, headers=self.headers, verify=False, timeout=15)
+        request_action = requests.get
+        if self.method == "GET":
+            request_action = requests.get
+        elif self.method == "POST":
+            request_action = requests.post
+        return request_action(self.sds_host + self.path, params=self.query_params, headers=self.headers, verify=False, timeout=15)

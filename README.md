@@ -5,7 +5,6 @@
 This is a RESTful HL7® FHIR® API specification for the *Spine Directory Service API*.
 
 * `specification/` This [Open API Specification](https://swagger.io/docs/specification/about/) describes the endpoints, methods and messages exchanged by the API. Use it to generate interactive documentation; the contract between the API and its consumers.
-* `docker/sandbox/` This implements a mock implementation of the service. Use it as a back-end service to the interactive documentation to illustrate interactions and concepts. It is not intended to provide an exhaustive/faithful environment suitable for full development and testing.
 * `docker/sds-api/` This implements a mock implementation of the service. Use it as a back-end service to the interactive documentation to illustrate interactions and concepts. It is not intended to provide an exhaustive/faithful environment suitable for full development and testing.
 * `scripts/` Utilities helpful to developers of this specification.
 * `proxies/` Live (connecting to another service) and sandbox (using the sandbox container) Apigee API Proxy definitions.
@@ -120,3 +119,27 @@ Successful deployment of the API Proxy requires:
  1. A *Target Server* named `spine-directory-target`
 
 :bulb: For Sandbox-running environments (`test`) these need to be present for successful deployment but can be set to empty/dummy values.
+
+### Sandbox
+
+Sandbox environment mimics real service behaviour - both correct HTTP 200 and client error responses 4xx codes.
+Both /Endpoint and /Device has built in one response with data that can be fetched using query parameters specified below. All other combinations result with empty FHIR bundle simulating no result found.
+
+1. `/Endpoint`
+- `organization=https://fhir.nhs.uk/Id/ods-organization-code|YES`
+- `identifier=https://fhir.nhs.uk/Id/nhsEndpointServiceId|urn:nhs:names:services:psis:REPC_IN150016UK05`
+- `identifier=https://fhir.nhs.uk/Id/nhsMhsPartyKey|YES-0000806`
+
+Query parametere `organization` is mandatory. At least one `identifier` must be present.
+
+Example: `/Endpoint?organization=https://fhir.nhs.uk/Id/ods-organization-code|YES&identifier=https://fhir.nhs.uk/Id/nhsEndpointServiceId|urn:nhs:names:services:psis:REPC_IN150016UK05&identifier=https://fhir.nhs.uk/Id/nhsMhsPartyKey|YES-0000806`
+
+2. `/Device`
+- `organization=https://fhir.nhs.uk/Id/ods-organization-code|YES`
+- `identifier=https://fhir.nhs.uk/Id/nhsEndpointServiceId|urn:nhs:names:services:psis:REPC_IN150016UK05`
+- `identifier=https://fhir.nhs.uk/Id/nhsMhsPartyKey|YES-0000806`
+- `managing-organization=https://fhir.nhs.uk/Id/ods-organization-code|YES`
+
+Query parameters `organization` and `identifier(https://fhir.nhs.uk/Id/nhsEndpointServiceId)` are mandatory. One or both `identifier(https://fhir.nhs.uk/Id/nhsMhsPartyKey)` and `managing-organization` can be supplied.
+
+Example: `/Device?organization=https://fhir.nhs.uk/Id/ods-organization-code|YES&identifier=https://fhir.nhs.uk/Id/nhsEndpointServiceId|urn:nhs:names:services:psis:REPC_IN150016UK05&identifier=https://fhir.nhs.uk/Id/nhsMhsPartyKey|YES-0000806&managing-organization=https://fhir.nhs.uk/Id/ods-organization-code|YES`

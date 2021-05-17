@@ -1,0 +1,23 @@
+{
+  "resourceType": "Bundle",
+  "id": "BAD2C148-6353-40A6-A215-33222EED2E11",
+  "type": "searchset",
+  "total": 1,
+  "link": [
+    {
+      "relation": "self",
+      "url": "https://int.api.service.nhs.uk/spine-directory/FHIR/R4/Endpoint?organization=https://fhir.nhs.uk/Id/ods-organization-code|YES&identifier=https://fhir.nhs.uk/Id/nhsServiceInteractionId|urn:nhs:names:services:psis:REPC_IN150016UK05&identifier=https://fhir.nhs.uk/Id/nhsMhsPartyKeey|A20047-821870"
+    }
+  ],
+  "entry": [
+    {
+      "fullUrl": "https://int.api.service.nhs.uk/spine-directory/FHIR/R4/Endpoint/08CE3BFB-5055-422B-9AE5-80DF6F4E1C61",
+      "resource": {
+        "$ref": "Endpoint.json"
+      },
+      "search": {
+        "mode": "match"
+      }
+    }
+  ]
+}

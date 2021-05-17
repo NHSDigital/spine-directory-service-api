@@ -1,0 +1,52 @@
+type: object
+description: "A FHIR Device resource information for the accredited system"
+properties:
+  resourceType:
+    type: string
+    default: "Device"
+  id:
+    type: string
+    description: "SDS’s unique identifier for this accredited system record."
+    format: uuid
+    example: "F0F0E921-92CA-4A88-A550-2DBB36F703AF"
+  identifier:
+    type: array
+    description: "Identifies this device across multiple systems"
+    items: 
+      type: object
+      properties:
+        system:
+          type: string
+        value:
+          type: string
+  extension:
+    type: array
+    description: "Additional content defined by implementations"
+    items:
+      type: object
+      properties:
+        url:
+          type: string
+        valueReference:
+          type: object
+          properties:
+            identifier:
+              type: object
+              properties:
+                system:
+                  type: string
+                value:
+                  type: string
+  owner:
+    type: object
+    description: "Manufacturer's organisation details"
+    properties:
+      identifier:
+        type: object
+        properties:
+          system:
+            type: string
+          value:
+            type: string
+      display:
+        type: string

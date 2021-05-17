@@ -2,9 +2,9 @@ import json
 import os
 import unittest
 
-from utilities.SdsHttpRequestBuilder import SdsHttpRequestBuilder
-
 TEST_DATA_BASE_PATH = os.path.join(os.path.dirname(__file__), '../tests/test_data/')
+
+assertions = unittest.TestCase('__init__')
 
 
 def read_test_data_json(file):
@@ -12,29 +12,14 @@ def read_test_data_json(file):
         return json.load(json_file)
 
 
-def test_should_return_successful_response(test_data_file_name):
-    assertions = unittest.TestCase('__init__')
-
-    response = SdsHttpRequestBuilder() \
-        .with_org_code('YES') \
-        .with_service_id('urn:nhs:names:services:psis:REPC_IN150016UK05') \
-        .execute_get_expecting_success()
-
-    assertions.assertEqual('application/json', response.headers['Content-Type'])
-
-    expected_body = read_test_data_json(test_data_file_name)
-    body = json.loads(response.content.decode('UTF-8'))
-    assertions.assertEqual(expected_body, body)
-
-
-def test_should_return_bad_request_when_query_parameters_are_missing():
-    SdsHttpRequestBuilder() \
-        .execute_get_expecting_bad_request_response()
-
-    SdsHttpRequestBuilder() \
-        .with_org_code('YES') \
-        .execute_get_expecting_bad_request_response()
-
-    SdsHttpRequestBuilder() \
-        .with_service_id('urn:nhs:names:services:psis:REPC_IN150016UK05') \
-        .execute_get_expecting_bad_request_response()
+def assert_404_operation_outcome(response_content):
+    operation_outcome = json.loads(response_content)
+    assertions.assertEqual(operation_outcome["resourceType"], "OperationOutcome")
+    issue = operation_outcome["issue"][0]
+    assertions.assertEqual(issue["severity"], "error")
+    assertions.assertEqual(issue["code"], "not-found")
+    assertions.assertEqual(issue["diagnostics"], 'HTTP endpoint not found')
+    coding = issue["details"]["coding"][0]
+    assertions.assertEqual(coding["system"], 'https://fhir.nhs.uk/STU3/ValueSet/Spine-ErrorOrWarningCode-1')
+    assertions.assertEqual(coding["code"], 'NO_RECORD_FOUND')
+    assertions.assertEqual(coding["display"], 'No record found')
