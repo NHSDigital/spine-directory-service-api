@@ -7,12 +7,12 @@ from utilities import mdc, message_utilities
 
 ORG_CODE_QUERY_PARAMETER_NAME = "organization"
 IDENTIFIER_QUERY_PARAMETER_NAME = "identifier"
-MANAGING_ORGANIZATION_QUERY_PARAMETER_NAME = "managing-organization"
+MANUFACTURING_ORGANIZATION_QUERY_PARAMETER_NAME = "manufacturing-organization"
 
 ORG_CODE_FHIR_IDENTIFIER = "https://fhir.nhs.uk/Id/ods-organization-code"
 SERVICE_ID_FHIR_IDENTIFIER = "https://fhir.nhs.uk/Id/nhsServiceInteractionId"
 PARTY_KEY_FHIR_IDENTIFIER = "https://fhir.nhs.uk/Id/nhsMhsPartyKey"
-MANAGING_ORGANIZATION_FHIR_IDENTIFIER = "https://fhir.nhs.uk/Id/ods-organization-code"
+MANUFACTURING_ORGANIZATION_FHIR_IDENTIFIER = "https://fhir.nhs.uk/Id/ods-organization-code"
 
 
 class BaseHandler(tornado.web.RequestHandler):

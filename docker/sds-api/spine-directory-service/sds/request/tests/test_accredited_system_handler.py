@@ -1,11 +1,11 @@
 from os import path
-from request.tests.request_handler_test_base import RequestHandlerTestBase, ORG_CODE, SERVICE_ID, PARTY_KEY, MANAGING_ORG
+from request.tests.request_handler_test_base import RequestHandlerTestBase, ORG_CODE, SERVICE_ID, PARTY_KEY, MANUFACTURING_ORG
 from utilities import test_utilities
 
 EXPECTED_SINGLE_DEVICE_JSON_FILE_PATH = path.join(path.dirname(__file__), "examples/single_device.json")
 EXPECTED_MULTIPLE_DEVICES_JSON_FILE_PATH = path.join(path.dirname(__file__), "examples/multiple_devices.json")
 SINGLE_ACCREDITED_SYSTEM_DETAILS = [{
-    "nhsIdCode": MANAGING_ORG,
+    "nhsIdCode": MANUFACTURING_ORG,
     "uniqueIdentifier": [
         "928942012545"
     ],
@@ -18,7 +18,7 @@ SINGLE_ACCREDITED_SYSTEM_DETAILS = [{
 
 MULTIPLE_ACCREDITED_SYSTEM_DETAILS = SINGLE_ACCREDITED_SYSTEM_DETAILS.copy()
 MULTIPLE_ACCREDITED_SYSTEM_DETAILS.append({
-    "nhsIdCode": MANAGING_ORG + "_second",
+    "nhsIdCode": MANUFACTURING_ORG + "_second",
     "uniqueIdentifier": [
         "928942012545_second"
     ],
@@ -36,7 +36,7 @@ class TestAccreditedSystemHandler(RequestHandlerTestBase):
         self.sds_client.get_as_details.return_value = test_utilities.awaitable(SINGLE_ACCREDITED_SYSTEM_DETAILS)
 
         super()._test_get(
-            super()._build_device_url(party_key=None, managing_organization=None),
+            super()._build_device_url(party_key=None, manufacturing_organization=None),
             EXPECTED_SINGLE_DEVICE_JSON_FILE_PATH)
 
         self.sds_client.get_as_details.assert_called_with(ORG_CODE, SERVICE_ID, None, None)
@@ -45,7 +45,7 @@ class TestAccreditedSystemHandler(RequestHandlerTestBase):
         self.sds_client.get_as_details.return_value = test_utilities.awaitable(MULTIPLE_ACCREDITED_SYSTEM_DETAILS)
 
         super()._test_get(
-            super()._build_device_url(party_key=None, managing_organization=None),
+            super()._build_device_url(party_key=None, manufacturing_organization=None),
             EXPECTED_MULTIPLE_DEVICES_JSON_FILE_PATH)
 
         self.sds_client.get_as_details.assert_called_with(ORG_CODE, SERVICE_ID, None, None)
@@ -111,14 +111,14 @@ class TestAccreditedSystemHandler(RequestHandlerTestBase):
                     f"HTTP 400: Bad Request (Missing or invalid 'identifier' query parameter. Should be one or both of: ['identifier=https://fhir.nhs.uk/Id/nhsServiceInteractionId|value', 'identifier=https://fhir.nhs.uk/Id/nhsMhsPartyKey|value')")
 
         for value in ['', 'fhir', 'fhir|', f'fhir|value']:
-            with self.subTest(f"Invalid managing-organization with value '{value}'"):
+            with self.subTest(f"Invalid manufacturing-organization with value '{value}'"):
                 base_url = self._build_device_url(org_code=ORG_CODE, service_id=SERVICE_ID)
-                url = f"{base_url}&managing-organization={value}"
+                url = f"{base_url}&manufacturing-organization={value}"
                 response = self.fetch(url, method="GET")
                 self.assertEqual(response.code, 400)
                 super()._assert_400_operation_outcome(
                     response.body.decode(),
-                    f"HTTP 400: Bad Request (Missing or invalid 'managing-organization' query parameter. Should be 'managing-organization=https://fhir.nhs.uk/Id/ods-organization-code|value')")
+                    f"HTTP 400: Bad Request (Missing or invalid 'manufacturing-organization' query parameter. Should be 'manufacturing-organization=https://fhir.nhs.uk/Id/ods-organization-code|value')")
 
     def test_get_handles_different_accept_header(self):
         self.sds_client.get_as_details.return_value = test_utilities.awaitable(SINGLE_ACCREDITED_SYSTEM_DETAILS)

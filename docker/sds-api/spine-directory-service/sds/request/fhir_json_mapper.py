@@ -93,11 +93,11 @@ def build_device_resource(ldap_attributes: Dict) -> Dict:
         device['identifier'] = identifiers
 
     extension = []
-    managing_organization = ldap_attributes.get('nhsIdCode')
-    if managing_organization:
+    manufacturing_organization = ldap_attributes.get('nhsIdCode')
+    if manufacturing_organization:
         extension.append(
             _build_value_reference_extension(
-                Url.MANAGING_ORGANIZATION_EXTENSION_URL, Url.MANAGING_ORGANIZATION_URL, managing_organization))
+                Url.MANUFACTURING_ORGANIZATION_EXTENSION_URL, Url.MANUFACTURING_ORGANIZATION_URL, manufacturing_organization))
     service_id_extensions = list(map(
         lambda v: _build_value_reference_extension(Url.SDS_SERVICE_INTERACTION_ID_URL, SERVICE_ID_FHIR_IDENTIFIER, v),
         ldap_attributes.get('nhsAsSvcIA')))
@@ -110,7 +110,7 @@ def build_device_resource(ldap_attributes: Dict) -> Dict:
     if client_id:
         device["owner"] = {
             "identifier": {
-                "system": Url.MANAGING_ORGANIZATION_URL,
+                "system": Url.MANUFACTURING_ORGANIZATION_URL,
                 "value": client_id
             }
         }

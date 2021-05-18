@@ -68,7 +68,7 @@ class TestSDSClient(TestCase):
     async def test_get_as_details(self):
         client = mocks.mocked_sds_client()
 
-        attributes = await client.get_as_details(ODS_CODE, AS_INTERACTION_ID, managing_organization=None, party_key=PARTY_KEY)
+        attributes = await client.get_as_details(ODS_CODE, AS_INTERACTION_ID, manufacturing_organization=None, party_key=PARTY_KEY)
         expected = [copy(EXPECTED_DEVICE_ATTRIBUTES[0])]
         # check values present
         for key, value in expected[0].items():

@@ -138,8 +138,8 @@ Example: `/Endpoint?organization=https://fhir.nhs.uk/Id/ods-organization-code|YE
 - `organization=https://fhir.nhs.uk/Id/ods-organization-code|YES`
 - `identifier=https://fhir.nhs.uk/Id/nhsEndpointServiceId|urn:nhs:names:services:psis:REPC_IN150016UK05`
 - `identifier=https://fhir.nhs.uk/Id/nhsMhsPartyKey|YES-0000806`
-- `managing-organization=https://fhir.nhs.uk/Id/ods-organization-code|YES`
+- `manufacturing-organization=https://fhir.nhs.uk/Id/ods-organization-code|YES`
 
-Query parameters `organization` and `identifier(https://fhir.nhs.uk/Id/nhsEndpointServiceId)` are mandatory. One or both `identifier(https://fhir.nhs.uk/Id/nhsMhsPartyKey)` and `managing-organization` can be supplied.
+Query parameters `organization` and `identifier(https://fhir.nhs.uk/Id/nhsEndpointServiceId)` are mandatory. One or both `identifier(https://fhir.nhs.uk/Id/nhsMhsPartyKey)` and `manufacturing-organization` can be supplied.
 
-Example: `/Device?organization=https://fhir.nhs.uk/Id/ods-organization-code|YES&identifier=https://fhir.nhs.uk/Id/nhsEndpointServiceId|urn:nhs:names:services:psis:REPC_IN150016UK05&identifier=https://fhir.nhs.uk/Id/nhsMhsPartyKey|YES-0000806&managing-organization=https://fhir.nhs.uk/Id/ods-organization-code|YES`
+Example: `/Device?organization=https://fhir.nhs.uk/Id/ods-organization-code|YES&identifier=https://fhir.nhs.uk/Id/nhsEndpointServiceId|urn:nhs:names:services:psis:REPC_IN150016UK05&identifier=https://fhir.nhs.uk/Id/nhsMhsPartyKey|YES-0000806&manufacturing-organization=https://fhir.nhs.uk/Id/ods-organization-code|YES`
