@@ -28,4 +28,16 @@ extends:
   parameters:
     service_name: ${{ variables.service_name }}
     short_service_name: ${{ variables.short_service_name }}
-
+    cache_steps:
+        - task: s3-cache-action@1
+          inputs:
+            key: 'node modules | ${{ variables.service_name }} | ${{ variables.service_name }}/package-lock.json'
+            location: '${{ variables.service_name }}/node_modules'
+            debug: true
+          displayName: cache node modules
+        - task: s3-cache-action@1
+          inputs:
+            key: 'poetry | ${{ variables.service_name }} | ${{ variables.service_name }}/poetry.lock'
+            location: '${{ variables.service_name }}/.venv'
+            debug: true
+          displayName: cache python dependencies

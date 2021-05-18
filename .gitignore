@@ -7,6 +7,7 @@ newman/
 .idea/
 .venv/
 .#*
+.vscode/
 
 __pycache__/
 .envrc
