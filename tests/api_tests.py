@@ -18,7 +18,7 @@ ENDPOINT_PARTY_KEY_FHIR_IDENTIFIER = 'https://fhir.nhs.uk/Id/nhsMhsPartyKey'
 DEVICE_ORGANIZATION_FHIR_IDENTIFIER = 'https://fhir.nhs.uk/Id/ods-organization-code|YES'
 DEVICE_INTERACTION_ID_FHIR_IDENTIFIER = 'https://fhir.nhs.uk/Id/nhsServiceInteractionId'
 DEVICE_PARTY_KEY_FHIR_IDENTIFIER = 'https://fhir.nhs.uk/Id/nhsMhsPartyKey'
-DEVICE_MANUFACTURER_ORGANIZATION_FHIR_IDENTIFIER = 'https://fhir.nhs.uk/Id/ods-organization-code'
+DEVICE_MANUFACTURING_ORGANIZATION_FHIR_IDENTIFIER = 'https://fhir.nhs.uk/Id/ods-organization-code'
 
 
 def _build_test_path(endpoint: str, query_params: dict = None) -> str:
@@ -189,7 +189,7 @@ async def test_endpoints_are_secured(api_client: APISessionClient, endpoint):
                     f'{DEVICE_INTERACTION_ID_FHIR_IDENTIFIER}|urn:nhs:names:services:psis:REPC_IN150016UK05',
                     f'{DEVICE_PARTY_KEY_FHIR_IDENTIFIER}|L85016-822104',
                 ],
-                'manufacturer-organization': f'{DEVICE_MANUFACTURER_ORGANIZATION_FHIR_IDENTIFIER}|YES',
+                'manufacturing-organization': f'{DEVICE_MANUFACTURING_ORGANIZATION_FHIR_IDENTIFIER}|YES',
             },
             'status_code': 200,
         },
@@ -202,7 +202,7 @@ async def test_endpoints_are_secured(api_client: APISessionClient, endpoint):
                     f'{DEVICE_INTERACTION_ID_FHIR_IDENTIFIER}|urn:nhs:names:services:psis:REPC_IN150016UK05',
                     f'{DEVICE_PARTY_KEY_FHIR_IDENTIFIER}|L85016-822104',
                 ],
-                'manufacturer-organization': f'{DEVICE_MANUFACTURER_ORGANIZATION_FHIR_IDENTIFIER}|YES',
+                'manufacturing-organization': f'{DEVICE_MANUFACTURING_ORGANIZATION_FHIR_IDENTIFIER}|YES',
                 'unsupported': 'unsupported_parameter_value',
             },
             'status_code': 400,
@@ -215,7 +215,7 @@ async def test_endpoints_are_secured(api_client: APISessionClient, endpoint):
                     f'{DEVICE_INTERACTION_ID_FHIR_IDENTIFIER}|urn:nhs:names:services:psis:REPC_IN150016UK05',
                     f'{DEVICE_PARTY_KEY_FHIR_IDENTIFIER}|L85016-822104',
                 ],
-                'manufacturer-organization': f'{DEVICE_MANUFACTURER_ORGANIZATION_FHIR_IDENTIFIER}|YES',
+                'manufacturing-organization': f'{DEVICE_MANUFACTURING_ORGANIZATION_FHIR_IDENTIFIER}|YES',
                 'unsupported': 'unsupported_parameter_value',
             },
             'status_code': 400,
