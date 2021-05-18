@@ -140,7 +140,7 @@ paths:
           explode: true
         - in: query
           name: manufacturing-organization
-          description: Manufacturer's organisation code - ODS code of the manufacturer's organisation (i.e. GP System supplier)
+          description: Manufacturing organisation ODS code. Must be preceded with FHIR identifier (eg."manufacturing-organization=https://fhir.nhs.uk/Id/ods-organization-code|YES")
           required: false
           schema:
             type: string
