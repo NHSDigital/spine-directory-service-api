@@ -161,7 +161,7 @@ class SDSMockClient:
             logger.debug("Sleeping for %sms", self.pause_duration)
             await asyncio.sleep(self.pause_duration / 1000)
 
-        logger.info(f"Returning AS MOCK_LDAP response for ods_code={ods_code} interaction_id={interaction_id} managing_organization={managing_organization} party_key={party_key}")
+        logger.info(f"Returning AS MOCK_LDAP response for ods_code={ods_code} interaction_id={interaction_id} manufacturinging_organization={manufacturing_organization} party_key={party_key}")
 
         if self.mode == "STRICT":
             return list(filter(lambda x: self._filter_as(x, ods_code, interaction_id, manufacturing_organization, party_key), self.mock_as_data))
