@@ -5,9 +5,7 @@
     <CacheKey>
         <KeyFragment ref="request.verb"/>
         <KeyFragment ref="request.path"/>
-        <KeyFragment ref="request.queryparam.organization"/>
-        <KeyFragment ref="request.queryparam.identifier.values"/>
-        <KeyFragment ref="request.queryparam.manufacturing-organization"/>
+        <KeyFragment ref="request.querystring"/>
     </CacheKey>
     <Scope>Exclusive</Scope>
     <ExpirySettings>

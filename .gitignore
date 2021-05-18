@@ -8,6 +8,7 @@ newman/
 .venv/
 .vscode/
 .#*
+.vscode/
 
 __pycache__/
 .envrc

@@ -1,5 +1,11 @@
 SHELL=/bin/bash -euo pipefail
 
+guard-%:
+	@ if [ "${${*}}" = "" ]; then \
+		echo "Environment variable $* not set"; \
+		exit 1; \
+	fi
+
 install: install-node install-python install-hooks
 
 install-python:
@@ -7,7 +13,6 @@ install-python:
 
 install-node:
 	npm install
-	# cd sandbox && npm install
 
 install-hooks:
 	cp scripts/pre-commit .git/hooks/pre-commit
@@ -51,23 +56,31 @@ deploy-spec:
 format:
 	poetry run black **/*.py
 
-sandbox:
-	cd sandbox && npm run start
-
 build-proxy:
 	scripts/build_proxy.sh
 
+_dist_include="pytest.ini poetry.lock poetry.toml pyproject.toml Makefile build/. tests"
+
 release: clean publish build-proxy
 	mkdir -p dist
-	cp -r build/. dist
+	for f in $(_dist_include); do cp -r $$f dist; done
 	cp ecs-proxies-deploy.yml dist/ecs-deploy-internal-dev.yml
 	cp ecs-proxies-deploy.yml dist/ecs-deploy-internal-qa.yml
-	cp ecs-proxies-deploy-sandbox.yml dist/ecs-deploy-internal-qa-sandbox.yml
-	cp ecs-proxies-deploy-sandbox.yml dist/ecs-deploy-sandbox.yml
-	cp ecs-proxies-deploy-sandbox.yml dist/ecs-deploy-internal-dev-sandbox.yml
 	cp ecs-proxies-deploy.yml dist/ecs-deploy-int.yml
 	cp ecs-proxies-deploy.yml dist/ecs-deploy-ref.yml
 #	cp ecs-proxies-deploy.yml dist/ecs-deploy-prod.yml
+	cp ecs-proxies-deploy-sandbox.yml dist/ecs-deploy-internal-qa-sandbox.yml
+	cp ecs-proxies-deploy-sandbox.yml dist/ecs-deploy-sandbox.yml
+	cp ecs-proxies-deploy-sandbox.yml dist/ecs-deploy-internal-dev-sandbox.yml
 
-test:
-	echo "TODO: add tests"
+dist: release
+
+test: smoketest e2etest
+
+pytest-guards: guard-SERVICE_BASE_PATH guard-APIGEE_ENVIRONMENT guard-SOURCE_COMMIT_ID guard-STATUS_ENDPOINT_API_KEY
+
+smoketest: pytest-guards
+	poetry run pytest -v --junitxml=smoketest-report.xml -s -m smoketest
+
+e2etest: pytest-guards
+	poetry run pytest -v --junitxml=e2e-report.xml -s -m e2e
