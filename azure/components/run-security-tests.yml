@@ -9,7 +9,7 @@ steps:
       export OAUTH_PROXY="oauth2"
       export OAUTH_BASE_URI="https://$(ENVIRONMENT).api.service.nhs.uk"
       export APIGEE_API_TOKEN="$(secret.AccessToken)"
-      make securitytests
+      make securitytest
     workingDirectory: $(Pipeline.Workspace)/s/$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)
     displayName: Run security tests
   - task: PublishTestResults@2
