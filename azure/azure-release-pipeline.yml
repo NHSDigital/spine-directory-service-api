@@ -72,7 +72,9 @@ extends:
         post_deploy:
           - template: ./templates/run-tests.yml
             parameters:
+              e2e_tests: true
               smoke_tests: true
+              security_tests: true
       - environment: sandbox
         proxy_path: sandbox
         depends_on:
