@@ -11,7 +11,7 @@ steps:
       export APIGEE_API_TOKEN="$(secret.AccessToken)"
       make smoketest
     workingDirectory: $(Pipeline.Workspace)/s/$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)
-    displayName: run smoketests
+    displayName: Run smoketests
   - task: PublishTestResults@2
     displayName: 'Publish smoketest results'
     condition: always()

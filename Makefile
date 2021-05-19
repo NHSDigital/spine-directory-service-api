@@ -84,3 +84,6 @@ smoketest: pytest-guards
 
 e2etest: pytest-guards
 	poetry run pytest -v --junitxml=e2e-report.xml -s -m e2e
+
+securitytest: pytest-guards
+	poetry run pytest -v --junitxml=securitytest-report.xml -s -m securitytest
