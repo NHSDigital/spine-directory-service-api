@@ -131,7 +131,7 @@ paths:
             type: string
         - in: query
           name: identifier
-          description: "The service that is being contacted and the action that is required. Additionally optional MHS party key as a second occurance of this parameter. Both must be preceded with FHIR identifier (eg. service id: 'identifier=https://fhir.nhs.uk/Id/nhsServiceInteractionId|urn:nhs:names:services:gpconnect:fhir:rest:search:patient' ; party key: 'identifier=https://fhir.nhs.uk/Id/nhsMhsPartyKey|YES-0000806'). See the Data section in this API Specification document for more information."
+          description: "The service that is being contacted and the action that is required. Additionally optional MHS party key as a second occurance of this parameter. Both must be preceded with FHIR identifier (eg. service id: 'identifier=https://fhir.nhs.uk/Id/nhsServiceInteractionId|urn:nhs:names:services:psis:REPC_IN150016UK05' ; party key: 'identifier=https://fhir.nhs.uk/Id/nhsMhsPartyKey|YES-0000806'). See the Data section in this API Specification document for more information."
           required: true
           schema:
             type: array
@@ -204,10 +204,13 @@ paths:
             type: string
         - in: query
           name: identifier
-          description: "The service that is being contacted and the action that is required, or the MHS Party Key (or both, as separate occurences of this parameter). Must be preceded with FHIR identifier (eg. service id 'identifier=https://fhir.nhs.uk/Id/nhsEndpointServiceId|urn:nhs:names:services:psis:REPC_IN150016UK05' ; party key: 'https://fhir.nhs.uk/Id/nhsMhsPartyKey|A20047-821870'). See the Data section in this API Specification document for more information."
+          description: "The service that is being contacted and the action that is required, or the MHS Party Key (or both, as separate occurences of this parameter). Must be preceded with FHIR identifier (eg. service id 'identifier=https://fhir.nhs.uk/Id/nhsServiceInteractionId|urn:nhs:names:services:psis:REPC_IN150016UK05' ; party key: 'https://fhir.nhs.uk/Id/nhsMhsPartyKey|YES-0000806'). See the Data section in this API Specification document for more information."
           required: true
           schema:
-            type: string
+            type: array
+            items: 
+              type: string
+          explode: true 
         - in: header
           name: X-Correlation-Id
           description: UUID for request tracking
