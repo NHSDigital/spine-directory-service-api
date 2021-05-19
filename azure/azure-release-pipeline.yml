@@ -40,9 +40,7 @@ extends:
         post_deploy:
           - template: ./templates/run-tests.yml
             parameters:
-              e2e_tests: true
               smoke_tests: true
-              security_tests: true
       - environment: internal-qa
         make_spec_visible: true
         post_deploy:
@@ -72,9 +70,7 @@ extends:
         post_deploy:
           - template: ./templates/run-tests.yml
             parameters:
-              e2e_tests: true
               smoke_tests: true
-              security_tests: true
       - environment: sandbox
         proxy_path: sandbox
         depends_on:
@@ -84,7 +80,6 @@ extends:
           - template: ./templates/run-tests.yml
             parameters:
               smoke_tests: true
-              e2e_tests: true
       - environment: prod
         depends_on:
             - internal_qa
@@ -93,5 +88,3 @@ extends:
           - template: ./templates/run-tests.yml
             parameters:
               smoke_tests: true
-              security_tests: true
-
