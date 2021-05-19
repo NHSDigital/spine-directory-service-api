@@ -7,6 +7,10 @@ parameters:
     type: boolean
     displayName: Toggle e2e tests
     default: false
+  - name: security_tests
+    type: boolean
+    displayName: Toggle security tests
+    default: false
 
 steps:
   - task: s3-cache-action@1
@@ -28,3 +32,6 @@ steps:
   # e2e tests
   - ${{ if parameters.e2e_tests }}:
     - template: ../components/run-e2e-tests.yml
+  # security tests
+  - ${{ if parameters.security_tests }}:
+    - template: ../components/run-security-tests.yml

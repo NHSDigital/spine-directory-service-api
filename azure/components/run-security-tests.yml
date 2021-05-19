@@ -9,11 +9,11 @@ steps:
       export OAUTH_PROXY="oauth2"
       export OAUTH_BASE_URI="https://$(ENVIRONMENT).api.service.nhs.uk"
       export APIGEE_API_TOKEN="$(secret.AccessToken)"
-      make e2etest
+      make securitytest
     workingDirectory: $(Pipeline.Workspace)/s/$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)
-    displayName: Run e2e tests
+    displayName: Run security tests
   - task: PublishTestResults@2
-    displayName: 'Publish e2e test results'
+    displayName: 'Publish security test results'
     condition: always()
     inputs:
       testResultsFiles: '$(Pipeline.Workspace)/s/$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)/e2e-report.xml'

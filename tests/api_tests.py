@@ -67,7 +67,7 @@ async def test_wait_for_ping(api_client: APISessionClient, api_test_config: APIT
     )
 
 
-@pytest.mark.e2e
+@pytest.mark.securitytest
 @pytest.mark.smoketest
 @pytest.mark.asyncio
 async def test_check_status_is_secured(api_client: APISessionClient):
@@ -105,7 +105,7 @@ async def test_wait_for_status(api_client: APISessionClient, api_test_config: AP
     )
 
 
-@pytest.mark.e2e
+@pytest.mark.securitytest
 @pytest.mark.asyncio
 @pytest.mark.parametrize("endpoint", ["Endpoint", "Device"])
 async def test_endpoints_are_secured(api_client: APISessionClient, endpoint):
