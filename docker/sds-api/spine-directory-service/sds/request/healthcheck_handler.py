@@ -1,4 +1,12 @@
+import json
+
 import tornado.web
+from lookup.sds_client_factory import get_sds_client
+from request.http_headers import HttpHeaders
+from utilities import config
+
+PASS = "pass"
+FAIL = "fail"
 
 
 class HealthcheckHandler(tornado.web.RequestHandler):
@@ -21,4 +29,28 @@ class HealthcheckHandler(tornado.web.RequestHandler):
           200:
             description: The only response this endpoint returns.
         """
-        self.set_status(200)
+
+        status = FAIL
+        output = None
+        try:
+            await get_sds_client().get_mhs_details('TEST', 'TEST', 'TEST')
+            status = PASS
+        except Exception as ex:
+            output = str(ex)
+
+        response_data = {
+            "status": status,
+            "details": {
+                "ldap": {
+                    "status": status,
+                    "links": {
+                        "ldap": config.get_config("LDAP_URL")
+                    },
+                    "output": output if output else ''
+                }
+            }
+        }
+
+        self.write(json.dumps(response_data, indent=4))
+        self.set_header(HttpHeaders.CONTENT_TYPE, "application/json")
+        self.set_status(200 if status == PASS else 503)
