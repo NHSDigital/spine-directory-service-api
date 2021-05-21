@@ -242,7 +242,7 @@ async def test_endpoints_are_secured(api_client: APISessionClient, endpoint):
     ids=[
         'condition 1: Endpoint mandatory query parameters present with service id',
         'condition 2: Endpoint optional query parameters present with party key',
-        'condition 3: Endpoint all query parameters present'
+        'condition 3: Endpoint all query parameters present',
         'condition 4: Endpoint unsupported query parameters present',
         'condition 5: Endpoint missing mandatory query parameters',
         'condition 6: Endpoint invalid fhir identifier on mandatory query parameter',
