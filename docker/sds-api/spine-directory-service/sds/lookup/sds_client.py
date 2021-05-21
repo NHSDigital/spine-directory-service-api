@@ -174,14 +174,14 @@ class SDSMockClient:
 
     @staticmethod
     def _filter_mhs(entry: Dict, ods_code: str, interaction_id: str, party_key: str):
-        return entry['nhsIDCode'] == ods_code \
-            and (interaction_id in entry['nhsMhsSvcIA']) \
+        return (ods_code is None or entry['nhsIDCode'] == ods_code) \
+            and (interaction_id is None or interaction_id in entry['nhsMhsSvcIA']) \
             and (party_key is None or entry['nhsMHSPartyKey'] == party_key)
 
     @staticmethod
-    def _filter_as(entry: Dict, ods_code: str, interaction_id: str, manufacturing_organization: str = None, party_key: str = None):
-        return entry['nhsIDCode'] == ods_code \
-            and interaction_id in entry['nhsAsSvcIA'] \
+    def _filter_as(entry: Dict, ods_code: str, interaction_id: str, manufacturing_organization: str, party_key: str):
+        return (ods_code is None or entry['nhsIDCode'] == ods_code) \
+            and (interaction_id is None or interaction_id in entry['nhsAsSvcIA']) \
             and (party_key is None or entry['nhsMHSPartyKey'] == party_key) \
             and (manufacturing_organization is None or entry['nhsMhsManufacturerOrg'] == manufacturing_organization)
 
