@@ -39,6 +39,6 @@ are required to run the SDS Adaptor in using docker.
 The Spine Directory Service expose a health-check endpoint which can also be used to facilitate health checks in a load balanced environment.
 
 It's exposed with `/healthcheck` URL path which, when called indicates healthy state by returning an empty HTTP 200 response.
-
+Additionally there is a "deep" version of the healthcheck at `/healthcheck/deep` that also checks LDAP connectivity.
 In order to determine the ports on `localhost` which these health-check endpoints are listening on, examine your local copy
 of the [docker-compose](../docker-compose.yml) file.
