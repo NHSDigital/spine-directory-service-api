@@ -49,7 +49,7 @@ apigee:
           - name: access
             value: public
           - name: ratelimit
-            value: 5ps
+            value: 300pm
         description: {{ DESCRIPTION }}
         displayName: {{ TITLE }}
         environments: [ {{ ENV.name }} ]

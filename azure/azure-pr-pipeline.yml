@@ -46,6 +46,8 @@ extends:
       - /ptl/api-deployment/sds/ldap/private-key
       - /ptl/api-deployment/sds/ldap/client-cert
       - /ptl/api-deployment/sds/ldap/ca-certs
+    jinja_templates:
+      HOSTED_TARGET_HEALTHCHECK_SUFFIX: '/healthcheck/deep'
     apigee_deployments:
       - environment: internal-dev
         make_spec_visible: true
@@ -57,6 +59,8 @@ extends:
               security_tests: true
       - environment: internal-dev-sandbox
         proxy_path: sandbox
+        jinja_templates:
+          HOSTED_TARGET_HEALTHCHECK_SUFFIX: '/healthcheck'
         post_deploy:
           - template: ./templates/run-tests.yml
             parameters:
