@@ -67,7 +67,7 @@ class DeepHealthcheckHandler(tornado.web.RequestHandler):
                 "ldap": {
                     "status": status,
                     "links": {
-                        "ldap": config.get_config("LDAP_URL")
+                        "ldap": config.get_config("LDAP_URL", None)
                     },
                     "output": output if output else ''
                 }

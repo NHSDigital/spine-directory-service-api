@@ -96,13 +96,17 @@ async def test_wait_for_status(api_client: APISessionClient, api_test_config: AP
 
     deploy_timeout = 120 if api_test_config.api_environment.endswith("sandbox") else 30
 
-    await poll_until(
+    responses = await poll_until(
         make_request=lambda: api_client.get(
             "_status", headers={"apikey": env.status_endpoint_api_key()}
         ),
         until=is_deployed,
+        body_resolver=lambda r: r.json(),
         timeout=deploy_timeout,
     )
+
+    _, _, last_response_body = responses[-1]
+    assert last_response_body.get("status") == "pass"
 
 
 @pytest.mark.securitytest
