@@ -101,7 +101,7 @@ async def test_wait_for_status(api_client: APISessionClient, api_test_config: AP
             "_status", headers={"apikey": env.status_endpoint_api_key()}
         ),
         until=is_deployed,
-        body_resolver=lambda r: await r.json(),
+        body_resolver=lambda r: r.json(),
         timeout=deploy_timeout,
     )
 
