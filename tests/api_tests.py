@@ -101,10 +101,11 @@ async def test_wait_for_status(api_client: APISessionClient, api_test_config: AP
             "_status", headers={"apikey": env.status_endpoint_api_key()}
         ),
         until=is_deployed,
+        body_resolver=lambda r: await r.json(),
         timeout=deploy_timeout,
     )
 
-    last_response_body = await responses[-1].json()
+    _, _, last_response_body = responses[-1]
     assert last_response_body.get("status") == "pass"
 
 
