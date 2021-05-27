@@ -106,7 +106,7 @@ async def test_wait_for_status(api_client: APISessionClient, api_test_config: AP
     )
 
     _, _, last_response_body = responses[-1]
-    assert last_response_body.get("status") == "pass"
+    assert last_response_body.get("status") == "pass", "Last response: " + str(last_response_body)
 
 
 @pytest.mark.securitytest
