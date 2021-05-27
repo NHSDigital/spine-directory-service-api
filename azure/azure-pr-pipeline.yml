@@ -59,8 +59,6 @@ extends:
               security_tests: true
       - environment: internal-dev-sandbox
         proxy_path: sandbox
-        jinja_templates:
-          HOSTED_TARGET_HEALTHCHECK_SUFFIX: '/healthcheck'
         post_deploy:
           - template: ./templates/run-tests.yml
             parameters:

@@ -54,8 +54,6 @@ extends:
       - environment: internal-qa-sandbox
         make_spec_visible: true
         proxy_path: sandbox
-        jinja_templates:
-          HOSTED_TARGET_HEALTHCHECK_SUFFIX: '/healthcheck'
         post_deploy:
           - template: ./templates/run-tests.yml
             parameters:
@@ -79,8 +77,6 @@ extends:
               smoke_tests: true
       - environment: sandbox
         proxy_path: sandbox
-        jinja_templates:
-          HOSTED_TARGET_HEALTHCHECK_SUFFIX: '/healthcheck'
         depends_on:
             - internal_qa
             - internal_qa_sandbox
