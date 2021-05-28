@@ -8,7 +8,7 @@ resources:
     - repository: common
       type: github
       name: NHSDigital/api-management-utils
-      ref: refs/heads/edge
+      ref: refs/heads/master
       endpoint: NHSDigital
   pipelines:
   - pipeline: build_pipeline
@@ -46,6 +46,8 @@ extends:
       - /ptl/api-deployment/sds/ldap/private-key
       - /ptl/api-deployment/sds/ldap/client-cert
       - /ptl/api-deployment/sds/ldap/ca-certs
+    jinja_templates:
+      HOSTED_TARGET_HEALTHCHECK_SUFFIX: '/healthcheck/deep'
     apigee_deployments:
       - environment: internal-dev
         make_spec_visible: true

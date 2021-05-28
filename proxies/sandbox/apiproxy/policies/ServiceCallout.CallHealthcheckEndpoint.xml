@@ -7,8 +7,7 @@
     </Request>
     <Response>healthcheckResponse</Response>
     <HTTPTargetConnection>
-        {{ HOSTED_TARGET_CONNECTION }}
-        <Path>/{{ APIM_BASE_PATH }}/healthcheck/deep</Path>
+        {{ HOSTED_TARGET_HEALTHCHECK }}
     </HTTPTargetConnection>
     <Timeout>20000</Timeout>
 </ServiceCallout>
