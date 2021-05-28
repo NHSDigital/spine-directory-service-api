@@ -18,7 +18,7 @@ docker_service:
       - name: SDS_SECRET_CLIENT_CERT
         valueFrom: "arn:aws:secretsmanager:eu-west-2::secret:prod/cis/ldap.national.ncrs.nhs.uk/crt"
       - name: SDS_SECRET_CA_CERTS
-        valueFrom: "arn:aws:secretsmanager:eu-west-2::secret:prod/ca-certs/nhsd-prod/root-ca/crt"
+        valueFrom: "arn:aws:secretsmanager:eu-west-2::secret:prod/ca-certs/nhsd-prod/root-ca"
     health_check:
       matcher: "200"
       path: "/healthcheck"
