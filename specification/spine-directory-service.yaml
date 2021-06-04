@@ -25,7 +25,12 @@ info:
     MHS records of GP Connect provider systems contain the endpoint of the target practice, as defined by the [FHIR service root URL](https://developer.nhs.uk/apis/gpconnect-0-7-2/development_fhir_api_guidance.html#service-root-url). 
     Please see [System topologies](https://developer.nhs.uk/apis/gpconnect-0-7-2/integration_system_topologies.html) for more details on the allocation of ASIDs and Party Keys. 
     
-    ## API status 
+    ## Who can use this API
+    This API can only be used where there is a legal basis to do so. Make sure you have a valid use case before you go too far with your development.
+
+    You must do this before you can go live (see ‘Onboarding’ below). 
+    
+    ## API status and roadmap
     This API is in [beta](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#api-status), meaning:
     - the API is available in our sandbox and integration test environments
     - the API is not yet available for production use
@@ -82,11 +87,6 @@ info:
     ## Related APIs
     The following APIs are related to this one:
     - [Spine Directory Service - LDAP API](https://digital.nhs.uk/developer/api-catalogue/spine-directory-service-ldap) - Access details of organisations, people and systems registered in the Spine Directory Service (SDS) using our LDAP API.
-    
-    ## Legal Use
-    This API can only be used where there is a legal basis to do so. Make sure you have a valid use case before you go too far with your development.
-
-    You must do this before you can go live (see ‘Onboarding’ below). 
     
     ## Onboarding
     You need to get your software approved by us before it can go live with this API. We call this onboarding. The onboarding process can sometimes be quite long, so it’s worth planning well ahead.
