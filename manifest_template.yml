@@ -26,6 +26,7 @@ APIGEE_ENVIRONMENTS:
   name: int
 - approval_type: manual
   display_name: Production
+  make_spec_visible: true
   name: prod
 ---
 meta:
