@@ -152,6 +152,13 @@ paths:
             type: string
             format: uuid
           required: false
+        - in: header
+          name: apikey
+          description: API key to authenticate with. Use any value for Sandbox environment.
+          schema:
+            type: string
+            format: uuid
+          required: true
       responses:
         '200':
           description: Valid request that returns all accredited systems found that match the search criteria (which may be 0).
@@ -219,6 +226,13 @@ paths:
             type: string
             format: uuid
           required: false
+        - in: header
+          name: apikey
+          description: API key to authenticate with. Use any value for Sandbox environment.
+          schema:
+            type: string
+            format: uuid
+          required: true
       responses:
         '200':
           description: Valid request that returns all accredited systems found that match the search criteria (which may be 0).
