@@ -157,7 +157,6 @@ paths:
           description: API key to authenticate with. Use any value for Sandbox environment.
           schema:
             type: string
-            format: uuid
           required: true
       responses:
         '200':
@@ -231,7 +230,6 @@ paths:
           description: API key to authenticate with. Use any value for Sandbox environment.
           schema:
             type: string
-            format: uuid
           required: true
       responses:
         '200':
