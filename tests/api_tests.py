@@ -124,7 +124,7 @@ async def test_endpoints_are_secured(api_client: APISessionClient, endpoint):
 @pytest.mark.parametrize(
     "request_data",
     [
-        # condition 1: Endpoint mandatory query parameters present with service id
+        # condition 1: Endpoint organization query parameters present with service id
         {
             'endpoint': 'Endpoint',
             'query_params': {
@@ -133,7 +133,7 @@ async def test_endpoints_are_secured(api_client: APISessionClient, endpoint):
             },
             'status_code': 200,
         },
-        # condition 2: Endpoint mandatory query parameters present with party key
+        # condition 2: Endpoint organization query parameters present with party key
         {
             'endpoint': 'Endpoint',
             'query_params': {
@@ -154,7 +154,18 @@ async def test_endpoints_are_secured(api_client: APISessionClient, endpoint):
             },
             'status_code': 200,
         },
-        # condition 4: Endpoint unsupported query parameters present
+        # condition 4: Endpoint organization query parameter missing but service id and party key present
+        {
+            'endpoint': 'Endpoint',
+            'query_params': {
+                'identifier': [
+                    f'{ENDPOINT_INTERACTION_ID_FHIR_IDENTIFIER}|urn:nhs:names:services:gpconnect:documents:fhir:rest:search:documentreference-1',
+                    f'{ENDPOINT_PARTY_KEY_FHIR_IDENTIFIER}|L85016-822104',
+                ]
+            },
+            'status_code': 200,
+        },
+        # condition 5: Endpoint unsupported query parameters present
         {
             'endpoint': 'Endpoint',
             'query_params': {
@@ -167,7 +178,7 @@ async def test_endpoints_are_secured(api_client: APISessionClient, endpoint):
             },
             'status_code': 400,
         },
-        # condition 5: Endpoint missing mandatory query parameters
+        # condition 6: Endpoint missing mandatory query parameters
         {
             'endpoint': 'Endpoint',
             'query_params': {
@@ -175,7 +186,7 @@ async def test_endpoints_are_secured(api_client: APISessionClient, endpoint):
             },
             'status_code': 400,
         },
-        # condition 6: Endpoint invalid fhir identifier on mandatory query parameter
+        # condition 7: Endpoint invalid fhir identifier on mandatory query parameter
         {
             'endpoint': 'Endpoint',
             'query_params': {
@@ -184,7 +195,7 @@ async def test_endpoints_are_secured(api_client: APISessionClient, endpoint):
             },
             'status_code': 400,
         },
-        # condition 7: Device mandatory query parameters present
+        # condition 8: Device mandatory query parameters present
         {
             'endpoint': 'Device',
             'query_params': {
@@ -193,7 +204,7 @@ async def test_endpoints_are_secured(api_client: APISessionClient, endpoint):
             },
             'status_code': 200,
         },
-        # condition 8: Device optional query parameters present
+        # condition 9: Device optional query parameters present
         {
             'endpoint': 'Device',
             'query_params': {
@@ -206,7 +217,7 @@ async def test_endpoints_are_secured(api_client: APISessionClient, endpoint):
             },
             'status_code': 200,
         },
-        # condition 9: Device unsupported query parameters present
+        # condition 10: Device unsupported query parameters present
         {
             'endpoint': 'Device',
             'query_params': {
@@ -220,7 +231,7 @@ async def test_endpoints_are_secured(api_client: APISessionClient, endpoint):
             },
             'status_code': 400,
         },
-        # condition 10: Device missing mandatory query parameters
+        # condition 11: Device missing mandatory query parameters
         {
             'endpoint': 'Device',
             'query_params': {
@@ -233,7 +244,7 @@ async def test_endpoints_are_secured(api_client: APISessionClient, endpoint):
             },
             'status_code': 400,
         },
-        # condition 11: Device invalid fhir identifier on mandatory query parameter
+        # condition 12: Device invalid fhir identifier on mandatory query parameter
         {
             'endpoint': 'Device',
             'query_params': {
@@ -244,17 +255,18 @@ async def test_endpoints_are_secured(api_client: APISessionClient, endpoint):
         },
     ],
     ids=[
-        'condition 1: Endpoint mandatory query parameters present with service id',
+        'condition 1: Endpoint organization query parameters present with service id',
         'condition 2: Endpoint optional query parameters present with party key',
         'condition 3: Endpoint all query parameters present',
-        'condition 4: Endpoint unsupported query parameters present',
-        'condition 5: Endpoint missing mandatory query parameters',
-        'condition 6: Endpoint invalid fhir identifier on mandatory query parameter',
-        'condition 7: Device mandatory query parameters present',
-        'condition 8: Device optional query parameters present',
-        'condition 9: Device unsupported query parameters present',
-        'condition 10: Device missing mandatory query parameters',
-        'condition 11: Device invalid fhir identifier on mandatory query parameter',
+        'condition 4: Endpoint organization query parameter missing but service id and party key present',
+        'condition 5: Endpoint unsupported query parameters present',
+        'condition 6: Endpoint missing mandatory query parameters',
+        'condition 7: Endpoint invalid fhir identifier on mandatory query parameter',
+        'condition 8: Device mandatory query parameters present',
+        'condition 9: Device optional query parameters present',
+        'condition 10: Device unsupported query parameters present',
+        'condition 11: Device missing mandatory query parameters',
+        'condition 12: Device invalid fhir identifier on mandatory query parameter',
     ]
 )
 async def test_endpoints(test_app, api_client: APISessionClient, request_data):
