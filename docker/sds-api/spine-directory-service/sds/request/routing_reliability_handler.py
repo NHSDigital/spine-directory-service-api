@@ -35,12 +35,8 @@ class RoutingReliabilityRequestHandler(BaseHandler, ErrorHandler):
         service_id = self.get_optional_query_param(IDENTIFIER_QUERY_PARAMETER_NAME, SERVICE_ID_FHIR_IDENTIFIER)
         party_key = self.get_optional_query_param(IDENTIFIER_QUERY_PARAMETER_NAME, PARTY_KEY_FHIR_IDENTIFIER)
 
-        if org_code:
-            if not service_id and not party_key:
-                self._raise_invalid_query_params_error()
-        else:
-            if not service_id or not party_key:
-                self._raise_invalid_query_params_error()
+        if (org_code and not service_id and not party_key) or (not org_code and (not service_id or not party_key)):
+            self._raise_invalid_query_params_error()
 
         accept_type = get_valid_accept_type(self.request.headers)
 

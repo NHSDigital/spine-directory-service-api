@@ -62,8 +62,8 @@ class SDSClient(object):
 
         :return: Dictionary of the attributes of the mhs associated with the given parameters
         """
-        if not ods_code or (not interaction_id and not party_key):
-            raise SDSException("org_code and at least one of 'interaction_id' or 'party_key' must be provided")
+        if (ods_code and not interaction_id and not party_key) or (not ods_code and (not interaction_id or not party_key)):
+            raise SDSException("org_code and at least one of 'interaction_id' or 'party_key' must be provided or both 'interaction_id' and 'party_key'")
 
         query_parts = [
             ("nhsIDCode", ods_code),
