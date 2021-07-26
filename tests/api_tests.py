@@ -138,7 +138,7 @@ async def test_endpoints_are_secured(api_client: APISessionClient, endpoint):
             'endpoint': 'Endpoint',
             'query_params': {
                 'organization': f'{ENDPOINT_ORGANIZATION_FHIR_IDENTIFIER}|123456',
-                'identifier': f'{ENDPOINT_PARTY_KEY_FHIR_IDENTIFIER}|L85016-822104',
+                'identifier': f'{ENDPOINT_PARTY_KEY_FHIR_IDENTIFIER}|TEST-PARTY-KEY',
             },
             'status_code': 200,
         },
@@ -149,7 +149,7 @@ async def test_endpoints_are_secured(api_client: APISessionClient, endpoint):
                 'organization': f'{ENDPOINT_ORGANIZATION_FHIR_IDENTIFIER}|123456',
                 'identifier': [
                     f'{ENDPOINT_INTERACTION_ID_FHIR_IDENTIFIER}|urn:nhs:names:services:gpconnect:documents:fhir:rest:search:documentreference-1',
-                    f'{ENDPOINT_PARTY_KEY_FHIR_IDENTIFIER}|L85016-822104',
+                    f'{ENDPOINT_PARTY_KEY_FHIR_IDENTIFIER}|TEST-PARTY-KEY',
                 ]
             },
             'status_code': 200,
@@ -160,7 +160,7 @@ async def test_endpoints_are_secured(api_client: APISessionClient, endpoint):
             'query_params': {
                 'identifier': [
                     f'{ENDPOINT_INTERACTION_ID_FHIR_IDENTIFIER}|urn:nhs:names:services:gpconnect:documents:fhir:rest:search:documentreference-1',
-                    f'{ENDPOINT_PARTY_KEY_FHIR_IDENTIFIER}|L85016-822104',
+                    f'{ENDPOINT_PARTY_KEY_FHIR_IDENTIFIER}|TEST-PARTY-KEY',
                 ]
             },
             'status_code': 200,
@@ -172,7 +172,7 @@ async def test_endpoints_are_secured(api_client: APISessionClient, endpoint):
                 'organization': f'{ENDPOINT_ORGANIZATION_FHIR_IDENTIFIER}|123456',
                 'identifier': [
                     f'{ENDPOINT_INTERACTION_ID_FHIR_IDENTIFIER}|urn:nhs:names:services:gpconnect:documents:fhir:rest:search:documentreference-1',
-                    f'{ENDPOINT_PARTY_KEY_FHIR_IDENTIFIER}|L85016-822104',
+                    f'{ENDPOINT_PARTY_KEY_FHIR_IDENTIFIER}|TEST-PARTY-KEY',
                 ],
                 'unsupported': 'unsupported_parameter_value',
             },
@@ -182,7 +182,7 @@ async def test_endpoints_are_secured(api_client: APISessionClient, endpoint):
         {
             'endpoint': 'Endpoint',
             'query_params': {
-                'identifier': f'{ENDPOINT_PARTY_KEY_FHIR_IDENTIFIER}|L85016-822104',
+                'identifier': f'{ENDPOINT_PARTY_KEY_FHIR_IDENTIFIER}|TEST-PARTY-KEY',
             },
             'status_code': 400,
         },
@@ -211,7 +211,7 @@ async def test_endpoints_are_secured(api_client: APISessionClient, endpoint):
                 'organization': f'{DEVICE_ORGANIZATION_FHIR_IDENTIFIER}|123456',
                 'identifier': [
                     f'{DEVICE_INTERACTION_ID_FHIR_IDENTIFIER}|urn:nhs:names:services:psis:REPC_IN150016UK05',
-                    f'{DEVICE_PARTY_KEY_FHIR_IDENTIFIER}|L85016-822104',
+                    f'{DEVICE_PARTY_KEY_FHIR_IDENTIFIER}|TEST-PARTY-KEY',
                 ],
                 'manufacturing-organization': f'{DEVICE_MANUFACTURING_ORGANIZATION_FHIR_IDENTIFIER}|YES',
             },
@@ -224,7 +224,7 @@ async def test_endpoints_are_secured(api_client: APISessionClient, endpoint):
                 'organization': f'{DEVICE_ORGANIZATION_FHIR_IDENTIFIER}|123456',
                 'identifier': [
                     f'{DEVICE_INTERACTION_ID_FHIR_IDENTIFIER}|urn:nhs:names:services:psis:REPC_IN150016UK05',
-                    f'{DEVICE_PARTY_KEY_FHIR_IDENTIFIER}|L85016-822104',
+                    f'{DEVICE_PARTY_KEY_FHIR_IDENTIFIER}|TEST-PARTY-KEY',
                 ],
                 'manufacturing-organization': f'{DEVICE_MANUFACTURING_ORGANIZATION_FHIR_IDENTIFIER}|YES',
                 'unsupported': 'unsupported_parameter_value',
@@ -237,7 +237,7 @@ async def test_endpoints_are_secured(api_client: APISessionClient, endpoint):
             'query_params': {
                 'identifier': [
                     f'{DEVICE_INTERACTION_ID_FHIR_IDENTIFIER}|urn:nhs:names:services:psis:REPC_IN150016UK05',
-                    f'{DEVICE_PARTY_KEY_FHIR_IDENTIFIER}|L85016-822104',
+                    f'{DEVICE_PARTY_KEY_FHIR_IDENTIFIER}|TEST-PARTY-KEY',
                 ],
                 'manufacturing-organization': f'{DEVICE_MANUFACTURING_ORGANIZATION_FHIR_IDENTIFIER}|YES',
                 'unsupported': 'unsupported_parameter_value',
