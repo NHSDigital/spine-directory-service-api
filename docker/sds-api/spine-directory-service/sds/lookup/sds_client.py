@@ -31,6 +31,11 @@ AS_ATTRIBUTES = [
 ]
 
 
+def _validate_mhs_request_params(ods_code, interaction_id, party_key):
+    if (ods_code and not interaction_id and not party_key) or (not ods_code and (not interaction_id or not party_key)):
+        raise SDSException("org_code and at least one of 'interaction_id' or 'party_key' must be provided or both 'interaction_id' and 'party_key'")
+
+
 class SDSClient(object):
     """A client that can be used to query SDS."""
 
@@ -62,8 +67,7 @@ class SDSClient(object):
 
         :return: Dictionary of the attributes of the mhs associated with the given parameters
         """
-        if (ods_code and not interaction_id and not party_key) or (not ods_code and (not interaction_id or not party_key)):
-            raise SDSException("org_code and at least one of 'interaction_id' or 'party_key' must be provided or both 'interaction_id' and 'party_key'")
+        _validate_mhs_request_params(ods_code, interaction_id, party_key)
 
         query_parts = [
             ("nhsIDCode", ods_code),
@@ -135,8 +139,7 @@ class SDSMockClient:
         self._read_mock_data()
 
     async def get_mhs_details(self, ods_code: str, interaction_id: str, party_key: str) -> List[Dict]:
-        if ods_code is None or interaction_id is None and party_key is None:
-            raise ValueError
+        _validate_mhs_request_params(ods_code, interaction_id, party_key)
 
         if self.pause_duration != 0:
             logger.debug("Sleeping for %sms", self.pause_duration)
