@@ -285,7 +285,7 @@ async def test_endpoints(test_app, api_client: APISessionClient, request_data):
         allow_retries=True
     ) as resp:
         body = await resp.json()
-        assert resp.status == request_data['status_code'], str(resp.status) + " " + str(body)
+        assert resp.status == request_data['status_code'], str(resp.status) + " " + str(resp.headers) + " " + str(body)
         assert 'x-correlation-id' in resp.headers, resp.headers
         assert resp.headers['x-correlation-id'] == correlation_id
         resource_type = body['resourceType']
