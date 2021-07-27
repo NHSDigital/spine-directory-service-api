@@ -195,17 +195,17 @@ paths:
           * Endpoint URL
           * Fully Qualified Domain Name of the Message Handling System
         
-        To get the information, you must supply:
-          * organisation code
-
-        And at least one of the following:
-          * service identifier
-          * party key
+        Following combinations of query parameters are supported:
+          * organisation code, service identifier, party key
+          * organisation code, party key
+          * organisation code, service Identifier
+          * service identifier, party key
+        
       parameters:
         - in: query
           name: organization
           description: The organisation code for the NHS Spine instance that your Message Handling System is communicating with. Must be preceded with FHIR identifier (eg."organization=https://fhir.nhs.uk/Id/ods-organization-code|YES")
-          required: true
+          required: false
           schema:
             type: string
         - in: query
