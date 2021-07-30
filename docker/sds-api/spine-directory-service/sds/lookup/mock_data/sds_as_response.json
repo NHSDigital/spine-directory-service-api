@@ -489,5 +489,19 @@
       "YES"
     ],
     "nhsMhsManufacturerOrg": "YES"
+  },
+  {
+    "nhsAsSvcIA": [
+      "urn:nhs:names:services:gp2gp:COPC_IN000001UK01"
+    ],
+    "nhsIDCode": "X26",
+    "nhsMHSPartyKey": "X26-9199246",
+    "uniqueIdentifier": [
+      "918999199246"
+    ],
+    "nhsAsClient": [
+      "X26"
+    ],
+    "nhsMhsManufacturerOrg": "X26"
   }
 ]
