@@ -51,7 +51,7 @@ def build_endpoint_resources(ldap_attributes: Dict) -> List[Dict]:
 
         managing_organization = _build_managing_organization(ldap_attributes.get("nhsIDCode".lower()))
         if managing_organization:
-            result["managingOrganization".lower()] = managing_organization
+            result["managingOrganization"] = managing_organization
 
         identifiers = _build_identifier_array(ldap_attributes)
         identifiers = list(filter(lambda item: item, identifiers))
