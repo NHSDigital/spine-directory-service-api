@@ -90,10 +90,10 @@ def build_device_resource(ldap_attributes: Dict) -> Dict:
     }
 
     identifiers = []
-    unique_identifier = ldap_attributes.get('uniqueIdentifier'.lower())
+    unique_identifier = ldap_attributes.get('uniqueIdentifier'.lower(), [None])
     if len(unique_identifier) > 1:
         raise ValueError("LDAP returned more than 1 'uniqueIdentifier' attribute")
-    unique_identifier = (unique_identifier or [None])[0]
+    unique_identifier = unique_identifier[0]
     if unique_identifier:
         identifiers.append(build_identifier(Url.NHS_SPINE_ASID, unique_identifier))
     party_key = ldap_attributes.get('nhsMhsPartyKey'.lower())
@@ -116,7 +116,7 @@ def build_device_resource(ldap_attributes: Dict) -> Dict:
     if extension:
         device['extension'] = extension
 
-    client_id = (ldap_attributes.get('nhsAsClient'.lower()) or [None])[0]
+    client_id = ldap_attributes.get('nhsAsClient'.lower(), [None])[0]
     if client_id:
         device["owner"] = {
             "identifier": {
@@ -129,7 +129,7 @@ def build_device_resource(ldap_attributes: Dict) -> Dict:
 
 
 def _build_identifier_array(ldap_attributes: Dict):
-    unique_identifiers = ldap_attributes.get("uniqueIdentifier".lower())
+    unique_identifiers = ldap_attributes.get("uniqueIdentifier".lower(), [None])
     if len(unique_identifiers) > 1:
         raise ValueError("LDAP returned more than 1 'uniqueIdentifier' attribute")
 
@@ -137,7 +137,7 @@ def _build_identifier_array(ldap_attributes: Dict):
         build_identifier(Url.NHS_MHS_FQDN_URL, ldap_attributes.get("nhsMhsFQDN".lower())),
         build_identifier(Url.NHS_MHS_PARTYKEY_URL, ldap_attributes.get("nhsMHSPartyKey".lower())),
         build_identifier(Url.NHS_MHS_CPAID_URL, ldap_attributes.get("nhsMhsCPAId".lower())),
-        build_identifier(Url.NHS_MHS_ID, (unique_identifiers or [None])[0])
+        build_identifier(Url.NHS_MHS_ID, unique_identifiers[0])
     ]
 
 
