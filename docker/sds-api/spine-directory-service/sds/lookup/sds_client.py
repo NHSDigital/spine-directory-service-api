@@ -7,6 +7,7 @@ from typing import Dict, List, Tuple, Optional
 
 import ldap3
 import ldap3.core.exceptions as ldap_exceptions
+from ldap3.utils.ciDict import CaseInsensitiveDict
 
 from lookup.sds_exception import SDSException
 from utilities import config
@@ -189,10 +190,19 @@ class SDSMockClient:
             and (manufacturing_organization is None or entry['nhsMhsManufacturerOrg'] == manufacturing_organization)
 
     def _read_mock_data(self):
+        def _copy_to_case_insensitive_dict(source_list: List[dict]) -> List[CaseInsensitiveDict]:
+            target_list = []
+            for element in source_list:
+                target_dict = CaseInsensitiveDict()
+                for _key in element.keys():
+                    target_dict[_key] = element[_key]
+                target_list.append(target_dict)
+            return target_list
+
         with open('./lookup/mock_data/sds_mhs_response.json', 'r') as f:
             data = f.read()
-            self.mock_mhs_data = ast.literal_eval(data)
+            self.mock_mhs_data = _copy_to_case_insensitive_dict(ast.literal_eval(data))
 
         with open('./lookup/mock_data/sds_as_response.json', 'r') as f:
             data = f.read()
-            self.mock_as_data = ast.literal_eval(data)
+            self.mock_as_data = _copy_to_case_insensitive_dict(ast.literal_eval(data))
