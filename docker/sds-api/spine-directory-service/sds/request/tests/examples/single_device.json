@@ -40,7 +40,7 @@
             "valueReference": {
               "identifier": {
                 "system": "https://fhir.nhs.uk/Id/nhsServiceInteractionId",
-                "value": "service"
+                "value": "service:interaction"
               }
             }
           }

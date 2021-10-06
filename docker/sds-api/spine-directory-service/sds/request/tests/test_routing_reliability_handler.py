@@ -1,4 +1,6 @@
 from os import path
+from unittest.mock import patch
+
 from request.tests.request_handler_test_base import RequestHandlerTestBase, ORG_CODE, SERVICE_ID, PARTY_KEY
 from utilities import test_utilities
 
@@ -49,21 +51,30 @@ MULTIPLE_ROUTING_AND_RELIABILITY_DETAILS.append({
 
 class TestRoutingReliabilityRequestHandler(RequestHandlerTestBase):
 
-    def test_get_single(self):
+    @patch('utilities.config.get_config')
+    def test_get_single(self, mock_config):
+        self._set_core_spine_ods_code(mock_config, "YEA")
+
         self.sds_client.get_mhs_details.return_value = test_utilities.awaitable(SINGLE_ROUTING_AND_RELIABILITY_DETAILS)
 
         super()._test_get(super()._build_endpoint_url(), EXPECTED_SINGLE_ENDPOINT_JSON_FILE_PATH)
 
         self.sds_client.get_mhs_details.assert_called_with(ORG_CODE, SERVICE_ID, PARTY_KEY)
 
-    def test_get_multiple(self):
+    @patch('utilities.config.get_config')
+    def test_get_multiple(self, mock_config):
+        self._set_core_spine_ods_code(mock_config, "YEA")
+
         self.sds_client.get_mhs_details.return_value = test_utilities.awaitable(MULTIPLE_ROUTING_AND_RELIABILITY_DETAILS)
 
         super()._test_get(super()._build_endpoint_url(), EXPECTED_MULTIPLE_ENDPOINTS_JSON_FILE_PATH)
 
         self.sds_client.get_mhs_details.assert_called_with(ORG_CODE, SERVICE_ID, PARTY_KEY)
 
-    def test_supported_query_params(self):
+    @patch('utilities.config.get_config')
+    def test_supported_query_params(self, mock_config):
+        self._set_core_spine_ods_code(mock_config, "YEA")
+
         self.sds_client.get_mhs_details.return_value = test_utilities.awaitable(SINGLE_ROUTING_AND_RELIABILITY_DETAILS)
 
         for org_code, service_id, party_key in [
@@ -77,7 +88,10 @@ class TestRoutingReliabilityRequestHandler(RequestHandlerTestBase):
                 super()._test_get(endpoint_url, EXPECTED_SINGLE_ENDPOINT_JSON_FILE_PATH)
                 self.sds_client.get_mhs_details.assert_called_with(org_code, service_id, party_key)
 
-    def test_correlation_id_is_set_as_response_header(self):
+    @patch('utilities.config.get_config')
+    def test_correlation_id_is_set_as_response_header(self, mock_config):
+        self._set_core_spine_ods_code(mock_config, "YEA")
+
         def mock200():
             self.sds_client.get_mhs_details.return_value = test_utilities.awaitable(SINGLE_ROUTING_AND_RELIABILITY_DETAILS)
 
@@ -116,7 +130,10 @@ class TestRoutingReliabilityRequestHandler(RequestHandlerTestBase):
             self.assertEqual(response.code, 400)
             super()._assert_400_operation_outcome(response.body.decode(), error_message)
 
-    def test_get_handles_different_accept_header(self):
+    @patch('utilities.config.get_config')
+    def test_get_handles_different_accept_header(self, mock_config):
+        self._set_core_spine_ods_code(mock_config, "YEA")
+
         self.sds_client.get_mhs_details.return_value = test_utilities.awaitable(SINGLE_ROUTING_AND_RELIABILITY_DETAILS)
         super()._test_get_handles_different_accept_header(
             super()._build_endpoint_url(),
@@ -124,3 +141,11 @@ class TestRoutingReliabilityRequestHandler(RequestHandlerTestBase):
 
     def test_should_return_405_when_using_non_get(self):
         super()._test_should_return_405_when_using_non_get(super()._build_endpoint_url())
+
+    @staticmethod
+    def _set_core_spine_ods_code(mock_config, ods_code):
+        def config_values(*args, **kwargs):
+            return {
+                "SPINE_CORE_ODS_CODE": ods_code
+            }[args[0]]
+        mock_config.side_effect = config_values

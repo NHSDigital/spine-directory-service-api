@@ -12,7 +12,7 @@ from request.http_headers import HttpHeaders
 from utilities import message_utilities
 
 ORG_CODE = "org"
-SERVICE_ID = "service"
+SERVICE_ID = "service:interaction"
 PARTY_KEY = "some_party_key"
 MANUFACTURING_ORG = "some_manufacturer"
 FIXED_UUID = "f0f0e921-92ca-4a88-a550-2dbb36f703af"

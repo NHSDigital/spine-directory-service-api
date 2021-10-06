@@ -77,7 +77,9 @@ class SDSClient(object):
             ("nhsMHSPartyKey", party_key)
         ]
         result = await self._get_ldap_data(query_parts, MHS_ATTRIBUTES)
+
         return result
+
 
     async def get_as_details(self, ods_code: str, interaction_id: str, manufacturing_organization: str = None, party_key: str = None) -> List[Dict]:
         """
