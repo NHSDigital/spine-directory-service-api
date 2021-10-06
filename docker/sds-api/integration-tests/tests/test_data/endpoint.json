@@ -42,6 +42,10 @@
               {
                 "url": "nhsMHSAckRequested",
                 "valueString": "always"
+              },
+              {
+                "url": "nhsMHSActor",
+                "valueString": "urn:oasis:names:tc:ebxml-msg:actor:toPartyMSH"
               }
             ]
           },

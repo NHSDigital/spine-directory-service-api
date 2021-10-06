@@ -62,7 +62,9 @@
     "uniqueIdentifier": [
       "S20003A000304"
     ],
-    "nhsMHSActor": [],
+    "nhsMHSActor": [
+      "urn:oasis:names:tc:ebxml-msg:actor:toPartyMSH"
+    ],
     "nhsMHSPersistDuration": [],
     "nhsMHSRetries": [],
     "nhsMHSRetryInterval": []
@@ -87,7 +89,9 @@
     "uniqueIdentifier": [
       "928942012545"
     ],
-    "nhsMHSActor": [],
+    "nhsMHSActor": [
+      "urn:oasis:names:tc:ebxml-msg:actor:toPartyMSH"
+    ],
     "nhsMHSPersistDuration": [],
     "nhsMHSRetries": [],
     "nhsMHSRetryInterval": []
