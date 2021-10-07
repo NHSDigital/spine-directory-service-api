@@ -118,5 +118,36 @@
     "nhsMHSRetries": "2",
     "nhsMHSRetryInterval": "PT2H",
     "nhsMHSSyncReplyMode": "None"
+  },
+  {
+    "nhsIDCode": "YEA",
+    "nhsMHSEndPoint": [
+      "http:/appreliablemessaging"
+    ],
+    "nhsMhsSvcIA": [
+      "urn:nhs:names:services:gp2gp:COPC_IN000001UK01",
+      "urn:nhs:names:services:ebs:PRSC_IN040000UK08",
+      "urn:nhs:names:services:ebs:PRSC_IN080000UK07",
+      "urn:nhs:names:services:ebs:PRPA_IN010000UK07",
+      "urn:nhs:names:services:ebs:PRPA_IN020000UK06",
+      "urn:nhs:names:services:ebs:PRSC_IN050000UK06",
+      "urn:nhs:names:services:ebs:PRSC_IN090000UK09",
+      "urn:nhs:names:services:ebs:PRPA_IN030000UK08",
+      "urn:nhs:names:services:ebs:PRSC_IN100000UK06",
+      "urn:nhs:names:services:ebs:PRSC_IN070000UK08",
+      "urn:nhs:names:services:ebs:PRSC_IN140000UK06",
+      "urn:nhs:names:services:gp2gp:RCMR_IN010000UK05",
+      "urn:nhs:names:services:gp2gp:RCMR_IN030000UK06",
+      "urn:nhs:names:services:ebs:PRSC_IN130000UK07",
+      "urn:nhs:names:services:ebs:PRSC_IN110000UK08",
+      "urn:nhs:names:services:ebs:PRSC_IN060000UK06",
+      "urn:nhs:names:services:ebs:PRSC_IN150000UK06",
+      "urn:nhs:names:services:pat:POLB_IN020006UK01",
+      "urn:nhs:names:services:pat:POLB_IN020005UK01",
+      "urn:nhs:names:services:gpes:COMT_IN000004GB01",
+      "urn:nhs:names:services:gp2gp:MCCI_IN010000UK13",
+      "urn:nhs:names:services:ebs:PRSC_IN080000UK03",
+      "urn:nhs:names:services:ebs:PRSC_IN040000UK03"
+    ]
   }
 ]

@@ -12,7 +12,9 @@ from request.http_headers import HttpHeaders
 from utilities import message_utilities
 
 ORG_CODE = "org"
+SPINE_CORE_ORG_CODE = "core_org"
 SERVICE_ID = "service:interaction"
+FORWARD_RELIABLE_SERVICE_ID = "urn:nhs:names:services:gp2gp:RCMR_IN010000UK05"
 PARTY_KEY = "some_party_key"
 MANUFACTURING_ORG = "some_manufacturer"
 FIXED_UUID = "f0f0e921-92ca-4a88-a550-2dbb36f703af"
@@ -143,6 +145,9 @@ class RequestHandlerTestBase(ABC, tornado.testing.AsyncHTTPTestCase):
 
     def _get_current_and_expected_body(self, response, expected_file_path):
         current = json.loads(message_utilities.replace_uuid(response.body.decode(), FIXED_UUID))
+
+        self.assertEqual(current["resourceType"], "Bundle", current)
+
         current_entries = current["entry"]
         current_id = current['id']
         current_link_url = current['link'][0]['url']

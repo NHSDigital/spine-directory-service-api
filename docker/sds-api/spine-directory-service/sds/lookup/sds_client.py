@@ -141,7 +141,7 @@ class SDSMockClient:
         self.mock_as_data = None
         self._read_mock_data()
 
-    async def get_mhs_details(self, ods_code: str, interaction_id: str, party_key: str) -> List[Dict]:
+    async def get_mhs_details(self, ods_code: str, interaction_id: str = None, party_key: str = None) -> List[Dict]:
         _validate_mhs_request_params(ods_code, interaction_id, party_key)
 
         if self.pause_duration != 0:
