@@ -193,7 +193,7 @@ def build_connection_type():
     }
 
 
-def _build_managing_organization( value: Optional[str]):
+def _build_managing_organization(value: Optional[str]):
     return {
         "identifier": build_identifier(Url.MANAGING_ORGANIZATION_URL, value)
     } if value else None
