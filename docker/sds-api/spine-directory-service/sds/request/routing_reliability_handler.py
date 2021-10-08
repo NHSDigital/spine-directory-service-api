@@ -130,7 +130,10 @@ class RoutingReliabilityRequestHandler(BaseHandler, ErrorHandler):
         if len(parts) < 2:
             raise RuntimeError(f"Invalid service interaction {service_interaction}")
 
-        return parts[-2] in FORWARD_RELIABLE_SERVICES and parts[-1] in FORWARD_RELIABLE_INTERACTIONS
+        interaction_part = parts[-1]
+        service_part = parts[-2]
+            
+        return service_part in FORWARD_RELIABLE_SERVICES and interaction_part in FORWARD_RELIABLE_INTERACTIONS
 
     def _validate_query_params(self):
         query_params = self.request.arguments
