@@ -114,9 +114,6 @@
       "S918999508766"
     ],
     "nhsMHSAckRequested": "always",
-    "nhsMHSActor": [
-      "urn:oasis:names:tc:ebxml-msg:actor:nextMSH"
-    ],
     "nhsMHSDuplicateElimination": "always",
     "nhsMHSPersistDuration": "PT7H",
     "nhsMHSRetries": "2",
