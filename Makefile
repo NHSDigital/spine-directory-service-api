@@ -80,10 +80,10 @@ test: smoketest e2etest
 pytest-guards: guard-SERVICE_BASE_PATH guard-APIGEE_ENVIRONMENT guard-SOURCE_COMMIT_ID guard-STATUS_ENDPOINT_API_KEY
 
 smoketest: pytest-guards
-	poetry run pytest -v --junitxml=smoketest-report.xml -s -m smoketest
+	poetry run python -m pytest -v --junitxml=smoketest-report.xml -s -m smoketest
 
 e2etest: pytest-guards
-	poetry run pytest -v --junitxml=e2e-report.xml -s -m e2e
+	poetry run python -m pytest -v --junitxml=e2e-report.xml -s -m e2e
 
 securitytest: pytest-guards
-	poetry run pytest -v --junitxml=securitytest-report.xml -s -m securitytest
+	poetry run python -m pytest -v --junitxml=securitytest-report.xml -s -m securitytest
