@@ -2,7 +2,7 @@ from os import path
 from unittest.mock import patch, call
 
 from request.tests.request_handler_test_base import RequestHandlerTestBase, ORG_CODE, SERVICE_ID, PARTY_KEY, \
-    SPINE_CORE_ORG_CODE, FORWARD_RELIABLE_SERVICE_ID
+    SPINE_CORE_ORG_CODE, FORWARD_RELIABLE_SERVICE_ID, CORE_SPINE_FORWARD_RELIABLE_SERVICE_ID
 from utilities import test_utilities
 
 EXPECTED_SINGLE_ENDPOINT_JSON_FILE_PATH = path.join(path.dirname(__file__), "examples/single_endpoint.json")
@@ -54,7 +54,7 @@ FORWARD_RELIABLE_ROUTING_AND_RELIABILITY_DETAILS = [{
     "nhsMHSEndPoint": [
         "http:/appreliablemessaging"
     ],
-    "nhsMhsSvcIA": FORWARD_RELIABLE_SERVICE_ID,
+    "nhsMhsSvcIA": CORE_SPINE_FORWARD_RELIABLE_SERVICE_ID,
     "nhsIDCode": SPINE_CORE_ORG_CODE
 }]
 
@@ -97,7 +97,7 @@ class TestRoutingReliabilityRequestHandler(RequestHandlerTestBase):
 
         self.sds_client.get_mhs_details.assert_has_calls([
             call(ORG_CODE, FORWARD_RELIABLE_SERVICE_ID, PARTY_KEY),
-            call(SPINE_CORE_ORG_CODE, FORWARD_RELIABLE_SERVICE_ID)
+            call(SPINE_CORE_ORG_CODE, CORE_SPINE_FORWARD_RELIABLE_SERVICE_ID)
         ])
 
     @patch('utilities.config.get_config')
