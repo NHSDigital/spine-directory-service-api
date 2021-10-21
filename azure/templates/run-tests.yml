@@ -24,7 +24,7 @@ steps:
   - bash: |
       make install-python
     workingDirectory: $(Pipeline.Workspace)/s/$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)
-    # condition: ne(variables['CacheRestored-Pytest'], 'true')
+    condition: ne(variables['CacheRestored-Pytest'], 'true')
     displayName: Setup pytests
   # Smoketests
   - ${{ if parameters.smoke_tests }}:
