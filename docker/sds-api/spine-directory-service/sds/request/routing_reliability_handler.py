@@ -1,4 +1,5 @@
 import json
+from typing import List, Optional
 
 import tornado
 from tornado.web import MissingArgumentError
@@ -12,8 +13,25 @@ from request.fhir_json_mapper import build_endpoint_resources, build_bundle_reso
 from request.http_headers import HttpHeaders
 from request.tracking_ids_headers_reader import read_tracking_id_headers
 from utilities import timing, integration_adaptors_logger as log, mdc
+from utilities import config
 
 logger = log.IntegrationAdaptorsLogger(__name__)
+
+RELIABLE_SERVICES = [
+    'cc', 'ebs', 'ebsepr', 'ebsnpr', 'gp2gp', 'pat', 'itk', 'dis',
+    'ed', 'op', 'caf', 'adm', 'ooh', 'am', 'mh', 'nd', 'dir']
+FORWARD_RELIABLE_INTERACTIONS = [
+    'COPC_IN000001UK01', 'PRSC_IN040000UK08', 'PRSC_IN080000UK07', 'PRPA_IN010000UK07', 'PRPA_IN020000UK06',
+    'PRSC_IN050000UK06', 'PRSC_IN090000UK09', 'PRPA_IN030000UK08', 'PRSC_IN100000UK06', 'PRSC_IN070000UK08',
+    'PRSC_IN140000UK06', 'RCMR_IN010000UK05', 'RCMR_IN030000UK06', 'PRSC_IN130000UK07', 'PRSC_IN110000UK08',
+    'PRSC_IN060000UK06', 'PRSC_IN150000UK06', 'POLB_IN020006UK01', 'POLB_IN020005UK01', 'COMT_IN000004GB01',
+    'MCCI_IN010000UK13'
+]
+FORWARD_EXPRESS_INTERACTIONS = [
+    'PRSC_IN080000UK03', 'PRSC_IN040000UK03'
+]
+FORWARD_RELIABLE_CORE_SPINE_SERVICE_INTERACTION = 'urn:nhs:names:services:tms:ReliableIntermediary'
+FORWARD_EXPRESS_CORE_SPINE_SERVICE_INTERACTION = 'urn:nhs:names:services:tms:ExpressIntermediary'
 
 
 class RoutingReliabilityRequestHandler(BaseHandler, ErrorHandler):
@@ -42,22 +60,79 @@ class RoutingReliabilityRequestHandler(BaseHandler, ErrorHandler):
 
         logger.info("Looking up routing and reliability information. {org_code}, {service_id}, {party_key}",
                     fparams={"org_code": org_code, "service_id": service_id, "party_key": party_key})
-        ldap_result = await self.sds_client.get_mhs_details(org_code, service_id, party_key)
-        logger.info("Obtained routing and reliability information. {ldap_result}",
-                    fparams={"ldap_result": ldap_result})
+        ldap_results = await self.sds_client.get_mhs_details(org_code, service_id, party_key)
+        logger.info("Obtained routing and reliability information. {ldap_results}",
+                    fparams={"ldap_results": ldap_results})
+
+        await self._handle_forward_reliable_results(ldap_results)
 
         base_url = f"{self.request.protocol}://{self.request.host}{self.request.path}/"
         full_url = unquote(self.request.full_url())
 
         endpoints = []
-        for ldap_attributes in ldap_result:
-            endpoints += build_endpoint_resources(ldap_attributes)
+        for ldap_result in ldap_results:
+            endpoints += build_endpoint_resources(ldap_result)
 
         bundle = build_bundle_resource(endpoints, base_url, full_url)
 
         self.write(json.dumps(bundle, indent=2, sort_keys=False))
         self.set_header(HttpHeaders.CONTENT_TYPE, accept_type)
         self.set_header(HttpHeaders.X_CORRELATION_ID, mdc.correlation_id.get())
+
+    async def _handle_forward_reliable_results(self, ldap_results: List[dict]):
+        forward_reliable_address_cache: Optional[str] = None
+        forward_express_address_cache: Optional[str] = None
+
+        for ldap_result in ldap_results:
+            service, interaction = self._extract_service_and_interaction(ldap_result['nhsMhsSvcIA'])
+            if service in RELIABLE_SERVICES:
+                address: Optional[str] = None
+                if interaction in FORWARD_RELIABLE_INTERACTIONS:
+                    forward_reliable_address_cache = \
+                        forward_reliable_address_cache \
+                        or await self._get_address(FORWARD_RELIABLE_CORE_SPINE_SERVICE_INTERACTION)
+                    address = forward_reliable_address_cache
+                elif interaction in FORWARD_EXPRESS_INTERACTIONS:
+                    forward_express_address_cache = \
+                        forward_express_address_cache \
+                        or await self._get_address(FORWARD_EXPRESS_CORE_SPINE_SERVICE_INTERACTION)
+                    address = forward_express_address_cache
+
+                if address:
+                    ldap_result['nhsMHSEndPoint'] = [address]
+
+    async def _get_address(self, service_id: str) -> str:
+        spine_core_ods_code = config.get_config('SPINE_CORE_ODS_CODE')
+        logger.info("Looking up forward reliable/express routing and reliability information. {org_code}, {service_id}",
+                    fparams={"org_code": spine_core_ods_code, "service_id": service_id})
+        ldap_results = await self.sds_client.get_mhs_details(spine_core_ods_code, service_id)
+        logger.info("Obtained forward reliable/express routing and reliability information. {ldap_results}",
+                    fparams={"ldap_results": ldap_results})
+
+        if len(ldap_results) != 1:
+            raise ValueError(f"Expected 1 result for forward reliable/express routing and reliability but got {str(len(ldap_results))}")
+
+        addresses = ldap_results[0]['nhsMHSEndPoint']
+
+        if len(addresses) != 1:
+            raise ValueError(f"Expected 1 address for forward reliable/express routing and reliability but got {str(len(addresses))}")
+
+        return addresses[0]
+
+    @staticmethod
+    def _extract_service_and_interaction(service_interaction: str):
+        if not service_interaction:
+            return False
+
+        parts = service_interaction.split(':')
+
+        if len(parts) < 2:
+            raise RuntimeError(f"Invalid service interaction: {service_interaction}")
+
+        interaction_part = parts[-1]
+        service_part = parts[-2]
+
+        return service_part, interaction_part
 
     def _validate_query_params(self):
         query_params = self.request.arguments

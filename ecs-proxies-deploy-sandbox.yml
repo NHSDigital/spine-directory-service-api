@@ -12,6 +12,8 @@ docker_service:
         value: "TRUE"
       - name: SDS_MOCK_LDAP_MODE
         value: "STRICT"
+      - name: SDS_SPINE_CORE_ODS_CODE
+        value: "YES"
     health_check:
       matcher: "200"
       path: "/healthcheck"

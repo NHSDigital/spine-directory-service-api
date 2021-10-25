@@ -1,20 +1,20 @@
 {
   "resourceType": "Bundle",
-  "id": "f0f0e921-92ca-4a88-a550-2dbb36f703af",
+  "id": "<TO_REPLACE>",
   "type": "searchset",
   "total": 1,
   "link": [
     {
       "relation": "self",
-      "url": "http://127.0.0.1:61511/endpoint?organization=https://fhir.nhs.uk/Id/ods-organization-code|org&identifier=https://fhir.nhs.uk/Id/nhsServiceInteractionId|service"
+      "url": "<TO_REPLACE>"
     }
   ],
   "entry": [
     {
-      "fullUrl": "http://127.0.0.1:61511/endpoint/f0f0e921-92ca-4a88-a550-2dbb36f703af",
+      "fullUrl": "<TO_REPLACE>",
       "resource": {
         "resourceType": "Endpoint",
-        "id": "f0f0e921-92ca-4a88-a550-2dbb36f703af",
+        "id": "<TO_REPLACE>",
         "status": "active",
         "connectionType": {
           "system": "http://terminology.hl7.org/CodeSystem/endpoint-connection-type",
@@ -32,51 +32,38 @@
             ]
           }
         ],
-        "address": "https://192.168.128.11/sync-service",
+        "address": "https://msg.int.spine2.ncrs.nhs.uk/reliablemessaging/intermediary",
         "managingOrganization": {
           "identifier": {
             "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-            "value": "org"
+            "value": "X26"
           }
         },
         "identifier": [
           {
             "system": "https://fhir.nhs.uk/Id/nhsMhsFQDN",
-            "value": "192.168.128.11"
+            "value": "cis.test.fifteen"
           },
           {
             "system": "https://fhir.nhs.uk/Id/nhsMhsPartyKey",
-            "value": "some_party_key"
+            "value": "X26-200150"
           },
           {
             "system": "https://fhir.nhs.uk/Id/nhsMhsCPAId",
-            "value": "S20001A000168"
+            "value": "5878ac87fcd8acfef532bd5e06372fee3bf3df0c"
           },
           {
             "system": "https://fhir.nhs.uk/Id/nhsMHSId",
-            "value": "928942012545"
+            "value": "5878ac87fcd8acfef532bd5e06372fee3bf3df0c"
           }
         ],
         "extension": [
-          {
-            "url": "https://fhir.nhs.uk/StructureDefinition/Extension-SDS-ReliabilityConfiguration",
-            "extension": [
-              {
-                "url": "nhsMHSDuplicateElimination",
-                "valueString": "never"
-              },
-              {
-                "url": "nhsMHSAckRequested",
-                "valueString": "never"
-              }
-            ]
-          },
           {
             "url": "https://fhir.nhs.uk/StructureDefinition/Extension-SDS-NhsServiceInteractionId",
             "valueReference": {
               "identifier": {
                 "system": "https://fhir.nhs.uk/Id/nhsServiceInteractionId",
-                "value": "service:interaction"
+                "value": "urn:nhs:names:services:ebs:PRSC_IN080000UK03"
               }
             }
           }
