@@ -23,10 +23,33 @@ class RoutingAndReliabilityHandlerTests(TestCase):
             .with_party_key('YES-0000806') \
             .execute_get_expecting_success()
 
+        self._assert_response(response, "endpoint.json")
+
+    def test_should_return_forward_reliable_address(self):
+        response = self._sds_device_http_request_builder() \
+            .with_org_code('X26') \
+            .with_service_id('urn:nhs:names:services:gp2gp:COPC_IN000001UK01') \
+            .with_party_key('X26-820918') \
+            .execute_get_expecting_success()
+
+        self._assert_response(response, "endpoint_forward_reliable.json")
+
+    def test_should_return_forward_express_address(self):
+        response = self._sds_device_http_request_builder() \
+            .with_org_code('X26') \
+            .with_service_id('urn:nhs:names:services:ebs:PRSC_IN080000UK03') \
+            .with_party_key('X26-200150') \
+            .execute_get_expecting_success()
+
+        self._assert_response(response, "endpoint_forward_express.json")
+
+    def _assert_response(self, response, expected_response_json_file_name: str):
         self.assertEqual('application/fhir+json', response.headers['Content-Type'])
 
-        expected_body = read_test_data_json("endpoint.json")
         body = json.loads(response.content.decode('UTF-8'))
+
+        self.assertEqual(body['resourceType'], 'Bundle')
+        self.assertNotEqual(body['total'], '0')
 
         # id is generated so we first check if existing one is an UUID
         # and then we use it in the expected json
@@ -41,6 +64,7 @@ class RoutingAndReliabilityHandlerTests(TestCase):
         fullUrlRegex = re.compile('^(http:\/\/localhost:9000\/Endpoint\/)([A-F0-9]{8}-?[A-F0-9]{4}-?[A-F0-9]{4}-?[A-F0-9]{4}-?[A-F0-9]{12})')
         self.assertTrue(bool(fullUrlRegex.match(current_entry_full_url)))
 
+        expected_body = read_test_data_json(expected_response_json_file_name)
         expected_body['id'] = current_id
         expected_body["entry"][0]["fullUrl"] = current_entry_full_url
         expected_body["entry"][0]["resource"]["id"] = current_resource_id

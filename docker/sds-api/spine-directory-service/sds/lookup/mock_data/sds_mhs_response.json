@@ -118,5 +118,89 @@
     "nhsMHSRetries": "2",
     "nhsMHSRetryInterval": "PT2H",
     "nhsMHSSyncReplyMode": "None"
+  },
+  {
+    "nhsIDCode": "X26",
+    "nhsMHSAckRequested": "always",
+    "nhsMhsCPAId": "cb238429762210af860b",
+    "nhsMHSDuplicateElimination": "always",
+    "nhsMHSEndPoint": [
+      "https://INT.EPR.Smoke.Tests.77.nhs.uk/INT.EPR.Smoke.Tests.77.nhs.uk/dave"
+    ],
+    "nhsMhsFQDN": "INT.EPR.Smoke.Tests.77.nhs.uk",
+    "nhsMHsIN": "COPC_IN000001UK01",
+    "nhsMHSPartyKey": "X26-820918",
+    "nhsMHSPersistDuration": "PT7H",
+    "nhsMHSRetries": "2",
+    "nhsMHSRetryInterval": "PT2H",
+    "nhsMHsSN": "urn:nhs:names:services:gp2gp",
+    "nhsMhsSvcIA": "urn:nhs:names:services:gp2gp:COPC_IN000001UK01",
+    "nhsMHSSyncReplyMode": "None",
+    "uniqueIdentifier": [
+      "cb238429762210af860b"
+    ]
+  },
+  {
+    "nhsIDCode": "X26",
+    "nhsMhsCPAId": "5878ac87fcd8acfef532bd5e06372fee3bf3df0c",
+    "nhsMHSEndPoint": [
+      "http://cis.test.fifteen/listener-mhs"
+    ],
+    "nhsMhsFQDN": "cis.test.fifteen",
+    "nhsMHsIN": "PRSC_IN080000UK03",
+    "nhsMHSPartyKey": "X26-200150",
+    "nhsMHsSN": "urn:nhs:names:services:ebs",
+    "nhsMhsSvcIA": "urn:nhs:names:services:ebs:PRSC_IN080000UK03",
+    "uniqueIdentifier": [
+      "5878ac87fcd8acfef532bd5e06372fee3bf3df0c"
+    ],
+    "nhsMHSAckRequested": [],
+    "nhsMHSDuplicateElimination": [],
+    "nhsMHSPersistDuration": [],
+    "nhsMHSRetries": [],
+    "nhsMHSRetryInterval": [],
+    "nhsMHSSyncReplyMode": []
+  },
+  {
+    "nhsIDCode": "YES",
+    "nhsMHSAckRequested": "never",
+    "nhsMhsCPAId": "S20001A000192",
+    "nhsMHSDuplicateElimination": "never",
+    "nhsMHSEndPoint": [
+      "https://msg.int.spine2.ncrs.nhs.uk/reliablemessaging/intermediary"
+    ],
+    "nhsMhsFQDN": "msg.int.spine2.ncrs.nhs.uk",
+    "nhsMHsIN": "ReliableIntermediary",
+    "nhsMHSPartyKey": "YES-0000806",
+    "nhsMHsSN": "urn:nhs:names:services:tms",
+    "nhsMhsSvcIA": "urn:nhs:names:services:tms:ReliableIntermediary",
+    "nhsMHSSyncReplyMode": "None",
+    "uniqueIdentifier": [
+      "S20001A000192"
+    ],
+    "nhsMHSPersistDuration": [],
+    "nhsMHSRetries": [],
+    "nhsMHSRetryInterval": []
+  },
+  {
+    "nhsIDCode": "YES",
+    "nhsMHSAckRequested": "never",
+    "nhsMhsCPAId": "S20001A000190",
+    "nhsMHSDuplicateElimination": "never",
+    "nhsMHSEndPoint": [
+      "https://msg.int.spine2.ncrs.nhs.uk/reliablemessaging/intermediary"
+    ],
+    "nhsMhsFQDN": "msg.int.spine2.ncrs.nhs.uk",
+    "nhsMHsIN": "ExpressIntermediary",
+    "nhsMHSPartyKey": "YES-0000806",
+    "nhsMHsSN": "urn:nhs:names:services:tms",
+    "nhsMhsSvcIA": "urn:nhs:names:services:tms:ExpressIntermediary",
+    "nhsMHSSyncReplyMode": "None",
+    "uniqueIdentifier": [
+      "S20001A000190"
+    ],
+    "nhsMHSPersistDuration": [],
+    "nhsMHSRetries": [],
+    "nhsMHSRetryInterval": []
   }
 ]

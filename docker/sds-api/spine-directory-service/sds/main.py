@@ -1,10 +1,6 @@
-from typing import Optional, Dict, Any
-
 import tornado.httpserver
 import tornado.ioloop
 import tornado.web
-from tornado import httputil
-from tornado.routing import Matcher
 
 import lookup.sds_client_factory
 from lookup.sds_client import SDSClient

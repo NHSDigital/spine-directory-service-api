@@ -1,9 +1,13 @@
 from os import path
-from request.tests.request_handler_test_base import RequestHandlerTestBase, ORG_CODE, SERVICE_ID, PARTY_KEY
+from unittest.mock import patch, call
+
+from request.tests.request_handler_test_base import RequestHandlerTestBase, ORG_CODE, SERVICE_ID, PARTY_KEY, \
+    SPINE_CORE_ORG_CODE, FORWARD_RELIABLE_SERVICE_ID, CORE_SPINE_FORWARD_RELIABLE_SERVICE_ID
 from utilities import test_utilities
 
 EXPECTED_SINGLE_ENDPOINT_JSON_FILE_PATH = path.join(path.dirname(__file__), "examples/single_endpoint.json")
 EXPECTED_MULTIPLE_ENDPOINTS_JSON_FILE_PATH = path.join(path.dirname(__file__), "examples/multiple_endpoints.json")
+EXPECTED_FORWARD_RELIABLE_ENDPOINTS_JSON_FILE_PATH = path.join(path.dirname(__file__), "examples/multiple_endpoints_with_forward_reliable.json")
 SINGLE_ROUTING_AND_RELIABILITY_DETAILS = [{
     "nhsMHSEndPoint": [
         "https://192.168.128.11/sync-service"
@@ -46,24 +50,60 @@ MULTIPLE_ROUTING_AND_RELIABILITY_DETAILS.append({
     "nhsIDCode": ORG_CODE
 })
 
+FORWARD_RELIABLE_ROUTING_AND_RELIABILITY_DETAILS = [{
+    "nhsMHSEndPoint": [
+        "http:/appreliablemessaging"
+    ],
+    "nhsMhsSvcIA": CORE_SPINE_FORWARD_RELIABLE_SERVICE_ID,
+    "nhsIDCode": SPINE_CORE_ORG_CODE
+}]
+
 
 class TestRoutingReliabilityRequestHandler(RequestHandlerTestBase):
 
-    def test_get_single(self):
+    @patch('utilities.config.get_config')
+    def test_get_single(self, mock_config):
+        self._set_core_spine_ods_code(mock_config, SPINE_CORE_ORG_CODE)
+
         self.sds_client.get_mhs_details.return_value = test_utilities.awaitable(SINGLE_ROUTING_AND_RELIABILITY_DETAILS)
 
         super()._test_get(super()._build_endpoint_url(), EXPECTED_SINGLE_ENDPOINT_JSON_FILE_PATH)
 
         self.sds_client.get_mhs_details.assert_called_with(ORG_CODE, SERVICE_ID, PARTY_KEY)
 
-    def test_get_multiple(self):
+    @patch('utilities.config.get_config')
+    def test_get_multiple(self, mock_config):
+        self._set_core_spine_ods_code(mock_config, SPINE_CORE_ORG_CODE)
+
         self.sds_client.get_mhs_details.return_value = test_utilities.awaitable(MULTIPLE_ROUTING_AND_RELIABILITY_DETAILS)
 
         super()._test_get(super()._build_endpoint_url(), EXPECTED_MULTIPLE_ENDPOINTS_JSON_FILE_PATH)
 
         self.sds_client.get_mhs_details.assert_called_with(ORG_CODE, SERVICE_ID, PARTY_KEY)
 
-    def test_supported_query_params(self):
+    @patch('utilities.config.get_config')
+    def test_get_multiple_with_forward_reliable_service(self, mock_config):
+        self._set_core_spine_ods_code(mock_config, SPINE_CORE_ORG_CODE)
+
+        routing_and_reliability_details = MULTIPLE_ROUTING_AND_RELIABILITY_DETAILS.copy()
+        routing_and_reliability_details[1]["nhsMhsSvcIA"] = FORWARD_RELIABLE_SERVICE_ID
+
+        self.sds_client.get_mhs_details.side_effect = [
+            test_utilities.awaitable(routing_and_reliability_details),
+            test_utilities.awaitable(FORWARD_RELIABLE_ROUTING_AND_RELIABILITY_DETAILS),
+            ]
+
+        super()._test_get(super()._build_endpoint_url(service_id=FORWARD_RELIABLE_SERVICE_ID), EXPECTED_FORWARD_RELIABLE_ENDPOINTS_JSON_FILE_PATH)
+
+        self.sds_client.get_mhs_details.assert_has_calls([
+            call(ORG_CODE, FORWARD_RELIABLE_SERVICE_ID, PARTY_KEY),
+            call(SPINE_CORE_ORG_CODE, CORE_SPINE_FORWARD_RELIABLE_SERVICE_ID)
+        ])
+
+    @patch('utilities.config.get_config')
+    def test_supported_query_params(self, mock_config):
+        self._set_core_spine_ods_code(mock_config, SPINE_CORE_ORG_CODE)
+
         self.sds_client.get_mhs_details.return_value = test_utilities.awaitable(SINGLE_ROUTING_AND_RELIABILITY_DETAILS)
 
         for org_code, service_id, party_key in [
@@ -77,7 +117,10 @@ class TestRoutingReliabilityRequestHandler(RequestHandlerTestBase):
                 super()._test_get(endpoint_url, EXPECTED_SINGLE_ENDPOINT_JSON_FILE_PATH)
                 self.sds_client.get_mhs_details.assert_called_with(org_code, service_id, party_key)
 
-    def test_correlation_id_is_set_as_response_header(self):
+    @patch('utilities.config.get_config')
+    def test_correlation_id_is_set_as_response_header(self, mock_config):
+        self._set_core_spine_ods_code(mock_config, SPINE_CORE_ORG_CODE)
+
         def mock200():
             self.sds_client.get_mhs_details.return_value = test_utilities.awaitable(SINGLE_ROUTING_AND_RELIABILITY_DETAILS)
 
@@ -116,7 +159,10 @@ class TestRoutingReliabilityRequestHandler(RequestHandlerTestBase):
             self.assertEqual(response.code, 400)
             super()._assert_400_operation_outcome(response.body.decode(), error_message)
 
-    def test_get_handles_different_accept_header(self):
+    @patch('utilities.config.get_config')
+    def test_get_handles_different_accept_header(self, mock_config):
+        self._set_core_spine_ods_code(mock_config, SPINE_CORE_ORG_CODE)
+
         self.sds_client.get_mhs_details.return_value = test_utilities.awaitable(SINGLE_ROUTING_AND_RELIABILITY_DETAILS)
         super()._test_get_handles_different_accept_header(
             super()._build_endpoint_url(),
@@ -124,3 +170,11 @@ class TestRoutingReliabilityRequestHandler(RequestHandlerTestBase):
 
     def test_should_return_405_when_using_non_get(self):
         super()._test_should_return_405_when_using_non_get(super()._build_endpoint_url())
+
+    @staticmethod
+    def _set_core_spine_ods_code(mock_config, ods_code):
+        def config_values(*args, **kwargs):
+            return {
+                "SPINE_CORE_ODS_CODE": ods_code
+            }[args[0]]
+        mock_config.side_effect = config_values

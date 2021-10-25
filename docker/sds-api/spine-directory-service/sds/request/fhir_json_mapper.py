@@ -35,7 +35,7 @@ def _map_resource_to_bundle_entry(resource, base_url):
     }
 
 
-def build_endpoint_resources(ldap_attributes: CaseInsensitiveDict) -> List[Dict]:
+def build_endpoint_resources(ldap_attributes: dict) -> List[Dict]:
     def build_endpoint(address):
         result = {
             "resourceType": "Endpoint",

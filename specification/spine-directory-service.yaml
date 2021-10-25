@@ -25,6 +25,8 @@ info:
     MHS records of GP Connect provider systems contain the endpoint of the target practice, as defined by the [FHIR service root URL](https://developer.nhs.uk/apis/gpconnect-0-7-2/development_fhir_api_guidance.html#service-root-url). 
     Please see [System topologies](https://developer.nhs.uk/apis/gpconnect-0-7-2/integration_system_topologies.html) for more details on the allocation of ASIDs and Party Keys. 
     
+    - For all intermediary messaging endpoint lookups, this API returns the NHS Digital Spine MHS endpoint address.
+
     ## Who can use this API
     This API can only be used where there is a legal basis to do so. Make sure you have a valid use case before you go too far with your development.
 
