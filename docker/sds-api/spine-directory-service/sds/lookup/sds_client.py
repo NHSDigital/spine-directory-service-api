@@ -25,7 +25,8 @@ MHS_ATTRIBUTES = [
     'nhsIDCode', 'nhsMhsCPAId', 'nhsMHSEndPoint', 'nhsMhsFQDN',
     'nhsMHsIN', 'nhsMHSPartyKey', 'nhsMHsSN', 'nhsMhsSvcIA',
     'uniqueIdentifier', 'nhsMHSAckRequested', 'nhsMHSDuplicateElimination',
-    'nhsMHSPersistDuration', 'nhsMHSRetries', 'nhsMHSRetryInterval', 'nhsMHSSyncReplyMode'
+    'nhsMHSPersistDuration', 'nhsMHSRetries', 'nhsMHSRetryInterval', 'nhsMHSSyncReplyMode',
+    'nhsMhsActor'
 ]
 AS_ATTRIBUTES = [
     'uniqueIdentifier', 'nhsIdCode', 'nhsAsClient', 'nhsMhsPartyKey', 'nhsAsSvcIA'

@@ -1,3 +1,4 @@
+import logging
 from typing import Dict, List, Optional
 
 from ldap3.utils.ciDict import CaseInsensitiveDict
@@ -5,8 +6,10 @@ from ldap3.utils.ciDict import CaseInsensitiveDict
 from request.base_handler import SERVICE_ID_FHIR_IDENTIFIER
 from request.mapper_urls import MapperUrls as Url
 from utilities import message_utilities
+from utilities import integration_adaptors_logger as log
 
-SERVICE_ID_FHIR_IDENTIFIER = "https://fhir.nhs.uk/Id/nhsServiceInteractionId"
+
+logger = log.IntegrationAdaptorsLogger(__name__)
 
 
 def build_bundle_resource(resources: List[Dict], base_url: str, full_url: str):
@@ -134,24 +137,29 @@ def _build_identifier_array(ldap_attributes: Dict):
 
 
 def _build_extension_array(ldap_attributes: Dict):
+    actor = ldap_attributes.get("nhsMHSActor", [None])
+    if len(actor) > 1:
+        raise ValueError("LDAP returned more than 1 'nhsMHSActor' attribute")
+
     return [
         _build_string_extension("nhsMHSSyncReplyMode", ldap_attributes.get("nhsMHSSyncReplyMode")),
         _build_string_extension("nhsMHSRetryInterval", ldap_attributes.get("nhsMHSRetryInterval")),
         _build_int_extension("nhsMHSRetries", ldap_attributes.get("nhsMHSRetries")),
         _build_string_extension("nhsMHSPersistDuration", ldap_attributes.get("nhsMHSPersistDuration")),
         _build_string_extension("nhsMHSDuplicateElimination", ldap_attributes.get("nhsMHSDuplicateElimination")),
-        _build_string_extension("nhsMHSAckRequested", ldap_attributes.get("nhsMHSAckRequested"))
+        _build_string_extension("nhsMHSAckRequested", ldap_attributes.get("nhsMHSAckRequested")),
+        _build_string_extension("nhsMHSActor", actor[0])
     ]
 
 
-def _build_string_extension(url: str, value: str):
+def _build_string_extension(url: str, value: Optional[str]):
     return {
         "url": url,
         "valueString": value
     } if value else None
 
 
-def _build_value_reference_extension(url: str, system: str, value: str):
+def _build_value_reference_extension(url: str, system: str, value: Optional[str]):
     return {
         "url": url,
         "valueReference": {
@@ -163,14 +171,14 @@ def _build_value_reference_extension(url: str, system: str, value: str):
     } if value else None
 
 
-def _build_int_extension(url: str, value: str):
+def _build_int_extension(url: str, value: Optional[str]):
     return {
         "url": url,
         "valueInteger": int(value)
     } if value else None
 
 
-def build_identifier(system: str, value: str):
+def build_identifier(system: str, value: Optional[str]):
     return {
         "system": system,
         "value": value
@@ -185,7 +193,7 @@ def build_connection_type():
     }
 
 
-def _build_managing_organization(value: str):
+def _build_managing_organization(value: Optional[str]):
     return {
         "identifier": build_identifier(Url.MANAGING_ORGANIZATION_URL, value)
     } if value else None

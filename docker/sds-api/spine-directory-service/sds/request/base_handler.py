@@ -1,4 +1,4 @@
-from typing import Optional, Set
+from typing import Optional
 
 import tornado.web
 
@@ -17,6 +17,7 @@ MANUFACTURING_ORGANIZATION_FHIR_IDENTIFIER = "https://fhir.nhs.uk/Id/ods-organiz
 
 class BaseHandler(tornado.web.RequestHandler):
     """A base handler for spine route lookup"""
+    sds_client: SDSClient
 
     def initialize(self, sds_client: SDSClient) -> None:
         """Initialise this request handler with the provided configuration values.
