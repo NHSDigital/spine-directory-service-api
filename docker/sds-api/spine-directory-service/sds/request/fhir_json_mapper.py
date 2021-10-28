@@ -1,7 +1,4 @@
-import logging
 from typing import Dict, List, Optional
-
-from ldap3.utils.ciDict import CaseInsensitiveDict
 
 from request.base_handler import SERVICE_ID_FHIR_IDENTIFIER
 from request.mapper_urls import MapperUrls as Url
@@ -42,12 +39,13 @@ def build_endpoint_resources(ldap_attributes: dict) -> List[Dict]:
     def build_endpoint(address):
         result = {
             "resourceType": "Endpoint",
-            "id": message_utilities.get_uuid(),
+            "id": str(message_utilities.get_uuid()),
             "status": "active",
             "connectionType": build_connection_type(),
-            "payloadType": _build_payload_type(),
-            "address": address
+            "payloadType": _build_payload_type()
         }
+        if address:
+            result["address"] = address
 
         managing_organization = _build_managing_organization(ldap_attributes.get("nhsIDCode"))
         if managing_organization:
@@ -75,17 +73,17 @@ def build_endpoint_resources(ldap_attributes: dict) -> List[Dict]:
             result["extension"] = extensions
 
         return result
-    return [build_endpoint(address) for address in ldap_attributes['nhsMHSEndPoint']]
+    return [build_endpoint(address) for address in ldap_attributes.get('nhsMHSEndPoint', [None]) or [None]]
 
 
-def build_device_resource(ldap_attributes: CaseInsensitiveDict) -> Dict:
+def build_device_resource(ldap_attributes: dict) -> Dict:
     device = {
         "resourceType": "Device",
-        "id": message_utilities.get_uuid()
+        "id": str(message_utilities.get_uuid())
     }
 
     identifiers = []
-    unique_identifier = ldap_attributes.get('uniqueIdentifier', [None])
+    unique_identifier = ldap_attributes.get('uniqueIdentifier', [None]) or [None]
     if len(unique_identifier) > 1:
         raise ValueError("LDAP returned more than 1 'uniqueIdentifier' attribute")
     unique_identifier = unique_identifier[0]
@@ -103,15 +101,19 @@ def build_device_resource(ldap_attributes: CaseInsensitiveDict) -> Dict:
         extension.append(
             _build_value_reference_extension(
                 Url.MANUFACTURING_ORGANIZATION_EXTENSION_URL, Url.MANUFACTURING_ORGANIZATION_URL, manufacturing_organization))
-    service_id_extensions = list(map(
+    service_id_extensions = map(
         lambda v: _build_value_reference_extension(Url.SDS_SERVICE_INTERACTION_ID_URL, SERVICE_ID_FHIR_IDENTIFIER, v),
-        ldap_attributes.get('nhsAsSvcIA', [])))
+        ldap_attributes.get('nhsAsSvcIA', [None]) or [None])
+    service_id_extensions = list(filter(lambda x: x, service_id_extensions))
     if service_id_extensions:
         extension += service_id_extensions
     if extension:
         device['extension'] = extension
 
-    client_id = ldap_attributes.get('nhsAsClient', [None])[0]
+    client_id = ldap_attributes.get('nhsAsClient', [None]) or [None]
+    if len(client_id) > 1:
+        raise ValueError("LDAP returned more than 1 'nhsAsClient' attribute")
+    client_id = client_id[0]
     if client_id:
         device["owner"] = {
             "identifier": {
@@ -124,7 +126,7 @@ def build_device_resource(ldap_attributes: CaseInsensitiveDict) -> Dict:
 
 
 def _build_identifier_array(ldap_attributes: Dict):
-    unique_identifiers = ldap_attributes.get("uniqueIdentifier", [None])
+    unique_identifiers = ldap_attributes.get("uniqueIdentifier", [None]) or [None]
     if len(unique_identifiers) > 1:
         raise ValueError("LDAP returned more than 1 'uniqueIdentifier' attribute")
 
@@ -137,7 +139,7 @@ def _build_identifier_array(ldap_attributes: Dict):
 
 
 def _build_extension_array(ldap_attributes: Dict):
-    actor = ldap_attributes.get("nhsMHSActor", [None])
+    actor = ldap_attributes.get("nhsMHSActor", [None]) or [None]
     if len(actor) > 1:
         raise ValueError("LDAP returned more than 1 'nhsMHSActor' attribute")
 

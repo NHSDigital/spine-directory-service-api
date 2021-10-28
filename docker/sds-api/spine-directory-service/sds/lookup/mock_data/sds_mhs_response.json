@@ -118,7 +118,8 @@
     "nhsMHSPersistDuration": "PT7H",
     "nhsMHSRetries": "2",
     "nhsMHSRetryInterval": "PT2H",
-    "nhsMHSSyncReplyMode": "None"
+    "nhsMHSSyncReplyMode": "None",
+    "nhsMHSActor": []
   },
   {
     "nhsIDCode": "X26",
