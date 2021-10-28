@@ -15,7 +15,7 @@ class TestGetJsonFormat(TestCase):
             return json.load(f)
 
     @patch('request.fhir_json_mapper.message_utilities')
-    def test_build_endpoint_resources(self, message_utilities_mock):
+    def test_build_resources_from_ldap_results(self, message_utilities_mock):
         resource_test_cases = [
             ('endpoint', build_endpoint_resources),
             ('device', build_device_resource)
