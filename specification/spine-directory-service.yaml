@@ -67,6 +67,7 @@ info:
     | ----------------- | ---------------------------------------------------------------------|
     | Sandbox           | `https://sandbox.api.service.nhs.uk/spine-directory/FHIR/R4`         |
     | Integration test  | `https://int.api.service.nhs.uk/spine-directory/FHIR/R4`             |
+    | Production        | `https://api.service.nhs.uk/spine-directory/FHIR/R4`                 |
     
     ### Sandbox testing
     Our [sandbox environment](https://digital.nhs.uk/developer/guides-and-documentation/testing#sandbox-testing):
