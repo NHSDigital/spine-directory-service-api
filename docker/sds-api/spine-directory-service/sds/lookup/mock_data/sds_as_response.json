@@ -488,14 +488,14 @@
     "nhsAsClient": [
       "YES"
     ],
-    "nhsMhsManufacturerOrg": "YES"
+    "nhsMhsManufacturerOrg": "X09001"
   },
   {
     "nhsAsSvcIA": [
       "urn:nhs:names:services:gp2gp:COPC_IN000001UK01"
     ],
     "nhsIDCode": "X26",
-    "nhsMHSPartyKey": "X26-9199246",
+    "nhsMHSPartyKey": "X26-822084",
     "uniqueIdentifier": [
       "918999199246"
     ],
