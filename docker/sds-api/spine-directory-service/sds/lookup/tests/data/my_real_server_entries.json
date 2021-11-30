@@ -25,7 +25,8 @@
                 ],
                 "uniqueIdentifier": [
                     "123456789"
-                ]
+                ],
+                "nhsMhsManufacturerOrg": "B86071"
             },
             "dn": "uniqueIdentifier=123456789,ou=Services,o=nhs",
             "raw": {

@@ -96,7 +96,7 @@ def build_device_resource(ldap_attributes: dict) -> Dict:
         device['identifier'] = identifiers
 
     extension = []
-    manufacturing_organization = ldap_attributes.get('nhsIdCode')
+    manufacturing_organization = ldap_attributes.get('nhsMhsManufacturerOrg')
     if manufacturing_organization:
         extension.append(
             _build_value_reference_extension(

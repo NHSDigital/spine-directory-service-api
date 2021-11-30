@@ -5,28 +5,24 @@ from utilities import test_utilities
 EXPECTED_SINGLE_DEVICE_JSON_FILE_PATH = path.join(path.dirname(__file__), "examples/single_device.json")
 EXPECTED_MULTIPLE_DEVICES_JSON_FILE_PATH = path.join(path.dirname(__file__), "examples/multiple_devices.json")
 SINGLE_ACCREDITED_SYSTEM_DETAILS = [{
-    "nhsIdCode": MANUFACTURING_ORG,
+    "nhsMhsManufacturerOrg": MANUFACTURING_ORG,
     "uniqueIdentifier": [
         "928942012545"
     ],
     "nhsMhsPartyKey": PARTY_KEY,
-    "nhsAsSvcIA": [ SERVICE_ID ],
-    "nhsAsClient": [
-        ORG_CODE
-    ]
+    "nhsAsSvcIA": [SERVICE_ID],
+    "nhsAsClient": [ORG_CODE]
 }]
 
 MULTIPLE_ACCREDITED_SYSTEM_DETAILS = SINGLE_ACCREDITED_SYSTEM_DETAILS.copy()
 MULTIPLE_ACCREDITED_SYSTEM_DETAILS.append({
-    "nhsIdCode": MANUFACTURING_ORG + "_second",
+    "nhsMhsManufacturerOrg": MANUFACTURING_ORG + "_second",
     "uniqueIdentifier": [
         "928942012545_second"
     ],
     "nhsMhsPartyKey": PARTY_KEY + "_second",
-    "nhsAsSvcIA": [ SERVICE_ID ],
-    "nhsAsClient": [
-        ORG_CODE
-    ]
+    "nhsAsSvcIA": [SERVICE_ID],
+    "nhsAsClient": [ORG_CODE]
 })
 
 

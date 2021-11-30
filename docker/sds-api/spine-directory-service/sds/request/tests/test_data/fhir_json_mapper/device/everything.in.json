@@ -1,7 +1,7 @@
 {
   "uniqueIdentifier": ["some_unique_identifier"],
   "nhsMhsPartyKey": "some_party_key",
-  "nhsIdCode": "some_managing_organization",
+  "nhsMhsManufacturerOrg": "some_managing_organization",
   "nhsAsSvcIA": ["some_service_id"],
   "nhsAsClient": ["some_client_id"]
 }

@@ -29,7 +29,7 @@ MHS_ATTRIBUTES = [
     'nhsMhsActor'
 ]
 AS_ATTRIBUTES = [
-    'uniqueIdentifier', 'nhsIdCode', 'nhsAsClient', 'nhsMhsPartyKey', 'nhsAsSvcIA'
+    'uniqueIdentifier', 'nhsIdCode', 'nhsAsClient', 'nhsMhsPartyKey', 'nhsAsSvcIA', 'nhsMhsManufacturerOrg'
 ]
 
 
