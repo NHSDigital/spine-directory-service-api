@@ -11,7 +11,7 @@
     <ExpirySettings>
         <ExpiryDate/>
         <TimeOfDay/>
-        <TimeoutInSeconds ref="">900</TimeoutInSeconds>
+        <TimeoutInSeconds ref="">1800</TimeoutInSeconds>
     </ExpirySettings>
     <SkipCacheLookup>(request.header.cache-control = "no-cache") or (request.path  = "/_ping") or (request.path = "/_status") or (request.path  = "/healthcheck") or (request.path  = "/healthcheck/deep")</SkipCacheLookup>
     <SkipCachePopulation>(request.header.cache-control = "no-cache") or (request.path  = "/_ping") or (request.path = "/_status") or (request.path  = "/healthcheck") or (request.path  = "/healthcheck/deep")</SkipCachePopulation>
