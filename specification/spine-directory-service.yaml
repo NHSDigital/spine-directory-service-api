@@ -127,14 +127,22 @@ paths:
       parameters:
         - in: query
           name: organization
-          description: The organisation code for the NHS Spine instance that your Message Handling System is communicating with. Must be preceded with FHIR identifier (eg."organization=https://fhir.nhs.uk/Id/ods-organization-code|YES")
+          description: The organisation code for the NHS Spine instance that your Message Handling System is communicating with. Must be preceded with FHIR identifier.
           required: true
           schema:
             type: string
+          example: "https://fhir.nhs.uk/Id/ods-organization-code|YES"
         - in: query
           name: identifier
-          description: "The service that is being contacted and the action that is required. Additionally optional MHS party key as a second occurance of this parameter. Both must be preceded with FHIR identifier (eg. service id: 'identifier=https://fhir.nhs.uk/Id/nhsServiceInteractionId|urn:nhs:names:services:psis:REPC_IN150016UK05' ; party key: 'identifier=https://fhir.nhs.uk/Id/nhsMhsPartyKey|YES-0000806'). See the Data section in this API Specification document for more information."
+          description: "The service that is being contacted and the action that is required. Additionally optional MHS party key as a second occurrence of this parameter. Both must be preceded with FHIR identifier. See the Data section in this API Specification document for more information."
           required: true
+          examples:
+            nhsServiceInteractionId:
+              summary: Service identifier consisting of https://fhir.nhs.uk/Id/nhsServiceInteractionId only
+              value: ["https://fhir.nhs.uk/Id/nhsServiceInteractionId|urn:nhs:names:services:psis:REPC_IN150016UK05"]
+            nhsServiceInteractionIdAndMhsPartyKey:
+              summary: Service identifier consisting of both https://fhir.nhs.uk/Id/nhsServiceInteractionId and https://fhir.nhs.uk/Id/nhsMhsPartyKey
+              value: ["https://fhir.nhs.uk/Id/nhsServiceInteractionId|urn:nhs:names:services:psis:REPC_IN150016UK05", "https://fhir.nhs.uk/Id/nhsMhsPartyKey|YES-0000806"]
           schema:
             type: array
             items: 
@@ -142,10 +150,11 @@ paths:
           explode: true
         - in: query
           name: manufacturing-organization
-          description: Manufacturing organisation ODS code. Must be preceded with FHIR identifier (eg."manufacturing-organization=https://fhir.nhs.uk/Id/ods-organization-code|YES")
+          description: Manufacturing organisation ODS code. Must be preceded with FHIR identifier.
           required: false
           schema:
             type: string
+          example: "https://fhir.nhs.uk/Id/ods-organization-code|YES"
         - in: header
           name: X-Correlation-Id
           description: UUID for request tracking
