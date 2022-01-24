@@ -162,6 +162,7 @@ paths:
             type: string
             format: uuid
           required: false
+          example: 6d3d3674-7ce5-11ec-90d6-0242ac120003
         - in: header
           name: apikey
           description: API key to authenticate with. Use any value for Sandbox environment.
@@ -215,18 +216,26 @@ paths:
       parameters:
         - in: query
           name: organization
-          description: The organisation code for the NHS Spine instance that your Message Handling System is communicating with. Must be preceded with FHIR identifier (eg."organization=https://fhir.nhs.uk/Id/ods-organization-code|YES")
+          description: The organisation code for the NHS Spine instance that your Message Handling System is communicating with. Must be preceded with FHIR identifier.
           required: false
           schema:
             type: string
+          example: "https://fhir.nhs.uk/Id/ods-organization-code|YES"
         - in: query
           name: identifier
-          description: "The service that is being contacted and the action that is required, or the MHS Party Key (or both, as separate occurences of this parameter). Must be preceded with FHIR identifier (eg. service id 'identifier=https://fhir.nhs.uk/Id/nhsServiceInteractionId|urn:nhs:names:services:psis:REPC_IN150016UK05' ; party key: 'https://fhir.nhs.uk/Id/nhsMhsPartyKey|YES-0000806'). See the Data section in this API Specification document for more information."
+          description: "The service that is being contacted and the action that is required, or the MHS Party Key (or both, as separate occurrences of this parameter). See the Data section in this API Specification document for more information."
           required: true
           schema:
             type: array
             items: 
               type: string
+          examples:
+            nhsServiceInteractionId:
+              summary: Service identifier consisting of https://fhir.nhs.uk/Id/nhsServiceInteractionId only
+              value: [ "https://fhir.nhs.uk/Id/nhsServiceInteractionId|urn:nhs:names:services:psis:REPC_IN150016UK05" ]
+            nhsServiceInteractionIdAndMhsPartyKey:
+              summary: Service identifier consisting of both https://fhir.nhs.uk/Id/nhsServiceInteractionId and https://fhir.nhs.uk/Id/nhsMhsPartyKey
+              value: [ "https://fhir.nhs.uk/Id/nhsServiceInteractionId|urn:nhs:names:services:psis:REPC_IN150016UK05", "https://fhir.nhs.uk/Id/nhsMhsPartyKey|YES-0000806" ]
           explode: true 
         - in: header
           name: X-Correlation-Id
@@ -235,6 +244,7 @@ paths:
             type: string
             format: uuid
           required: false
+          example: 6d3d3674-7ce5-11ec-90d6-0242ac120003
         - in: header
           name: apikey
           description: API key to authenticate with. Use any value for Sandbox environment.
