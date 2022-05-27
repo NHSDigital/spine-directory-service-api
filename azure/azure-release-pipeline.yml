@@ -30,29 +30,22 @@ extends:
     service_name: ${{ variables.service_name }}
     short_service_name: ${{ variables.short_service_name }}
     service_base_path: ${{ variables.service_base_path }}
-    product_display_name: ${{ variables.product_display_name }}
-    product_description: ${{ variables.product_description }}
-    spec_file: ${{ variables.spec_file }}
-    portal_api_requires_callback_url: false
     enable_monitoring: true
     enable_status_monitoring: true
     jinja_templates:
       HOSTED_TARGET_HEALTHCHECK_SUFFIX: '/healthcheck/deep'
     apigee_deployments:
       - environment: internal-dev
-        make_spec_visible: true
         post_deploy:
           - template: ./templates/run-tests.yml
             parameters:
               smoke_tests: true
       - environment: internal-qa
-        make_spec_visible: true
         post_deploy:
           - template: ./templates/run-tests.yml
             parameters:
               smoke_tests: true
       - environment: internal-qa-sandbox
-        make_spec_visible: true
         proxy_path: sandbox
         post_deploy:
           - template: ./templates/run-tests.yml
@@ -67,7 +60,6 @@ extends:
             parameters:
               smoke_tests: true
       - environment: int
-        make_spec_visible: true
         depends_on:
           - internal_qa
           - internal_qa_sandbox
@@ -76,7 +68,6 @@ extends:
             parameters:
               smoke_tests: true
       - environment: dev # dep
-        make_spec_visible: true
         depends_on:
           - internal_qa
           - internal_qa_sandbox
