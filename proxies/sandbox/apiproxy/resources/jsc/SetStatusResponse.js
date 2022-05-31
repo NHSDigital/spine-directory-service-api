@@ -1,8 +1,8 @@
 var apiproxy_revision = context.getVariable('apiproxy.revision');
 var healthcheck_service_response_code = context.getVariable('healthcheckResponse.status.code');
 var healthcheck_service_response = context.getVariable('healthcheckResponse.content');
-var healthcheck_service_request_url = context.getVariable('healthcheckRequest.url');
-//var healthcheck_service_request_url = "ldap.vn1.national.ncrs.nhs.uk"
+//var healthcheck_service_request_url = context.getVariable('healthcheckRequest.url');
+var healthcheck_service_request_url = "ldap.vn1.national.ncrs.nhs.uk"
 var healthcheck_service_request_has_failed = context.getVariable("servicecallout.ServiceCallout.CallHealthcheckEndpoint.failed");
 var healthcheck_service_status = "fail";
 
