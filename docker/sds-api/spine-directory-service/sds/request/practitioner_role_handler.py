@@ -4,7 +4,7 @@ from urllib.parse import unquote
 
 import tornado
 
-from request.base_handler import BaseHandler, USER_ROLE_ID_QUERY_PARAMETER_NAME
+from request.base_handler import BaseHandler, USER_ROLE_ID_QUERY_PARAMETER_NAME, USER_ROLE_ID_FHIR_IDENTIFIER
 from request.content_type_validator import get_valid_accept_type
 from request.error_handler import ErrorHandler
 from request.fhir_json_mapper import build_bundle_resource, build_practitioner_role_resource
@@ -26,7 +26,7 @@ class PractitionerRoleHandler(BaseHandler, ErrorHandler):
 
         accept_type = get_valid_accept_type(self.request.headers)
 
-        user_role_id = self.get_required_query_param(USER_ROLE_ID_QUERY_PARAMETER_NAME)
+        user_role_id = self.get_required_query_param(USER_ROLE_ID_QUERY_PARAMETER_NAME, USER_ROLE_ID_FHIR_IDENTIFIER)
 
         logger.info("Looking up practitioner role information for {user_role_id}",
                     fparams={"user_role_id": user_role_id})
@@ -55,5 +55,9 @@ class PractitionerRoleHandler(BaseHandler, ErrorHandler):
             for query_param_value in query_params[query_param]:
                 query_param_value = query_param_value.decode("utf-8")
                 if query_param == USER_ROLE_ID_QUERY_PARAMETER_NAME \
+                    and not query_param_value.startswith(f"{USER_ROLE_ID_FHIR_IDENTIFIER}|"):
+                    self._raise_invalid_query_param_error(USER_ROLE_ID_QUERY_PARAMETER_NAME, USER_ROLE_ID_FHIR_IDENTIFIER)
+                if query_param == USER_ROLE_ID_QUERY_PARAMETER_NAME \
                     and not query_param_value.is_digit():
-                    self._raise_invalid_query_param_error(USER_ROLE_ID_QUERY_PARAMETER_NAME)
+                    self._raise_invalid_query_param_value_error(USER_ROLE_ID_QUERY_PARAMETER_NAME, USER_ROLE_ID_FHIR_IDENTIFIER, "a digit")
+
