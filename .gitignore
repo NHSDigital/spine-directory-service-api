@@ -16,3 +16,5 @@ azure-pipeline.yml
 .python-version
 
 
+package-lock.json
+poetry.lock
