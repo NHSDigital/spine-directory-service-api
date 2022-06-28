@@ -106,6 +106,24 @@ class SDSClient(object):
         result = await self._get_ldap_data(query_parts, AS_ATTRIBUTES)
         return result
 
+
+    async def get_practitioner_role_details(self, user_role: str) -> List[Dict]:
+        """
+        Returns the practioner role details for the given parameters
+
+        :return: Dictionary of the attributes of the Practitioner Role associated with the given parameters
+        """
+        if not user_role:
+            raise SDSException("user_role must be provided")
+
+        query_parts = [
+            ("UserRoleId", user_role)
+        ]
+
+        result = await self._get_ldap_data(query_parts, AS_ATTRIBUTES)
+        return result
+
+
     async def _get_ldap_data(self, query_parts: List[Tuple[str, Optional[str]]], attributes: List[str]) -> List:
         search_filter = self._build_search_filter(query_parts)
 

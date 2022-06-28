@@ -125,6 +125,15 @@ def build_device_resource(ldap_attributes: dict) -> Dict:
     return device
 
 
+def build_practitioner_role_resource(ldap_attributes: dict) -> Dict:
+    practioner_role = {
+        "resourceType": "PractitionerRole",
+        "id": str(message_utilities.get_uuid())
+    }
+    
+    return practioner_role
+
+
 def _build_identifier_array(ldap_attributes: Dict):
     unique_identifiers = ldap_attributes.get("uniqueIdentifier", [None]) or [None]
     if len(unique_identifiers) > 1:

@@ -22,6 +22,7 @@ def start_tornado_server(sds_client: SDSClient) -> None:
     application = tornado.web.Application([
         ("/Endpoint", routing_reliability_handler.RoutingReliabilityRequestHandler, handler_dependencies),
         ("/Device", accredited_system_handler.AccreditedSystemRequestHandler, handler_dependencies),
+        ("/PractitionerRole", accredited_system_handler.AccreditedSystemRequestHandler, handler_dependencies),
         ("/healthcheck", healthcheck_handler.HealthcheckHandler),
         ("/healthcheck/deep", healthcheck_handler.DeepHealthcheckHandler),
     ], default_handler_class=ErrorHandler)
