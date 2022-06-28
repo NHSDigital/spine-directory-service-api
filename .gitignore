@@ -15,7 +15,3 @@ __pycache__/
 
 identity-api/
 azure-pipeline.yml
-
-
-package-lock.json
-poetry.lock
