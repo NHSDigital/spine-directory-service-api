@@ -51,7 +51,7 @@ class PractitionerRoleHandler(BaseHandler, ErrorHandler):
             if query_param not in [USER_ROLE_ID_QUERY_PARAMETER_NAME]:
                 raise tornado.web.HTTPError(
                     status_code=400,
-                    log_message=f"Illegal query parameter '{query_param}'")
+                    log_message=f"Illegal query parameter '{query_param}' should be: '{USER_ROLE_ID_QUERY_PARAMETER_NAME}'")
             for query_param_value in query_params[query_param]:
                 query_param_value = query_param_value.decode("utf-8")
                 if query_param == USER_ROLE_ID_QUERY_PARAMETER_NAME \
