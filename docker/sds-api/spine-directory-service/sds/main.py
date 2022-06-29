@@ -4,7 +4,7 @@ import tornado.web
 
 import lookup.sds_client_factory
 from lookup.sds_client import SDSClient
-from request import healthcheck_handler, routing_reliability_handler, accredited_system_handler
+from request import healthcheck_handler, routing_reliability_handler, accredited_system_handler, practitioner_role_handler
 from request.error_handler import ErrorHandler
 from utilities import config, secrets
 from utilities import integration_adaptors_logger as log
@@ -22,7 +22,7 @@ def start_tornado_server(sds_client: SDSClient) -> None:
     application = tornado.web.Application([
         ("/Endpoint", routing_reliability_handler.RoutingReliabilityRequestHandler, handler_dependencies),
         ("/Device", accredited_system_handler.AccreditedSystemRequestHandler, handler_dependencies),
-        ("/PractitionerRole", accredited_system_handler.AccreditedSystemRequestHandler, handler_dependencies),
+        ("/PractitionerRole", practitioner_role_handler.PractitionerRoleHandler, handler_dependencies),
         ("/healthcheck", healthcheck_handler.HealthcheckHandler),
         ("/healthcheck/deep", healthcheck_handler.DeepHealthcheckHandler),
     ], default_handler_class=ErrorHandler)
