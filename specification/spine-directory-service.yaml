@@ -84,14 +84,14 @@ info:
     
     For more details on sandbox testing, or to try out the sandbox using our \"Try this API\" feature, see the documentation for each endpoint.
     
-    ## Integration testing 
+    ### Integration testing 
     Our [integration test environment](https://digital.nhs.uk/developer/guides-and-documentation/testing#integration-testing): 
     - is for formal integration testing.
     - includes application authentication
    
     This API does not have a standard test data pack as it will be dependant on the service you are trying to access, for more details see [Spine Services and Interaction IDs](https://nhsconnect.github.io/FHIR-SpineCore/security_interaction_ids.html) and [integration testing with our RESTful APIs](https://digital.nhs.uk/developer/guides-and-documentation/testing#integration-testing-with-our-restful-apis).
 
-    ## Deployment and user acceptance testing
+    ### Deployment and user acceptance testing
     Our deployment environment is for testing applications in-situ before live deployments and also for user acceptance testing (UAT) with NHS organisations.
     
     This environment is for use by developers who are using the SDS FHIR API alongside some of our older APIs where the deployment environment is already in use,
