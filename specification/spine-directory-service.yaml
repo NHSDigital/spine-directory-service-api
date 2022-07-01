@@ -73,6 +73,7 @@ info:
     | ----------------- | ---------------------------------------------------------------------|
     | Sandbox           | `https://sandbox.api.service.nhs.uk/spine-directory/FHIR/R4`         |
     | Integration test  | `https://int.api.service.nhs.uk/spine-directory/FHIR/R4`             |
+    | Deployment / UAT  | `https://dep.api.service.nhs.uk/spine-directory/FHIR/R4`             |
     | Production        | `https://api.service.nhs.uk/spine-directory/FHIR/R4`                 |
     
     ### Sandbox testing
@@ -89,6 +90,12 @@ info:
     - includes application authentication
    
     This API does not have a standard test data pack as it will be dependant on the service you are trying to access, for more details see [Spine Services and Interaction IDs](https://nhsconnect.github.io/FHIR-SpineCore/security_interaction_ids.html) and [integration testing with our RESTful APIs](https://digital.nhs.uk/developer/guides-and-documentation/testing#integration-testing-with-our-restful-apis).
+
+    ## Deployment and user acceptance testing
+    Our deployment environment is for testing applications in-situ before live deployments and also for user acceptance testing (UAT) with NHS organisations.
+    
+    This environment is for use by developers who are using the SDS FHIR API alongside some of our older APIs where the deployment environment is already in use,
+    for example, developers who have migrated from the [Query Accredited System Information API](https://digital.nhs.uk/developer/api-catalogue/query-accredited-system-information-soap).
 
     ## Related APIs
     The following APIs are related to this one:
