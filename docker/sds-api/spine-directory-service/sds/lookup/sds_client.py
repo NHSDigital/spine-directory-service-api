@@ -107,7 +107,7 @@ class SDSClient(object):
         return result
 
 
-    async def get_practitioner_role_details(self, user_role: str) -> List[Dict]:
+    async def get_practitioner_role_details(self, user_role_id: str) -> List[Dict]:
         """
         Returns the practioner role details for the given parameters
 
@@ -117,7 +117,10 @@ class SDSClient(object):
             raise SDSException("user_role must be provided")
 
         query_parts = [
-            ("UserRoleId", user_role)
+            ("ou", "People"), 
+            ("o","nhs"),
+            ("uniqueIdentifier", user_role_id), 
+            ("objectClass", "nhsOrgPersonRole")
         ]
 
         result = await self._get_ldap_data(query_parts, AS_ATTRIBUTES)
