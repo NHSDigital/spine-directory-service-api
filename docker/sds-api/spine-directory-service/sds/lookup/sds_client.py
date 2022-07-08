@@ -113,7 +113,7 @@ class SDSClient(object):
 
         :return: Dictionary of the attributes of the Practitioner Role associated with the given parameters
         """
-        if not user_role:
+        if not user_role_id:
             raise SDSException("user_role must be provided")
 
         query_parts = [
