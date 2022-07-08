@@ -58,6 +58,6 @@ class PractitionerRoleHandler(BaseHandler, ErrorHandler):
                     and not query_param_value.startswith(f"{USER_ROLE_ID_FHIR_IDENTIFIER}|"):
                     self._raise_invalid_query_param_error(USER_ROLE_ID_QUERY_PARAMETER_NAME, USER_ROLE_ID_FHIR_IDENTIFIER)
                 if query_param == USER_ROLE_ID_QUERY_PARAMETER_NAME \
-                    and not query_param_value.is_digit():
+                    and not query_param_value.isdigit():
                     self._raise_invalid_query_param_value_error(USER_ROLE_ID_QUERY_PARAMETER_NAME, USER_ROLE_ID_FHIR_IDENTIFIER, "a digit")
 
