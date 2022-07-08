@@ -126,6 +126,11 @@ def build_device_resource(ldap_attributes: dict) -> Dict:
 
 
 def build_practitioner_role_resource(ldap_attributes: dict) -> Dict:
+    logger.info(ldap_attributes)
+    logger.info(ldap_attributes.get("uniqueIdentifier"))
+    logger.info(ldap_attributes.get("nhsJobRoleCode"))
+    logger.info(ldap_attributes[0])
+
     practioner_role = {
         "resourceType": "PractitionerRole",
         "id": str(message_utilities.get_uuid()),
