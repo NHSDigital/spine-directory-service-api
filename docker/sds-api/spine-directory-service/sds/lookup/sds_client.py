@@ -31,6 +31,9 @@ MHS_ATTRIBUTES = [
 AS_ATTRIBUTES = [
     'uniqueIdentifier', 'nhsIdCode', 'nhsAsClient', 'nhsMhsPartyKey', 'nhsAsSvcIA', 'nhsMhsManufacturerOrg'
 ]
+PR_ATTRIBUTES = [
+    'uniqueIdentifier', 'nhsJobRoleCode'
+]
 
 
 def _validate_mhs_request_params(ods_code, interaction_id, party_key):
@@ -121,7 +124,7 @@ class SDSClient(object):
             ("objectClass", "nhsOrgPersonRole")
         ]
 
-        result = await self._get_ldap_data_people(query_parts, AS_ATTRIBUTES)
+        result = await self._get_ldap_data_people(query_parts, PR_ATTRIBUTES)
         return result
 
 
@@ -137,6 +140,7 @@ class SDSClient(object):
 
         response = await self._get_query_result(message_id)
         logger.info("Found LDAP details for {message_id}", fparams={"message_id": message_id})
+        logger.info(response)
 
         attributes_result = [single_result['attributes'] for single_result in response]
         return attributes_result
