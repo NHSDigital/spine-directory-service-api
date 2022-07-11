@@ -7,7 +7,7 @@ from typing import Optional
 import tornado.testing
 import tornado.web
 
-from request import routing_reliability_handler, accredited_system_handler
+from request import routing_reliability_handler, accredited_system_handler, practitioner_role_handler
 from request.http_headers import HttpHeaders
 from utilities import message_utilities
 
@@ -19,8 +19,10 @@ CORE_SPINE_FORWARD_RELIABLE_SERVICE_ID = "urn:nhs:names:services:tms:ReliableInt
 PARTY_KEY = "some_party_key"
 MANUFACTURING_ORG = "some_manufacturer"
 FIXED_UUID = "f0f0e921-92ca-4a88-a550-2dbb36f703af"
+USER_ROLE_CODE = "nhsJobRoleCode"
 
 DEVICE_PATH = "/device"
+PR_PATH ="/PractitionerRole"
 
 
 class RequestHandlerTestBase(ABC, tornado.testing.AsyncHTTPTestCase):
@@ -34,7 +36,8 @@ class RequestHandlerTestBase(ABC, tornado.testing.AsyncHTTPTestCase):
 
         return tornado.web.Application([
             (r"/endpoint", routing_reliability_handler.RoutingReliabilityRequestHandler, {"sds_client": self.sds_client}),
-            (r"/device", accredited_system_handler.AccreditedSystemRequestHandler, {"sds_client": self.sds_client})
+            (r"/device", accredited_system_handler.AccreditedSystemRequestHandler, {"sds_client": self.sds_client}),
+            (r"/PractitionerRole", practitioner_role_handler.PractitionerRoleHandler, {"sds_client": self.sds_client})
         ])
 
     def _test_get(self, url, expected_json_file_path):
@@ -140,6 +143,19 @@ class RequestHandlerTestBase(ABC, tornado.testing.AsyncHTTPTestCase):
         manufacturing_organization = f"manufacturing-organization=https://fhir.nhs.uk/Id/ods-organization-code|{manufacturing_organization}" if manufacturing_organization is not None else None
 
         query_params = "&".join(filter(lambda query_param: query_param, [org_code, service_id, party_key, manufacturing_organization]))
+
+        path = f"{path}?{query_params}" if query_params else path
+        return path
+
+    @staticmethod
+    def _build_pr_url(
+            user_role_id: Optional[str] = USER_ROLE_CODE):
+
+        path = PR_PATH
+
+        user_role_id = f"user-role-id=https://fhir.nhs.uk/Id/nhsJobRoleCode|{user_role_id}" if user_role_id is not None else None
+
+        query_params = "&".join(filter(lambda query_param: query_param, [user_role_id]))
 
         path = f"{path}?{query_params}" if query_params else path
         return path
