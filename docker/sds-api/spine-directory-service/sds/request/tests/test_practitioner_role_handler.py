@@ -1,3 +1,4 @@
+from ast import Str
 from os import path
 from request.tests.request_handler_test_base import RequestHandlerTestBase, ROLE_CODE
 from utilities import test_utilities
@@ -47,21 +48,18 @@ class TestPractitionerRoleHandler(RequestHandlerTestBase):
             self.assertEqual(response.code, 400)
             super()._assert_400_operation_outcome(
                 response.body.decode(),
-                "HTTP 400: Bad Request (Missing or invalid 'organization' query parameter. Should be 'user-role-id=https://fhir.nhs.uk/Id/nhsJobRoleCode|value')")
+                "HTTP 400: Bad Request (Missing or invalid 'Role Code' query parameter. Should be 'user-role-id=https://fhir.nhs.uk/Id/nhsJobRoleCode|value')")
 
         with self.subTest("Empty Role Code"):
-            response = self.fetch(self._build_pr_url(user_role_id=ROLE_CODE, method="GET"))
+            response = self.fetch(self._build_pr_url(user_role_id="", method="GET"))
             self.assertEqual(response.code, 400)
             super()._assert_400_operation_outcome(
                 response.body.decode(),
-                "HTTP 400: Bad Request (Missing or invalid 'organization' query parameter. Should be 'user-role-id=https://fhir.nhs.uk/Id/nhsJobRoleCode|value')")
-
-# add test if not digit throw error
-
-    # def test_get_handles_different_accept_header(self):
-    #     self.sds_client.get_as_details.return_value = test_utilities.awaitable(SINGLE_ACCREDITED_SYSTEM_DETAILS)
-    #     super()._test_get_handles_different_accept_header(
-    #         super()._build_device_url(), EXPECTED_SINGLE_DEVICE_JSON_FILE_PATH)
-
-    # def test_should_return_405_when_using_non_get(self):
-    #     super()._test_should_return_405_when_using_non_get(super()._build_device_url())
+                "HTTP 400: Bad Request (Missing or invalid 'Role Code' query parameter. Should be 'user-role-id=https://fhir.nhs.uk/Id/nhsJobRoleCode|value')")
+       
+        with self.subTest("Role Code is not digits"):
+            response = self.fetch(self._build_pr_url(user_role_id="abc", method="GET"))
+            self.assertEqual(response.code, 400)
+            super()._assert_400_operation_outcome(
+                response.body.decode(),
+                "HTTP 400: Bad Request (Missing or invalid 'Role Code' query parameter. Should be 'user-role-id=https://fhir.nhs.uk/Id/nhsJobRoleCode|value')")
