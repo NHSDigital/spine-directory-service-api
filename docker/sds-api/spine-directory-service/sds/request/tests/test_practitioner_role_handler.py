@@ -1,11 +1,11 @@
 from ast import Str
 from os import path
-from request.tests.request_handler_test_base import RequestHandlerTestBase, ROLE_CODE
+from request.tests.request_handler_test_base import RequestHandlerTestBase, USER_ROLE_CODE
 from utilities import test_utilities
 
-EXPECTED_SINGLE_PRACTITIONER_ROLE_JSON_FILE_PATH = path.join(path.dirname(__file__), "examples/single_pr.json")
+EXPECTED_SINGLE_PRACTITIONER_ROLE_JSON_FILE_PATH = path.join(path.dirname(__file__), "examples/single_practitioner_role.json")
 SINGLE_PRACTITIONER_ROLE_DETAILS = [{
-    "nhsJobRoleCode": ROLE_CODE,
+    "nhsJobRoleCode": USER_ROLE_CODE,
     "uniqueIdentifier": [
         "928942012545"
     ]
@@ -51,14 +51,14 @@ class TestPractitionerRoleHandler(RequestHandlerTestBase):
                 "HTTP 400: Bad Request (Missing or invalid 'Role Code' query parameter. Should be 'user-role-id=https://fhir.nhs.uk/Id/nhsJobRoleCode|value')")
 
         with self.subTest("Empty Role Code"):
-            response = self.fetch(self._build_pr_url(user_role_id="", method="GET"))
+            response = self.fetch(self._build_pr_url(user_role_id=""), method="GET")
             self.assertEqual(response.code, 400)
             super()._assert_400_operation_outcome(
                 response.body.decode(),
                 "HTTP 400: Bad Request (Missing or invalid 'Role Code' query parameter. Should be 'user-role-id=https://fhir.nhs.uk/Id/nhsJobRoleCode|value')")
        
         with self.subTest("Role Code is not digits"):
-            response = self.fetch(self._build_pr_url(user_role_id="abc", method="GET"))
+            response = self.fetch(self._build_pr_url(user_role_id="abc"), method="GET")
             self.assertEqual(response.code, 400)
             super()._assert_400_operation_outcome(
                 response.body.decode(),
