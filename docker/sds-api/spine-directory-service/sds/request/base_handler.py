@@ -41,6 +41,12 @@ class BaseHandler(tornado.web.RequestHandler):
             self._raise_invalid_query_param_error(query_param_name, fhir_identifier)
         return value
 
+    def get_required_query_param_as_digit(self, query_param_name: str, fhir_identifier: str) -> Optional[str]:
+        value = self.get_required_query_param(query_param_name, fhir_identifier)
+        if not value.isdigit():
+            self._raise_invalid_query_param_value_error(query_param_name, fhir_identifier, "a digit")
+        return value
+
     def get_optional_query_param(self, query_param_name: str, fhir_identifier: str) -> Optional[str]:
         values = list(filter(
             lambda value: "|" in value and value.split("|")[0] == fhir_identifier and value[value.index("|") + 1:].strip(),
