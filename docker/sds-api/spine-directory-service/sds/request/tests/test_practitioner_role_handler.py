@@ -4,8 +4,9 @@ from request.tests.request_handler_test_base import RequestHandlerTestBase, USER
 from utilities import test_utilities
 
 EXPECTED_SINGLE_PRACTITIONER_ROLE_JSON_FILE_PATH = path.join(path.dirname(__file__), "examples/single_practitioner_role.json")
+# LDAP RESULT
 SINGLE_PRACTITIONER_ROLE_DETAILS = [{
-    "nhsJobRoleCode": USER_ROLE_CODE,
+    "nhsJobRoleCode": ["S0010:G0020:R0050"],
     "uniqueIdentifier": [
         "928942012545"
     ]

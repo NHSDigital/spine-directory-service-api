@@ -6,15 +6,15 @@
     "link": [
         {
             "relation": "self",
-            "url": "http://internal-dev.apis.ptl.api.platform.nhs.uk/PractitionerRole?user-role-id=https://fhir.nhs.uk/Id/nhsJobRoleCode|555021935107"
+            "url": "http://127.0.0.1:60644/PractitionerRole?user-role-id=https://fhir.nhs.uk/Id/nhsJobRoleCode|1234"
         }
     ],
     "entry": [
         {
-            "fullUrl": "http://internal-dev.apis.ptl.api.platform.nhs.uk/PractitionerRole/5DBB84D7-0E52-43C9-84FB-B9DC9A6AEA0D",
+            "fullUrl": "http://127.0.0.1:60644/PractitionerRole/A6524AD6-BC6C-48C4-B2AA-0849430BD9DD",
             "resource": {
                 "resourceType": "PractitionerRole",
-                "id": "5DBB84D7-0E52-43C9-84FB-B9DC9A6AEA0D",
+                "id": "A6524AD6-BC6C-48C4-B2AA-0849430BD9DD",
                 "code": [
                     "S0010:G0020:R0050"
                 ]
