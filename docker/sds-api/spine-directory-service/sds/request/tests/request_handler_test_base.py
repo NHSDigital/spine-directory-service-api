@@ -19,7 +19,7 @@ CORE_SPINE_FORWARD_RELIABLE_SERVICE_ID = "urn:nhs:names:services:tms:ReliableInt
 PARTY_KEY = "some_party_key"
 MANUFACTURING_ORG = "some_manufacturer"
 FIXED_UUID = "f0f0e921-92ca-4a88-a550-2dbb36f703af"
-USER_ROLE_CODE = "nhsJobRoleCode"
+USER_ROLE_CODE = "1234"
 
 DEVICE_PATH = "/device"
 PR_PATH ="/PractitionerRole"

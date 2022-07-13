@@ -18,7 +18,7 @@ class TestPractitionerRoleHandler(RequestHandlerTestBase):
         self.sds_client.get_as_details.return_value = test_utilities.awaitable(SINGLE_PRACTITIONER_ROLE_DETAILS)
 
         super()._test_get(
-            super()._build_pr_url(user_role_id=None),
+            super()._build_pr_url(user_role_id=USER_ROLE_CODE),
             EXPECTED_SINGLE_PRACTITIONER_ROLE_JSON_FILE_PATH)
 
     def test_correlation_id_is_set_as_response_header(self):
