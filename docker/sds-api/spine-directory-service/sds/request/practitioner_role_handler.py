@@ -26,7 +26,7 @@ class PractitionerRoleHandler(BaseHandler, ErrorHandler):
 
         accept_type = get_valid_accept_type(self.request.headers)
 
-        user_role_id = self.get_required_query_param(USER_ROLE_ID_QUERY_PARAMETER_NAME, USER_ROLE_ID_FHIR_IDENTIFIER)
+        user_role_id = self.get_required_query_param_as_digit(USER_ROLE_ID_QUERY_PARAMETER_NAME, USER_ROLE_ID_FHIR_IDENTIFIER)
 
         logger.info("Looking up practitioner role information for {user_role_id}",
                     fparams={"user_role_id": user_role_id})
