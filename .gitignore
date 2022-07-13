@@ -13,8 +13,12 @@ __pycache__/
 
 identity-api/
 azure-pipeline.yml
+<<<<<<< HEAD
 .python-version
 
 
 package-lock.json
 poetry.lock
+=======
+smoketest-report.xml
+>>>>>>> 26f8235 (added back in pip lock)
