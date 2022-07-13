@@ -14,7 +14,7 @@ isodate = "~=0.6"
 python-json-logger = "~=2.0.1"
 
 [requires]
-python_version = "3.7"
+python_version = "3.8"
 
 [scripts]
 unittests = 'python -m xmlrunner -o test-reports -v'

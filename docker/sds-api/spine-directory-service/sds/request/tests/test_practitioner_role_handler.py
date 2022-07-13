@@ -15,7 +15,7 @@ SINGLE_PRACTITIONER_ROLE_DETAILS = [{
 class TestPractitionerRoleHandler(RequestHandlerTestBase):
 
     def test_get_single_result(self):
-        self.sds_client.get_as_details.return_value = test_utilities.awaitable(SINGLE_PRACTITIONER_ROLE_DETAILS)
+        self.sds_client.get_practitioner_role_details.return_value = test_utilities.awaitable(SINGLE_PRACTITIONER_ROLE_DETAILS)
 
         super()._test_get(
             super()._build_pr_url(user_role_id=USER_ROLE_CODE),
@@ -23,10 +23,10 @@ class TestPractitionerRoleHandler(RequestHandlerTestBase):
 
     def test_correlation_id_is_set_as_response_header(self):
         def mock200():
-            self.sds_client.get_as_details.return_value = test_utilities.awaitable(SINGLE_PRACTITIONER_ROLE_DETAILS)
+            self.sds_client.get_practitioner_role_details.return_value = test_utilities.awaitable(SINGLE_PRACTITIONER_ROLE_DETAILS)
 
         def mock500():
-            self.sds_client.get_as_details.side_effect = Exception
+            self.sds_client.get_practitioner_role_details.side_effect = Exception
 
         super()._test_correlation_id_is_set_as_response_header(
             self._build_pr_url(),
@@ -37,7 +37,7 @@ class TestPractitionerRoleHandler(RequestHandlerTestBase):
 
     def test_get_returns_error(self):
         with self.subTest("Lookup error"):
-            self.sds_client.get_as_details.side_effect = Exception("some error")
+            self.sds_client.get_practitioner_role_details.side_effect = Exception("some error")
             response = self.fetch(self._build_pr_url(), method="GET")
             self.assertEqual(response.code, 500)
             super()._assert_500_operation_outcome(response.body.decode())
@@ -56,7 +56,7 @@ class TestPractitionerRoleHandler(RequestHandlerTestBase):
             super()._assert_400_operation_outcome(
                 response.body.decode(),
                 "HTTP 400: Bad Request (Missing or invalid 'user-role-id' query parameter. Should be 'user-role-id=https://fhir.nhs.uk/Id/nhsJobRoleCode|value')")
-       
+
         with self.subTest("Role Code is not digits"):
             response = self.fetch(self._build_pr_url(user_role_id="abc"), method="GET")
             self.assertEqual(response.code, 400)
