@@ -133,7 +133,7 @@ def build_practitioner_role_resource(ldap_attributes: dict) -> Dict:
     practioner_role = {
         "resourceType": "PractitionerRole",
         "id": str(message_utilities.get_uuid()),
-        "code": ldap_attributes.get("nhsJobRoleCode")
+        "code": _build_codable_concept(Url.SDS_JOBROLE_CODE_URL, ldap_attributes.get("nhsJobRoleCode"))
     }
     
     return practioner_role
@@ -227,6 +227,20 @@ def _build_payload_type():
             ]
         }
     ]
+
+def _build_codable_concept(url, values: List[str]):
+    return_value = []
+    for value in values:
+        return_value.append({
+            "coding": [
+                {
+                    "system": url,
+                    "code": value
+                }
+            ]
+        })
+    return return_value
+
 
 
 def _build_address(value: str):
