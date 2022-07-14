@@ -48,18 +48,18 @@ class TestPractitionerRoleHandler(RequestHandlerTestBase):
             self.assertEqual(response.code, 400)
             super()._assert_400_operation_outcome(
                 response.body.decode(),
-                "HTTP 400: Bad Request (Missing or invalid 'user-role-id' query parameter. Should be 'user-role-id=https://fhir.nhs.uk/Id/nhsJobRoleCode|value')")
+                "HTTP 400: Bad Request (Missing or invalid 'Role Code' query parameter. Should be 'user-role-id=https://fhir.nhs.uk/Id/nhsJobRoleCode|value')")
 
         with self.subTest("Empty Role Code"):
             response = self.fetch(self._build_pr_url(user_role_id=""), method="GET")
             self.assertEqual(response.code, 400)
             super()._assert_400_operation_outcome(
                 response.body.decode(),
-                "HTTP 400: Bad Request (Missing or invalid 'user-role-id' query parameter. Should be 'user-role-id=https://fhir.nhs.uk/Id/nhsJobRoleCode|value')")
+                "HTTP 400: Bad Request (Missing or invalid 'Role Code' query parameter. Should be 'user-role-id=https://fhir.nhs.uk/Id/nhsJobRoleCode|value')")
        
         with self.subTest("Role Code is not digits"):
             response = self.fetch(self._build_pr_url(user_role_id="abc"), method="GET")
             self.assertEqual(response.code, 400)
             super()._assert_400_operation_outcome(
                 response.body.decode(),
-                "HTTP 400: Bad Request (Invalid 'user-role-id' query value. Should be 'user-role-id=https://fhir.nhs.uk/Id/nhsJobRoleCode|value' where value is a digit.)")
+                "HTTP 400: Bad Request (Missing or invalid 'Role Code' query parameter. Should be 'user-role-id=https://fhir.nhs.uk/Id/nhsJobRoleCode|value')")
