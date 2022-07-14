@@ -49,9 +49,13 @@ info:
     For more details, see [service levels](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#service-levels).
     
     ## Technology 
-    This API is [RESTful](https://digital.nhs.uk/developer/guides-and-documentation/api-technologies-at-nhs-digital#basic-rest).
+    This API is [RESTful](https://digital.nhs.uk/developer/guides-and-documentation/our-api-technologies#basic-rest).
 
-    It also conforms to the [FHIR](https://digital.nhs.uk/developer/guides-and-documentation/api-technologies-at-nhs-digital#fhir) global standard for health care data exchange.Specifically, it is aligned with [FHIR UK Core](https://digital.nhs.uk/services/fhir-uk-core), which is built on FHIR Release 4. You don’t need to know much about FHIR to use this API - FHIR APIs are just RESTful APIs that follow specific rules. In particular:
+    It conforms to the [FHIR](https://digital.nhs.uk/developer/guides-and-documentation/our-api-technologies#fhir) global standard for health care data exchange, specifically to [FHIR R4 (v4.0.1)](https://hl7.org/fhir/r4/), except that it does not support the [capabilities](http://hl7.org/fhir/R4/http.html#capabilities) interaction.
+
+    It includes some country-specific FHIR extensions, which conform to [FHIR UK Core](https://digital.nhs.uk/services/fhir-uk-core), specifically [fhir.r4.ukcore.stu1 0.5.1](https://simplifier.net/packages/fhir.r4.ukcore.stu1/0.5.1).
+    
+    You do not need to know much about FHIR to use this API - FHIR APIs are just RESTful APIs that follow specific rules. In particular:
     - resource names are capitalised and singular, for example `/Endpoint` not `/endpoints`
     
     Errors handling in this API follows [NHS guidelines](https://nhsconnect.github.io/FHIR-SpineCore/resources_error_handling.html) and produces an [OperationOutcome](https://fhir.nhs.uk/STU3/StructureDefinition/Spine-OperationOutcome-1) FHIR resource response with appropriate HTTP code
@@ -73,6 +77,7 @@ info:
     | ----------------- | ---------------------------------------------------------------------|
     | Sandbox           | `https://sandbox.api.service.nhs.uk/spine-directory/FHIR/R4`         |
     | Integration test  | `https://int.api.service.nhs.uk/spine-directory/FHIR/R4`             |
+    | Deployment / UAT  | `https://dep.api.service.nhs.uk/spine-directory/FHIR/R4`             |
     | Production        | `https://api.service.nhs.uk/spine-directory/FHIR/R4`                 |
     
     ### Sandbox testing
@@ -83,12 +88,18 @@ info:
     
     For more details on sandbox testing, or to try out the sandbox using our \"Try this API\" feature, see the documentation for each endpoint.
     
-    ## Integration testing 
+    ### Integration testing 
     Our [integration test environment](https://digital.nhs.uk/developer/guides-and-documentation/testing#integration-testing): 
     - is for formal integration testing.
     - includes application authentication
    
     This API does not have a standard test data pack as it will be dependant on the service you are trying to access, for more details see [Spine Services and Interaction IDs](https://nhsconnect.github.io/FHIR-SpineCore/security_interaction_ids.html) and [integration testing with our RESTful APIs](https://digital.nhs.uk/developer/guides-and-documentation/testing#integration-testing-with-our-restful-apis).
+
+    ### Deployment and user acceptance testing
+    Our deployment environment is for testing applications in-situ before live deployments and also for user acceptance testing (UAT) with NHS organisations.
+    
+    This environment is for use by developers who are using the SDS FHIR API alongside some of our older APIs where the deployment environment is already in use,
+    for example, developers who have migrated from the [Query Accredited System Information API](https://digital.nhs.uk/developer/api-catalogue/query-accredited-system-information-soap).
 
     ## Related APIs
     The following APIs are related to this one:
