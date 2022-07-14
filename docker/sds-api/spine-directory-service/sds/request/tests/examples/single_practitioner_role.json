@@ -16,8 +16,15 @@
                 "resourceType": "PractitionerRole",
                 "id": "A6524AD6-BC6C-48C4-B2AA-0849430BD9DD",
                 "code": [
-                    "S0010:G0020:R0050"
-                ]
+                    {
+                      "coding":  [
+                        {
+                          "system": "https://fhir.nhs.uk/CodeSystem/NHSDigital-SDS-JobRoleCode",
+                          "code": "S0010:G0020:R0050"
+                        }
+                      ]
+                    }
+                  ]
             },
             "search": {
                 "mode": "match"
