@@ -1,4 +1,4 @@
-# Spine Directory Service
+# Spine Directory Service (TEST)
 
 ![Build](https://github.com/NHSDigital/spine-directory-service-api/workflows/Build/badge.svg?branch=master)
 
