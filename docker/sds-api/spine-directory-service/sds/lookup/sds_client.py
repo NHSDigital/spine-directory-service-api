@@ -66,9 +66,12 @@ class SDSClient(object):
         search_filter = " ".join(filter_fragments)
         return search_filter
 
-    def _build_search_filter_query_parts(self, query_parts, operator_char=""):
+    def _build_search_filter_query_parts(self, query_parts, operator_char="", conditional_char="="):
         search_filter = self._build_search_fragment_from_fragments(
-            map(lambda kv: f"({operator_char}{kv[0]}={kv[1]})", filter(lambda kv: kv[1] is not None, query_parts))
+            map(
+                lambda kv: f"({operator_char}{kv[0]}{conditional_char}{kv[1]})",
+                filter(lambda kv: kv[1] is not None, query_parts)
+            )
         )
         return search_filter
 
@@ -143,14 +146,14 @@ class SDSClient(object):
         today_date = datetime.today().strftime('%Y%m%d')
 
         open_date_filters = [
-            self._build_search_filter_query_parts([("nhsOpenDate", "*")], operator_char="!"),
-            self._build_search_filter_query_parts([("nhsOpenDate", today_date)])
+            self._build_search_filter_query_parts([("nhsOrgOpenDate", "*")], operator_char="!"),
+            self._build_search_filter_query_parts([("nhsOrgOpenDate", today_date)], conditional_char="<=")
         ]
         open_date_search_filter = self._build_search_filter_from_fragments(open_date_filters, operator_char="|")
 
         close_date_filters = [
-            self._build_search_filter_query_parts([("nhsCloseDate", "*")], operator_char="!"),
-            self._build_search_filter_query_parts([("nhsCloseDate", today_date)])
+            self._build_search_filter_query_parts([("nhsOrgCloseDate", "*")], operator_char="!"),
+            self._build_search_filter_query_parts([("nhsOrgCloseDate", today_date)], conditional_char=">=")
         ]
         close_date_search_filter = self._build_search_filter_from_fragments(close_date_filters, operator_char="|")
 
