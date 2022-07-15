@@ -148,9 +148,9 @@ class SDSClient(object):
         open_date_filters = [
             # self._build_search_filter_query_parts([("nhsOrgOpenDate", "*")], operator_char="!"),
             self._build_search_filter_query_parts([("nhsOrgOpenDate", "*")]),
-            self._build_search_filter_query_parts([("nhsOrgOpenDate", today_date)], conditional_char="<=")
+            self._build_search_filter_query_parts([("nhsOrgOpenDate", today_date)], conditional_char=">")
         ]
-        open_date_search_filter = self._build_search_filter_from_fragments(open_date_filters, operator_char="&")
+        open_date_search_filter = f"(!{self._build_search_filter_from_fragments(open_date_filters, operator_char='&')})"
         #
         # close_date_filters = [
         #     self._build_search_filter_query_parts([("nhsOrgCloseDate", "*")], operator_char="!"),
