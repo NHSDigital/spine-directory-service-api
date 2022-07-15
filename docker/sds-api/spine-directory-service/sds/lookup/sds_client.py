@@ -32,7 +32,7 @@ AS_ATTRIBUTES = [
     'uniqueIdentifier', 'nhsIdCode', 'nhsAsClient', 'nhsMhsPartyKey', 'nhsAsSvcIA', 'nhsMhsManufacturerOrg'
 ]
 PR_ATTRIBUTES = [
-    'uniqueIdentifier', 'nhsJobRoleCode'
+    'uniqueIdentifier', 'nhsJobRoleCode', 'nhsOrgOpenDate', 'nhsOrgCloseDate'
 ]
 
 
@@ -147,7 +147,8 @@ class SDSClient(object):
 
         open_date_filters = [
             self._build_search_filter_query_parts([("nhsOrgOpenDate", "*")], operator_char="!"),
-            self._build_search_filter_query_parts([("nhsOrgOpenDate", today_date)], conditional_char="<=")
+            self._build_search_filter_query_parts([("nhsOrgOpenDate", "*")]),
+            # self._build_search_filter_query_parts([("nhsOrgOpenDate", today_date)], conditional_char="<=")
         ]
         open_date_search_filter = self._build_search_filter_from_fragments(open_date_filters, operator_char="|")
         #
