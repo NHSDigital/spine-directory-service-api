@@ -63,7 +63,7 @@ class SDSClient(object):
 
     @staticmethod
     def _build_search_fragment_from_fragments(filter_fragments):
-        search_filter = "".join(filter_fragments)
+        search_filter = " ".join(filter_fragments)
         return search_filter
 
     def _build_search_filter_query_parts(self, query_parts, operator_char="", conditional_char="="):
@@ -151,16 +151,16 @@ class SDSClient(object):
         ]
         open_date_search_filter = f"(!{self._build_search_filter_from_fragments(open_date_filters, operator_char='&')})"
 
-        yesterday_date = (datetime.today() - timedelta(days=1)).strftime('%Y%m%d')
-
-        close_date_filters = [
-            self._build_search_filter_query_parts([("nhsOrgCloseDate", "*")], operator_char="!"),
-            self._build_search_filter_query_parts([("nhsOrgCloseDate", yesterday_date)], conditional_char="<=")
-        ]
-        close_date_search_filter = f"(!{self._build_search_filter_from_fragments(close_date_filters, operator_char='&')})"
+        # yesterday_date = (datetime.today() - timedelta(days=1)).strftime('%Y%m%d')
+        #
+        # close_date_filters = [
+        #     self._build_search_filter_query_parts([("nhsOrgCloseDate", "*")], operator_char="!"),
+        #     self._build_search_filter_query_parts([("nhsOrgCloseDate", yesterday_date)], conditional_char="<=")
+        # ]
+        # close_date_search_filter = f"(!{self._build_search_filter_from_fragments(close_date_filters, operator_char='&')})"
 
         search_filter = self._build_search_filter_from_fragments(
-            [base_search_filter, open_date_search_filter, close_date_search_filter],
+            [base_search_filter, open_date_search_filter], #, close_date_search_filter],
             operator_char="&"
         )
 
