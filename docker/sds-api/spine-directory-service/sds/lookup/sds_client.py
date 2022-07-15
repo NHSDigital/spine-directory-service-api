@@ -63,7 +63,7 @@ class SDSClient(object):
 
     @staticmethod
     def _build_search_fragment_from_fragments(filter_fragments):
-        search_filter = " ".join(filter_fragments)
+        search_filter = "".join(filter_fragments)
         return search_filter
 
     def _build_search_filter_query_parts(self, query_parts, operator_char="", conditional_char="="):
