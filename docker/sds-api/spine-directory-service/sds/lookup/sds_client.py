@@ -8,7 +8,7 @@ import ldap3.core.exceptions as ldap_exceptions
 
 from typing import Dict, List, Tuple, Optional
 from ldap3.utils.ciDict import CaseInsensitiveDict
-from datetime import datetime
+from datetime import datetime, timedelta
 from lookup.sds_exception import SDSException
 from utilities import config
 from utilities import integration_adaptors_logger as log
@@ -143,7 +143,7 @@ class SDSClient(object):
         ]
         base_search_filter = self._build_search_filter_query_parts(query_parts)
 
-        tomorrow_date = (datetime.today() + datetime.timedelta(days=1)).strftime('%Y%m%d')
+        tomorrow_date = (datetime.today() + timedelta(days=1)).strftime('%Y%m%d')
 
         open_date_filters = [
             self._build_search_filter_query_parts([("nhsOrgOpenDate", "*")]),
@@ -151,7 +151,7 @@ class SDSClient(object):
         ]
         open_date_search_filter = f"(!{self._build_search_filter_from_fragments(open_date_filters, operator_char='&')})"
 
-        yesterday_date = (datetime.today() - datetime.timedelta(days=1)).strftime('%Y%m%d')
+        yesterday_date = (datetime.today() - timedelta(days=1)).strftime('%Y%m%d')
 
         close_date_filters = [
             self._build_search_filter_query_parts([("nhsOrgCloseDate", "*")], operator_char="!"),
