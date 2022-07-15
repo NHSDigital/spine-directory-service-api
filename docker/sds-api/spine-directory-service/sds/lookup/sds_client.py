@@ -159,6 +159,8 @@ class SDSClient(object):
             operator_char="&"
         )
 
+        logger.info(f"search filter: {search_filter}")
+
         result = await self._get_ldap_data_people(search_filter, PR_ATTRIBUTES)
         return result
 
