@@ -154,7 +154,7 @@ class SDSClient(object):
         yesterday_date = (datetime.today() - timedelta(days=1)).strftime('%Y%m%d')
 
         close_date_filters = [
-            self._build_search_filter_query_parts([("nhsOrgCloseDate", "*")], operator_char="!"),
+            self._build_search_filter_query_parts([("nhsOrgCloseDate", "*")]),
             self._build_search_filter_query_parts([("nhsOrgCloseDate", yesterday_date)], conditional_char="<=")
         ]
         close_date_search_filter = f"(!{self._build_search_filter_from_fragments(close_date_filters, operator_char='&')})"
