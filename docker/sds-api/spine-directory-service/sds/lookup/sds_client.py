@@ -164,6 +164,11 @@ class SDSClient(object):
             operator_char="&"
         )
 
+        search_filter = self._build_search_filter_from_fragments(
+            [search_filter, open_date_search_filter],
+            operator_char="&"
+        )
+
         logger.info(f"search filter: {search_filter}")
 
         result = await self._get_ldap_data_people(search_filter, PR_ATTRIBUTES)
