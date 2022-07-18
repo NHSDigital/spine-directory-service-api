@@ -160,7 +160,7 @@ class SDSClient(object):
         close_date_search_filter = f"(!{self._build_search_filter_from_fragments(close_date_filters, operator_char='&')})"
 
         search_filter = self._build_search_filter_from_fragments(
-            [open_date_search_filter, close_date_search_filter], #, ],base_search_filter
+            [base_search_filter, close_date_search_filter], #, ],open_date_search_filter
             operator_char="&"
         )
 
