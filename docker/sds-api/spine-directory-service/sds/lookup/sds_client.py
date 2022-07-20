@@ -169,10 +169,10 @@ class SDSClient(object):
         # ]
         # close_date_search_filter = f"(!{self._build_search_filter_from_fragments(close_date_filters, operator_char='&')})"
         #
-        # search_filter = self._build_search_filter_from_fragments(
-        #     [search_filter, close_date_search_filter],
-        #     operator_char="&"
-        # )
+        search_filter = self._build_search_filter_from_fragments(
+            [search_filter], #, close_date_search_filter],
+            operator_char="&"
+        )
 
         logger.info(f"search filter: {search_filter}")
 
