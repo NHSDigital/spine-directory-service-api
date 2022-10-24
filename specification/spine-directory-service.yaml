@@ -33,7 +33,7 @@ info:
     You must do this before you can go live (see ‘Onboarding’ below). 
     
     ## API status and roadmap
-    This API is in[ production, beta](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#statuses), meaning:
+    This API is [in production, beta](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#statuses).
     
     To see our roadmap, or to suggest, comment or vote on features for this API, see our [interactive product backlog](https://nhs-digital-api-management.featureupvote.com/?order=popular&filter=all&tag=sds-fhir-api).
     
