@@ -33,15 +33,14 @@ info:
     You must do this before you can go live (see ‘Onboarding’ below). 
     
     ## API status and roadmap
-    This API is in [private beta](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#api-status), meaning:
-    - the API is available in our sandbox and integration test environments
-    - the API is available for production use (to use this API please contact niasupport@nhs.net)
-    - we might make breaking changes, but only if we cannot avoid it, and we'll give advance notice
+    This API is in[ production, beta](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#statuses), meaning:
     
-    To see our roadmap, or to suggest, comment or vote on features for this API, see our [interactive product backlog.](https://nhs-digital-api-management.featureupvote.com/?order=popular&filter=all&tag=sds-fhir-api)
+    To see our roadmap, or to suggest, comment or vote on features for this API, see our [interactive product backlog](https://nhs-digital-api-management.featureupvote.com/?order=popular&filter=all&tag=sds-fhir-api).
     
-    If you have any other queries, please [contact us](https://digital.nhs.uk/developer/help-and-support).
-
+    If you would like to be involved in the beta programme or use this API, contact <niasupport@nhs.net>.
+    
+    If you  have any other queries, [contact us](https://digital.nhs.uk/developer/help-and-support).
+    
     ## Service level
     This API is a bronze service during private beta, meaning it is operational and supported only during business hours (8am to 6pm), Monday to Friday excluding bank holidays.
     (The planned production service level will be platinum.)
@@ -109,7 +108,7 @@ info:
     You need to get your software approved by us before it can go live with this API. We call this onboarding. The onboarding process can sometimes be quite long, so it’s worth planning well ahead.
 
     There is no separate onboarding process for the SDS FHIR API. Onboarding will be dictated by the current processes of the API that consumes the SDS FHIR API, for example GP Connect.
-    Once approval has been granted to use the API that utilises the SDS FHIR API then production access can be granted. To request production access please contact <api.management@nhs.net>.
+    Once approval has been granted to use the API that utilises the SDS FHIR API then production access can be granted. To request production access, contact <api.management@nhs.net>.
 
   contact:
     name: Spine Directory Service API Support
