@@ -141,36 +141,35 @@ class SDSClient(object):
             ("uniqueIdentifier", user_role_id),
             ("objectClass", "nhsOrgPersonRole")
         ]
-        search_filter = self._build_search_filter_query_parts(query_parts)
+        base_search_filter = self._build_search_filter_query_parts(query_parts)
 
-        #
-        # # build open date filter
-        # # open date, if it exists it cannot be greater than or equal to tomorrow
-        # tomorrow_date = (datetime.today() + timedelta(days=1)).strftime('%Y%m%d')
-        #
-        # open_date_filters = [
-        #     self._build_search_filter_query_parts([("nhsOrgOpenDate", "*")]),
-        #     self._build_search_filter_query_parts([("nhsOrgOpenDate", tomorrow_date)], conditional_char="=>")
-        # ]
-        # open_date_search_filter = f"(!{self._build_search_filter_from_fragments(open_date_filters, operator_char='&')})"
-        #
-        # search_filter = self._build_search_filter_from_fragments(
-        #     [base_search_filter, open_date_search_filter],
-        #     operator_char="&"
-        # )
-        #
-        # # build close date filter
-        # # close date, if it exists it cannot be less than or equal to yesterday
-        # yesterday_date = (datetime.today() - timedelta(days=1)).strftime('%Y%m%d')
-        #
-        # close_date_filters = [
-        #     self._build_search_filter_query_parts([("nhsOrgCloseDate", "*")]),
-        #     self._build_search_filter_query_parts([("nhsOrgCloseDate", yesterday_date)], conditional_char="<=")
-        # ]
-        # close_date_search_filter = f"(!{self._build_search_filter_from_fragments(close_date_filters, operator_char='&')})"
-        #
+        # build open date filter
+        # open date, if it exists it cannot be greater than or equal to tomorrow
+        tomorrow_date = (datetime.today() + timedelta(days=1)).strftime('%Y%m%d')
+
+        open_date_filters = [
+            self._build_search_filter_query_parts([("nhsOrgOpenDate", "*")]),
+            self._build_search_filter_query_parts([("nhsOrgOpenDate", tomorrow_date)], conditional_char="=>")
+        ]
+        open_date_search_filter = f"(!{self._build_search_filter_from_fragments(open_date_filters, operator_char='&')})"
+
         search_filter = self._build_search_filter_from_fragments(
-            [search_filter], #, close_date_search_filter],
+            [base_search_filter, open_date_search_filter],
+            operator_char="&"
+        )
+
+        # build close date filter
+        # close date, if it exists it cannot be less than or equal to yesterday
+        yesterday_date = (datetime.today() - timedelta(days=1)).strftime('%Y%m%d')
+
+        close_date_filters = [
+            self._build_search_filter_query_parts([("nhsOrgCloseDate", "*")]),
+            self._build_search_filter_query_parts([("nhsOrgCloseDate", yesterday_date)], conditional_char="<=")
+        ]
+        close_date_search_filter = f"(!{self._build_search_filter_from_fragments(close_date_filters, operator_char='&')})"
+
+        search_filter = self._build_search_filter_from_fragments(
+            [search_filter, close_date_search_filter],
             operator_char="&"
         )
 
