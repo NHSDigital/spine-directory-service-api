@@ -64,12 +64,12 @@ info:
     
     For more details see [Network access for APIs](https://digital.nhs.uk/developer/guides-and-documentation/network-access-for-apis).
     
-    ## Security and Authorisation 
-    This API uses the Application-restricted pattern.  
+    ## Security and authorisation 
+    This API is [application-restricted](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation#application-restricted-apis), meaning we authenticate the calling application but not the end user.
 
-    In this pattern, you authenticate your application by including an API key with each API request. The API key is unique to your application.
+    To use this API, use the following security pattern:
 
-    For more details, including detailed technical integration instructions, see [Security and Authorisation - Application-restricted RESTful APIs - API key authentication](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation/application-restricted-restful-apis-api-key-authentication) page within the NHS Digital Portal.
+    * [Application-restricted RESTful APIs - API key authentication](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation/application-restricted-restful-apis-api-key-authentication)
 
     ## Environments and testing 
     | Environment       | Base URL                                                       
