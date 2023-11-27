@@ -9,6 +9,7 @@ steps:
       export OAUTH_PROXY="oauth2"
       export OAUTH_BASE_URI="https://$(ENVIRONMENT).api.service.nhs.uk"
       export APIGEE_API_TOKEN="$(secret.AccessToken)"
+      poetry --version
       make smoketest
     workingDirectory: $(Pipeline.Workspace)/s/$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)
     displayName: Run smoketests

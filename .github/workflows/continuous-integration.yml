@@ -34,6 +34,7 @@ jobs:
 
       - name: Install poetry
         run: pip install poetry
+             poetry --version
 
       - name: Cache poetry packages
         uses: actions/cache@v1
