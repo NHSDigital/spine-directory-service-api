@@ -30,7 +30,7 @@ extends:
   template: azure/common/apigee-deployment.yml@common
   parameters:
     service_name: ${{ variables.service_name }}
-    service_base_path: ${{ variables.service_base_path }}
+    service_base_path: https://internal-dev.api.service.nhs.uk/spine-directory/FHIR/R4-pr-251
     short_service_name: ${{ variables.short_service_name }}
     deploy_review_sandbox: true
     secret_ids:
