@@ -7,7 +7,7 @@
     </Request>
     <Response>healthcheckResponse</Response>
     <HTTPTargetConnection>
-        {{ HOSTED_TARGET_HEALTHCHECK }}
+        https://internal-dev.api.service.nhs.uk/spine-directory/FHIR/R4-pr-251/healthcheck/deep
     </HTTPTargetConnection>
     <Timeout>20000</Timeout>
 </ServiceCallout>
