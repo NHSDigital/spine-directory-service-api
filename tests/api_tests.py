@@ -26,7 +26,7 @@ def _build_test_path(endpoint: str, query_params: dict = None) -> str:
         (key, values) = kv
         values = values if isinstance(values, list) else [values]
         return '&'.join(map(lambda value: f'{key}={value}', values))
-    
+
     query_params_string = '&'.join(map(_map_kv, query_params.items())) if query_params else None
     return f'{endpoint}{"?" + query_params_string if query_params_string else ""}'
 
@@ -80,10 +80,16 @@ async def test_check_status_is_secured(api_client: APISessionClient):
 @pytest.mark.asyncio
 async def test_wait_for_status(api_client: APISessionClient, api_test_config: APITestSessionConfig):
     async def is_deployed(resp: ClientResponse):
+
+        print( f"is_deployed - resp.status : {resp.status}", flush=True )
+
         if resp.status != 200:
             return False
 
         body = await resp.json()
+
+        print( f"is_deployed - body : {body}", flush=True )
+
 
         if body.get("commitId") != api_test_config.commit_id:
             return False
@@ -95,6 +101,10 @@ async def test_wait_for_status(api_client: APISessionClient, api_test_config: AP
         return backend.get("commitId") == api_test_config.commit_id
 
     deploy_timeout = 120 if api_test_config.api_environment.endswith("sandbox") else 30
+
+
+    deploy_timeout *= 2
+    print( f"APIkey : {env.status_endpoint_api_key}", flush=True )
 
     responses = await poll_until(
         make_request=lambda: api_client.get(
