@@ -104,7 +104,7 @@ async def test_wait_for_status(api_client: APISessionClient, api_test_config: AP
 
 
     deploy_timeout *= 2
-    print( f"APIkey : {env.status_endpoint_api_key()}", flush=True )
+    print( f"APIkey  : {env.status_endpoint_api_key()}", flush=True )
 
     responses = await poll_until(
         make_request=lambda: api_client.get(
