@@ -16,7 +16,7 @@ authors = [
 readme = 'README.md'
 
 repository = "https://github.com/NHSDigital/spine-directory-service-api"
-homepage = ""
+homepage = "https://github.com/NHSDigital/spine-directory-service-api"
 
 keywords = ["healthcare", "uk", "nhs"] #TODO add additional keywords
 
