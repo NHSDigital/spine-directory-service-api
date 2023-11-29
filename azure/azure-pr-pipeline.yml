@@ -42,7 +42,7 @@ extends:
       - /ptl/api-deployment/sds/ldap/client-cert
       - /ptl/api-deployment/sds/ldap/ca-certs
     jinja_templates:
-      HOSTED_TARGET_HEALTHCHECK_SUFFIX: '/healthcheck/deep'
+    hosted_target_healthcheck_suffix: /healthcheck/deep
     apigee_deployments:
       - environment: internal-dev
         post_deploy:
