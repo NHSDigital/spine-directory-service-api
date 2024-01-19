@@ -33,8 +33,13 @@ $ make install
 ```
 
 ### Local Install
+<<<<<<< HEAD
 ```sh
 cd docker/sds-api/spine-directory-service/sds
+=======
+```
+cd docker/sda-api/spine-directory-service/sds
+>>>>>>> a120cd6 (Bypass LDAP lookup)
 python3 -m venv .venv
 pipenv install
 source .venv/bin/activate
