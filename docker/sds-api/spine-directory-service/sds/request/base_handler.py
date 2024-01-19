@@ -13,6 +13,8 @@ ORG_CODE_FHIR_IDENTIFIER = "https://fhir.nhs.uk/Id/ods-organization-code"
 SERVICE_ID_FHIR_IDENTIFIER = "https://fhir.nhs.uk/Id/nhsServiceInteractionId"
 PARTY_KEY_FHIR_IDENTIFIER = "https://fhir.nhs.uk/Id/nhsMhsPartyKey"
 MANUFACTURING_ORGANIZATION_FHIR_IDENTIFIER = "https://fhir.nhs.uk/Id/ods-organization-code"
+CPM_FILTER = "use_cpm"
+CPM_FILTER_IDENTIFIER = "iwanttogetdatafromcpm"
 
 
 class BaseHandler(tornado.web.RequestHandler):
@@ -40,13 +42,15 @@ class BaseHandler(tornado.web.RequestHandler):
         return value
 
     def get_optional_query_param(self, query_param_name: str, fhir_identifier: str) -> Optional[str]:
-        values = list(filter(
-            lambda value: "|" in value and value.split("|")[0] == fhir_identifier and value[value.index("|") + 1:].strip(),
-            self.get_query_arguments(query_param_name)))
+        if query_param_name != CPM_FILTER:
+            values = list(filter(lambda value: "|" in value and value.split("|")[0] == fhir_identifier and value[value.index("|") + 1:].strip(), self.get_query_arguments(query_param_name)))
 
-        last_value = values and values[-1]
-        result_value = (last_value and last_value[last_value.index("|") + 1:]) or None
-        return result_value
+            last_value = values and values[-1]
+            result_value = (last_value and last_value[last_value.index("|") + 1:]) or None
+            return result_value
+        else:
+            value = self.get_query_arguments(query_param_name)
+            return value
 
     def _raise_invalid_query_param_error(self, query_param_name, fhir_identifier):
         raise tornado.web.HTTPError(

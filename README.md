@@ -35,6 +35,7 @@ $ make install
 ### Local Install
 ```sh
 cd docker/sds-api/spine-directory-service/sds
+
 python3 -m venv .venv
 pipenv install
 source .venv/bin/activate
