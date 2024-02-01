@@ -18,7 +18,7 @@ jobs:
       - name: Install pipenv
         uses: dschep/install-pipenv-action@v1
         with:
-            - version: 2021.5.29
+          version: 2021.5.29
       - name: Install dependencies
         run: |
           pipenv install --dev
