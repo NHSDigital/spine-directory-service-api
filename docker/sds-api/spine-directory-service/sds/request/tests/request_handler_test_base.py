@@ -24,7 +24,6 @@ DEVICE_PATH = "/device"
 
 
 class RequestHandlerTestBase(ABC, tornado.testing.AsyncHTTPTestCase):
-
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
         self.maxDiff = None
@@ -153,7 +152,9 @@ class RequestHandlerTestBase(ABC, tornado.testing.AsyncHTTPTestCase):
         current_id = current['id']
         current_link_url = current['link'][0]['url']
 
-        expected = json.loads(open(expected_file_path, "r").read())
+        with open(expected_file_path, "r") as file:
+            expected = json.load(file)
+        
         expected_entries = expected["entry"]
         expected['id'] = current_id
         expected['link'][0]['url'] = current_link_url

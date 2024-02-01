@@ -1,0 +1,36 @@
+FROM python:3.8-slim-bullseye as base
+
+RUN apt-get update && \
+    apt-get install build-essential -y && \
+    apt-get clean
+
+
+RUN mkdir -p /usr/src/app/spine-directory-service/sds
+
+COPY spine-directory-service/sds/Pipfile /usr/src/app
+COPY spine-directory-service/sds/Pipfile.lock /usr/src/app
+
+COPY spine-directory-service/sds/data/certs /usr/src/app/certs
+
+RUN pip install pipenv
+
+COPY spine-directory-service/sds/ /usr/src/app/spine-directory-service/sds
+
+WORKDIR /usr/src/app/spine-directory-service/sds
+
+ENV SDS_SECRET_CLIENT_CERT="/usr/src/app/certs/client.pem"
+ENV SDS_SECRET_CLIENT_KEY="/usr/src/app/certs/client.key"
+ENV SDS_SECRET_CA_CERTS="/usr/src/app/certs/ca_certs.pem"
+ENV SDS_LDAP_URL="ldap.nis1.national.ncrs.nhs.uk"
+ENV SDS_LDAP_SEARCH_BASE="ou=services,o=nhs"
+ENV SDS_SPINE_CORE_ODS_CODE="YES"
+ENV SDS_LDAP_DISABLE_TLS="False"
+ENV SDS_LDAP_CONNECTION_RETRIES="3"
+ENV SDS_LDAP_LAZY_CONNECTION="True"
+ENV LOCAL_VENV="True"
+
+RUN pipenv install --deploy --ignore-pipfile
+
+EXPOSE 9000
+
+ENTRYPOINT pipenv run start

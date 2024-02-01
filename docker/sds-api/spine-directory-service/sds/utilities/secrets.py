@@ -40,7 +40,11 @@ def get_secret_config(key: str, default: Optional[str] = _config_default) -> str
     if key in secret_config:
         # Can't use IntegrationAdaptorsLogger due to circular dependency
         logging.info(f'Obtained secret config ConfigName="{key}"')
-        return secret_config[key]
+        if os.getenv('LOCAL_VENV'):
+            with open(secret_config[key]) as f:
+                return f.read()
+        else:
+            return secret_config[key]
     elif default is not _config_default:
         logging.info(f'Failed to get secret config ConfigName="{key}". Returning a default value.')
         return default

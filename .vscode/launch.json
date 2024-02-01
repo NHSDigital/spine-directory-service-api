@@ -1,0 +1,32 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "SDS",
+            "type": "python",
+            "request": "launch",
+            "program": "./docker/sds-api/spine-directory-service/sds/main.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "env": {
+                "SDS_LOG_LEVEL": "DEBUG",
+                "SDS_MOCK_LDAP_RESPONSE": "False",
+                //"SDS_MOCK_LDAP_MODE": "STRICT",
+                "SDS_SERVER_PORT": "9000",
+                "SDS_SECRET_CLIENT_CERT": "${userHome}/crt/lt/ldap.crt",
+                "SDS_SECRET_CLIENT_KEY": "${userHome}/crt/lt/ldap.key",
+                "SDS_SECRET_CA_CERTS": "${userHome}/crt/lt/ptl.crt",
+                "SDS_LDAP_URL": "ldap.nis1.national.ncrs.nhs.uk",
+                "SDS_LDAP_SEARCH_BASE": "ou=services,o=nhs",
+                "SDS_SPINE_CORE_ODS_CODE": "YES",
+                "SDS_LDAP_DISABLE_TLS": "False",
+                "SDS_LDAP_CONNECTION_RETRIES": "3",
+                "SDS_LDAP_LAZY_CONNECTION": "True",
+                "LOCAL_VENV": "True"
+            }
+        }
+    ]
+}

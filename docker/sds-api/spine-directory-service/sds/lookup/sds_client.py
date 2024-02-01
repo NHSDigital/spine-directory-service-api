@@ -202,10 +202,12 @@ class SDSMockClient:
                 target_list.append(target_dict)
             return target_list
 
+        # Locally maybe required to change this to ./docker/sds-api/spine-directory-service/sds/lookup/mock_data/sds_mhs_response.json
         with open('./lookup/mock_data/sds_mhs_response.json', 'r') as f:
             data = f.read()
             self.mock_mhs_data = _copy_to_case_insensitive_dict(ast.literal_eval(data))
 
+        # Locally maybe required to change this to ./docker/sds-api/spine-directory-service/sds/lookup/mock_data/sds_as_response.json
         with open('./lookup/mock_data/sds_as_response.json', 'r') as f:
             data = f.read()
             self.mock_as_data = _copy_to_case_insensitive_dict(ast.literal_eval(data))

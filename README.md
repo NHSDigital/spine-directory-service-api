@@ -32,6 +32,37 @@ The contents of this repository are protected by Crown Copyright (C).
 $ make install
 ```
 
+### Local Install
+```sh
+cd docker/sds-api/spine-directory-service/sds
+python3 -m venv .venv
+pipenv install
+source .venv/bin/activate
+```
+Make sure VSCode is using the correct interpreter inside your .venv folder
+Then you can run the VSCode debugger.
+
+### Local Docker Install
+Make sure you have docker buildx on your system.
+
+```sh
+cd docker/sds-api/spine-directory-service/sds
+python3 -m venv .venv
+pipenv install
+You need to have pem and key files under data/certs, you may need to run a local copy to get these.
+cd ../..
+export BUILD_TAG='latest'
+./buildx.sh
+```
+Connect to the VPN,
+
+You may have issues with the container connecting via the VPN. If so please look at the answer given here https://superuser.com/questions/1579858/docker-bridge-network-sporadically-loosing-packets/1580017?_gl=1*wyte41*_ga*MjgwODQyNzEwLjE3MDYwMDMwNzQ.*_ga_S812YQPLT2*MTcwNjE5MjIyOC4yLjAuMTcwNjE5MjIyOC4wLjAuMA..#1580017 using `docker network create --subnet=172.20.0.0/24 --gateway=172.20.0.1 docker20`
+
+Finally run
+```sh
+docker-compose up
+```
+
 #### Updating hooks
 You can install some pre-commit hooks to ensure you can't commit invalid spec changes by accident. These are also run
 in CI, but it's useful to run them locally too.

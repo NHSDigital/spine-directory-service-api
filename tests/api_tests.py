@@ -295,3 +295,37 @@ async def test_endpoints(test_app, api_client: APISessionClient, request_data):
             assert body['total'] == 0, body
         else:
             assert resource_type == 'OperationOutcome', body
+
+
+@pytest.mark.e2e
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    "request_data",
+    [
+        {
+            'endpoint': 'healthcheck/deep',
+            'status_code': 200,
+        },
+    ]
+)
+async def test_healthcheck(test_app, api_client: APISessionClient, request_data):
+    correlation_id = str(uuid4())
+    headers = {
+        'apikey': test_app.client_id,
+        'x-correlation-id': correlation_id,
+        'cache-control': 'no-cache',
+    }
+
+    uri = _build_test_path(request_data['endpoint'])
+
+    async with api_client.get(
+        uri,
+        headers=headers,
+        allow_retries=True
+    ) as resp:
+        body = await resp.json()
+        assert resp.status == request_data['status_code'], str(resp.status) + " " + str(resp.headers) + " " + str(body)
+        assert 'x-correlation-id' in resp.headers, resp.headers
+        assert resp.headers['x-correlation-id'] == correlation_id
+        assert body['status'] == 'pass'
+        assert body['details']['ldap']['status'] == 'pass'

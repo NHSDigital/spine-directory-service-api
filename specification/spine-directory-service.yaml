@@ -7,7 +7,7 @@ info:
   title: Spine Directory Service API
   description: |
     ## Overview
-    Use this API to access details of systems registered in the Spine Directory Service (SDS).
+    Use this API to access details of systems registered in the [Spine Directory Service (SDS)](https://digital.nhs.uk/services/spine-directory-service).
     
     You can:
     - get accredited system details
