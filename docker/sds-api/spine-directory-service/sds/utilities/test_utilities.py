@@ -11,13 +11,13 @@ def async_test(f):
     :param f:
     :return:
     """
-    functools.wraps(f)
-
+    @functools.wraps(f)
     def wrapper(*args, **kwargs):
-        coro = asyncio.coroutine(f)
-        future = coro(*args, **kwargs)
-        asyncio.run(future)
-
+        async def coro_wrapper():
+            return await f(*args, **kwargs)
+        
+        asyncio.run(coro_wrapper())
+        
     return wrapper
 
 

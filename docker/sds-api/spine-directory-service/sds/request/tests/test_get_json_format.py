@@ -50,7 +50,9 @@ class TestGetJsonFormat(TestCase):
         self.maxDiff = None
 
     def test_get_json_format(self):
-        example = json.loads(open(FILE_PATH, "r").read())
+        with open(FILE_PATH, "r") as file:
+            example = json.load(file)
+
         actual = build_endpoint_resources(LDAP_ATTRIBUTES)
         actual = json.dumps(actual, indent=2)
         actual = json.loads(message_utilities.replace_uuid(actual, FIXED_UUID))

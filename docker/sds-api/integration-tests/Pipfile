@@ -10,7 +10,7 @@ requests = "*"
 unittest-xml-reporting = "*"
 
 [requires]
-python_version = "3.7"
+python_version = "3.8"
 
 [scripts]
 inttests = 'python -m xmlrunner discover -o test-reports ./tests'
