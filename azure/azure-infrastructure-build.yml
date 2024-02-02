@@ -1,0 +1,426 @@
+name: "$(SourceBranchName)+$(BuildID)"
+
+trigger:
+ branches:
+   include:
+     - tags/refs/v*
+ tags:
+   include:
+     - v*
+
+pr:
+  branches:
+    include: ['*']
+
+resources:
+  repositories:
+    - repository: nhsd_apm_all_idx_all_indexes
+      type: github
+      name: NHSDigital/mirror-sc_apps-nhsd_apm_all_idx_all_indexes
+      ref: refs/heads/master
+      endpoint: NHSDigital
+    - repository: nhsd_apm_all_sh_all_viz
+      type: github
+      name: NHSDigital/mirror-sc_apps-nhsd_apm_all_sh_all_viz
+      ref: refs/heads/master
+      endpoint: NHSDigital
+
+stages:
+
+  - stage: build
+    displayName: Build Infrastructure Artifact
+    jobs:
+      - job: build
+        displayName: Build And Create Artifact
+        timeoutInMinutes: 40
+
+        pool:
+          name: 'AWS-ECS'
+
+        workspace:
+          clean: all
+
+        steps:
+          - checkout: self
+            persistCredentials: true
+          - checkout: nhsd_apm_all_sh_all_viz
+            path: s/nhsd_apm_all_sh_all_viz
+          - checkout: nhsd_apm_all_idx_all_indexes
+            path: s/nhsd_apm_all_idx_all_indexes
+
+          - bash: |
+              instance_id="$(curl -s http://169.254.169.254/latest/meta-data/instance-id)"
+              echo instance-id: "${instance_id}"
+              echo connect to: https://eu-west-2.console.aws.amazon.com/systems-manager/session-manager/${instance_id}
+              echo sudo su - ubuntu
+              or
+              echo ssh ubuntu@${instance_id}
+              echo working directory: $(System.DefaultWorkingDirectory)
+            displayName: print aws info
+
+          - task: UsePythonVersion@0
+            displayName: "Use Python 3.9"
+            inputs:
+              versionSpec: "3.9"
+
+          - bash: |
+              set -e
+              # Force our custom installed version of poetry as
+              # UsePythonVersion prepends the agent-aware python
+              # version to PATH.
+              echo 'export PATH=${HOME}/.local/bin:${PATH}' >> ~/.profile
+              source ~/.profile
+              # Now check poetry version
+              echo Poetry version is "$(poetry --no-ansi --version)"
+              if [[ ! "$(poetry --no-ansi --version)" =~ 'version 1.7' ]]; then
+                 echo "Need up update poetry version..."
+                 poetry self update --preview && which poetry && poetry --version || echo "But that's not going to happen..."
+              fi
+              if [[ ! "$(poetry --no-ansi --version)" =~ 'version 1.7' ]]; then
+                 echo "Could not get the correct poetry version running."
+                 echo "**************************************************************"
+                 echo "The PATH is ${PATH}"
+                 echo "**************************************************************"
+                 echo "**************************************************************"
+                 echo "The .profile is:"
+                 cat ~/.profile
+                 echo "**************************************************************"
+                 echo "**************************************************************"
+                 echo "The .bashrc is:"
+                 cat ~/.bashrc
+                 echo "**************************************************************"
+                 exit 1
+              fi
+            displayName: print poetry info
+            workingDirectory: api-management-infrastructure
+
+          - task: s3-cache-action@1
+            inputs:
+              key: 'poetry | ./api-management-infrastructure/.venv | ./api-management-infrastructure/poetry.lock'
+              location: './api-management-infrastructure/.venv'
+              debug: true
+              alias: 'Poetry'
+            displayName: cache poetry dependencies
+
+          - bash: make install
+            condition: ne(variables['CacheRestored-Poetry'], 'true')
+            displayName: Install project dependencies
+            workingDirectory: api-management-infrastructure
+
+          - bash: |
+              # Clear down any running containers on this instance
+              set -euo pipefail
+              make -C docker down || true
+              docker kill $(docker ps -q) || true
+              docker network prune -f
+            displayName: pre-emptively tear down containers
+            workingDirectory: api-management-infrastructure
+
+          - template: components/aws-assume-role.yml
+            parameters:
+              role: "auto-ops"
+              profile: "apm_ptl"
+              aws_account: "ptl"
+
+          - template: ./components/get-aws-secrets-and-ssm-params.yml
+            parameters:
+              secret_ids:
+                - ptl/azure-devops/apigee-nonprod/APIGEE_OTP_KEY
+                - ptl/azure-devops/apigee-nonprod/APIGEE_PASSWORD
+                - ptl/azure-devops/apigee-nonprod/APIGEE_USERNAME
+                - ptl/keycloak/paas/PROXYGEN_KEYCLOAK_CLIENT_ID
+                - ptl/keycloak/paas/PROXYGEN_KEYCLOAK_CLIENT_SECRET
+                - ptl/keycloak/paas/PROXYGEN_MACHINE_USER_CLIENT_ID
+                - ptl/keycloak/paas/API_PRODUCER_USER_CLIENT_ID
+                - ptl/keycloak/paas/API_PRODUCER_USER_CLIENT_SECRET
+                - ptl/keycloak/paas/API_PRODUCER_USERNAME
+                - ptl/keycloak/paas/API_PRODUCER_PASSWORD
+                - ptl/keycloak/paas/api-producers/deathstar/DEATHSTAR_PASSWORD
+                - ptl/monitoring/status-endpoint-api-key
+                - ptl/azure-devops/MONITORING_API_KEY
+              secret_file_ids:
+                - ptl/keycloak/paas/PROXYGEN_MACHINE_USER_CLIENT_PRIVATE_KEY
+                - ptl/proxygen/paas/PROXYGEN_MTLS_TEST_CLIENT_KEY
+                - ptl/proxygen/paas/PROXYGEN_MTLS_TEST_CLIENT_CERTIFICATE
+                - ptl/proxygen/paas/PROXYGEN_MTLS_TEST_CA_CERTIFICATE
+                - ptl/proxygen/paas/PROXYGEN_MTLS_TEST_SERVER_CERTIFICATE
+                - ptl/proxygen/paas/PROXYGEN_MTLS_TEST_SERVER_KEY
+                - ptl/proxygen/paas/PROXYGEN_MTLS_TEST_CLIENT_PRIVATE_KEY_ABSOLUTE_PATH
+                - ptl/proxygen/paas/PROXYGEN_MTLS_TEST_CLIENT_CERTIFICATE_ABSOLUTE_PATH
+              config_ids:
+                - /ptl/azure-devops/apigee-nonprod/APIGEE_USERNAME
+              aws_profile: "apm_ptl"
+
+          - bash: |
+              export MFA_CODE=`oathtool --totp -b "$(APIGEE_OTP_KEY)"`
+              # basic auth value here is an apigee public value .. https://docs.apigee.com/api-platform/system-administration/management-api-tokens  (not secret)
+              curl -X POST https://login.apigee.com/oauth/token \
+                -H "Content-Type: application/x-www-form-urlencoded" \
+                -H "Accept: application/json;charset=utf-8" \
+                -H "Authorization: Basic ZWRnZWNsaTplZGdlY2xpc2VjcmV0" \
+                -d "username=$(APIGEE_USERNAME)&password=$(APIGEE_PASSWORD)&mfa_token=${MFA_CODE}&grant_type=password" | jq .access_token > .token
+              # Set token into variable
+              echo "##vso[task.setvariable variable=secret.AccessToken;issecret=true]`cat .token`"
+            displayName: "get access token"
+
+          - bash: |
+              set -e
+
+              export num_changes_in_ansible_collections=$(git diff --name-only origin/master ansible/collections | wc -l)
+              echo "##vso[task.setvariable variable=ansibleCollectionsChanges]${num_changes_in_ansible_collections}"
+              echo "${num_changes_in_ansible_collections} changes in ansible collections"
+
+              export num_scripts_changes=$(git diff --name-only origin/master scripts | wc -l)
+              echo "##vso[task.setvariable variable=scriptsChanges]${num_scripts_changes}"
+              echo "${num_scripts_changes} changes in scripts"
+
+              export num_changes_in_docker=$(git diff --name-only origin/master docker | wc -l)
+              echo "##vso[task.setvariable variable=dockerChanges]${num_changes_in_docker}"
+              echo "${num_changes_in_docker} changes in docker"
+
+              export num_changes_in_lambda=$(git diff --name-only origin/master lambda | wc -l)
+              echo "##vso[task.setvariable variable=lambdaChanges]${num_changes_in_lambda}"
+              echo "${num_changes_in_docker} changes in lambda"
+            displayName: compute changes
+            workingDirectory: api-management-infrastructure
+
+          - bash: |
+              set -eou pipefail
+              cd ansible/collections/ansible_collections/nhsd/apim_infra/
+              ANSIBLE_FORCE_COLOR=yes \
+              APIGEE_ACCESS_TOKEN=$(secret.AccessToken) \
+              make test
+            displayName: test ansible collection
+            workingDirectory: api-management-infrastructure
+            condition: and(succeeded(), gt(variables['ansibleCollectionsChanges'], 0))
+
+          - bash: |
+              set -eou pipefail
+              # Remove leading refs/tags (tag release) or refs/heads (branch release) or refs/pull (PR release)
+              export source_branch=$(echo $(Build.SourceBranch) | sed s,'refs/\(tags\|pull\|heads\)/',,)
+              export commit_hash="$(git rev-parse HEAD)"
+              export build_label="$(Build.BuildId)-sha$(git rev-parse --short HEAD)"
+              export account_id="$(aws --profile=apm_ptl sts get-caller-identity --query Account --output text)"
+
+              # populate .extra.tfvars for terraform
+              mkdir -p ./dist
+              echo "*********************************************************"
+              echo "Populating .extra.tfvars (for terraform deployment)"
+              echo "*********************************************************"
+              echo "" > ./dist/.extra.tfvars
+              echo "build_label = \"${build_label}\"" >> ./dist/.extra.tfvars
+              echo "source_branch = \"${source_branch}\"" >> ./dist/.extra.tfvars
+              echo "commit_hash = \"${commit_hash}\"" >> ./dist/.extra.tfvars
+              cat ./dist/.extra.tfvars
+              echo "*********************************************************"
+              echo ""
+              echo "*********************************************************"
+              echo "Populating .build_env_vars (for apigee deployment scripts)"
+              echo "*********************************************************"
+              echo .build_env_vars for apigee deployment scripts
+              echo "" > ./dist/.build_env_vars
+              echo "export build_label=\"${build_label}\"" >> ./dist/.build_env_vars
+              echo "export source_branch=\"${source_branch}\"" >> ./dist/.build_env_vars
+              echo "export commit_hash=\"${commit_hash}\"" >> ./dist/.build_env_vars
+              cat ./dist/.build_env_vars
+              echo "*********************************************************"
+              echo ""
+              echo "*********************************************************"
+              echo "Populating docker/.env"
+              echo "*********************************************************"
+              echo ""
+              echo "" > docker/.env
+              echo APIGEE_ACCESS_TOKEN=$(secret.AccessToken) >> docker/.env
+              echo APIGEE_NHSD_NONPROD_OTP_KEY=$(APIGEE_OTP_KEY) >> docker/.env
+              echo APIGEE_NHSD_NONPROD_PASSWORD=$(APIGEE_PASSWORD) >> docker/.env
+              echo APIGEE_NHSD_NONPROD_USERNAME=$(APIGEE_USERNAME) >> docker/.env
+              echo APIGEE_ORG=nhsd-nonprod >> docker/.env
+              echo API_PRODUCER_PASSWORD=$(API_PRODUCER_PASSWORD) >> docker/.env
+              echo API_PRODUCER_USERNAME=$(API_PRODUCER_USERNAME) >> docker/.env
+              echo API_PRODUCER_USER_CLIENT_ID=$(API_PRODUCER_USER_CLIENT_ID) >> docker/.env
+              echo API_PRODUCER_USER_CLIENT_SECRET=$(API_PRODUCER_USER_CLIENT_SECRET) >> docker/.env
+              echo API_REGISTRY_URL=http://localhost:9000 >> docker/.env
+              echo AWS_ENV=local >> docker/.env
+              echo BUILD_LABEL="${build_label}" >> docker/.env
+              echo DEATHSTAR_PASSWORD=$(DEATHSTAR_PASSWORD) >> docker/.env
+              echo ECR_PREFIX="${account_id}".dkr.ecr.eu-west-2.amazonaws.com/ >> docker/.env
+              echo HOST_GID=$(id -g) >> docker/.env
+              echo HOST_UID=$(id -u) >> docker/.env
+              echo KEYCLOAK_ENDPOINT_URL=https://identity.ptl.api.platform.nhs.uk >> docker/.env
+              echo LOCALSTACK_ACCESS_KEY_ID=abc >> docker/.env
+              echo LOCALSTACK_ENDPOINT_URL=http://localstack:4766 >> docker/.env
+              echo LOCALSTACK_SECRET_ACCESS_KEY=123 >> docker/.env
+              echo PROXYGEN_BUCKET_NAME=nhsd-apm-management-ptl-proxygen >> docker/.env
+              echo PROXYGEN_KEYCLOAK_CLIENT_ID=$(PROXYGEN_KEYCLOAK_CLIENT_ID) >> docker/.env
+              echo PROXYGEN_KEYCLOAK_CLIENT_SECRET=$(PROXYGEN_KEYCLOAK_CLIENT_SECRET) >> docker/.env
+              echo PROXYGEN_MACHINE_USER_CLIENT_ID=$(PROXYGEN_MACHINE_USER_CLIENT_ID) >> docker/.env
+              echo PROXYGEN_MACHINE_USER_CLIENT_PRIVATE_KEY_ABSOLUTE_PATH=$(Pipeline.Workspace)/secrets/$(PROXYGEN_MACHINE_USER_CLIENT_PRIVATE_KEY) >> docker/.env
+              echo PROXYGEN_MTLS_TEST_CLIENT_PRIVATE_KEY_ABSOLUTE_PATH=$(Pipeline.Workspace)/secrets/$(PROXYGEN_MTLS_TEST_CLIENT_KEY) >> docker/.env
+              echo PROXYGEN_MTLS_TEST_CLIENT_CERTIFICATE_ABSOLUTE_PATH=$(Pipeline.Workspace)/secrets/$(PROXYGEN_MTLS_TEST_CLIENT_CERTIFICATE) >> docker/.env
+              echo SPLUNK_HEC_TOKEN=abcd1234 >> docker/.env
+              echo SPLUNK_HEC_URL=https://localhost:8088 >> docker/.env
+              echo STATUS_ENDPOINT_API_KEY=$(status-endpoint-api-key) >> docker/.env
+              echo PTL_MONITORING_API_KEY=$(MONITORING_API_KEY) >> docker/.env
+              # The following variables contain the *contents* of files, which need to be concatenated
+              echo "PROXYGEN_MTLS_TEST_CLIENT_KEY='`cat $(Pipeline.Workspace)/secrets/$(PROXYGEN_MTLS_TEST_CLIENT_KEY)`'" >> docker/.env
+              echo "PROXYGEN_MTLS_TEST_CLIENT_CERTIFICATE='`cat $(Pipeline.Workspace)/secrets/$(PROXYGEN_MTLS_TEST_CLIENT_CERTIFICATE)`'" >> docker/.env
+              echo "PROXYGEN_MTLS_TEST_CA_CERTIFICATE='`cat $(Pipeline.Workspace)/secrets/$(PROXYGEN_MTLS_TEST_CA_CERTIFICATE)`'" >> docker/.env
+              echo "PROXYGEN_MTLS_TEST_SERVER_CERTIFICATE='`cat $(Pipeline.Workspace)/secrets/$(PROXYGEN_MTLS_TEST_SERVER_CERTIFICATE)`'" >> docker/.env
+              echo "PROXYGEN_MTLS_TEST_SERVER_KEY='`cat $(Pipeline.Workspace)/secrets/$(PROXYGEN_MTLS_TEST_SERVER_KEY)`'" >> docker/.env
+              # Azure Devops masks the secrets so it's safe to cat this file.
+              cat docker/.env
+              echo "*********************************************************"
+            workingDirectory: api-management-infrastructure
+            displayName: "populate .env, .extra.tfvars, .build_env_vars"
+
+          - bash: |
+              set -euo pipefail
+              make -C docker login touch
+            displayName: docker login
+            workingDirectory: api-management-infrastructure
+
+          - bash: |
+              set -euo pipefail
+              BUILD_LABEL=latest \
+              make -C docker pre-pull
+            displayName: docker pull pre-requsites
+            workingDirectory: api-management-infrastructure
+
+          - bash: |
+              set -euo pipefail
+              PUSH=1 \
+              make -C docker pre-build
+            displayName: docker build and push pre-requsites
+            workingDirectory: api-management-infrastructure
+
+          - bash: |
+              set -euo pipefail
+              # Start splunk + localstack now as they are very slow
+              make -C docker pre-up
+            displayName: docker up pre-requsites
+            workingDirectory: api-management-infrastructure
+            # Note that we need localstack running w/local terraform applied for the scripts tests
+            condition: and(succeeded(), or(gt(variables['dockerChanges'],0), gt(variables['scriptsChanges'],0)))
+
+          - bash: |
+              set -euo pipefail
+              BUILD_LABEL=latest \
+              make -C docker pull
+            workingDirectory: api-management-infrastructure
+            displayName: docker pull
+
+          - bash: |
+              set -euo pipefail
+              PUSH=1 make -C docker build
+            workingDirectory: api-management-infrastructure
+            displayName: docker build and push
+
+          - bash: |
+              set -euo pipefail
+              make -C docker up
+            workingDirectory: api-management-infrastructure
+            displayName: docker up
+            condition: and(succeeded(), gt(variables['dockerChanges'], 0))
+
+          - bash: |
+              set -euo pipefail
+              make -C docker test
+            workingDirectory: api-management-infrastructure
+            displayName: docker test
+            condition: and(succeeded(), gt(variables['dockerChanges'], 0))
+
+          - bash: |
+              set -euo pipefail
+              make test-lambda
+            workingDirectory: api-management-infrastructure
+            displayName: test lambda
+            condition: and(succeeded(), gt(variables['lambdaChanges'], 0))
+
+          - bash: |
+              set -euo pipefail
+              APIGEE_TOKEN=$(secret.AccessToken) \
+              make test-scripts
+            workingDirectory: api-management-infrastructure
+            condition: and(succeeded(), gt(variables['scriptsChanges'], 0))
+            displayName: test scripts
+
+          - bash: |
+              set -euo pipefail
+              make down
+            displayName: bring down containers
+            condition: always()
+            workingDirectory: api-management-infrastructure/docker
+
+          - bash: |
+              set -e
+              source ../dist/.build_env_vars
+              ANSIBLE_FORCE_COLOR=yes \
+              make check-secrets-exist-and-pin-versions
+            displayName: check secrets exist for kvms and tls certs and pin version
+            workingDirectory: api-management-infrastructure/ansible
+
+          - bash: |
+              set -e
+              source ../dist/.build_env_vars
+              ANSIBLE_FORCE_COLOR=yes \
+              make set-deployment-build-labels
+            displayName: set per-image build_labels
+            workingDirectory: api-management-infrastructure/ansible
+
+          - bash: |
+              set -e
+              mkdir -p ./dist
+              echo "" > ./dist/.ami_ids
+              account_id="$(aws --profile=apm_ptl sts get-caller-identity --query Account --output text)"
+
+              apm_ubuntu_base_ami="$(aws --profile=apm_ptl ec2 describe-images --owners ${account_id} --filters 'Name=name,Values=apm-ubuntu-base-*' --query 'sort_by(Images, &CreationDate)[].[ImageId,CreationDate]' --output text | sort -k2 -r | head -n 1 | cut -f1)"
+              apm_ecs_agent_ami="$(aws --profile=apm_ptl ec2 describe-images --owners ${account_id} --filters 'Name=name,Values=apm-ecs-agent-*' --query 'sort_by(Images, &CreationDate)[].[ImageId,CreationDate]' --output text | sort -k2 -r | head -n 1 | cut -f1)"
+              apm_build_agent_ami="$(aws --profile=apm_ptl  ec2 describe-images --owners ${account_id} --filters 'Name=name,Values=apm-build-agent-*' --query 'sort_by(Images, &CreationDate)[].[ImageId,CreationDate]' --output text | sort -k2 -r | head -n 1 | cut -f1)"
+
+              if [[ -z "${apm_ubuntu_base_ami}" ]] || [[ -z "${apm_ecs_agent_ami}" ]] || [[ -z "${apm_build_agent_ami}" ]]; then
+                echo failed to get ami ids
+              fi
+
+              echo "apm_ubuntu_base_ami = ${apm_ubuntu_base_ami}"
+              echo "apm_ecs_agent_ami = ${apm_ecs_agent_ami}"
+              echo "apm_build_agent_ami = ${apm_build_agent_ami}"
+
+              echo "apm_ubuntu_base_ami = \"${apm_ubuntu_base_ami}\"" >> ./dist/.ami_ids
+              echo "apm_ecs_agent_ami = \"${apm_ecs_agent_ami}\"" >> ./dist/.ami_ids
+              echo "apm_build_agent_ami = \"${apm_build_agent_ami}\"" >> ./dist/.ami_ids
+
+              cat ./dist/.ami_ids >> ./dist/.extra.tfvars
+
+            displayName: record AMI ids
+            workingDirectory: api-management-infrastructure
+
+          - bash: |
+              set -e
+              echo "extra .tfvars:"
+              cat ./dist/.extra.tfvars
+
+              cat ./dist/.extra.tfvars >> terraform/_shared/vars/ptl.tfvars
+              cat ./dist/.extra.tfvars >> terraform/_shared/vars/prod.tfvars
+
+            displayName: .extra.tfvars output and record
+            workingDirectory: api-management-infrastructure
+
+          - bash: |
+              set -e
+              mv ./dist ./dist_vars
+              make release
+              cp -r ./dist_vars/. ./dist
+            displayName: copy scripts to artifact
+            workingDirectory: api-management-infrastructure
+
+          - task: PublishPipelineArtifact@1
+            inputs:
+              targetPath: $(System.DefaultWorkingDirectory)/api-management-infrastructure/dist
+              artifactName: package
+
+          - bash: |
+              docker ps -q | xargs docker stop
+              docker container prune -f
+              docker network prune -f
+            displayName: Ensure docker containers and networks are brought down
+            condition: always()
