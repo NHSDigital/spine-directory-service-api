@@ -25,7 +25,7 @@ info:
     MHS records of GP Connect provider systems contain the endpoint of the target practice, as defined by the [FHIR service root URL](https://developer.nhs.uk/apis/gpconnect-0-7-2/development_fhir_api_guidance.html#service-root-url). 
     Please see [System topologies](https://developer.nhs.uk/apis/gpconnect-0-7-2/integration_system_topologies.html) for more details on the allocation of ASIDs and Party Keys. 
     
-    - For all intermediary messaging endpoint lookups, this API returns the NHS Digital Spine MHS endpoint address.
+    - For all intermediary messaging endpoint lookups, this API returns the Spine MHS endpoint address.
 
     ## Who can use this API
     This API can only be used where there is a legal basis to do so. Make sure you have a valid use case before you go too far with your development.
@@ -106,7 +106,7 @@ info:
     You need to get your software approved by us before it can go live with this API. We call this onboarding. The onboarding process can sometimes be quite long, so it’s worth planning well ahead.
 
     There is no separate onboarding process for the SDS FHIR API. Onboarding will be dictated by the current processes of the API that consumes the SDS FHIR API, for example GP Connect.
-    Once approval has been granted to use the API that utilises the SDS FHIR API then production access can be granted. To request production access, contact <api.management@nhs.net>.
+    Once approval has been granted to use the API that utilises the SDS FHIR API then production access can be granted. To request production access, contact <ssd.nationalservicedesk@nhs.net>.
 
     ## Errors
     We use standard HTTP status codes to show whether an API request succeeded or not. They are usually in the range:
