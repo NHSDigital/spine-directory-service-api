@@ -42,3 +42,5 @@ It's exposed with `/healthcheck` URL path which, when called indicates healthy s
 Additionally there is a "deep" version of the healthcheck at `/healthcheck/deep` that also checks LDAP connectivity.
 In order to determine the ports on `localhost` which these health-check endpoints are listening on, examine your local copy
 of the [docker-compose](../docker-compose.yml) file.
+
+Note : By default, the application will be on port 9000 and needs to be accessed use http (not https !)

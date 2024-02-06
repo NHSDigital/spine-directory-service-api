@@ -11,7 +11,9 @@ See [Setup an OpenTest connection](../setup-opentest.md) for details.
   ```
   brew install pipenv
   ```
-  and on your path.
+  and on your path.  
+  
+* On Windows, pipenv will usually already be installed as part of the Python installation
 
 * Ensure you have [IntelliJ IDEA](https://www.jetbrains.com/idea/) installed
 
@@ -21,18 +23,28 @@ Within directory of the `./sds` project run:
 ```
 pipenv install --dev
 ```
-After installing/configuring dependencies with pipenv, open IntelliJ IDEA project using root path `spine-directory-service`.
 
-Make sure `./sds` module interpreter is configured with Pipenv pointing to proper virtual environtments created by `pipenv install` commands executed above (run `pipenv --venv` to check the virtualenv directory of each module)
+The project is Python 3.7, so you may need to explicily specify the Python location if the installed version is newer
+```
+pipenv install --dev --python C:\Python\Python37\python.exe
+```
+
+
+After installing/configuring dependencies with pipenv, open Pycharm project at spine-directory-service-api\docker\sds-api\spine-directory-service\sds level.
+
+Make sure `./sds` module interpreter is configured with Pipenv pointing to proper virtual environtments created by `pipenv install` commands executed above (run `pipenv --venv` to check the virtualenv directory of each module).
 
 Make a copy of `spine-directory-service-env-example.yml` as `spine-directory-service-env.yml` (this file has already been added to .gitignore) and fill it with data (mostly certificates - be vary of indentation for them) obtained earlier for OpenTest access
 
 Last step is to add new Python Run Configuration in Pycharm:
-1. Point script path to `main.py` and `sds` module
-2. Switch to EnvFile tab
-3. Enable EnvFile plugin and add yaml file you edited and saved earlier.
-4. Make sure your connection to OpenTest is active
-4. Project is ready to run!
+1. Under File->Project Settings->Project:sds, ensure the Python Interpreter edit box is set to python.exe in the virtual environment created earlier.
+   The packages from PipFile should be listed, indicating the correct virtual environment has been selected.
+2. In the Run/Debug configuration set the script path to `main.py` in the `sds` module.
+   Check the Python interpreter is pointing to python.exe in the virtual environment created earlier.
+3. Enable EnvFile plugin
+4. Switch to EnvFile tab and add yaml file you edited and saved earlier.  
+5. Make sure your connection to OpenTest is active
+6. Project is ready to run!
 
 ## Running the SDS Adaptor locally
 Follow the steps described in
@@ -79,6 +91,11 @@ For offline debugging purpose following environment variables can be set:
 * `SDS_FAKE_SPINE_URL_CONFIG_KEY`
 * `SDS_AWS_PROFILE`
 Check [SDS mock LDAP readme](sds/sds-mock-ldap.md)
+
+Note : By default, the application will be on port 9000 and needs to be accessed use http (not https !)
+
+When using open test LDAP server, you MUST be connected to the open test VPN, otherwise general unhappiness will occur.
+
 
 ## Running Unit Tests
 Unit test can be run for each module by executing following commands within their folders:
