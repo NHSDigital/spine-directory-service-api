@@ -17,11 +17,11 @@ info:
     - search for people
     
     ### Accredited system records 
-    Every system that connects to the Spine has one or more “Accredited System” (AS) records in SDS, identified by an Accredited System Identifier (ASID). 
+    Every system that connects to the Spine has one or more "Accredited System" (AS) records in SDS, identified by an Accredited System Identifier (ASID). 
     This ASID is unique to a system deployed in a specific organisation, so the same application deployed into three NHS organisations would typically be represented as three unique ASIDs. 
     
     ### MHS records and endpoints 
-    Every GP Connect system also has one or more “MHS” records (or message handling server record), identified by Party Key and [Interaction ID](https://developer.nhs.uk/apis/gpconnect-0-7-2/integration_interaction_ids.html). 
+    Every GP Connect system also has one or more "MHS" records (or message handling server record), identified by Party Key and [Interaction ID](https://developer.nhs.uk/apis/gpconnect-0-7-2/integration_interaction_ids.html). 
     MHS records of GP Connect provider systems contain the endpoint of the target practice, as defined by the [FHIR service root URL](https://developer.nhs.uk/apis/gpconnect-0-7-2/development_fhir_api_guidance.html#service-root-url). 
     Please see [System topologies](https://developer.nhs.uk/apis/gpconnect-0-7-2/integration_system_topologies.html) for more details on the allocation of ASIDs and Party Keys. 
     
@@ -30,7 +30,7 @@ info:
     ## Who can use this API
     This API can only be used where there is a legal basis to do so. Make sure you have a valid use case before you go too far with your development.
 
-    You must do this before you can go live (see ‘Onboarding’ below). 
+    You must do this before you can go live (see "Onboarding" below). 
     
     ## API status and roadmap
     This API is [in production, beta](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#statuses).
@@ -103,7 +103,7 @@ info:
     - [Spine Directory Service - LDAP API](https://digital.nhs.uk/developer/api-catalogue/spine-directory-service-ldap) - Access details of organisations, people and systems registered in the Spine Directory Service (SDS) using our LDAP API.
     
     ## Onboarding
-    You need to get your software approved by us before it can go live with this API. We call this onboarding. The onboarding process can sometimes be quite long, so it’s worth planning well ahead.
+    You need to get your software approved by us before it can go live with this API. We call this onboarding. The onboarding process can sometimes be quite long, so it's worth planning well ahead.
 
     There is no separate onboarding process for the SDS FHIR API. Onboarding will be dictated by the current processes of the API that consumes the SDS FHIR API, for example GP Connect.
     Once approval has been granted to use the API that utilises the SDS FHIR API then production access can be granted. To request production access, contact <ssd.nationalservicedesk@nhs.net>.
