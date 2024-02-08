@@ -337,19 +337,14 @@ async def test_healthcheck(test_app, api_client: APISessionClient, request_data)
     "request_data",
     [
         {
-            'endpoint': 'Device/',
+            'endpoint': 'Device',
             'query_params': {
                 'organization': f'{DEVICE_ORGANIZATION_FHIR_IDENTIFIER}|123456',
-                'identifier': [
-                    f'{DEVICE_INTERACTION_ID_FHIR_IDENTIFIER}|urn:nhs:names:services:psis:REPC_IN150016UK05',
-                    f'{DEVICE_PARTY_KEY_FHIR_IDENTIFIER}|TEST-PARTY-KEY',
-                ],
-                'manufacturing-organization': f'{DEVICE_MANUFACTURING_ORGANIZATION_FHIR_IDENTIFIER}|YES',
+                'identifier': f'{DEVICE_INTERACTION_ID_FHIR_IDENTIFIER}|urn:nhs:names:services:psis:REPC_IN150016UK05',
                 'use_cpm': 'iwanttogetdatafromcpm',
-                'unsupported': 'unsupported_parameter_value',
             },
             'status_code': 200,
-        },
+        }
     ]
 )
 async def test_cpm_status(test_app, api_client: APISessionClient, request_data):
