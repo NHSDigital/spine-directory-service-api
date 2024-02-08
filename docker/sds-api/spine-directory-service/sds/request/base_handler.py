@@ -8,11 +8,13 @@ from utilities import mdc, message_utilities
 ORG_CODE_QUERY_PARAMETER_NAME = "organization"
 IDENTIFIER_QUERY_PARAMETER_NAME = "identifier"
 MANUFACTURING_ORGANIZATION_QUERY_PARAMETER_NAME = "manufacturing-organization"
+USER_ROLE_ID_QUERY_PARAMETER_NAME = "user-role-id"
 
 ORG_CODE_FHIR_IDENTIFIER = "https://fhir.nhs.uk/Id/ods-organization-code"
 SERVICE_ID_FHIR_IDENTIFIER = "https://fhir.nhs.uk/Id/nhsServiceInteractionId"
 PARTY_KEY_FHIR_IDENTIFIER = "https://fhir.nhs.uk/Id/nhsMhsPartyKey"
 MANUFACTURING_ORGANIZATION_FHIR_IDENTIFIER = "https://fhir.nhs.uk/Id/ods-organization-code"
+USER_ROLE_ID_FHIR_IDENTIFIER = "https://fhir.nhs.uk/Id/nhsJobRoleCode"
 
 
 class BaseHandler(tornado.web.RequestHandler):
@@ -39,6 +41,12 @@ class BaseHandler(tornado.web.RequestHandler):
             self._raise_invalid_query_param_error(query_param_name, fhir_identifier)
         return value
 
+    def get_required_query_param_as_digit(self, query_param_name: str, fhir_identifier: str) -> Optional[str]:
+        value = self.get_required_query_param(query_param_name, fhir_identifier)
+        if not value.isdigit():
+            self._raise_invalid_query_param_value_error(query_param_name, fhir_identifier, "a digit")
+        return value
+
     def get_optional_query_param(self, query_param_name: str, fhir_identifier: str) -> Optional[str]:
         values = list(filter(
             lambda value: "|" in value and value.split("|")[0] == fhir_identifier and value[value.index("|") + 1:].strip(),
@@ -52,6 +60,11 @@ class BaseHandler(tornado.web.RequestHandler):
         raise tornado.web.HTTPError(
             status_code=400,
             log_message=f"Missing or invalid '{query_param_name}' query parameter. Should be '{query_param_name}={fhir_identifier}|value'")
+
+    def _raise_invalid_query_param_value_error(self, query_param_name, fhir_identifier, constraint):
+        raise tornado.web.HTTPError(
+            status_code=400,
+            log_message=f"Invalid '{query_param_name}' query value. Should be '{query_param_name}={fhir_identifier}|value' where value is {constraint}.")
 
     def _raise_invalid_identifier_query_param_error(self):
         raise tornado.web.HTTPError(

@@ -3,12 +3,12 @@
 import ast
 import asyncio
 import random
-from typing import Dict, List, Tuple, Optional
-
 import ldap3
 import ldap3.core.exceptions as ldap_exceptions
-from ldap3.utils.ciDict import CaseInsensitiveDict
 
+from typing import Dict, List, Tuple, Optional
+from ldap3.utils.ciDict import CaseInsensitiveDict
+from datetime import datetime, timedelta
 from lookup.sds_exception import SDSException
 from utilities import config
 from utilities import integration_adaptors_logger as log
@@ -31,11 +31,15 @@ MHS_ATTRIBUTES = [
 AS_ATTRIBUTES = [
     'uniqueIdentifier', 'nhsIdCode', 'nhsAsClient', 'nhsMhsPartyKey', 'nhsAsSvcIA', 'nhsMhsManufacturerOrg'
 ]
+PR_ATTRIBUTES = [
+    'uniqueIdentifier', 'nhsJobRoleCode', 'nhsOrgOpenDate', 'nhsOrgCloseDate'
+]
 
 
 def _validate_mhs_request_params(ods_code, interaction_id, party_key):
     if (ods_code and not interaction_id and not party_key) or (not ods_code and (not interaction_id or not party_key)):
-        raise SDSException("org_code and at least one of 'interaction_id' or 'party_key' must be provided or both 'interaction_id' and 'party_key'")
+        raise SDSException(
+            "org_code and at least one of 'interaction_id' or 'party_key' must be provided or both 'interaction_id' and 'party_key'")
 
 
 class SDSClient(object):
@@ -58,9 +62,27 @@ class SDSClient(object):
         self.search_base = search_base
 
     @staticmethod
-    def _build_search_filter(query_parts):
-        search_filter = " ".join(map(lambda kv: f"({kv[0]}={kv[1]})", filter(lambda kv: kv[1] is not None, query_parts)))
-        search_filter = f"(&{search_filter})"
+    def _build_search_fragment_from_fragments(filter_fragments):
+        search_filter = " ".join(filter_fragments)
+        return search_filter
+
+    def _build_search_filter_query_parts(self, query_parts, operator_char="", conditional_char="="):
+        search_filter = self._build_search_fragment_from_fragments(
+            map(
+                lambda kv: f"({operator_char}{kv[0]}{conditional_char}{kv[1]})",
+                filter(lambda kv: kv[1] is not None, query_parts)
+            )
+        )
+        return search_filter
+
+    def _build_search_filter(self, query_parts, operator_char="&"):
+        search_filter = self._build_search_filter_query_parts(query_parts)
+        search_filter = f"({operator_char}{search_filter})"
+        return search_filter
+
+    def _build_search_filter_from_fragments(self, filter_fragments, operator_char="&"):
+        search_filter = self._build_search_fragment_from_fragments(filter_fragments)
+        search_filter = f"({operator_char}{search_filter})"
         return search_filter
 
     async def get_mhs_details(self, ods_code: str, interaction_id: str = None, party_key: str = None) -> List[Dict]:
@@ -81,8 +103,8 @@ class SDSClient(object):
 
         return result
 
-
-    async def get_as_details(self, ods_code: str, interaction_id: str, manufacturing_organization: str = None, party_key: str = None) -> List[Dict]:
+    async def get_as_details(self, ods_code: str, interaction_id: str, manufacturing_organization: str = None,
+                             party_key: str = None) -> List[Dict]:
         """
         Returns the device details for the given parameters
 
@@ -105,6 +127,72 @@ class SDSClient(object):
 
         result = await self._get_ldap_data(query_parts, AS_ATTRIBUTES)
         return result
+
+    async def get_practitioner_role_details(self, user_role_id: str) -> List[Dict]:
+        """
+        Returns the practitioner role details for the given parameters
+
+        :return: Dictionary of the attributes of the Practitioner Role associated with the given parameters
+        """
+        if not user_role_id:
+            raise SDSException("user_role must be provided")
+
+        query_parts = [
+            ("uniqueIdentifier", user_role_id),
+            ("objectClass", "nhsOrgPersonRole")
+        ]
+        base_search_filter = self._build_search_filter_query_parts(query_parts)
+
+        # build open date filter
+        # open date, if it exists it cannot be greater than or equal to tomorrow
+        tomorrow_date = (datetime.today() + timedelta(days=1)).strftime('%Y%m%d')
+
+        open_date_filters = [
+            self._build_search_filter_query_parts([("nhsOrgOpenDate", "*")]),
+            self._build_search_filter_query_parts([("nhsOrgOpenDate", tomorrow_date)], conditional_char="=>")
+        ]
+        open_date_search_filter = f"(!{self._build_search_filter_from_fragments(open_date_filters, operator_char='&')})"
+
+        search_filter = self._build_search_filter_from_fragments(
+            [base_search_filter, open_date_search_filter],
+            operator_char="&"
+        )
+
+        # build close date filter
+        # close date, if it exists it cannot be less than or equal to yesterday
+        yesterday_date = (datetime.today() - timedelta(days=1)).strftime('%Y%m%d')
+
+        close_date_filters = [
+            self._build_search_filter_query_parts([("nhsOrgCloseDate", "*")]),
+            self._build_search_filter_query_parts([("nhsOrgCloseDate", yesterday_date)], conditional_char="<=")
+        ]
+        close_date_search_filter = f"(!{self._build_search_filter_from_fragments(close_date_filters, operator_char='&')})"
+
+        search_filter = self._build_search_filter_from_fragments(
+            [search_filter, close_date_search_filter],
+            operator_char="&"
+        )
+
+        logger.info(f"search filter: {search_filter}")
+
+        result = await self._get_ldap_data_people(search_filter, PR_ATTRIBUTES)
+        return result
+
+    async def _get_ldap_data_people(self, search_filter, attributes: List[str]) -> List:
+
+        self.connection.bind()
+        message_id = self.connection.search(search_base="ou=people,o=nhs",
+                                            search_filter=search_filter,
+                                            attributes=attributes)
+        logger.info("Received LDAP query {message_id} - for query: {search_filter}",
+                    fparams={"message_id": message_id, "search_filter": search_filter})
+
+        response = await self._get_query_result(message_id)
+        logger.info("Found LDAP details for {message_id}", fparams={"message_id": message_id})
+        logger.info(response)
+
+        attributes_result = [single_result['attributes'] for single_result in response]
+        return attributes_result
 
     async def _get_ldap_data(self, query_parts: List[Tuple[str, Optional[str]]], attributes: List[str]) -> List:
         search_filter = self._build_search_filter(query_parts)
@@ -149,7 +237,8 @@ class SDSMockClient:
             logger.debug("Sleeping for %sms", self.pause_duration)
             await asyncio.sleep(self.pause_duration / 1000)
 
-        logger.info(f"Returning MHS MOCK_LDAP response for ods_code={ods_code} interaction_id={interaction_id} party_key={party_key}")
+        logger.info(
+            f"Returning MHS MOCK_LDAP response for ods_code={ods_code} interaction_id={interaction_id} party_key={party_key}")
 
         if self.mode == "STRICT":
             return list(filter(lambda x: self._filter_mhs(x, ods_code, interaction_id, party_key), self.mock_mhs_data))
@@ -160,7 +249,8 @@ class SDSMockClient:
         else:
             raise ValueError
 
-    async def get_as_details(self, ods_code: str, interaction_id: str, manufacturing_organization: str = None, party_key: str = None) -> List[Dict]:
+    async def get_as_details(self, ods_code: str, interaction_id: str, manufacturing_organization: str = None,
+                             party_key: str = None) -> List[Dict]:
         if ods_code is None or interaction_id is None:
             raise ValueError
 
@@ -168,10 +258,13 @@ class SDSMockClient:
             logger.debug("Sleeping for %sms", self.pause_duration)
             await asyncio.sleep(self.pause_duration / 1000)
 
-        logger.info(f"Returning AS MOCK_LDAP response for ods_code={ods_code} interaction_id={interaction_id} manufacturinging_organization={manufacturing_organization} party_key={party_key}")
+        logger.info(
+            f"Returning AS MOCK_LDAP response for ods_code={ods_code} interaction_id={interaction_id} manufacturinging_organization={manufacturing_organization} party_key={party_key}")
 
         if self.mode == "STRICT":
-            return list(filter(lambda x: self._filter_as(x, ods_code, interaction_id, manufacturing_organization, party_key), self.mock_as_data))
+            return list(
+                filter(lambda x: self._filter_as(x, ods_code, interaction_id, manufacturing_organization, party_key),
+                       self.mock_as_data))
         elif self.mode == "RANDOM":
             return [random.choice(self.mock_as_data)]
         elif self.mode == "FIRST":
@@ -182,15 +275,15 @@ class SDSMockClient:
     @staticmethod
     def _filter_mhs(entry: Dict, ods_code: str, interaction_id: str, party_key: str):
         return (ods_code is None or entry['nhsIDCode'] == ods_code) \
-            and (interaction_id is None or interaction_id in entry['nhsMhsSvcIA']) \
-            and (party_key is None or entry['nhsMHSPartyKey'] == party_key)
+               and (interaction_id is None or interaction_id in entry['nhsMhsSvcIA']) \
+               and (party_key is None or entry['nhsMHSPartyKey'] == party_key)
 
     @staticmethod
     def _filter_as(entry: Dict, ods_code: str, interaction_id: str, manufacturing_organization: str, party_key: str):
         return (ods_code is None or entry['nhsIDCode'] == ods_code) \
-            and (interaction_id is None or interaction_id in entry['nhsAsSvcIA']) \
-            and (party_key is None or entry['nhsMHSPartyKey'] == party_key) \
-            and (manufacturing_organization is None or entry['nhsMhsManufacturerOrg'] == manufacturing_organization)
+               and (interaction_id is None or interaction_id in entry['nhsAsSvcIA']) \
+               and (party_key is None or entry['nhsMHSPartyKey'] == party_key) \
+               and (manufacturing_organization is None or entry['nhsMhsManufacturerOrg'] == manufacturing_organization)
 
     def _read_mock_data(self):
         def _copy_to_case_insensitive_dict(source_list: List[dict]) -> List[CaseInsensitiveDict]:

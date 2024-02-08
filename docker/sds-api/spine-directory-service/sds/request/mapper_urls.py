@@ -11,3 +11,4 @@ class MapperUrls:
     MANUFACTURING_ORGANIZATION_URL = "https://fhir.nhs.uk/Id/ods-organization-code"
     PAYLOAD_TYPE_URL = "http://terminology.hl7.org/CodeSystem/endpoint-payload-type"
     SDS_SERVICE_INTERACTION_ID_URL = "https://fhir.nhs.uk/StructureDefinition/Extension-SDS-NhsServiceInteractionId"
+    SDS_JOBROLE_CODE_URL = "https://fhir.nhs.uk/CodeSystem/NHSDigital-SDS-JobRoleCode"

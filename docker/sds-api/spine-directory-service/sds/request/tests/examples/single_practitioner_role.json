@@ -1,0 +1,34 @@
+{
+    "resourceType": "Bundle",
+    "id": "EFAB935D-860A-4C02-8B7F-CC3728FE81FD",
+    "type": "searchset",
+    "total": 1,
+    "link": [
+        {
+            "relation": "self",
+            "url": "http://127.0.0.1:60644/PractitionerRole?user-role-id=https://fhir.nhs.uk/Id/nhsJobRoleCode|1234"
+        }
+    ],
+    "entry": [
+        {
+            "fullUrl": "http://127.0.0.1:60644/PractitionerRole/A6524AD6-BC6C-48C4-B2AA-0849430BD9DD",
+            "resource": {
+                "resourceType": "PractitionerRole",
+                "id": "A6524AD6-BC6C-48C4-B2AA-0849430BD9DD",
+                "code": [
+                    {
+                      "coding":  [
+                        {
+                          "system": "https://fhir.nhs.uk/CodeSystem/NHSDigital-SDS-JobRoleCode",
+                          "code": "S0010:G0020:R0050"
+                        }
+                      ]
+                    }
+                  ]
+            },
+            "search": {
+                "mode": "match"
+            }
+        }
+    ]
+}

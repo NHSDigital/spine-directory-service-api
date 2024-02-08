@@ -125,6 +125,20 @@ def build_device_resource(ldap_attributes: dict) -> Dict:
     return device
 
 
+def build_practitioner_role_resource(ldap_attributes: dict) -> Dict:
+    logger.info(ldap_attributes)
+    logger.info(ldap_attributes.get("uniqueIdentifier"))
+    logger.info(ldap_attributes.get("nhsJobRoleCode"))
+
+    practioner_role = {
+        "resourceType": "PractitionerRole",
+        "id": str(message_utilities.get_uuid()),
+        "code": _build_codable_concept(Url.SDS_JOBROLE_CODE_URL, ldap_attributes.get("nhsJobRoleCode"))
+    }
+    
+    return practioner_role
+
+
 def _build_identifier_array(ldap_attributes: Dict):
     unique_identifiers = ldap_attributes.get("uniqueIdentifier", [None]) or [None]
     if len(unique_identifiers) > 1:
@@ -213,6 +227,20 @@ def _build_payload_type():
             ]
         }
     ]
+
+def _build_codable_concept(url, values: List[str]):
+    return_value = []
+    for value in values:
+        return_value.append({
+            "coding": [
+                {
+                    "system": url,
+                    "code": value
+                }
+            ]
+        })
+    return return_value
+
 
 
 def _build_address(value: str):
