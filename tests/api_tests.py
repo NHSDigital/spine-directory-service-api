@@ -371,5 +371,9 @@ async def test_cpm_status(test_app, api_client: APISessionClient, request_data):
         assert resp.status == request_data['status_code'], str(resp.status) + " " + str(resp.headers) + " " + str(body)
         assert 'x-correlation-id' in resp.headers, resp.headers
         assert resp.headers['x-correlation-id'] == correlation_id
-        assert body['status'] == 'pass'
-        assert body['details']['ldap']['status'] == 'pass'
+        resource_type = body['resourceType']
+        assert resource_type == 'Bundle', body
+        assert len(body['entry']) == 1, body
+        assert body['total'] == 1, body
+        assert body['entry'][0]['resource']['resourceType'] == "Device", body
+
