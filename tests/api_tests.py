@@ -329,3 +329,47 @@ async def test_healthcheck(test_app, api_client: APISessionClient, request_data)
         assert resp.headers['x-correlation-id'] == correlation_id
         assert body['status'] == 'pass'
         assert body['details']['ldap']['status'] == 'pass'
+
+
+@pytest.mark.e2e
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    "request_data",
+    [
+        {
+            'endpoint': 'Device/',
+            'query_params': {
+                'organization': f'{DEVICE_ORGANIZATION_FHIR_IDENTIFIER}|123456',
+                'identifier': [
+                    f'{DEVICE_INTERACTION_ID_FHIR_IDENTIFIER}|urn:nhs:names:services:psis:REPC_IN150016UK05',
+                    f'{DEVICE_PARTY_KEY_FHIR_IDENTIFIER}|TEST-PARTY-KEY',
+                ],
+                'manufacturing-organization': f'{DEVICE_MANUFACTURING_ORGANIZATION_FHIR_IDENTIFIER}|YES',
+                'use_cpm': 'iwanttogetdatafromcpm',
+                'unsupported': 'unsupported_parameter_value',
+            },
+            'status_code': 200,
+        },
+    ]
+)
+async def test_cpm_status(test_app, api_client: APISessionClient, request_data):
+    correlation_id = str(uuid4())
+    headers = {
+        'apikey': test_app.client_id,
+        'x-correlation-id': correlation_id,
+        'cache-control': 'no-cache',
+    }
+
+    uri = _build_test_path(request_data['endpoint'])
+
+    async with api_client.get(
+        uri,
+        headers=headers,
+        allow_retries=True
+    ) as resp:
+        body = await resp.json()
+        assert resp.status == request_data['status_code'], str(resp.status) + " " + str(resp.headers) + " " + str(body)
+        assert 'x-correlation-id' in resp.headers, resp.headers
+        assert resp.headers['x-correlation-id'] == correlation_id
+        assert body['status'] == 'pass'
+        assert body['details']['ldap']['status'] == 'pass'
