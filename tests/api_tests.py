@@ -355,7 +355,7 @@ async def test_cpm_status(test_app, api_client: APISessionClient, request_data):
         'cache-control': 'no-cache',
     }
 
-    uri = _build_test_path(request_data['endpoint'])
+    uri = _build_test_path(request_data['endpoint'], request_data['query_params'])
 
     async with api_client.get(
         uri,
