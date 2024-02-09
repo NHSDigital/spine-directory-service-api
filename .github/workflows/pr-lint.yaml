@@ -8,7 +8,7 @@ jobs:
         shell: bash
     steps:
       - name: Check ticket name conforms to requirements
-        run: echo ${{ github.event.pull_request.head.ref }} | grep -i -E -q "((apm|niad|AMB|PI|amp)-[0-9]+)|(dependabot\/)"
+        run: echo ${{ github.event.pull_request.head.ref }} | grep -i -E -q "((apm|niad|AMB|PI|amp)-[0-9]+)|(dependabot\/)|(release\/)"
 
       - name: Grab ticket name
         if: | 
