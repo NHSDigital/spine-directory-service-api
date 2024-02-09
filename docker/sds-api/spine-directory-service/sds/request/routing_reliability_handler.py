@@ -64,7 +64,7 @@ class RoutingReliabilityRequestHandler(BaseHandler, ErrorHandler):
                     fparams={"org_code": org_code, "service_id": service_id, "party_key": party_key})
         
         if cpm_filter and cpm_filter[0] == CPM_FILTER_IDENTIFIER:
-            ldap_result = await get_endpoint_from_cpm(org_code, service_id, party_key)
+            ldap_results = await get_endpoint_from_cpm(org_code, service_id, party_key)
         else:
             ldap_results = await self.sds_client.get_mhs_details(org_code, service_id, party_key)
         
