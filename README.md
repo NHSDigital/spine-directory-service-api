@@ -59,6 +59,7 @@ Connect to the VPN,
 You may have issues with the container connecting via the VPN. If so please look at the answer given here https://superuser.com/questions/1579858/docker-bridge-network-sporadically-loosing-packets/1580017?_gl=1*wyte41*_ga*MjgwODQyNzEwLjE3MDYwMDMwNzQ.*_ga_S812YQPLT2*MTcwNjE5MjIyOC4yLjAuMTcwNjE5MjIyOC4wLjAuMA..#1580017 using `docker network create --subnet=172.20.0.0/24 --gateway=172.20.0.1 docker20`
 
 Finally run
+
 ```sh
 docker-compose up
 ```
