@@ -1,5 +1,9 @@
 # Changelog
 
+## 2024-02-09
+- [PI-233] Filter for CPM on Endpoints
+- [PI-231] Filter for CPM on Endpoints
+
 ## {{ ansible_date_time.date }}
 * Initial commit
 * testing terraform
