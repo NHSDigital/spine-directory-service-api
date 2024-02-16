@@ -65,7 +65,7 @@ def filter_cpm_devices_response(data: dict, query_parts: dict):
                     
     return filtered_results
 
-def transform_device_to_SDS(data: dict) -> List:
+def transform_device_to_SDS(data: List) -> List:
     ldap_data = []
     nhsAsSvcIA = []
     nhsMhsManufacturerOrg = ""
@@ -81,19 +81,27 @@ def transform_device_to_SDS(data: dict) -> List:
                         for identifier in item["resource"]["identifier"]:
                             if identifier["system"] == "https://fhir.nhs.uk/Id/nhsSpineASID":
                                 uniqueIdentifier = identifier["value"]
-            if "resourceType" in item and item["resourceType"] == "QuestionnaireResponse":
-                for service in item["item"]:
-                    if service["text"] == "InteractionIds":
-                        for answer in service["answer"]:
-                            nhsAsSvcIA.append(answer["valueString"])
-                    elif service["text"] == "ManufacturingOdsCode":
-                        nhsMhsManufacturerOrg = service["answer"][0]["valueString"]
-                    elif service["text"] == "PartyKey":
-                        nhsMhsPartyKey = service["answer"][0]["valueString"]
-                    elif service["text"] == "Owner":
-                        nhsIdCode = service["answer"][0]["valueString"]
-                        nhsAsClient = [service["answer"][0]["valueString"]]
+                                print(uniqueIdentifier)
+            else:
+                if "resourceType" in item and item["resourceType"] == "QuestionnaireResponse":
+                        for service in item["item"]:
+                            if service["text"] == "InteractionIds":
+                                for answer in service["answer"]:
+                                    nhsAsSvcIA.append(answer["valueString"])
+                            elif service["text"] == "ManufacturingOdsCode":
+                                nhsMhsManufacturerOrg = service["answer"][0]["valueString"]
+                            elif service["text"] == "PartyKey":
+                                nhsMhsPartyKey = service["answer"][0]["valueString"]
+                            elif service["text"] == "Owner":
+                                nhsIdCode = service["answer"][0]["valueString"]
+                                nhsAsClient = [service["answer"][0]["valueString"]]
 
         ldap_data.append(dict(nhsAsClient = nhsAsClient, nhsAsSvcIA = nhsAsSvcIA, nhsMhsManufacturerOrg = nhsMhsManufacturerOrg, nhsMhsPartyKey = nhsMhsPartyKey, nhsIdCode = nhsIdCode, uniqueIdentifier = uniqueIdentifier))
-
+        nhsAsSvcIA = []
+        nhsMhsManufacturerOrg = ""
+        nhsMhsPartyKey = ""
+        nhsIdCode = ""
+        uniqueIdentifier = ""
+        nhsAsClient = []
+            
     return ldap_data
