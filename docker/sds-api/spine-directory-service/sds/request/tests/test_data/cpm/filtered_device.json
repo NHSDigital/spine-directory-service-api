@@ -1,0 +1,160 @@
+[
+    [
+        {
+            "fullUrl": "https://cpm.co.uk/Device/39ae1fe2-dd84-4d9a-af2a-ca0e63f53cae",
+            "resource": {
+                "resourceType": "Device",
+                "deviceName": [
+                    {
+                        "name": "CPM-Test-Device",
+                        "type": "user-friendly-name"
+                    }
+                ],
+                "definition": {
+                    "identifier": {
+                        "system": "connecting-party-manager/device-type",
+                        "value": "instance"
+                    }
+                },
+                "identifier": [
+                    {
+                        "system": "https://fhir.nhs.uk/Id/nhsSpineASID",
+                        "value": "010057927542"
+                    }
+                ],
+                "owner": {
+                    "identifier": {
+                        "system": "connecting-party-manager/product-team-id",
+                        "value": "ae2ab026-0b53-7e7c-7a65-f0407a6e75f5"
+                    }
+                }
+            },
+            "search": {
+                "mode": "match"
+            }
+        },
+        {
+            "resourceType": "QuestionnaireResponse",
+            "identifier": "010057927542",
+            "questionnaire": "https://cpm.co.uk/Questionnaire/spine_device|v1",
+            "status": "completed",
+            "subject": {
+                "reference": "https://cpm.co.uk/Device/39ae1fe2-dd84-4d9a-af2a-ca0e63f53cae"
+            },
+            "authored": "<dateTime>",
+            "author": {
+                "reference": "https://cpm.co.uk/Organization/ae2ab026-0b53-7e7c-7a65-f0407a6e75f5"
+            },
+            "item": [
+                {
+                    "linkId": "ManufacturingOdsCode",
+                    "text": "ManufacturingOdsCode",
+                    "answer": [
+                        {
+                            "valueString": "LSP02"
+                        }
+                    ]
+                },
+                {
+                    "linkId": "PartyKey",
+                    "text": "PartyKey",
+                    "answer": [
+                        {
+                            "valueString": "5NR-801831"
+                        }
+                    ]
+                },
+                {
+                    "linkId": "Owner",
+                    "text": "Owner",
+                    "answer": [
+                        {
+                            "valueString": "5NR"
+                        }
+                    ]
+                },
+                {
+                    "linkId": "InteractionIds",
+                    "text": "InteractionIds",
+                    "answer": [
+                        {
+                            "valueString": "urn:nhs:names:services:lrs:MCCI_IN010000UK13"
+                        },
+                        {
+                            "valueString": "urn:nhs:names:services:lrs:QUPC_IN010000UK01"
+                        },
+                        {
+                            "valueString": "urn:nhs:names:services:lrs:QUPC_IN010000UK15"
+                        },
+                        {
+                            "valueString": "urn:nhs:names:services:lrs:QUPC_IN030000UK14"
+                        },
+                        {
+                            "valueString": "urn:nhs:names:services:lrs:QUPC_IN040000UK14"
+                        },
+                        {
+                            "valueString": "urn:nhs:names:services:lrs:QUQI_IN010000UK14"
+                        },
+                        {
+                            "valueString": "urn:nhs:names:services:lrs:REPC_IN010000UK01"
+                        },
+                        {
+                            "valueString": "urn:nhs:names:services:lrs:REPC_IN010000UK15"
+                        },
+                        {
+                            "valueString": "urn:nhs:names:services:lrs:REPC_IN020000UK01"
+                        },
+                        {
+                            "valueString": "urn:nhs:names:services:lrs:REPC_IN020000UK13"
+                        },
+                        {
+                            "valueString": "urn:nhs:names:services:lrs:REPC_IN030000UK01"
+                        },
+                        {
+                            "valueString": "urn:nhs:names:services:lrs:REPC_IN040000UK01"
+                        },
+                        {
+                            "valueString": "urn:nhs:names:services:lrs:REPC_IN040000UK15"
+                        },
+                        {
+                            "valueString": "urn:nhs:names:services:lrs:REPC_IN050000UK01"
+                        },
+                        {
+                            "valueString": "urn:nhs:names:services:lrs:REPC_IN050000UK13"
+                        },
+                        {
+                            "valueString": "urn:nhs:names:services:lrs:REPC_IN060000UK01"
+                        },
+                        {
+                            "valueString": "urn:nhs:names:services:lrs:REPC_IN070000UK01"
+                        },
+                        {
+                            "valueString": "urn:nhs:names:services:lrs:REPC_IN080000UK01"
+                        },
+                        {
+                            "valueString": "urn:nhs:names:services:lrs:REPC_IN110000UK01"
+                        },
+                        {
+                            "valueString": "urn:nhs:names:services:lrsquery:MCCI_IN010000UK13"
+                        },
+                        {
+                            "valueString": "urn:nhs:names:services:lrsquery:QUPC_IN030000UK14"
+                        },
+                        {
+                            "valueString": "urn:nhs:names:services:lrsquery:QUPC_IN040000UK14"
+                        },
+                        {
+                            "valueString": "urn:nhs:names:services:lrsquery:QUQI_IN010000UK14"
+                        },
+                        {
+                            "valueString": "urn:oasis:names:tc:ebxml-msg:service:Acknowledgment"
+                        },
+                        {
+                            "valueString": "urn:oasis:names:tc:ebxml-msg:service:MessageError"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+]
