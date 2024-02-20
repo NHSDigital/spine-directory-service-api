@@ -278,6 +278,5 @@ class TestCPM(TestCase):
         dir_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.path.join("test_data", "cpm", "filtered_devices.json"))
         incoming_json = self._read_file(dir_path)
         translated_data = transform_device_to_SDS(incoming_json)
-        #print(translated_data)
         assert len(translated_data) == 2
         self.assertEqual(translated_data, expected)
