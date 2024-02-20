@@ -70,60 +70,6 @@ def filter_cpm_response(data: dict, query_parts: dict, query_mapping: dict):
     
     return filtered_results
 
-def filter_cpm_endpoints_response(data: dict, query_parts: dict):
-    non_empty_count = sum(1 for value in query_parts.values() if value and value != 0)
-    if non_empty_count < 2:
-        self._raise_invalid_query_params_error()
-
-    filtered_results = []
-    # All the filters are optional but at least 2 should exist..
-    filters = {}
-    if "org_code" in query_parts:
-        filters["org_code"] = False
-    if "service_id" in query_parts:
-        filters["service_id"] = False
-    if "party_key" in query_parts:
-        filters["party_key"] = False
-        
-    for result in data["entry"]:
-        if "resourceType" in result and result["resourceType"] == "Bundle":
-            for index, res in enumerate(result["entry"]):
-                if "resourceType" in res and res["resourceType"] == "Device":
-                    if "org_code" in query_parts:
-                        if "owner" in res:
-                            if res["owner"]["identifier"]["value"] == query_parts["org_code"]:
-                                filters["org_code"] = True
-                                
-                        
-                if "resourceType" in res and res["resourceType"] == "QuestionnaireResponse":
-                    for service in res["item"]:
-                        # if service["text"] == "Owner":
-                        #     for answer in service["answer"]:
-                        #         if answer["valueString"] == query_parts["org_code"]:
-                        #             filters["org_code"] = True
-                        # if service["text"] == "InteractionIds":
-                        #     for answer in service["answer"]:
-                        #         if answer["valueString"] == query_parts["interaction_id"]:
-                        #             filters["service_id"] = True
-                        #             break
-
-                        if "service_id" in query_parts and service["text"] == "interactionID":
-                            for answer in service["answer"]:
-                                if answer["valueString"] == query_parts["service_id"]:
-                                    filters["service_id"] = True
-                                    break
-                        if "party_key" in query_parts and service["text"] == "PartyKey":
-                            for answer in service["answer"]:
-                                if answer["valueString"] == query_parts["party_key"]:
-                                    filters["party_key"] = True
-                                    break
-        all_filters_true = all(value for value in filters.values())
-        if all_filters_true:
-            filtered_results.append(result["entry"])
-        filters = {key: False for key in filters}
-                    
-    return filtered_results
-
 def transform_device_to_SDS(data: List) -> List:
     ldap_data = []
     default_data_dict = dict(
