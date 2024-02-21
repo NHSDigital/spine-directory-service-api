@@ -3,7 +3,7 @@ import os
 import tornado.web
 
 from unittest import TestCase
-from request.cpm import transform_device_to_SDS, filter_cpm_devices_response
+from request.cpm import transform_device_to_SDS, filter_cpm_devices_response, filter_cpm_endpoints_response
 from lookup.sds_exception import SDSException
 
 class TestCPM(TestCase):
@@ -280,3 +280,172 @@ class TestCPM(TestCase):
         translated_data = transform_device_to_SDS(incoming_json)
         assert len(translated_data) == 2
         self.assertEqual(translated_data, expected)
+
+    def test_filter_results_unsuccessful_missing_required_endpoint(self):
+        dir_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.path.join("test_data", "cpm", "returned_endpoints.json"))
+        incoming_json = self._read_file(dir_path)
+        filters = [
+            
+            {
+                "org_code": "",
+                "service_id": "urn:nhs:names:services:ebs:PRSC_IN070000UK08",
+            },
+            {
+                "org_code": "RTX",
+                "service_id": "",
+            },
+            {
+                "org_code": "",
+                "party_key": "RTX-821088"
+            },
+            {
+                "service_id": "",
+                "party_key": "RTX-821088"
+            },
+            {
+                "service_id": "urn:nhs:names:services:ebs:PRSC_IN070000UK08",
+                "party_key": ""
+            },
+            {
+                "org_code": "",
+                "service_id": "",
+            },
+            {
+                "org_code": "",
+                "party_key": "",
+            },
+            {
+                "service_id": "",
+                "party_key": ""
+            },
+            {
+            },
+            {
+                "service_id": "urn:nhs:names:services:ebs:PRSC_IN070000UK08",
+            },
+            {
+                "org_code": "RTX",
+            },
+            {
+                "party_key": "RTX-821088"
+            },
+            {
+                "org_code": "",
+                "service_id": "urn:nhs:names:services:ebs:PRSC_IN070000UK08",
+                "party_key": ""
+            },
+            {
+                "org_code": "RTX",
+                "service_id": "",
+                "party_key": ""
+            },
+            {
+                "org_code": "",
+                "service_id": "",
+                "party_key": "RTX-821088"
+            },
+            {
+                "org_code": "",
+                "service_id": "",
+                "party_key": ""
+            }
+        ]
+        for filt in filters:
+            with self.assertRaises(tornado.web.HTTPError) as context:
+                filter_cpm_endpoints_response(incoming_json, filt)
+            raised_exception = context.exception
+            self.assertEqual(raised_exception.status_code, 400)
+            self.assertEqual(raised_exception.log_message, 'Missing or invalid query parameters. Should one of following combinations: [\'organization=https://fhir.nhs.uk/Id/ods-organization-code|value&identifier=https://fhir.nhs.uk/Id/nhsServiceInteractionId|value&identifier=https://fhir.nhs.uk/Id/nhsMhsPartyKey|value\'\'organization=https://fhir.nhs.uk/Id/ods-organization-code|value&identifier=https://fhir.nhs.uk/Id/nhsServiceInteractionId|value\'\'organization=https://fhir.nhs.uk/Id/ods-organization-code|value&identifier=https://fhir.nhs.uk/Id/nhsMhsPartyKey|value\'\'identifier=https://fhir.nhs.uk/Id/nhsServiceInteractionId|value&identifier=https://fhir.nhs.uk/Id/nhsMhsPartyKey|value\']')
+    
+    def test_filter_results_successful_required_endpoints(self):
+        dir_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.path.join("test_data", "cpm", "returned_endpoints.json"))
+        incoming_json = self._read_file(dir_path)
+        filters = [
+            {
+                "org_code": "RTX",
+                "service_id": "urn:nhs:names:services:ebs:PRSC_IN070000UK08",
+            },
+            {
+                "org_code": "RTX",
+                "service_id": "urn:nhs:names:services:ebs:PRSC_IN070000UK08",
+                "party_key": "RTX-821088"
+            },
+            {
+                "service_id": "urn:nhs:names:services:ebs:PRSC_IN070000UK08",
+                "party_key": "RTX-821088"
+            },
+            {
+                "org_code": "RTX",
+                "service_id": "urn:nhs:names:services:cpisquery:REPC_IN000007GB01",
+            },
+            {
+                "org_code": "RTX",
+                "service_id": "urn:nhs:names:services:cpisquery:REPC_IN000007GB01",
+                "party_key": "RTX-821088"
+            },
+            {
+                "service_id": "urn:nhs:names:services:cpisquery:REPC_IN000007GB01",
+                "party_key": "RTX-821088"
+            }
+        ]
+        expected = [
+            "filtered_endpoint.json",
+            "filtered_endpoint.json",
+            "filtered_endpoint.json",
+            "filtered_endpoint2.json",
+            "filtered_endpoint2.json",
+            "filtered_endpoint2.json"
+        ]
+        for index, filt in enumerate(filters):
+            exp = self._read_file(os.path.join(os.path.dirname(os.path.realpath(__file__)), os.path.join("test_data", "cpm", expected[index])))
+            filtered_data = filter_cpm_endpoints_response(incoming_json, filt)
+            assert len(filtered_data) == 1
+            self.assertEqual(filtered_data, exp)
+    
+    def test_filter_results_no_results_required_endpoint(self):
+        dir_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.path.join("test_data", "cpm", "returned_endpoints.json"))
+        incoming_json = self._read_file(dir_path)
+        filters = [
+            {
+                "org_code": "RTX",
+                "service_id": "urn:nhs:names:services:lrs:DOESNT_EXIST",
+            },
+            {
+                "org_code": "FOO",
+                "service_id": "urn:nhs:names:services:cpisquery:REPC_IN000007GB01",
+            },
+            {
+                "org_code": "RTX",
+                "service_id": "urn:nhs:names:services:cpisquery:REPC_IN000007GB01",
+                "party_key": "BAR"
+            },
+            {
+                "org_code": "RTX",
+                "party_key": "BAR"
+            },
+            {
+                "org_code": "FOO",
+                "service_id": "urn:nhs:names:services:lrs:DOESNT_EXIST",
+                "party_key": "BAR"
+            },
+            {
+                "org_code": "RTX",
+                "service_id": "urn:nhs:names:services:lrs:DOESNT_EXIST",
+                "party_key": "RTX-821088"
+            },
+            {
+                "org_code": "FOO",
+                "service_id": "urn:nhs:names:services:cpisquery:REPC_IN000007GB01",
+                "party_key": "RTX-821088"
+            },
+            {
+                "org_code": "RTX",
+                "service_id": "urn:nhs:names:services:cpisquery:REPC_IN000007GB01",
+                "party_key": "BAR"
+            },
+        ]
+        expected = []
+        for filt in filters:
+            filtered_data = filter_cpm_endpoints_response(incoming_json, filt)
+            assert len(filtered_data) == 0
+            self.assertEqual(filtered_data, expected)
