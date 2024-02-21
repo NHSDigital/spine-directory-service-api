@@ -39,7 +39,7 @@
         },
         {
             "resourceType": "QuestionnaireResponse",
-            "identifier": "RTX-821088|urn:nhs:names:services:ebs:PRSC_IN070000UK08", 
+            "identifier": "RTX-821088|urn:nhs:names:services:ebs:PRSC_IN070000UK08",
             "questionnaire": "https://cpm.co.uk/Questionnaire/spine_endpoint|v1",
             "status": "completed",
             "subject": {
@@ -51,26 +51,83 @@
             },
             "item": [
                 {
-                    "linkId": "address",
-                    "text": "address",
+                    "linkId": "object_class",
+                    "text": "object_class",
                     "answer": [
                         {
-                            "valueString": "https://msg.int.spine2.ncrs.nhs.uk/reliablemessaging/intermediary"
+                            "valueString": "nhsMhs"
+                        },
+                        {
+                            "valueString": "top"
                         }
                     ]
                 },
                 {
-                    "linkId": "uniqueIdentifier",
-                    "text": "uniqueIdentifier",
+                    "linkId": "nhs_approver_urp",
+                    "text": "nhs_approver_urp",
                     "answer": [
                         {
-                            "valueString": "69720694737ed98c0242"
+                            "valueString": "uniqueidentifier=555050305106,uniqueidentifier=555008548101,uid=555008545108,ou=people,o=nhs"
                         }
                     ]
                 },
                 {
-                    "linkId": "managingOrganization",
-                    "text": "managingOrganization",
+                    "linkId": "nhs_contract_property_template_key",
+                    "text": "nhs_contract_property_template_key",
+                    "answer": [
+                        {
+                            "valueInteger": 45
+                        }
+                    ]
+                },
+                {
+                    "linkId": "nhs_date_approved",
+                    "text": "nhs_date_approved",
+                    "answer": [
+                        {
+                            "valueDateTime": "2016-09-29T11:43:37"
+                        }
+                    ]
+                },
+                {
+                    "linkId": "nhs_date_dns_approved",
+                    "text": "nhs_date_dns_approved",
+                    "answer": [
+                        {
+                            "valueDateTime": "2016-09-29T11:43:37"
+                        }
+                    ]
+                },
+                {
+                    "linkId": "nhs_date_requested",
+                    "text": "nhs_date_requested",
+                    "answer": [
+                        {
+                            "valueDateTime": "2016-09-29T10:20:51"
+                        }
+                    ]
+                },
+                {
+                    "linkId": "nhs_dns_approver",
+                    "text": "nhs_dns_approver",
+                    "answer": [
+                        {
+                            "valueString": "uniqueidentifier=555050305106,uniqueidentifier=555008548101,uid=555008545108,ou=people,o=nhs"
+                        }
+                    ]
+                },
+                {
+                    "linkId": "nhs_ep_interaction_type",
+                    "text": "nhs_ep_interaction_type",
+                    "answer": [
+                        {
+                            "valueString": "HL7"
+                        }
+                    ]
+                },
+                {
+                    "linkId": "nhs_id_code",
+                    "text": "nhs_id_code",
                     "answer": [
                         {
                             "valueString": "RTX"
@@ -78,44 +135,17 @@
                     ]
                 },
                 {
-                    "linkId": "mhsFQDN",
-                    "text": "mhsFQDN",
+                    "linkId": "nhs_mhs_ack_requested",
+                    "text": "nhs_mhs_ack_requested",
                     "answer": [
                         {
-                            "valueString": "msg65-spine.msg.mpe.ncrs.nhs.uk"
+                            "valueString": "always"
                         }
                     ]
                 },
                 {
-                    "linkId": "mhsPartyKey",
-                    "text": "mhsPartyKey",
-                    "answer": [
-                        {
-                            "valueString": "RTX-821088"
-                        }
-                    ]
-                },
-                {
-                    "linkId": "mhsCPAId",
-                    "text": "mhsCPAId",
-                    "answer": [
-                        {
-                            "valueString": "69720694737ed98c0242"
-                        }
-                    ]
-                },
-                {
-                    "linkId": "mhsId",
-                    "text": "mhsId",
-                    "answer": [
-                        {
-                            "valueString": "69720694737ed98c0242"
-                        }
-                    ]
-                },
-                {
-                    "linkId": "reliabilityConfigurationActor",
-                    "text": "reliabilityConfigurationActor",
+                    "linkId": "nhs_mhs_actor",
+                    "text": "nhs_mhs_actor",
                     "answer": [
                         {
                             "valueString": "urn:oasis:names:tc:ebxml-msg:actor:nextMSH"
@@ -123,35 +153,89 @@
                     ]
                 },
                 {
-                    "linkId": "reliabilityConfigurationReplyMode",
-                    "text": "reliabilityConfigurationReplyMode",
+                    "linkId": "nhs_mhs_cpa_id",
+                    "text": "nhs_mhs_cpa_id",
                     "answer": [
                         {
-                            "valueString": "None"
+                            "valueString": "69720694737ed98c0242"
                         }
                     ]
                 },
                 {
-                    "linkId": "reliabilityConfigurationRetryInterval",
-                    "text": "reliabilityConfigurationRetryInterval",
+                    "linkId": "nhs_mhs_duplicate_elimination",
+                    "text": "nhs_mhs_duplicate_elimination",
                     "answer": [
                         {
-                            "valueString": "PT2S"
+                            "valueString": "always"
                         }
                     ]
                 },
                 {
-                    "linkId": "reliabilityConfigurationRetries",
-                    "text": "reliabilityConfigurationRetries",
+                    "linkId": "nhs_mhs_end_point",
+                    "text": "nhs_mhs_end_point",
                     "answer": [
                         {
-                            "valueString": 2
+                            "valueString": "https://msg65-spine.msg.mpe.ncrs.nhs.uk/MHS/RTX/EBS3-5/messagehandler"
                         }
                     ]
                 },
                 {
-                    "linkId": "reliabilityConfigurationPersistDuration",
-                    "text": "reliabilityConfigurationPersistDuration",
+                    "linkId": "nhs_mhs_fqdn",
+                    "text": "nhs_mhs_fqdn",
+                    "answer": [
+                        {
+                            "valueString": "msg65-spine.msg.mpe.ncrs.nhs.uk"
+                        }
+                    ]
+                },
+                {
+                    "linkId": "nhs_mhs_in",
+                    "text": "nhs_mhs_in",
+                    "answer": [
+                        {
+                            "valueString": "PRSC_IN070000UK08"
+                        }
+                    ]
+                },
+                {
+                    "linkId": "nhs_mhs_ip_address",
+                    "text": "nhs_mhs_ip_address",
+                    "answer": [
+                        {
+                            "valueString": "20.146.66.17"
+                        }
+                    ]
+                },
+                {
+                    "linkId": "nhs_mhs_is_authenticated",
+                    "text": "nhs_mhs_is_authenticated",
+                    "answer": [
+                        {
+                            "valueString": "transient"
+                        }
+                    ]
+                },
+                {
+                    "linkId": "nhs_mhs_manufacturer_org",
+                    "text": "nhs_mhs_manufacturer_org",
+                    "answer": [
+                        {
+                            "valueString": "LSP02"
+                        }
+                    ]
+                },
+                {
+                    "linkId": "nhs_mhs_party_key",
+                    "text": "nhs_mhs_party_key",
+                    "answer": [
+                        {
+                            "valueString": "RTX-821088"
+                        }
+                    ]
+                },
+                {
+                    "linkId": "nhs_mhs_persist_duration",
+                    "text": "nhs_mhs_persist_duration",
                     "answer": [
                         {
                             "valueString": "PT4M"
@@ -159,29 +243,92 @@
                     ]
                 },
                 {
-                    "linkId": "reliabilityConfigurationDuplicationElimination",
-                    "text": "reliabilityConfigurationDuplicationElimination",
+                    "linkId": "nhs_mhs_retries",
+                    "text": "nhs_mhs_retries",
                     "answer": [
                         {
-                            "valueString": "always"
+                            "valueInteger": 2
                         }
                     ]
                 },
                 {
-                    "linkId": "reliabilityConfigurationAckRequested",
-                    "text": "reliabilityConfigurationAckRequested",
+                    "linkId": "nhs_mhs_retry_interval",
+                    "text": "nhs_mhs_retry_interval",
                     "answer": [
                         {
-                            "valueString": "always"
+                            "valueString": "PT2S"
                         }
                     ]
                 },
                 {
-                    "linkId": "interactionID",
-                    "text": "interactionID",
+                    "linkId": "nhs_mhs_sn",
+                    "text": "nhs_mhs_sn",
+                    "answer": [
+                        {
+                            "valueString": "urn:nhs:names:services:ebs"
+                        }
+                    ]
+                },
+                {
+                    "linkId": "nhs_mhs_svc_ia",
+                    "text": "nhs_mhs_svc_ia",
                     "answer": [
                         {
                             "valueString": "urn:nhs:names:services:ebs:PRSC_IN070000UK08"
+                        }
+                    ]
+                },
+                {
+                    "linkId": "nhs_mhs_sync_reply_mode",
+                    "text": "nhs_mhs_sync_reply_mode",
+                    "answer": [
+                        {
+                            "valueString": "None"
+                        }
+                    ]
+                },
+                {
+                    "linkId": "nhs_product_key",
+                    "text": "nhs_product_key",
+                    "answer": [
+                        {
+                            "valueInteger": 10927
+                        }
+                    ]
+                },
+                {
+                    "linkId": "nhs_product_name",
+                    "text": "nhs_product_name",
+                    "answer": [
+                        {
+                            "valueString": "Lorenzo Regional Care"
+                        }
+                    ]
+                },
+                {
+                    "linkId": "nhs_product_version",
+                    "text": "nhs_product_version",
+                    "answer": [
+                        {
+                            "valueString": "V3"
+                        }
+                    ]
+                },
+                {
+                    "linkId": "nhs_requestor_urp",
+                    "text": "nhs_requestor_urp",
+                    "answer": [
+                        {
+                            "valueString": "uniqueidentifier=099108008519,uniqueidentifier=255496688516,uid=467956997515,ou=people,o=nhs"
+                        }
+                    ]
+                },
+                {
+                    "linkId": "unique_identifier",
+                    "text": "unique_identifier",
+                    "answer": [
+                        {
+                            "valueString": "69720694737ed98c0242"
                         }
                     ]
                 }
@@ -228,7 +375,7 @@
         },
         {
             "resourceType": "QuestionnaireResponse",
-            "identifier": "RTX-821088|urn:nhs:names:services:cpisquery:REPC_IN000007GB01", 
+            "identifier": "RTX-821088|urn:nhs:names:services:cpisquery:REPC_IN000007GB01",
             "questionnaire": "https://cpm.co.uk/Questionnaire/spine_endpoint|v1",
             "status": "completed",
             "subject": {
@@ -240,26 +387,83 @@
             },
             "item": [
                 {
-                    "linkId": "address",
-                    "text": "address",
+                    "link_id": "object_class",
+                    "text": "object_class",
                     "answer": [
                         {
-                            "valueString": "https://msg65-spine.msg.mpe.ncrs.nhs.uk/Tower6-2/RTX/CPIS-0/responsehandler"
+                            "valueString": "nhsMhs"
+                        },
+                        {
+                            "valueString": "top"
                         }
                     ]
                 },
                 {
-                    "linkId": "uniqueIdentifier",
-                    "text": "uniqueIdentifier",
+                    "link_id": "nhs_approver_urp",
+                    "text": "nhs_approver_urp",
                     "answer": [
                         {
-                            "valueString": "798bc45334bbb95b51de"
+                            "valueString": "uniqueidentifier=555050305106,uniqueidentifier=555008548101,uid=555008545108,ou=people,o=nhs"
                         }
                     ]
                 },
                 {
-                    "linkId": "managingOrganization",
-                    "text": "managingOrganization",
+                    "link_id": "nhs_contract_property_template_key",
+                    "text": "nhs_contract_property_template_key",
+                    "answer": [
+                        {
+                            "valueInteger": 46
+                        }
+                    ]
+                },
+                {
+                    "link_id": "nhs_date_approved",
+                    "text": "nhs_date_approved",
+                    "answer": [
+                        {
+                            "valueDateTime": "2016-09-29T11:43:37"
+                        }
+                    ]
+                },
+                {
+                    "link_id": "nhs_date_dns_approved",
+                    "text": "nhs_date_dns_approved",
+                    "answer": [
+                        {
+                            "valueDateTime": "2016-09-29T11:43:37"
+                        }
+                    ]
+                },
+                {
+                    "link_id": "nhs_date_requested",
+                    "text": "nhs_date_requested",
+                    "answer": [
+                        {
+                            "valueDateTime": "2016-09-29T10:20:51"
+                        }
+                    ]
+                },
+                {
+                    "link_id": "nhs_dns_approver",
+                    "text": "nhs_dns_approver",
+                    "answer": [
+                        {
+                            "valueString": "uniqueidentifier=555050305106,uniqueidentifier=555008548101,uid=555008545108,ou=people,o=nhs"
+                        }
+                    ]
+                },
+                {
+                    "link_id": "nhs_ep_interaction_type",
+                    "text": "nhs_ep_interaction_type",
+                    "answer": [
+                        {
+                            "valueString": "HL7"
+                        }
+                    ]
+                },
+                {
+                    "link_id": "nhs_id_code",
+                    "text": "nhs_id_code",
                     "answer": [
                         {
                             "valueString": "RTX"
@@ -267,8 +471,44 @@
                     ]
                 },
                 {
-                    "linkId": "mhsFQDN",
-                    "text": "mhsFQDN",
+                    "link_id": "nhs_mhs_ack_requested",
+                    "text": "nhs_mhs_ack_requested",
+                    "answer": [
+                        {
+                            "valueString": "never"
+                        }
+                    ]
+                },
+                {
+                    "link_id": "nhs_mhs_cpa_id",
+                    "text": "nhs_mhs_cpa_id",
+                    "answer": [
+                        {
+                            "valueString": "798bc45334bbb95b51de"
+                        }
+                    ]
+                },
+                {
+                    "link_id": "nhs_mhs_duplicate_elimination",
+                    "text": "nhs_mhs_duplicate_elimination",
+                    "answer": [
+                        {
+                            "valueString": "never"
+                        }
+                    ]
+                },
+                {
+                    "link_id": "nhs_mhs_end_point",
+                    "text": "nhs_mhs_end_point",
+                    "answer": [
+                        {
+                            "valueString": "https://msg65-spine.msg.mpe.ncrs.nhs.uk/Tower6-2/RTX/CPIS-0/responsehandler"
+                        }
+                    ]
+                },
+                {
+                    "link_id": "nhs_mhs_fqdn",
+                    "text": "nhs_mhs_fqdn",
                     "answer": [
                         {
                             "valueString": "msg65-spine.msg.mpe.ncrs.nhs.uk"
@@ -276,8 +516,44 @@
                     ]
                 },
                 {
-                    "linkId": "mhsPartyKey",
-                    "text": "mhsPartyKey",
+                    "link_id": "nhs_mhs_in",
+                    "text": "nhs_mhs_in",
+                    "answer": [
+                        {
+                            "valueString": "REPC_IN000007GB01"
+                        }
+                    ]
+                },
+                {
+                    "link_id": "nhs_mhs_ip_address",
+                    "text": "nhs_mhs_ip_address",
+                    "answer": [
+                        {
+                            "valueString": "20.146.66.17"
+                        }
+                    ]
+                },
+                {
+                    "link_id": "nhs_mhs_is_authenticated",
+                    "text": "nhs_mhs_is_authenticated",
+                    "answer": [
+                        {
+                            "valueString": "transient"
+                        }
+                    ]
+                },
+                {
+                    "link_id": "nhs_mhs_manufacturer_org",
+                    "text": "nhs_mhs_manufacturer_org",
+                    "answer": [
+                        {
+                            "valueString": "LSP02"
+                        }
+                    ]
+                },
+                {
+                    "link_id": "nhs_mhs_party_key",
+                    "text": "nhs_mhs_party_key",
                     "answer": [
                         {
                             "valueString": "RTX-821088"
@@ -285,26 +561,35 @@
                     ]
                 },
                 {
-                    "linkId": "mhsCPAId",
-                    "text": "mhsCPAId",
+                    "link_id": "nhs_mhs_service_description",
+                    "text": "nhs_mhs_service_description",
                     "answer": [
                         {
-                            "valueString": "798bc45334bbb95b51de"
+                            "valueString": "urn:nhs:names:services:cpisquery"
                         }
                     ]
                 },
                 {
-                    "linkId": "mhsId",
-                    "text": "mhsId",
+                    "link_id": "nhs_mhs_sn",
+                    "text": "nhs_mhs_sn",
                     "answer": [
                         {
-                            "valueString": "798bc45334bbb95b51de"
+                            "valueString": "urn:nhs:names:services:cpisquery"
                         }
                     ]
                 },
                 {
-                    "linkId": "reliabilityConfigurationReplyMode",
-                    "text": "reliabilityConfigurationReplyMode",
+                    "link_id": "nhs_mhs_svc_ia",
+                    "text": "nhs_mhs_svc_ia",
+                    "answer": [
+                        {
+                            "valueString": "urn:nhs:names:services:cpisquery:REPC_IN000007GB01"
+                        }
+                    ]
+                },
+                {
+                    "link_id": "nhs_mhs_sync_reply_mode",
+                    "text": "nhs_mhs_sync_reply_mode",
                     "answer": [
                         {
                             "valueString": "MSHSignalsOnly"
@@ -312,29 +597,47 @@
                     ]
                 },
                 {
-                    "linkId": "reliabilityConfigurationDuplicationElimination",
-                    "text": "reliabilityConfigurationDuplicationElimination",
+                    "link_id": "nhs_product_key",
+                    "text": "nhs_product_key",
                     "answer": [
                         {
-                            "valueString": "always"
+                            "valueInteger": 10927
                         }
                     ]
                 },
                 {
-                    "linkId": "reliabilityConfigurationAckRequested",
-                    "text": "reliabilityConfigurationAckRequested",
+                    "link_id": "nhs_product_name",
+                    "text": "nhs_product_name",
                     "answer": [
                         {
-                            "valueString": "always"
+                            "valueString": "Lorenzo Regional Care"
                         }
                     ]
                 },
                 {
-                    "linkId": "interactionID",
-                    "text": "interactionID",
+                    "link_id": "nhs_product_version",
+                    "text": "nhs_product_version",
                     "answer": [
                         {
-                            "valueString": "urn:nhs:names:services:cpisquery:REPC_IN000007GB01"
+                            "valueString": "V3"
+                        }
+                    ]
+                },
+                {
+                    "link_id": "nhs_requestor_urp",
+                    "text": "nhs_requestor_urp",
+                    "answer": [
+                        {
+                            "valueString": "uniqueidentifier=099108008519,uniqueidentifier=255496688516,uid=467956997515,ou=people,o=nhs"
+                        }
+                    ]
+                },
+                {
+                    "link_id": "unique_identifier",
+                    "text": "unique_identifier",
+                    "answer": [
+                        {
+                            "valueString": "798bc45334bbb95b51de"
                         }
                     ]
                 }

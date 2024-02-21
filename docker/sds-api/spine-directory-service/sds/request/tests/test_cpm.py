@@ -3,7 +3,7 @@ import os
 import tornado.web
 
 from unittest import TestCase
-from request.cpm import transform_device_to_SDS, filter_cpm_devices_response, filter_cpm_endpoints_response
+from request.cpm import transform_device_to_SDS, filter_cpm_devices_response, filter_cpm_endpoints_response, transform_endpoint_to_SDS
 from lookup.sds_exception import SDSException
 
 class TestCPM(TestCase):
@@ -449,3 +449,29 @@ class TestCPM(TestCase):
             filtered_data = filter_cpm_endpoints_response(incoming_json, filt)
             assert len(filtered_data) == 0
             self.assertEqual(filtered_data, expected)
+
+    def test_translated_endpoint_data_endpoint(self):
+        expected = [
+            {
+                'nhsIDCode': 'RTX',
+                'nhsMHSAckRequested': 'always',
+                'nhsMhsActor': ['urn:oasis:names:tc:ebxml-msg:actor:nextMSH'],
+                'nhsMhsCPAId': '69720694737ed98c0242',
+                'nhsMHSDuplicateElimination': 'always',
+                'nhsMHSEndPoint': ['https://msg65-spine.msg.mpe.ncrs.nhs.uk/MHS/RTX/EBS3-5/messagehandler'],
+                'nhsMhsFQDN': 'msg65-spine.msg.mpe.ncrs.nhs.uk',
+                'nhsMHsIN': 'PRSC_IN070000UK08',
+                'nhsMHSPartyKey': 'RTX-821088',
+                'nhsMHSPersistDuration': 'PT4M',
+                'nhsMHSRetries': 2,
+                'nhsMHSRetryInterval': 'PT2S',
+                'nhsMHsSN': 'urn:nhs:names:services:ebs',
+                'nhsMhsSvcIA': 'urn:nhs:names:services:ebs:PRSC_IN070000UK08',
+                'nhsMHSSyncReplyMode': 'None',
+                'uniqueIdentifier': ['69720694737ed98c0242']
+            }
+        ]
+        dir_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.path.join("test_data", "cpm", "filtered_endpoint.json"))
+        incoming_json = self._read_file(dir_path)
+        translated_data = transform_endpoint_to_SDS(incoming_json)
+        self.assertEqual(translated_data, expected)
