@@ -1,0 +1,155 @@
+[
+    [
+        {
+            "fullUrl": "https://cpm.co.uk/Device/39ae1fe2-dd84-4d9a-af2a-ca0e63f53cah",
+            "resource": {
+                "resourceType": "Device",
+                "deviceName": [
+                    {
+                        "name": "CPM-Test-Device-Endpoint-2",
+                        "type": "user-friendly-name"
+                    }
+                ],
+                "definition": {
+                    "identifier": {
+                        "system": "connecting-party-manager/device-type",
+                        "value": "endpoint"
+                    }
+                },
+                "identifier": [
+                    {
+                        "system": "https://fhir.nhs.uk/Id/nhsMhsPartyKey|Extension-SDS-NhsServiceInteractionId",
+                        "value": "RTX-821088|urn:nhs:names:services:cpisquery:REPC_IN000007GB01"
+                    },
+                    {
+                        "system": "https://fhir.nhs.uk/Id/nhsMHSId",
+                        "value": "798bc45334bbb95b51de"
+                    }
+                ],
+                "owner": {
+                    "identifier": {
+                        "system": "connecting-party-manager/product-team-id",
+                        "value": "ae2ab026-0b53-7e7c-7a65-f0407a6e75f5"
+                    }
+                }
+            },
+            "search": {
+                "mode": "match"
+            }
+        },
+        {
+            "resourceType": "QuestionnaireResponse",
+            "identifier": "RTX-821088|urn:nhs:names:services:cpisquery:REPC_IN000007GB01", 
+            "questionnaire": "https://cpm.co.uk/Questionnaire/spine_endpoint|v1",
+            "status": "completed",
+            "subject": {
+                "reference": "https://cpm.co.uk/Device/39ae1fe2-dd84-4d9a-af2a-ca0e63f53cah"
+            },
+            "authored": "<dateTime>",
+            "author": {
+                "reference": "https://cpm.co.uk/Organization/ae2ab026-0b53-7e7c-7a65-f0407a6e75f5"
+            },
+            "item": [
+                {
+                    "linkId": "address",
+                    "text": "address",
+                    "answer": [
+                        {
+                            "valueString": "https://msg65-spine.msg.mpe.ncrs.nhs.uk/Tower6-2/RTX/CPIS-0/responsehandler"
+                        }
+                    ]
+                },
+                {
+                    "linkId": "uniqueIdentifier",
+                    "text": "uniqueIdentifier",
+                    "answer": [
+                        {
+                            "valueString": "798bc45334bbb95b51de"
+                        }
+                    ]
+                },
+                {
+                    "linkId": "managingOrganization",
+                    "text": "managingOrganization",
+                    "answer": [
+                        {
+                            "valueString": "RTX"
+                        }
+                    ]
+                },
+                {
+                    "linkId": "mhsFQDN",
+                    "text": "mhsFQDN",
+                    "answer": [
+                        {
+                            "valueString": "msg65-spine.msg.mpe.ncrs.nhs.uk"
+                        }
+                    ]
+                },
+                {
+                    "linkId": "mhsPartyKey",
+                    "text": "mhsPartyKey",
+                    "answer": [
+                        {
+                            "valueString": "RTX-821088"
+                        }
+                    ]
+                },
+                {
+                    "linkId": "mhsCPAId",
+                    "text": "mhsCPAId",
+                    "answer": [
+                        {
+                            "valueString": "798bc45334bbb95b51de"
+                        }
+                    ]
+                },
+                {
+                    "linkId": "mhsId",
+                    "text": "mhsId",
+                    "answer": [
+                        {
+                            "valueString": "798bc45334bbb95b51de"
+                        }
+                    ]
+                },
+                {
+                    "linkId": "reliabilityConfigurationReplyMode",
+                    "text": "reliabilityConfigurationReplyMode",
+                    "answer": [
+                        {
+                            "valueString": "MSHSignalsOnly"
+                        }
+                    ]
+                },
+                {
+                    "linkId": "reliabilityConfigurationDuplicationElimination",
+                    "text": "reliabilityConfigurationDuplicationElimination",
+                    "answer": [
+                        {
+                            "valueString": "always"
+                        }
+                    ]
+                },
+                {
+                    "linkId": "reliabilityConfigurationAckRequested",
+                    "text": "reliabilityConfigurationAckRequested",
+                    "answer": [
+                        {
+                            "valueString": "always"
+                        }
+                    ]
+                },
+                {
+                    "linkId": "interactionID",
+                    "text": "interactionID",
+                    "answer": [
+                        {
+                            "valueString": "urn:nhs:names:services:cpisquery:REPC_IN000007GB01"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+]
