@@ -71,14 +71,66 @@ def filter_cpm_response(data: dict, query_parts: dict, query_mapping: dict):
     return filtered_results
 
 def transform_endpoint_to_SDS(data: List) -> List:
+    # [
+    #   {
+    #     'nhsIDCode': 'YES', 
+    #     'nhsMHSAckRequested': 'always', 
+    #     'nhsMhsActor': [
+    #       'urn:oasis:names:tc:ebxml-msg:actor:toPartyMSH'
+    #     ], 
+    #     'nhsMhsCPAId': 'S20001A000182', 
+    #     'nhsMHSDuplicateElimination': 'always', 
+    #     'nhsMHSEndPoint': [
+    #       'https://msg.int.spine2.ncrs.nhs.uk/reliablemessaging/reliablerequest'
+    #     ], 
+    #     'nhsMhsFQDN': 'msg.int.spine2.ncrs.nhs.uk', 
+    #     'nhsMHsIN': 'REPC_IN150016UK05', 
+    #     'nhsMHSPartyKey': 'YES-0000806', 
+    #     'nhsMHSPersistDuration': 'PT5M', 
+    #     'nhsMHSRetries': '2', 
+    #     'nhsMHSRetryInterval': 'PT1M', 
+    #     'nhsMHsSN': 'urn:nhs:names:services:psis', 
+    #     'nhsMhsSvcIA': 'urn:nhs:names:services:psis:REPC_IN150016UK05', 
+    #     'nhsMHSSyncReplyMode': 'MSHSignalsOnly', 
+    #     'uniqueIdentifier': [
+    #       'S20001A000182'
+    #     ]
+    #   }
+    # ]
     ldap_data = []
+    ldap_data_mapping = dict(
+        managingOrganization = "nhsIDCode",
+        reliabilityConfigurationAckRequested = "nhsMHSAckRequested",
+        reliabilityConfigurationActor = "nhsMhsActor",
+        mhsCPAId = "nhsMhsCPAId",
+        reliabilityConfigurationDuplicationElimination = "nhsMHSDuplicateElimination",
+        address = "nhsMHSEndPoint",
+        mhsFQDN = "nhsMhsFQDN",
+        interactionID = ["nhsMHsIN", "nhsMHsSN", "nhsMhsSvcIA"],
+        mhsPartyKey = " nhsMHSPartyKey",
+        reliabilityConfigurationPersistDuration = "nhsMHSPersistDuration",
+        reliabilityConfigurationRetries = "nhsMHSRetries",
+        reliabilityConfigurationRetryInterval = "nhsMHSRetryInterval",
+        reliabilityConfigurationReplyMode = "nhsMHSSyncReplyMode",
+        uniqueIdentifier = "uniqueIdentifier"
+    )
     default_data_dict = dict(
-        nhsAsClient = [],
-        nhsAsSvcIA = [],
-        nhsMhsManufacturerOrg = "",
-        nhsMhsPartyKey = "",
-        nhsIdCode = "",
-        uniqueIdentifier = ""
+        nhsIDCode = "", # managingOrganization
+        nhsMHSAckRequested = "", # reliabilityConfigurationAckRequested
+        nhsMhsActor = [], # reliabilityConfigurationActor
+        nhsMhsCPAId = "", # mhsCPAId
+        nhsMHSDuplicateElimination = "", # reliabilityConfigurationDuplicationElimination
+        nhsMHSEndPoint = [], # address ?????
+        nhsMhsFQDN = "", # mhsFQDN
+        nhsMHsIN ="", # seems to be interactionID without the 'urn' ?????
+        nhsMHSPartyKey = "", # mhsPartyKey
+        nhsMHSPersistDuration = "", # reliabilityConfigurationPersistDuration
+        nhsMHSRetries = "", # reliabilityConfigurationRetries
+        nhsMHSRetryInterval = "", # reliabilityConfigurationRetryInterval
+        nhsMHsSN = "", # seems to be interactionID with the 'urn' but not the last part ?????
+        nhsMhsSvcIA = "", # interactionID
+        nhsMHSSyncReplyMode = "", # reliabilityConfigurationReplyMode 
+        uniqueIdentifier = [] # uniqueIdentifier
     )
 
     for d in data:
