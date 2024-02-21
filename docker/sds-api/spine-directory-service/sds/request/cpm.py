@@ -70,6 +70,29 @@ def filter_cpm_response(data: dict, query_parts: dict, query_mapping: dict):
     
     return filtered_results
 
+def transform_endpoint_to_SDS(data: List) -> List:
+    ldap_data = []
+    default_data_dict = dict(
+        nhsAsClient = [],
+        nhsAsSvcIA = [],
+        nhsMhsManufacturerOrg = "",
+        nhsMhsPartyKey = "",
+        nhsIdCode = "",
+        uniqueIdentifier = ""
+    )
+
+    for d in data:
+        data_dict = copy.deepcopy(default_data_dict)
+        for item in d:
+            if "resource" in item:
+                data_dict["uniqueIdentifier"] = process_device_resource(item["resource"])
+            else:
+                data_dict = process_questionnaire_response(item, data_dict)
+
+        ldap_data.append(data_dict)
+
+    return ldap_data
+
 def transform_device_to_SDS(data: List) -> List:
     ldap_data = []
     default_data_dict = dict(
