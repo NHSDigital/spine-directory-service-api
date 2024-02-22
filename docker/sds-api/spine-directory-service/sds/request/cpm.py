@@ -31,8 +31,11 @@ async def request_cpm_data(endpoint: str, params: list) -> dict:
         'Content-Type': 'application/json',
         'apikey': 'hA0qKwUDOANnkR1diPorVAnnLdICgIjd',
     }
-    result = requests.get(f'https://internal-dev-sandbox.api.service.nhs.uk/rowan-test-client/{endpoint}', headers=headers) #, params=params)
-    return result.status_code
+    try:
+        result = requests.get(f'https://internal-dev-sandbox.api.service.nhs.uk/rowan-test-client/{endpoint}', headers=headers) #, params=params)
+        return result.status_code
+    except requests.exceptions.RequestException as e:
+        return "no response"
 
 def filter_cpm_response(data: dict):
     return data
