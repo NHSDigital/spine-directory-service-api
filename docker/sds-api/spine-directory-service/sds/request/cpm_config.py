@@ -1,8 +1,8 @@
 DEVICE_FILTER_MAP = {
-    "org_code": "Owner",
-    "interaction_id": "InteractionIds",
-    "manufacturing_organization": "ManufacturingOdsCode",
-    "party_key": "PartyKey"
+    "org_code": "nhs_id_code",
+    "interaction_id": "nhs_as_svc_ia",
+    "manufacturing_organization": "nhs_mhs_manufacturer_org",
+    "party_key": "nhs_mhs_party_key"
 }
 
 ENDPOINT_FILTER_MAP = {
@@ -12,10 +12,12 @@ ENDPOINT_FILTER_MAP = {
 }
 
 DEVICE_DATA_MAP = dict(
-    InteractionIds = "nhsAsSvcIA",
-    ManufacturingOdsCode = "nhsMhsManufacturerOrg",
-    PartyKey = "nhsMhsPartyKey",
-    Owner = ["nhsAsClient", "nhsIdCode"],
+    nhs_as_svc_ia = "nhsAsSvcIA",
+    nhs_mhs_manufacturer_org = "nhsMhsManufacturerOrg",
+    nhs_mhs_party_key = "nhsMhsPartyKey",
+    nhs_as_client = "nhsAsClient",
+    nhs_id_code = "nhsIdCode",
+    unique_identifier = "uniqueIdentifier"
 )
 
 ENDPOINT_DATA_MAP = dict(

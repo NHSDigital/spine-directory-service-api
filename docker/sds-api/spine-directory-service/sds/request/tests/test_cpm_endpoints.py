@@ -4,7 +4,6 @@ import tornado.web
 
 from unittest import TestCase
 from request.cpm import EndpointCpm, process_cpm_endpoint_request
-from request.cpm_config import ENDPOINT_FILTER_MAP
 
 class TestCPMEndpoints(TestCase):
     
@@ -84,7 +83,7 @@ class TestCPMEndpoints(TestCase):
         ]
         for filt in filters:
             with self.assertRaises(tornado.web.HTTPError) as context:
-                EndpointCpm(incoming_json, filt, ENDPOINT_FILTER_MAP)
+                EndpointCpm(incoming_json, filt)
             raised_exception = context.exception
             self.assertEqual(raised_exception.status_code, 400)
             self.assertEqual(raised_exception.log_message, 'Missing or invalid query parameters. Should one of following combinations: [\'organization=https://fhir.nhs.uk/Id/ods-organization-code|value&identifier=https://fhir.nhs.uk/Id/nhsServiceInteractionId|value&identifier=https://fhir.nhs.uk/Id/nhsMhsPartyKey|value\'\'organization=https://fhir.nhs.uk/Id/ods-organization-code|value&identifier=https://fhir.nhs.uk/Id/nhsServiceInteractionId|value\'\'organization=https://fhir.nhs.uk/Id/ods-organization-code|value&identifier=https://fhir.nhs.uk/Id/nhsMhsPartyKey|value\'\'identifier=https://fhir.nhs.uk/Id/nhsServiceInteractionId|value&identifier=https://fhir.nhs.uk/Id/nhsMhsPartyKey|value\']')
@@ -130,7 +129,7 @@ class TestCPMEndpoints(TestCase):
         ]
         for index, filt in enumerate(filters):
             exp = self._read_file(os.path.join(os.path.dirname(os.path.realpath(__file__)), os.path.join("test_data", "cpm", expected[index])))
-            endpoints = EndpointCpm(incoming_json, filt, ENDPOINT_FILTER_MAP)
+            endpoints = EndpointCpm(incoming_json, filt)
             filtered_data = endpoints.filter_cpm_response()
             assert len(filtered_data) == 1
             self.assertEqual(filtered_data, exp)
@@ -179,7 +178,7 @@ class TestCPMEndpoints(TestCase):
         ]
         expected = []
         for filt in filters:
-            endpoints = EndpointCpm(incoming_json, filt, ENDPOINT_FILTER_MAP)
+            endpoints = EndpointCpm(incoming_json, filt)
             filtered_data = endpoints.filter_cpm_response()
             assert len(filtered_data) == 0
             self.assertEqual(filtered_data, expected)
@@ -211,7 +210,7 @@ class TestCPMEndpoints(TestCase):
         ]
         dir_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.path.join("test_data", "cpm", "filtered_endpoint.json"))
         incoming_json = self._read_file(dir_path)
-        endpoints = EndpointCpm(incoming_json, filt, ENDPOINT_FILTER_MAP)
+        endpoints = EndpointCpm(incoming_json, filt)
         translated_data = endpoints.transform_to_ldap(incoming_json)
         self.assertEqual(translated_data, expected)
 
@@ -260,7 +259,7 @@ class TestCPMEndpoints(TestCase):
         ]
         dir_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.path.join("test_data", "cpm", "filtered_endpoints.json"))
         incoming_json = self._read_file(dir_path)
-        endpoints = EndpointCpm(incoming_json, filt, ENDPOINT_FILTER_MAP)
+        endpoints = EndpointCpm(incoming_json, filt)
         translated_data = endpoints.transform_to_ldap(incoming_json)
         assert len(translated_data) == 2
         self.assertEqual(translated_data, expected)
@@ -292,7 +291,7 @@ class TestCPMEndpoints(TestCase):
                 'uniqueIdentifier': ['69720694737ed98c0242']
             }
         ]
-        endpoints = EndpointCpm(incoming_json, filt, ENDPOINT_FILTER_MAP)
+        endpoints = EndpointCpm(incoming_json, filt)
         filtered_data = endpoints.filter_cpm_response()
         translated_data = endpoints.transform_to_ldap(filtered_data)
         self.assertEqual(translated_data, expected)
