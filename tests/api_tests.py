@@ -362,6 +362,7 @@ async def test_cpm_status(test_app, api_client: APISessionClient, request_data):
         headers=headers,
         allow_retries=True
     ) as resp:
+        print(resp)
         body = await resp.json()
         assert resp.status == request_data['status_code'], str(resp.status) + " " + str(resp.headers) + " " + str(body)
         assert 'x-correlation-id' in resp.headers, resp.headers
@@ -371,4 +372,5 @@ async def test_cpm_status(test_app, api_client: APISessionClient, request_data):
         assert len(body['entry']) == 1, body
         assert body['total'] == 1, body
         assert body['entry'][0]['resource']['resourceType'] == "Device", body
+        assert body['entry'][0]['resource']['identifier'][0]['value'] == 404
 
