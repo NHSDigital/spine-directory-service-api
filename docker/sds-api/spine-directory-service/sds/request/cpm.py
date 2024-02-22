@@ -3,12 +3,17 @@ import requests
 from typing import List
 
 async def get_device_from_cpm(ods_code: str, interaction_id: str, manufacturing_organization: str = None, party_key: str = None) -> List:
-    endpoint = 'Device/a2de4300-4bb5-4511-aabd-375725be3fea'
+    endpoint = 'Organization/85be7bec-8ec5-11ee-b9d1-0242ac120002'
     #endpoint = '_status'
     result = await request_cpm_data(endpoint=endpoint, params=[])
-    filtered_data = filter_cpm_response(result)
-    transformed_data = transform_to_SDS(data=filtered_data)
-    return transformed_data
+    return [
+        {
+            'uniqueIdentifier': [result]
+        }
+    ]
+    # filtered_data = filter_cpm_response(result)
+    # transformed_data = transform_to_SDS(data=filtered_data)
+    # return transformed_data
 
 async def get_endpoint_from_cpm(ods_code: str, interaction_id: str = None, party_key: str = None) -> List:
     return [
@@ -22,10 +27,12 @@ async def get_endpoint_from_cpm(ods_code: str, interaction_id: str = None, party
 async def request_cpm_data(endpoint: str, params: list) -> dict:
     headers = {
         'version': '1',
-        'Authorization': 'letmein'
+        'Authorization': 'letmein',
+        'Content-Type': 'application/json',
+        'apikey': 'hA0qKwUDOANnkR1diPorVAnnLdICgIjd',
     }
-    result = requests.get(f'https://0c9e8wg0u5.execute-api.eu-west-2.amazonaws.com/production/{endpoint}', headers=headers) #, params=params)
-    return result.json()
+    result = requests.get(f'https://internal-dev-sandbox.api.service.nhs.uk/rowan-test-client/{endpoint}', headers=headers) #, params=params)
+    return result.status_code
 
 def filter_cpm_response(data: dict):
     return data
