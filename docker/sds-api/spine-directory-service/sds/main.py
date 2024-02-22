@@ -4,7 +4,7 @@ import tornado.web
 
 import lookup.sds_client_factory
 from lookup.sds_client import SDSClient
-from request import healthcheck_handler, routing_reliability_handler, accredited_system_handler
+from request import healthcheck_handler, routing_reliability_handler, accredited_system_handler, apigeetest
 from request.error_handler import ErrorHandler
 from utilities import config, secrets
 from utilities import integration_adaptors_logger as log
@@ -24,6 +24,7 @@ def start_tornado_server(sds_client: SDSClient) -> None:
         ("/Device", accredited_system_handler.AccreditedSystemRequestHandler, handler_dependencies),
         ("/healthcheck", healthcheck_handler.HealthcheckHandler),
         ("/healthcheck/deep", healthcheck_handler.DeepHealthcheckHandler),
+        ("/apigeetest", apigeetest.ApigeeTest),
     ], default_handler_class=ErrorHandler)
     server = tornado.httpserver.HTTPServer(application)
     server_port = int(config.get_config('SERVER_PORT', default='9000'))
