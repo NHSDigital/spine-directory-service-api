@@ -86,11 +86,6 @@ class BaseCpm:
                         key = ldap_data_mapping[service["text"]]
                         value = answer.get("valueInteger", answer.get("valueString"))
                         data_dict = self.get_data(data_dict, key, value)
-                        # if not isinstance(key, list):
-                        #     data_dict = self.get_data(data_dict, key, value)
-                        # else:
-                        #     for secondary_key in key:
-                        #         data_dict = self.get_data(data_dict, secondary_key, value)
                             
         return data_dict
     

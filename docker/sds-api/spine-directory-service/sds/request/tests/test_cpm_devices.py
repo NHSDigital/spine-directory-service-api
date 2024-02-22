@@ -7,6 +7,10 @@ from request.cpm import DeviceCpm, process_cpm_device_request
 from lookup.sds_exception import SDSException
 
 class TestCPMDevice(TestCase):
+    RETURNED_DEVICES_JSON = "returned_devices.json"
+    FILTERED_DEVICE_1 = "filtered_device.json"
+    FILTERED_DEVICE_2 = "filtered_device2.json"
+    FILTERED_DEVICES = "filtered_devices.json"
     
     @staticmethod
     def _read_file(file):
@@ -14,7 +18,7 @@ class TestCPMDevice(TestCase):
             return json.load(f)
     
     def test_filter_results_unsuccessful_missing_required_device(self):
-        dir_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.path.join("test_data", "cpm", "returned_devices.json"))
+        dir_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.path.join("test_data", "cpm", RETURNED_DEVICES_JSON))
         incoming_json = self._read_file(dir_path)
         filters = [
             {
@@ -60,7 +64,7 @@ class TestCPMDevice(TestCase):
             self.assertEqual(str(context.exception), 'org_code and interaction_id must be provided')
     
     def test_filter_results_successful_required_device(self):
-        dir_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.path.join("test_data", "cpm", "returned_devices.json"))
+        dir_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.path.join("test_data", "cpm", RETURNED_DEVICES_JSON))
         incoming_json = self._read_file(dir_path)
         filters = [
             {
@@ -105,14 +109,14 @@ class TestCPMDevice(TestCase):
             },
         ]
         expected = [
-            "filtered_device.json",
-            "filtered_device.json",
-            "filtered_device.json",
-            "filtered_device.json",
-            "filtered_device2.json",
-            "filtered_device2.json",
-            "filtered_device2.json",
-            "filtered_device2.json"
+            FILTERED_DEVICE_1,
+            FILTERED_DEVICE_1,
+            FILTERED_DEVICE_1,
+            FILTERED_DEVICE_1,
+            FILTERED_DEVICE_2,
+            FILTERED_DEVICE_2,
+            FILTERED_DEVICE_2,
+            FILTERED_DEVICE_2
         ]
         for index, filt in enumerate(filters):
             exp = self._read_file(os.path.join(os.path.dirname(os.path.realpath(__file__)), os.path.join("test_data", "cpm", expected[index])))
@@ -122,7 +126,7 @@ class TestCPMDevice(TestCase):
             self.assertEqual(filtered_data, exp)
     
     def test_filter_results_no_results_required_device(self):
-        dir_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.path.join("test_data", "cpm", "returned_devices.json"))
+        dir_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.path.join("test_data", "cpm", RETURNED_DEVICES_JSON))
         incoming_json = self._read_file(dir_path)
         filters = [
             {
@@ -205,7 +209,7 @@ class TestCPMDevice(TestCase):
                 'uniqueIdentifier': '010057927542'
             }
         ]
-        dir_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.path.join("test_data", "cpm", "filtered_device.json"))
+        dir_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.path.join("test_data", "cpm", FILTERED_DEVICE_1))
         incoming_json = self._read_file(dir_path)
         devices = DeviceCpm(incoming_json, filt)
         translated_data = devices.transform_to_ldap(incoming_json)
@@ -327,7 +331,7 @@ class TestCPMDevice(TestCase):
                 'uniqueIdentifier': '798706756516'
             }
         ]
-        dir_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.path.join("test_data", "cpm", "filtered_devices.json"))
+        dir_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.path.join("test_data", "cpm", FILTERED_DEVICES))
         incoming_json = self._read_file(dir_path)
         devices = DeviceCpm(incoming_json, filt)
         translated_data = devices.transform_to_ldap(incoming_json)
@@ -335,7 +339,7 @@ class TestCPMDevice(TestCase):
         self.assertEqual(translated_data, expected)
         
         def test_translated_device_full_process(self):
-            dir_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.path.join("test_data", "cpm", "returned_devices.json"))
+            dir_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.path.join("test_data", "cpm", RETURNED_DEVICES_JSON))
             incoming_json = self._read_file(dir_path)
             filt = {
                 "org_code": "5NR",
@@ -383,7 +387,7 @@ class TestCPMDevice(TestCase):
             self.assertEqual(translated_data, expected)
 
     def test_device_process_success(self):
-        dir_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.path.join("test_data", "cpm", "returned_devices.json"))
+        dir_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.path.join("test_data", "cpm", RETURNED_DEVICES_JSON))
         incoming_json = self._read_file(dir_path)
         filt = {
             "org_code": "5NR",
