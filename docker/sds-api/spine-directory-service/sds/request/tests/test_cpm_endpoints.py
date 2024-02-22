@@ -10,6 +10,43 @@ FILTERED_ENDPOINT_1 = "filtered_endpoint.json"
 FILTERED_ENDPOINT_2 = "filtered_endpoint2.json"
 FILTERED_ENDPOINTS = "filtered_endpoints.json"
 
+EXPECTED_LDAP_1 = {
+    'nhsIDCode': 'RTX',
+    'nhsMHSAckRequested': 'always',
+    'nhsMhsActor': ['urn:oasis:names:tc:ebxml-msg:actor:nextMSH'],
+    'nhsMhsCPAId': '69720694737ed98c0242',
+    'nhsMHSDuplicateElimination': 'always',
+    'nhsMHSEndPoint': ['https://msg65-spine.msg.mpe.ncrs.nhs.uk/MHS/RTX/EBS3-5/messagehandler'],
+    'nhsMhsFQDN': 'msg65-spine.msg.mpe.ncrs.nhs.uk',
+    'nhsMHsIN': 'PRSC_IN070000UK08',
+    'nhsMHSPartyKey': 'RTX-821088',
+    'nhsMHSPersistDuration': 'PT4M',
+    'nhsMHSRetries': 2,
+    'nhsMHSRetryInterval': 'PT2S',
+    'nhsMHsSN': 'urn:nhs:names:services:ebs',
+    'nhsMhsSvcIA': 'urn:nhs:names:services:ebs:PRSC_IN070000UK08',
+    'nhsMHSSyncReplyMode': 'None',
+    'uniqueIdentifier': ['69720694737ed98c0242']
+}
+EXPECTED_LDAP_2 = {
+    'nhsIDCode': 'RTX',
+    'nhsMHSAckRequested': 'never',
+    'nhsMhsActor': [],
+    'nhsMhsCPAId': '798bc45334bbb95b51de',
+    'nhsMHSDuplicateElimination': 'never',
+    'nhsMHSEndPoint': ['https://msg65-spine.msg.mpe.ncrs.nhs.uk/Tower6-2/RTX/CPIS-0/responsehandler'],
+    'nhsMhsFQDN': 'msg65-spine.msg.mpe.ncrs.nhs.uk',
+    'nhsMHsIN': 'REPC_IN000007GB01',
+    'nhsMHSPartyKey': 'RTX-821088',
+    'nhsMHSPersistDuration': '',
+    'nhsMHSRetries': 0,
+    'nhsMHSRetryInterval': '',
+    'nhsMHsSN': 'urn:nhs:names:services:cpisquery',
+    'nhsMhsSvcIA': 'urn:nhs:names:services:cpisquery:REPC_IN000007GB01',
+    'nhsMHSSyncReplyMode': 'MSHSignalsOnly',
+    'uniqueIdentifier': ['798bc45334bbb95b51de']
+}
+
 class TestCPMEndpoints(TestCase):
     
     @staticmethod
@@ -193,26 +230,7 @@ class TestCPMEndpoints(TestCase):
             "org_code": "RTX",
             "interaction_id": "urn:nhs:names:services:lrs:MCCI_IN010000UK13"
         }
-        expected = [
-            {
-                'nhsIDCode': 'RTX',
-                'nhsMHSAckRequested': 'always',
-                'nhsMhsActor': ['urn:oasis:names:tc:ebxml-msg:actor:nextMSH'],
-                'nhsMhsCPAId': '69720694737ed98c0242',
-                'nhsMHSDuplicateElimination': 'always',
-                'nhsMHSEndPoint': ['https://msg65-spine.msg.mpe.ncrs.nhs.uk/MHS/RTX/EBS3-5/messagehandler'],
-                'nhsMhsFQDN': 'msg65-spine.msg.mpe.ncrs.nhs.uk',
-                'nhsMHsIN': 'PRSC_IN070000UK08',
-                'nhsMHSPartyKey': 'RTX-821088',
-                'nhsMHSPersistDuration': 'PT4M',
-                'nhsMHSRetries': 2,
-                'nhsMHSRetryInterval': 'PT2S',
-                'nhsMHsSN': 'urn:nhs:names:services:ebs',
-                'nhsMhsSvcIA': 'urn:nhs:names:services:ebs:PRSC_IN070000UK08',
-                'nhsMHSSyncReplyMode': 'None',
-                'uniqueIdentifier': ['69720694737ed98c0242']
-            }
-        ]
+        expected = [EXPECTED_LDAP_1 ]
         dir_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.path.join("test_data", "cpm", FILTERED_ENDPOINT_1))
         incoming_json = self._read_file(dir_path)
         endpoints = EndpointCpm(incoming_json, filt)
@@ -225,42 +243,8 @@ class TestCPMEndpoints(TestCase):
             "party_key": "RTX-821088"
         }
         expected = [
-            {
-                'nhsIDCode': 'RTX',
-                'nhsMHSAckRequested': 'always',
-                'nhsMhsActor': ['urn:oasis:names:tc:ebxml-msg:actor:nextMSH'],
-                'nhsMhsCPAId': '69720694737ed98c0242',
-                'nhsMHSDuplicateElimination': 'always',
-                'nhsMHSEndPoint': ['https://msg65-spine.msg.mpe.ncrs.nhs.uk/MHS/RTX/EBS3-5/messagehandler'],
-                'nhsMhsFQDN': 'msg65-spine.msg.mpe.ncrs.nhs.uk',
-                'nhsMHsIN': 'PRSC_IN070000UK08',
-                'nhsMHSPartyKey': 'RTX-821088',
-                'nhsMHSPersistDuration': 'PT4M',
-                'nhsMHSRetries': 2,
-                'nhsMHSRetryInterval': 'PT2S',
-                'nhsMHsSN': 'urn:nhs:names:services:ebs',
-                'nhsMhsSvcIA': 'urn:nhs:names:services:ebs:PRSC_IN070000UK08',
-                'nhsMHSSyncReplyMode': 'None',
-                'uniqueIdentifier': ['69720694737ed98c0242']
-            },
-            {
-                'nhsIDCode': 'RTX',
-                'nhsMHSAckRequested': 'never',
-                'nhsMhsActor': [],
-                'nhsMhsCPAId': '798bc45334bbb95b51de',
-                'nhsMHSDuplicateElimination': 'never',
-                'nhsMHSEndPoint': ['https://msg65-spine.msg.mpe.ncrs.nhs.uk/Tower6-2/RTX/CPIS-0/responsehandler'],
-                'nhsMhsFQDN': 'msg65-spine.msg.mpe.ncrs.nhs.uk',
-                'nhsMHsIN': 'REPC_IN000007GB01',
-                'nhsMHSPartyKey': 'RTX-821088',
-                'nhsMHSPersistDuration': '',
-                'nhsMHSRetries': 0,
-                'nhsMHSRetryInterval': '',
-                'nhsMHsSN': 'urn:nhs:names:services:cpisquery',
-                'nhsMhsSvcIA': 'urn:nhs:names:services:cpisquery:REPC_IN000007GB01',
-                'nhsMHSSyncReplyMode': 'MSHSignalsOnly',
-                'uniqueIdentifier': ['798bc45334bbb95b51de']
-            }
+            EXPECTED_LDAP_1 ,
+            EXPECTED_LDAP_2 
         ]
         dir_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.path.join("test_data", "cpm", FILTERED_ENDPOINTS))
         incoming_json = self._read_file(dir_path)
@@ -276,26 +260,7 @@ class TestCPMEndpoints(TestCase):
             "org_code": "RTX",
             "service_id": "urn:nhs:names:services:ebs:PRSC_IN070000UK08",
         }
-        expected = [
-            {
-                'nhsIDCode': 'RTX',
-                'nhsMHSAckRequested': 'always',
-                'nhsMhsActor': ['urn:oasis:names:tc:ebxml-msg:actor:nextMSH'],
-                'nhsMhsCPAId': '69720694737ed98c0242',
-                'nhsMHSDuplicateElimination': 'always',
-                'nhsMHSEndPoint': ['https://msg65-spine.msg.mpe.ncrs.nhs.uk/MHS/RTX/EBS3-5/messagehandler'],
-                'nhsMhsFQDN': 'msg65-spine.msg.mpe.ncrs.nhs.uk',
-                'nhsMHsIN': 'PRSC_IN070000UK08',
-                'nhsMHSPartyKey': 'RTX-821088',
-                'nhsMHSPersistDuration': 'PT4M',
-                'nhsMHSRetries': 2,
-                'nhsMHSRetryInterval': 'PT2S',
-                'nhsMHsSN': 'urn:nhs:names:services:ebs',
-                'nhsMhsSvcIA': 'urn:nhs:names:services:ebs:PRSC_IN070000UK08',
-                'nhsMHSSyncReplyMode': 'None',
-                'uniqueIdentifier': ['69720694737ed98c0242']
-            }
-        ]
+        expected = [EXPECTED_LDAP_1 ]
         endpoints = EndpointCpm(incoming_json, filt)
         filtered_data = endpoints.filter_cpm_response()
         translated_data = endpoints.transform_to_ldap(filtered_data)
@@ -308,26 +273,7 @@ class TestCPMEndpoints(TestCase):
             "org_code": "RTX",
             "service_id": "urn:nhs:names:services:ebs:PRSC_IN070000UK08",
         }
-        expected = [
-            {
-                'nhsIDCode': 'RTX',
-                'nhsMHSAckRequested': 'always',
-                'nhsMhsActor': ['urn:oasis:names:tc:ebxml-msg:actor:nextMSH'],
-                'nhsMhsCPAId': '69720694737ed98c0242',
-                'nhsMHSDuplicateElimination': 'always',
-                'nhsMHSEndPoint': ['https://msg65-spine.msg.mpe.ncrs.nhs.uk/MHS/RTX/EBS3-5/messagehandler'],
-                'nhsMhsFQDN': 'msg65-spine.msg.mpe.ncrs.nhs.uk',
-                'nhsMHsIN': 'PRSC_IN070000UK08',
-                'nhsMHSPartyKey': 'RTX-821088',
-                'nhsMHSPersistDuration': 'PT4M',
-                'nhsMHSRetries': 2,
-                'nhsMHSRetryInterval': 'PT2S',
-                'nhsMHsSN': 'urn:nhs:names:services:ebs',
-                'nhsMhsSvcIA': 'urn:nhs:names:services:ebs:PRSC_IN070000UK08',
-                'nhsMHSSyncReplyMode': 'None',
-                'uniqueIdentifier': ['69720694737ed98c0242']
-            }
-        ]
+        expected = [EXPECTED_LDAP_1]
         result = process_cpm_endpoint_request(incoming_json, filt)
         self.assertEqual(result, expected)
 
