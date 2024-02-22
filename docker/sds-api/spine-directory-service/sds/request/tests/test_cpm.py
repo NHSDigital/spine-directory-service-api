@@ -3,7 +3,8 @@ import os
 import tornado.web
 
 from unittest import TestCase
-from request.cpm import transform_device_to_SDS, filter_cpm_devices_response, filter_cpm_endpoints_response, transform_endpoint_to_SDS
+from request.cpm import EndpointCpm, DeviceCpm, process_cpm_device_request, process_cpm_endpoint_request
+from request.cpm_config import ENDPOINT_FILTER_MAP, DEVICE_FILTER_MAP
 from lookup.sds_exception import SDSException
 
 class TestCPM(TestCase):
@@ -56,7 +57,7 @@ class TestCPM(TestCase):
         ]
         for filt in filters:
             with self.assertRaises(SDSException) as context:
-                filter_cpm_devices_response(incoming_json, filt)
+                DeviceCpm(incoming_json, filt, DEVICE_FILTER_MAP)
             self.assertEqual(str(context.exception), 'org_code and interaction_id must be provided')
     
     def test_filter_results_successful_required_device(self):
@@ -116,7 +117,8 @@ class TestCPM(TestCase):
         ]
         for index, filt in enumerate(filters):
             exp = self._read_file(os.path.join(os.path.dirname(os.path.realpath(__file__)), os.path.join("test_data", "cpm", expected[index])))
-            filtered_data = filter_cpm_devices_response(incoming_json, filt)
+            devices = DeviceCpm(incoming_json, filt, DEVICE_FILTER_MAP)
+            filtered_data = devices.filter_cpm_response()
             assert len(filtered_data) == 1
             self.assertEqual(filtered_data, exp)
     
@@ -157,12 +159,17 @@ class TestCPM(TestCase):
         ]
         expected = []
         for filt in filters:
-            filtered_data = filter_cpm_devices_response(incoming_json, filt)
+            devices = DeviceCpm(incoming_json, filt, DEVICE_FILTER_MAP)
+            filtered_data = devices.filter_cpm_response()
             assert len(filtered_data) == 0
             self.assertEqual(filtered_data, expected)
         
     
     def test_translated_device_data_device(self):
+        filt = {
+            "org_code": "5NR",
+            "interaction_id": "urn:nhs:names:services:lrs:MCCI_IN010000UK13",
+        }
         expected = [
             {
                 'nhsAsClient': ['5NR'],
@@ -201,10 +208,15 @@ class TestCPM(TestCase):
         ]
         dir_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.path.join("test_data", "cpm", "filtered_device.json"))
         incoming_json = self._read_file(dir_path)
-        translated_data = transform_device_to_SDS(incoming_json)
+        devices = DeviceCpm(incoming_json, filt, DEVICE_FILTER_MAP)
+        translated_data = devices.transform_to_ldap(incoming_json)
         self.assertEqual(translated_data, expected)
     
     def test_translated_device_data_multiple_devices(self):
+        filt = {
+            "org_code": "5NR",
+            "interaction_id": "urn:nhs:names:services:lrs:MCCI_IN010000UK13",
+        }
         expected = [
             {
                 'nhsAsClient': ['5NR'],
@@ -277,9 +289,106 @@ class TestCPM(TestCase):
         ]
         dir_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.path.join("test_data", "cpm", "filtered_devices.json"))
         incoming_json = self._read_file(dir_path)
-        translated_data = transform_device_to_SDS(incoming_json)
+        devices = DeviceCpm(incoming_json, filt, DEVICE_FILTER_MAP)
+        translated_data = devices.transform_to_ldap(incoming_json)
         assert len(translated_data) == 2
         self.assertEqual(translated_data, expected)
+        
+        def test_translated_device_full_process(self):
+            dir_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.path.join("test_data", "cpm", "returned_devices.json"))
+            incoming_json = self._read_file(dir_path)
+            filt = {
+                "org_code": "5NR",
+                "interaction_id": "urn:nhs:names:services:lrsquery:MCCI_IN010000UK13",
+            }
+            expected = [
+                {
+                    'nhsAsClient': ['5NR'],
+                    'nhsAsSvcIA': [
+                        'urn:nhs:names:services:lrs:MCCI_IN010000UK13', 
+                        'urn:nhs:names:services:lrs:QUPC_IN010000UK01', 
+                        'urn:nhs:names:services:lrs:QUPC_IN010000UK15', 
+                        'urn:nhs:names:services:lrs:QUPC_IN030000UK14', 
+                        'urn:nhs:names:services:lrs:QUPC_IN040000UK14', 
+                        'urn:nhs:names:services:lrs:QUQI_IN010000UK14', 
+                        'urn:nhs:names:services:lrs:REPC_IN010000UK01', 
+                        'urn:nhs:names:services:lrs:REPC_IN010000UK15', 
+                        'urn:nhs:names:services:lrs:REPC_IN020000UK01', 
+                        'urn:nhs:names:services:lrs:REPC_IN020000UK13', 
+                        'urn:nhs:names:services:lrs:REPC_IN030000UK01', 
+                        'urn:nhs:names:services:lrs:REPC_IN040000UK01', 
+                        'urn:nhs:names:services:lrs:REPC_IN040000UK15', 
+                        'urn:nhs:names:services:lrs:REPC_IN050000UK01', 
+                        'urn:nhs:names:services:lrs:REPC_IN050000UK13', 
+                        'urn:nhs:names:services:lrs:REPC_IN060000UK01', 
+                        'urn:nhs:names:services:lrs:REPC_IN070000UK01', 
+                        'urn:nhs:names:services:lrs:REPC_IN080000UK01', 
+                        'urn:nhs:names:services:lrs:REPC_IN110000UK01', 
+                        'urn:nhs:names:services:lrsquery:MCCI_IN010000UK13', 
+                        'urn:nhs:names:services:lrsquery:QUPC_IN030000UK14', 
+                        'urn:nhs:names:services:lrsquery:QUPC_IN040000UK14', 
+                        'urn:nhs:names:services:lrsquery:QUQI_IN010000UK14', 
+                        'urn:oasis:names:tc:ebxml-msg:service:Acknowledgment', 
+                        'urn:oasis:names:tc:ebxml-msg:service:MessageError'
+                    ], 
+                    'nhsMhsManufacturerOrg': 'LSP02', 
+                    'nhsMhsPartyKey': '5NR-801831', 
+                    'nhsIdCode': '5NR', 
+                    'uniqueIdentifier': '010057927542'
+                }
+            ]
+            devices = DeviceCpm(incoming_json, filt, DEVICE_FILTER_MAP)
+            filtered_data = devices.filter_cpm_response()
+            translated_data = endpoints.transform_to_ldap(filtered_data)
+            self.assertEqual(translated_data, expected)
+
+    def test_device_process_success(self):
+        dir_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.path.join("test_data", "cpm", "returned_devices.json"))
+        incoming_json = self._read_file(dir_path)
+        filt = {
+            "org_code": "5NR",
+            "interaction_id": "urn:nhs:names:services:lrsquery:MCCI_IN010000UK13",
+        }
+        expected = [
+            {
+                'nhsAsClient': ['5NR'],
+                'nhsAsSvcIA': [
+                    'urn:nhs:names:services:lrs:MCCI_IN010000UK13', 
+                    'urn:nhs:names:services:lrs:QUPC_IN010000UK01', 
+                    'urn:nhs:names:services:lrs:QUPC_IN010000UK15', 
+                    'urn:nhs:names:services:lrs:QUPC_IN030000UK14', 
+                    'urn:nhs:names:services:lrs:QUPC_IN040000UK14', 
+                    'urn:nhs:names:services:lrs:QUQI_IN010000UK14', 
+                    'urn:nhs:names:services:lrs:REPC_IN010000UK01', 
+                    'urn:nhs:names:services:lrs:REPC_IN010000UK15', 
+                    'urn:nhs:names:services:lrs:REPC_IN020000UK01', 
+                    'urn:nhs:names:services:lrs:REPC_IN020000UK13', 
+                    'urn:nhs:names:services:lrs:REPC_IN030000UK01', 
+                    'urn:nhs:names:services:lrs:REPC_IN040000UK01', 
+                    'urn:nhs:names:services:lrs:REPC_IN040000UK15', 
+                    'urn:nhs:names:services:lrs:REPC_IN050000UK01', 
+                    'urn:nhs:names:services:lrs:REPC_IN050000UK13', 
+                    'urn:nhs:names:services:lrs:REPC_IN060000UK01', 
+                    'urn:nhs:names:services:lrs:REPC_IN070000UK01', 
+                    'urn:nhs:names:services:lrs:REPC_IN080000UK01', 
+                    'urn:nhs:names:services:lrs:REPC_IN110000UK01', 
+                    'urn:nhs:names:services:lrsquery:MCCI_IN010000UK13', 
+                    'urn:nhs:names:services:lrsquery:QUPC_IN030000UK14', 
+                    'urn:nhs:names:services:lrsquery:QUPC_IN040000UK14', 
+                    'urn:nhs:names:services:lrsquery:QUQI_IN010000UK14', 
+                    'urn:oasis:names:tc:ebxml-msg:service:Acknowledgment', 
+                    'urn:oasis:names:tc:ebxml-msg:service:MessageError'
+                ], 
+                'nhsMhsManufacturerOrg': 'LSP02', 
+                'nhsMhsPartyKey': '5NR-801831', 
+                'nhsIdCode': '5NR', 
+                'uniqueIdentifier': '010057927542'
+            }
+        ]
+        result = process_cpm_device_request(incoming_json, filt)
+        self.assertEqual(result, expected)
+
+
 
     def test_filter_results_unsuccessful_missing_required_endpoint(self):
         dir_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.path.join("test_data", "cpm", "returned_endpoints.json"))
@@ -352,7 +461,7 @@ class TestCPM(TestCase):
         ]
         for filt in filters:
             with self.assertRaises(tornado.web.HTTPError) as context:
-                filter_cpm_endpoints_response(incoming_json, filt)
+                EndpointCpm(incoming_json, filt, ENDPOINT_FILTER_MAP)
             raised_exception = context.exception
             self.assertEqual(raised_exception.status_code, 400)
             self.assertEqual(raised_exception.log_message, 'Missing or invalid query parameters. Should one of following combinations: [\'organization=https://fhir.nhs.uk/Id/ods-organization-code|value&identifier=https://fhir.nhs.uk/Id/nhsServiceInteractionId|value&identifier=https://fhir.nhs.uk/Id/nhsMhsPartyKey|value\'\'organization=https://fhir.nhs.uk/Id/ods-organization-code|value&identifier=https://fhir.nhs.uk/Id/nhsServiceInteractionId|value\'\'organization=https://fhir.nhs.uk/Id/ods-organization-code|value&identifier=https://fhir.nhs.uk/Id/nhsMhsPartyKey|value\'\'identifier=https://fhir.nhs.uk/Id/nhsServiceInteractionId|value&identifier=https://fhir.nhs.uk/Id/nhsMhsPartyKey|value\']')
@@ -398,7 +507,8 @@ class TestCPM(TestCase):
         ]
         for index, filt in enumerate(filters):
             exp = self._read_file(os.path.join(os.path.dirname(os.path.realpath(__file__)), os.path.join("test_data", "cpm", expected[index])))
-            filtered_data = filter_cpm_endpoints_response(incoming_json, filt)
+            endpoints = EndpointCpm(incoming_json, filt, ENDPOINT_FILTER_MAP)
+            filtered_data = endpoints.filter_cpm_response()
             assert len(filtered_data) == 1
             self.assertEqual(filtered_data, exp)
     
@@ -446,11 +556,16 @@ class TestCPM(TestCase):
         ]
         expected = []
         for filt in filters:
-            filtered_data = filter_cpm_endpoints_response(incoming_json, filt)
+            endpoints = EndpointCpm(incoming_json, filt, ENDPOINT_FILTER_MAP)
+            filtered_data = endpoints.filter_cpm_response()
             assert len(filtered_data) == 0
             self.assertEqual(filtered_data, expected)
 
     def test_translated_endpoint_data_endpoint(self):
+        filt = {
+            "org_code": "RTX",
+            "service_id": "urn:nhs:names:services:ebs:PRSC_IN070000UK08",
+        }
         expected = [
             {
                 'nhsIDCode': 'RTX',
@@ -473,5 +588,69 @@ class TestCPM(TestCase):
         ]
         dir_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.path.join("test_data", "cpm", "filtered_endpoint.json"))
         incoming_json = self._read_file(dir_path)
-        translated_data = transform_endpoint_to_SDS(incoming_json)
+        endpoints = EndpointCpm(incoming_json, filt, ENDPOINT_FILTER_MAP)
+        translated_data = endpoints.transform_to_ldap(incoming_json)
         self.assertEqual(translated_data, expected)
+    
+    def test_translated_endpoint_full_process(self):
+        dir_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.path.join("test_data", "cpm", "returned_endpoints.json"))
+        incoming_json = self._read_file(dir_path)
+        filt = {
+            "org_code": "RTX",
+            "service_id": "urn:nhs:names:services:ebs:PRSC_IN070000UK08",
+        }
+        expected = [
+            {
+                'nhsIDCode': 'RTX',
+                'nhsMHSAckRequested': 'always',
+                'nhsMhsActor': ['urn:oasis:names:tc:ebxml-msg:actor:nextMSH'],
+                'nhsMhsCPAId': '69720694737ed98c0242',
+                'nhsMHSDuplicateElimination': 'always',
+                'nhsMHSEndPoint': ['https://msg65-spine.msg.mpe.ncrs.nhs.uk/MHS/RTX/EBS3-5/messagehandler'],
+                'nhsMhsFQDN': 'msg65-spine.msg.mpe.ncrs.nhs.uk',
+                'nhsMHsIN': 'PRSC_IN070000UK08',
+                'nhsMHSPartyKey': 'RTX-821088',
+                'nhsMHSPersistDuration': 'PT4M',
+                'nhsMHSRetries': 2,
+                'nhsMHSRetryInterval': 'PT2S',
+                'nhsMHsSN': 'urn:nhs:names:services:ebs',
+                'nhsMhsSvcIA': 'urn:nhs:names:services:ebs:PRSC_IN070000UK08',
+                'nhsMHSSyncReplyMode': 'None',
+                'uniqueIdentifier': ['69720694737ed98c0242']
+            }
+        ]
+        endpoints = EndpointCpm(incoming_json, filt, ENDPOINT_FILTER_MAP)
+        filtered_data = endpoints.filter_cpm_response()
+        translated_data = endpoints.transform_to_ldap(filtered_data)
+        self.assertEqual(translated_data, expected)
+    
+    def test_endpoint_process_success(self):
+        dir_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.path.join("test_data", "cpm", "returned_endpoints.json"))
+        incoming_json = self._read_file(dir_path)
+        filt = {
+            "org_code": "RTX",
+            "service_id": "urn:nhs:names:services:ebs:PRSC_IN070000UK08",
+        }
+        expected = [
+            {
+                'nhsIDCode': 'RTX',
+                'nhsMHSAckRequested': 'always',
+                'nhsMhsActor': ['urn:oasis:names:tc:ebxml-msg:actor:nextMSH'],
+                'nhsMhsCPAId': '69720694737ed98c0242',
+                'nhsMHSDuplicateElimination': 'always',
+                'nhsMHSEndPoint': ['https://msg65-spine.msg.mpe.ncrs.nhs.uk/MHS/RTX/EBS3-5/messagehandler'],
+                'nhsMhsFQDN': 'msg65-spine.msg.mpe.ncrs.nhs.uk',
+                'nhsMHsIN': 'PRSC_IN070000UK08',
+                'nhsMHSPartyKey': 'RTX-821088',
+                'nhsMHSPersistDuration': 'PT4M',
+                'nhsMHSRetries': 2,
+                'nhsMHSRetryInterval': 'PT2S',
+                'nhsMHsSN': 'urn:nhs:names:services:ebs',
+                'nhsMhsSvcIA': 'urn:nhs:names:services:ebs:PRSC_IN070000UK08',
+                'nhsMHSSyncReplyMode': 'None',
+                'uniqueIdentifier': ['69720694737ed98c0242']
+            }
+        ]
+        result = process_cpm_endpoint_request(incoming_json, filt)
+        self.assertEqual(result, expected)
+
