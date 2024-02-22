@@ -5,11 +5,12 @@ import tornado.web
 from unittest import TestCase
 from request.cpm import EndpointCpm, process_cpm_endpoint_request
 
+RETURNED_ENDPOINTS_JSON = "returned_endpoints.json"
+FILTERED_ENDPOINT_1 = "filtered_endpoint.json"
+FILTERED_ENDPOINT_2 = "filtered_endpoint2.json"
+FILTERED_ENDPOINTS = "filtered_endpoints.json"
+
 class TestCPMEndpoints(TestCase):
-    RETURNED_ENDPOINTS_JSON = "returned_endpoints.json"
-    FILTERED_ENDPOINT_1 = "filtered_endpoint.json"
-    FILTERED_ENDPOINT_2 = "filtered_endpoint2.json"
-    FILTERED_ENDPOINTS = "filtered_endpoints.json"
     
     @staticmethod
     def _read_file(file):

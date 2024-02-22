@@ -6,11 +6,12 @@ from unittest import TestCase
 from request.cpm import DeviceCpm, process_cpm_device_request
 from lookup.sds_exception import SDSException
 
+RETURNED_DEVICES_JSON = "returned_devices.json"
+FILTERED_DEVICE_1 = "filtered_device.json"
+FILTERED_DEVICE_2 = "filtered_device2.json"
+FILTERED_DEVICES = "filtered_devices.json"
+
 class TestCPMDevice(TestCase):
-    RETURNED_DEVICES_JSON = "returned_devices.json"
-    FILTERED_DEVICE_1 = "filtered_device.json"
-    FILTERED_DEVICE_2 = "filtered_device2.json"
-    FILTERED_DEVICES = "filtered_devices.json"
     
     @staticmethod
     def _read_file(file):
