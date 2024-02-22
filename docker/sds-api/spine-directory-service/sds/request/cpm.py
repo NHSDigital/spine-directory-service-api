@@ -52,21 +52,29 @@ class BaseCpm:
         filters = {key: False for key in self.query_parts}
         
         for result in self.data["entry"]:
-            if "resourceType" in result and result["resourceType"] == "Bundle":
-                for index, res in enumerate(result["entry"]):
-                    if "resourceType" in res and res["resourceType"] == "QuestionnaireResponse":
-                        for service in res["item"]:
-                            for key, value in self.query_parts.items():
-                                if service["text"] == self.FILTER_MAP[key]:
-                                    for answer in service["answer"]:
-                                        if answer["valueString"] == value:
-                                            filters[key] = True                   
+            for index, res in enumerate(result["entry"]) if "resourceType" in result and result["resourceType"] == "Bundle" else []:
+                for service in res["item"] if "resourceType" in res and res["resourceType"] == "QuestionnaireResponse" else []:
+                    filters = self._check_each_item(self, filters, service)
+                
             all_filters_true = all(value for value in filters.values())
             if all_filters_true:
                 filtered_results.append(result["entry"])
             filters = {key: False for key in filters}
         
         return filtered_results
+    
+    @staticmethod
+    def _check_each_item(self, filters, service):
+        for key, value in self.query_parts.items():
+            if service["text"] == self.FILTER_MAP[key]:
+                filters[key] = self._check_match(self, service["answer"], value)
+        return filters
+    
+    @staticmethod
+    def _check_match(self, answers, match):
+        for answer in answers:
+            if answer["valueString"] == match:
+                return True
     
     @staticmethod
     def process_device_response(self, item):
