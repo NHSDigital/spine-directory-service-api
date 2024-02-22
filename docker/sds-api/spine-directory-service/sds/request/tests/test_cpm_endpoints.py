@@ -6,6 +6,10 @@ from unittest import TestCase
 from request.cpm import EndpointCpm, process_cpm_endpoint_request
 
 class TestCPMEndpoints(TestCase):
+    RETURNED_ENDPOINTS_JSON = "returned_endpoints.json"
+    FILTERED_ENDPOINT_1 = "filtered_endpoint.json"
+    FILTERED_ENDPOINT_2 = "filtered_endpoint2.json"
+    FILTERED_ENDPOINTS = "filtered_endpoints.json"
     
     @staticmethod
     def _read_file(file):
@@ -13,7 +17,7 @@ class TestCPMEndpoints(TestCase):
             return json.load(f)
     
     def test_filter_results_unsuccessful_missing_required_endpoint(self):
-        dir_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.path.join("test_data", "cpm", "returned_endpoints.json"))
+        dir_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.path.join("test_data", "cpm", RETURNED_ENDPOINTS_JSON))
         incoming_json = self._read_file(dir_path)
         filters = [
             
@@ -89,7 +93,7 @@ class TestCPMEndpoints(TestCase):
             self.assertEqual(raised_exception.log_message, 'Missing or invalid query parameters. Should one of following combinations: [\'organization=https://fhir.nhs.uk/Id/ods-organization-code|value&identifier=https://fhir.nhs.uk/Id/nhsServiceInteractionId|value&identifier=https://fhir.nhs.uk/Id/nhsMhsPartyKey|value\'\'organization=https://fhir.nhs.uk/Id/ods-organization-code|value&identifier=https://fhir.nhs.uk/Id/nhsServiceInteractionId|value\'\'organization=https://fhir.nhs.uk/Id/ods-organization-code|value&identifier=https://fhir.nhs.uk/Id/nhsMhsPartyKey|value\'\'identifier=https://fhir.nhs.uk/Id/nhsServiceInteractionId|value&identifier=https://fhir.nhs.uk/Id/nhsMhsPartyKey|value\']')
     
     def test_filter_results_successful_required_endpoints(self):
-        dir_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.path.join("test_data", "cpm", "returned_endpoints.json"))
+        dir_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.path.join("test_data", "cpm", RETURNED_ENDPOINTS_JSON))
         incoming_json = self._read_file(dir_path)
         filters = [
             {
@@ -120,12 +124,12 @@ class TestCPMEndpoints(TestCase):
             }
         ]
         expected = [
-            "filtered_endpoint.json",
-            "filtered_endpoint.json",
-            "filtered_endpoint.json",
-            "filtered_endpoint2.json",
-            "filtered_endpoint2.json",
-            "filtered_endpoint2.json"
+            FILTERED_ENDPOINT_1,
+            FILTERED_ENDPOINT_1,
+            FILTERED_ENDPOINT_1,
+            FILTERED_ENDPOINT_2,
+            FILTERED_ENDPOINT_2,
+            FILTERED_ENDPOINT_2
         ]
         for index, filt in enumerate(filters):
             exp = self._read_file(os.path.join(os.path.dirname(os.path.realpath(__file__)), os.path.join("test_data", "cpm", expected[index])))
@@ -135,7 +139,7 @@ class TestCPMEndpoints(TestCase):
             self.assertEqual(filtered_data, exp)
     
     def test_filter_results_no_results_required_endpoint(self):
-        dir_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.path.join("test_data", "cpm", "returned_endpoints.json"))
+        dir_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.path.join("test_data", "cpm", RETURNED_ENDPOINTS_JSON))
         incoming_json = self._read_file(dir_path)
         filters = [
             {
@@ -208,7 +212,7 @@ class TestCPMEndpoints(TestCase):
                 'uniqueIdentifier': ['69720694737ed98c0242']
             }
         ]
-        dir_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.path.join("test_data", "cpm", "filtered_endpoint.json"))
+        dir_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.path.join("test_data", "cpm", FILTERED_ENDPOINT_1))
         incoming_json = self._read_file(dir_path)
         endpoints = EndpointCpm(incoming_json, filt)
         translated_data = endpoints.transform_to_ldap(incoming_json)
@@ -257,7 +261,7 @@ class TestCPMEndpoints(TestCase):
                 'uniqueIdentifier': ['798bc45334bbb95b51de']
             }
         ]
-        dir_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.path.join("test_data", "cpm", "filtered_endpoints.json"))
+        dir_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.path.join("test_data", "cpm", FILTERED_ENDPOINTS))
         incoming_json = self._read_file(dir_path)
         endpoints = EndpointCpm(incoming_json, filt)
         translated_data = endpoints.transform_to_ldap(incoming_json)
@@ -265,7 +269,7 @@ class TestCPMEndpoints(TestCase):
         self.assertEqual(translated_data, expected)
 
     def test_translated_endpoint_full_process(self):
-        dir_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.path.join("test_data", "cpm", "returned_endpoints.json"))
+        dir_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.path.join("test_data", "cpm", RETURNED_ENDPOINTS_JSON))
         incoming_json = self._read_file(dir_path)
         filt = {
             "org_code": "RTX",
@@ -297,7 +301,7 @@ class TestCPMEndpoints(TestCase):
         self.assertEqual(translated_data, expected)
     
     def test_endpoint_process_success(self):
-        dir_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.path.join("test_data", "cpm", "returned_endpoints.json"))
+        dir_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.path.join("test_data", "cpm", RETURNED_ENDPOINTS_JSON))
         incoming_json = self._read_file(dir_path)
         filt = {
             "org_code": "RTX",
