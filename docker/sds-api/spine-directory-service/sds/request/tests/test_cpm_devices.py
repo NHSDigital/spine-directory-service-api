@@ -339,53 +339,53 @@ class TestCPMDevice(TestCase):
         assert len(translated_data) == 2
         self.assertEqual(translated_data, expected)
         
-        def test_translated_device_full_process(self):
-            dir_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.path.join("test_data", "cpm", RETURNED_DEVICES_JSON))
-            incoming_json = self._read_file(dir_path)
-            filt = {
-                "org_code": "5NR",
-                "interaction_id": "urn:nhs:names:services:lrsquery:MCCI_IN010000UK13",
+    def test_translated_device_full_process(self):
+        dir_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.path.join("test_data", "cpm", RETURNED_DEVICES_JSON))
+        incoming_json = self._read_file(dir_path)
+        filt = {
+            "org_code": "5NR",
+            "interaction_id": "urn:nhs:names:services:lrs:MCCI_IN010000UK13",
+        }
+        expected = [
+            {
+                'nhsAsClient': ['5NR'], 
+                'nhsAsSvcIA': [
+                'urn:oasis:names:tc:ebxml-msg:service:Acknowledgment', 
+                'urn:oasis:names:tc:ebxml-msg:service:MessageError', 
+                'urn:nhs:names:services:lrs:REPC_IN020000UK01', 
+                'urn:nhs:names:services:lrs:REPC_IN050000UK01', 
+                'urn:nhs:names:services:lrs:REPC_IN040000UK01', 
+                'urn:nhs:names:services:lrs:REPC_IN030000UK01', 
+                'urn:nhs:names:services:lrs:QUPC_IN010000UK01', 
+                'urn:nhs:names:services:lrs:REPC_IN050000UK13', 
+                'urn:nhs:names:services:lrs:REPC_IN060000UK01', 
+                'urn:nhs:names:services:lrs:REPC_IN080000UK01', 
+                'urn:nhs:names:services:lrs:QUQI_IN010000UK14', 
+                'urn:nhs:names:services:lrs:QUPC_IN030000UK14', 
+                'urn:nhs:names:services:lrs:QUPC_IN010000UK15', 
+                'urn:nhs:names:services:lrs:QUPC_IN040000UK14', 
+                'urn:nhs:names:services:lrs:REPC_IN070000UK01', 
+                'urn:nhs:names:services:lrs:REPC_IN010000UK01', 
+                'urn:nhs:names:services:lrs:REPC_IN110000UK01', 
+                'urn:nhs:names:services:lrs:REPC_IN020000UK13', 
+                'urn:nhs:names:services:lrs:REPC_IN010000UK15', 
+                'urn:nhs:names:services:lrs:MCCI_IN010000UK13', 
+                'urn:nhs:names:services:lrs:REPC_IN040000UK15', 
+                'urn:nhs:names:services:lrsquery:QUPC_IN040000UK14', 
+                'urn:nhs:names:services:lrsquery:QUPC_IN030000UK14', 
+                'urn:nhs:names:services:lrsquery:QUQI_IN010000UK14', 
+                'urn:nhs:names:services:lrsquery:MCCI_IN010000UK13'
+                ], 
+                'nhsMhsManufacturerOrg': 'LSP02', 
+                'nhsMhsPartyKey': '5NR-801831', 
+                'nhsIdCode': '5NR', 
+                'uniqueIdentifier': '010057927542'
             }
-            expected = [
-                {
-                    'nhsAsClient': ['5NR'],
-                    'nhsAsSvcIA': [
-                        'urn:nhs:names:services:lrs:MCCI_IN010000UK13', 
-                        'urn:nhs:names:services:lrs:QUPC_IN010000UK01', 
-                        'urn:nhs:names:services:lrs:QUPC_IN010000UK15', 
-                        'urn:nhs:names:services:lrs:QUPC_IN030000UK14', 
-                        'urn:nhs:names:services:lrs:QUPC_IN040000UK14', 
-                        'urn:nhs:names:services:lrs:QUQI_IN010000UK14', 
-                        'urn:nhs:names:services:lrs:REPC_IN010000UK01', 
-                        'urn:nhs:names:services:lrs:REPC_IN010000UK15', 
-                        'urn:nhs:names:services:lrs:REPC_IN020000UK01', 
-                        'urn:nhs:names:services:lrs:REPC_IN020000UK13', 
-                        'urn:nhs:names:services:lrs:REPC_IN030000UK01', 
-                        'urn:nhs:names:services:lrs:REPC_IN040000UK01', 
-                        'urn:nhs:names:services:lrs:REPC_IN040000UK15', 
-                        'urn:nhs:names:services:lrs:REPC_IN050000UK01', 
-                        'urn:nhs:names:services:lrs:REPC_IN050000UK13', 
-                        'urn:nhs:names:services:lrs:REPC_IN060000UK01', 
-                        'urn:nhs:names:services:lrs:REPC_IN070000UK01', 
-                        'urn:nhs:names:services:lrs:REPC_IN080000UK01', 
-                        'urn:nhs:names:services:lrs:REPC_IN110000UK01', 
-                        'urn:nhs:names:services:lrsquery:MCCI_IN010000UK13', 
-                        'urn:nhs:names:services:lrsquery:QUPC_IN030000UK14', 
-                        'urn:nhs:names:services:lrsquery:QUPC_IN040000UK14', 
-                        'urn:nhs:names:services:lrsquery:QUQI_IN010000UK14', 
-                        'urn:oasis:names:tc:ebxml-msg:service:Acknowledgment', 
-                        'urn:oasis:names:tc:ebxml-msg:service:MessageError'
-                    ], 
-                    'nhsMhsManufacturerOrg': 'LSP02', 
-                    'nhsMhsPartyKey': '5NR-801831', 
-                    'nhsIdCode': '5NR', 
-                    'uniqueIdentifier': '010057927542'
-                }
-            ]
-            devices = DeviceCpm(incoming_json, filt)
-            filtered_data = devices.filter_cpm_response()
-            translated_data = endpoints.transform_to_ldap(filtered_data)
-            self.assertEqual(translated_data, expected)
+        ]
+        devices = DeviceCpm(incoming_json, filt)
+        filtered_data = devices.filter_cpm_response()
+        translated_data = devices.transform_to_ldap(filtered_data)
+        self.assertEqual(translated_data, expected)
 
     def test_device_process_success(self):
         dir_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.path.join("test_data", "cpm", RETURNED_DEVICES_JSON))
