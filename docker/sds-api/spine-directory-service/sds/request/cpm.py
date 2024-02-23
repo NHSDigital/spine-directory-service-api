@@ -40,6 +40,14 @@ async def get_endpoint_from_cpm(ods_code: str, interaction_id: str = None, party
     
     return process_cpm_endpoint_request(data=data, query_parts=query_parts)
 
+def request_cpm(endpoint):
+    # TODO: temporary functionality, will just load the mock for now but eventually it will return from CPM
+    dir_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.path.join("tests", "test_data", "cpm", RETURNED_ENDPOINTS_JSON))
+    if endpoint.lower().capitalize() == "Device":
+        dir_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.path.join("tests", "test_data", "cpm", RETURNED_DEVICES_JSON))
+    with open(dir_path, 'r') as f:
+        return json.load(f)
+
 def process_cpm_endpoint_request(data: dict, query_parts: dict):
     endpoints = EndpointCpm(data=data, query_parts=query_parts)
     filtered_endpoints = endpoints.filter_cpm_response()
