@@ -13,20 +13,23 @@ import os
 import json
 RETURNED_DEVICES_JSON = "returned_devices.json"
 RETURNED_ENDPOINTS_JSON = "returned_endpoints.json"
+use_mock = True
 
 
 async def get_device_from_cpm(org_code: str, interaction_id: str, manufacturing_organization: str = None, party_key: str = None) -> List:
     query_parts = locals()
     data = request_cpm("device")
-    return [dict(
-        nhsAsClient = [str(data)],
-        nhsAsSvcIA = [str(data)],
-        nhsMhsManufacturerOrg = str(data),
-        nhsMhsPartyKey = str(data),
-        nhsIdCode = str(data),
-        uniqueIdentifier = [str(data)]
-    )]
-    # return process_cpm_device_request(data=data, query_parts=query_parts)
+    
+    if use_mock:
+        return [dict(
+            nhsAsClient = [str(data)],
+            nhsAsSvcIA = [str(data)],
+            nhsMhsManufacturerOrg = str(data),
+            nhsMhsPartyKey = str(data),
+            nhsIdCode = str(data),
+            uniqueIdentifier = [str(data)]
+        )]
+    return process_cpm_device_request(data=data, query_parts=query_parts)
 
 
 async def get_endpoint_from_cpm(ods_code: str, interaction_id: str = None, party_key: str = None) -> List:
@@ -39,25 +42,26 @@ async def get_endpoint_from_cpm(ods_code: str, interaction_id: str = None, party
     ]
 
 def request_cpm(endpoint):
-    endpoint = 'Organization/85be7bec-8ec5-11ee-b9d1-0242ac120002'
-    headers = {
-        'version': '1',
-        'Authorization': 'letmein',
-        'Content-Type': 'application/json',
-        'apikey': 'hA0qKwUDOANnkR1diPorVAnnLdICgIjd',
-    }
-    try:
-        result = requests.get(f'https://internal-dev-sandbox.api.service.nhs.uk/rowan-test-client/{endpoint}', headers=headers) #, params=params #)
-        return result.status_code
-    except requests.exceptions.RequestException as e:
-        raise SDSException("Unable to contact CPM")
-    
+    if use_mock:
+        endpoint = 'Organization/85be7bec-8ec5-11ee-b9d1-0242ac120002'
+        headers = {
+            'version': '1',
+            'Authorization': 'letmein',
+            'Content-Type': 'application/json',
+            'apikey': 'hA0qKwUDOANnkR1diPorVAnnLdICgIjd',
+        }
+        try:
+            result = requests.get(f'https://internal-dev-sandbox.api.service.nhs.uk/rowan-test-client/{endpoint}', headers=headers) #, params=params #)
+            return result.status_code
+        except requests.exceptions.RequestException as e:
+            raise SDSException("Unable to contact CPM")
+    else:
     # TODO: temporary functionality, will just load the mock for now but eventually it will return from CPM
-    # dir_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.path.join("tests", "test_data", "cpm", RETURNED_ENDPOINTS_JSON))
-    # if endpoint.lower().capitalize() == "Device":
-    #     dir_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.path.join("tests", "test_data", "cpm", RETURNED_DEVICES_JSON))
-    # with open(dir_path, 'r') as f:
-    #     return json.load(f)
+        dir_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.path.join("tests", "test_data", "cpm", RETURNED_ENDPOINTS_JSON))
+        if endpoint.lower().capitalize() == "Device":
+            dir_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.path.join("tests", "test_data", "cpm", RETURNED_DEVICES_JSON))
+        with open(dir_path, 'r') as f:
+            return json.load(f)
 
 def process_cpm_endpoint_request(data: dict, query_parts: dict):
     endpoints = EndpointCpm(data=data, query_parts=query_parts)
