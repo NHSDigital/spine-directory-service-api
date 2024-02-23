@@ -84,9 +84,11 @@ def build_device_resource(ldap_attributes: dict) -> Dict:
 
     identifiers = []
     unique_identifier = ldap_attributes.get('uniqueIdentifier', [None]) or [None]
-    if len(unique_identifier) > 1:
-        raise ValueError("LDAP returned more than 1 'uniqueIdentifier' attribute")
-    unique_identifier = unique_identifier[0]
+    if isinstance(unique_identifier, list): 
+        if len(unique_identifier) > 1:
+            raise ValueError("LDAP returned more than 1 'uniqueIdentifier' attribute")
+        unique_identifier = unique_identifier[0]
+
     if unique_identifier:
         identifiers.append(build_identifier(Url.NHS_SPINE_ASID, unique_identifier))
     party_key = ldap_attributes.get('nhsMhsPartyKey')

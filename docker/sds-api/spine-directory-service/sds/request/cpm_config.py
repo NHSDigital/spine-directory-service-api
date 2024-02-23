@@ -45,7 +45,7 @@ DEFAULT_DEVICE_DICT = dict(
     nhsMhsManufacturerOrg = "",
     nhsMhsPartyKey = "",
     nhsIdCode = "",
-    uniqueIdentifier = ""
+    uniqueIdentifier = []
 )
 
 DEFAULT_ENDPOINT_DICT = dict(
