@@ -14,6 +14,8 @@ import json
 RETURNED_DEVICES_JSON = "returned_devices.json"
 RETURNED_ENDPOINTS_JSON = "returned_endpoints.json"
 use_mock = True
+from utilities import integration_adaptors_logger as log
+logger = log.IntegrationAdaptorsLogger(__name__)
 
 
 async def get_device_from_cpm(org_code: str, interaction_id: str, manufacturing_organization: str = None, party_key: str = None) -> List:
@@ -43,6 +45,7 @@ async def get_endpoint_from_cpm(ods_code: str, interaction_id: str = None, party
 
 def request_cpm(endpoint):
     if use_mock:
+        logger.info("Contacting CPM")
         endpoint = 'Organization/85be7bec-8ec5-11ee-b9d1-0242ac120002'
         headers = {
             'version': '1',
@@ -52,8 +55,10 @@ def request_cpm(endpoint):
         }
         try:
             result = requests.get(f'https://internal-dev-sandbox.api.service.nhs.uk/rowan-test-client/{endpoint}', headers=headers) #, params=params #)
+            logger.info("Response was... {result}", fparams={"result": result})
             return result.status_code
         except requests.exceptions.RequestException as e:
+            logger.info("An exception occurred.... {exception}", fparams={"exception": e})
             raise SDSException("Unable to contact CPM")
     else:
     # TODO: temporary functionality, will just load the mock for now but eventually it will return from CPM
