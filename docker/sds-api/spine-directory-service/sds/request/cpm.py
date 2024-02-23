@@ -16,7 +16,6 @@ RETURNED_ENDPOINTS_JSON = "returned_endpoints.json"
 
 async def get_device_from_cpm(org_code: str, interaction_id: str, manufacturing_organization: str = None, party_key: str = None) -> List:
     query_parts = locals()
-    #query_parts = {key: value for key, value in query_parts.items() if value is not None}
     data = request_cpm("device")
     return process_cpm_device_request(data=data, query_parts=query_parts)
 
@@ -59,7 +58,6 @@ class BaseCpm:
 
     def filter_cpm_response(self):
         filtered_results = []
-        #filters = {key: False for key in self.query_parts}
         filters = {key: False for key, value in self.query_parts.items() if value is not None}
         
         for result in self.data["entry"]:
