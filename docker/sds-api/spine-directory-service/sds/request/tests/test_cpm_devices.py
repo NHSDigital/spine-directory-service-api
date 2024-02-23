@@ -43,7 +43,7 @@ EXPECTED_LDAP_1 = {
     'nhsMhsManufacturerOrg': 'LSP02', 
     'nhsMhsPartyKey': '5NR-801831', 
     'nhsIdCode': '5NR', 
-    'uniqueIdentifier': '010057927542'
+    'uniqueIdentifier': ['010057927542']
 }
 
 EXPECTED_LDAP_2 = {
@@ -119,7 +119,7 @@ EXPECTED_LDAP_2 = {
     'nhsMhsManufacturerOrg': 'LSP02', 
     'nhsMhsPartyKey': 'RTX-806845', 
     'nhsIdCode': 'RTX', 
-    'uniqueIdentifier': '798706756516'
+    'uniqueIdentifier': ['798706756516']
 }
 
 class TestCPMDevice(TestCase):
