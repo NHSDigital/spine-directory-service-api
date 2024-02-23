@@ -59,7 +59,6 @@ class BaseCpm:
     def filter_cpm_response(self):
         filtered_results = []
         filters = {key: False for key, value in self.query_parts.items() if value is not None}
-        print(filters)
         for result in self.data["entry"]:
             for index, res in enumerate(result["entry"]) if result.get("resourceType") == "Bundle" else []:
                 for service in res["item"] if res.get("resourceType") == "QuestionnaireResponse" else []:
