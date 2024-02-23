@@ -59,7 +59,7 @@ class BaseCpm:
     def filter_cpm_response(self):
         filtered_results = []
         filters = {key: False for key, value in self.query_parts.items() if value is not None}
-        
+        print(filters)
         for result in self.data["entry"]:
             for index, res in enumerate(result["entry"]) if result.get("resourceType") == "Bundle" else []:
                 for service in res["item"] if res.get("resourceType") == "QuestionnaireResponse" else []:
@@ -76,7 +76,9 @@ class BaseCpm:
     def _check_each_item(self, filters, service):
         for key, value in self.query_parts.items():
             if service["text"] == self.FILTER_MAP[key]:
-                filters[key] = self._check_match(self, service["answer"], value)
+                match = self._check_match(self, service["answer"], value)
+                if match:
+                    filters[key] = match
         return filters
     
     @staticmethod
