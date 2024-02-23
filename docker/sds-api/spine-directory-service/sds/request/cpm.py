@@ -77,15 +77,6 @@ class BaseCpm:
                 return True
     
     @staticmethod
-    def process_device_response(self, item):
-        if "resourceType" in item and item["resourceType"] == "Device":
-            if "identifier" in item:
-                for identifier in item["identifier"]:
-                    if identifier.get("system") == "https://fhir.nhs.uk/Id/nhsSpineASID":
-                        return identifier.get("value")
-        return ""
-    
-    @staticmethod
     def process_questionnaire_response(self, item, data_dict, ldap_data_mapping):
         if "resourceType" in item and item["resourceType"] == "QuestionnaireResponse":      
             for service in item.get("item", []):
