@@ -7,16 +7,18 @@ from request.base_handler import ORG_CODE_QUERY_PARAMETER_NAME, ORG_CODE_FHIR_ID
     IDENTIFIER_QUERY_PARAMETER_NAME, SERVICE_ID_FHIR_IDENTIFIER, PARTY_KEY_FHIR_IDENTIFIER
 from request.cpm_config import DEVICE_FILTER_MAP, ENDPOINT_FILTER_MAP, DEVICE_DATA_MAP, ENDPOINT_DATA_MAP, DEFAULT_ENDPOINT_DICT, DEFAULT_DEVICE_DICT
 
+#TODO: Remove when connection to CPM is made.
+import os
+import json
+RETURNED_DEVICES_JSON = "returned_devices.json"
+RETURNED_ENDPOINTS_JSON = "returned_endpoints.json"
 
-async def get_device_from_cpm(ods_code: str, interaction_id: str, manufacturing_organization: str = None, party_key: str = None) -> List:
-    return [
-        {
-            "ods-code": ods_code,
-            "interaction_id": interaction_id,
-            "manufacturing_organisation": manufacturing_organization,
-            "party_key": party_key
-        }
-    ]
+
+async def get_device_from_cpm(org_code: str, interaction_id: str, manufacturing_organization: str = None, party_key: str = None) -> List:
+    query_parts = locals()
+    #query_parts = {key: value for key, value in query_parts.items() if value is not None}
+    data = request_cpm("device")
+    return process_cpm_device_request(data=data, query_parts=query_parts)
 
 
 async def get_endpoint_from_cpm(ods_code: str, interaction_id: str = None, party_key: str = None) -> List:
@@ -27,6 +29,14 @@ async def get_endpoint_from_cpm(ods_code: str, interaction_id: str = None, party
             "party_key": party_key
         }
     ]
+
+def request_cpm(endpoint):
+    # TODO: temporary functionality, will just load the mock for now but eventually it will return from CPM
+    dir_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.path.join("tests", "test_data", "cpm", RETURNED_ENDPOINTS_JSON))
+    if endpoint.lower().capitalize() == "Device":
+        dir_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.path.join("tests", "test_data", "cpm", RETURNED_DEVICES_JSON))
+    with open(dir_path, 'r') as f:
+        return json.load(f)
 
 def process_cpm_endpoint_request(data: dict, query_parts: dict):
     endpoints = EndpointCpm(data=data, query_parts=query_parts)
@@ -49,7 +59,8 @@ class BaseCpm:
 
     def filter_cpm_response(self):
         filtered_results = []
-        filters = {key: False for key in self.query_parts}
+        #filters = {key: False for key in self.query_parts}
+        filters = {key: False for key, value in self.query_parts.items() if value is not None}
         
         for result in self.data["entry"]:
             for index, res in enumerate(result["entry"]) if result.get("resourceType") == "Bundle" else []:
