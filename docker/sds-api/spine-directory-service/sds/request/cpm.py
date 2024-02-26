@@ -54,7 +54,7 @@ def request_cpm(endpoint):
             'apikey': 'hA0qKwUDOANnkR1diPorVAnnLdICgIjd',
         }
         try:
-            result = requests.get(f'https://internal-dev-sandbox.api.service.nhs.uk/rowan-test-client/{endpoint}', headers=headers) #, params=params #)
+            result = requests.get(f'https://internal-dev-sandbox.api.service.nhs.uk:501/rowan-test-client/{endpoint}', headers=headers) #, params=params #)
             logger.info("Response was... {result}", fparams={"result": result})
             return result.status_code
         except requests.exceptions.RequestException as e:
