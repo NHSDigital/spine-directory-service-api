@@ -1,6 +1,7 @@
 import copy
 import tornado
 import requests
+from requests.exceptions import Timeout
 
 from typing import List
 from lookup.sds_exception import SDSException
@@ -54,12 +55,24 @@ def request_cpm(endpoint):
             'apikey': 'hA0qKwUDOANnkR1diPorVAnnLdICgIjd',
         }
         try:
-            result = requests.get(f'https://internal-dev.api.service.nhs.uk:501/rowan-test-client/{endpoint}', headers=headers) #, params=params #)
+            result = requests.get(f'https://internal-dev.api.service.nhs.uk/rowan-test-client/{endpoint}', headers=headers, timeout=2) #, params=params #)
             logger.info("Response was... {result}", fparams={"result": result})
             return result.status_code
+        except Timeout as t:
+            logger.info("Timeout occurred.... {exception}", fparams={"exception": t})
+            raise SDSException("Timeout occurred")
         except requests.exceptions.RequestException as e:
             logger.info("An exception occurred.... {exception}", fparams={"exception": e})
             raise SDSException("Unable to contact CPM")
+        except requests.exceptions.ConnectionError as ce:
+            logger.info("Connection error occurred.... {exception}", fparams={"exception": ce})
+            raise SDSException("Connection error occurred")
+        except requests.exceptions.ConnectTimeout as ct:
+            logger.info("Connection timeout error occurred.... {exception}", fparams={"exception": ct})
+            raise SDSException("Connection timeout error occurred")
+        except requests.exceptions.ReadTimeout as rt:
+            logger.info("Read timeout error occurred.... {exception}", fparams={"exception": rt})
+            raise SDSException("Read timeout error occurred")
     else:
     # TODO: temporary functionality, will just load the mock for now but eventually it will return from CPM
         dir_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.path.join("tests", "test_data", "cpm", RETURNED_ENDPOINTS_JSON))
