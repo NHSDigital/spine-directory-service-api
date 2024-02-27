@@ -47,6 +47,7 @@ def get_endpoint_from_cpm(ods_code: str, interaction_id: str = None, party_key: 
 def request_cpm(endpoint):
     if not use_mock:
         logger.info("Contacting CPM")
+        environment = os.getenv("ENVIRONMENT")
         endpoint = 'Organization/85be7bec-8ec5-11ee-b9d1-0242ac120002'
         headers = {
             'version': '1',
@@ -54,8 +55,9 @@ def request_cpm(endpoint):
             'Content-Type': 'application/json',
             'apikey': 'hA0qKwUDOANnkR1diPorVAnnLdICgIjd',
         }
+        logger.info("Requesting data from... https://{environment}.api.service.nhs.uk/rowan-test-client/{endpoint}", fparams={"environment": environment, "endpoint": endpoint})
         try:
-            result = requests.get(f'https://internal-dev-sandbox.api.service.nhs.uk/rowan-test-client/{endpoint}', headers=headers, timeout=5) #, params=params #)
+            result = requests.get(f'https://{environment}.api.service.nhs.uk/rowan-test-client/{endpoint}', headers=headers, timeout=5) #, params=params #)
             logger.info("Response was... {result}", fparams={"result": result.json()})
             return result.status_code
         except Timeout as t:
