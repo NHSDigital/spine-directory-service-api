@@ -14,16 +14,16 @@ import os
 import json
 RETURNED_DEVICES_JSON = "returned_devices.json"
 RETURNED_ENDPOINTS_JSON = "returned_endpoints.json"
-use_mock = True
+use_mock = False
 from utilities import integration_adaptors_logger as log
 logger = log.IntegrationAdaptorsLogger(__name__)
 
 
-async def get_device_from_cpm(org_code: str, interaction_id: str, manufacturing_organization: str = None, party_key: str = None) -> List:
+def get_device_from_cpm(org_code: str, interaction_id: str, manufacturing_organization: str = None, party_key: str = None) -> List:
     query_parts = locals()
     data = request_cpm("device")
     
-    if use_mock:
+    if not use_mock:
         return [dict(
             nhsAsClient = [str(data)],
             nhsAsSvcIA = [str(data)],
@@ -35,7 +35,7 @@ async def get_device_from_cpm(org_code: str, interaction_id: str, manufacturing_
     return process_cpm_device_request(data=data, query_parts=query_parts)
 
 
-async def get_endpoint_from_cpm(ods_code: str, interaction_id: str = None, party_key: str = None) -> List:
+def get_endpoint_from_cpm(ods_code: str, interaction_id: str = None, party_key: str = None) -> List:
     return [
         {
             "ods-code": ods_code,
@@ -45,7 +45,7 @@ async def get_endpoint_from_cpm(ods_code: str, interaction_id: str = None, party
     ]
 
 def request_cpm(endpoint):
-    if use_mock:
+    if not use_mock:
         logger.info("Contacting CPM")
         endpoint = 'Organization/85be7bec-8ec5-11ee-b9d1-0242ac120002'
         headers = {
@@ -55,8 +55,8 @@ def request_cpm(endpoint):
             'apikey': 'hA0qKwUDOANnkR1diPorVAnnLdICgIjd',
         }
         try:
-            result = requests.get(f'https://internal-dev.api.service.nhs.uk/rowan-test-client/{endpoint}', headers=headers, timeout=2) #, params=params #)
-            logger.info("Response was... {result}", fparams={"result": result})
+            result = requests.get(f'https://internal-dev-sandbox.api.service.nhs.uk/rowan-test-client/{endpoint}', headers=headers, timeout=5) #, params=params #)
+            logger.info("Response was... {result}", fparams={"result": result.json()})
             return result.status_code
         except Timeout as t:
             logger.info("Timeout occurred.... {exception}", fparams={"exception": t})
@@ -74,7 +74,7 @@ def request_cpm(endpoint):
             logger.info("Read timeout error occurred.... {exception}", fparams={"exception": rt})
             raise SDSException("Read timeout error occurred")
     else:
-    # TODO: temporary functionality, will just load the mock for now but eventually it will return from CPM
+        # TODO: temporary functionality, will just load the mock for now but eventually it will return from CPM
         dir_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.path.join("tests", "test_data", "cpm", RETURNED_ENDPOINTS_JSON))
         if endpoint.lower().capitalize() == "Device":
             dir_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.path.join("tests", "test_data", "cpm", RETURNED_DEVICES_JSON))
