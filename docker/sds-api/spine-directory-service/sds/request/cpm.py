@@ -82,16 +82,14 @@ class BaseCpm:
                     for answer in service["answer"]:
                         key = ldap_data_mapping[service["text"]]
                         value = answer.get("valueInteger", answer.get("valueString"))
-                        data_dict = self.get_data(data_dict, key, value)
+                        data_dict = self.set_data(data_dict, key, value)
                             
         return data_dict
     
     @staticmethod
-    def get_data(data_dict, key, value):
+    def set_data(data_dict, key, value):
         if isinstance(data_dict[key], list):
             data_dict[key].append(value)
-        elif isinstance(data_dict[key], int):
-            data_dict[key] = value
         else:
             data_dict[key] = value
         
