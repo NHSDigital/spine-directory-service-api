@@ -52,11 +52,11 @@ class BaseCpm:
         filters = {key: False for key in self.query_parts}
         
         for result in self.data["entry"]:
-            for index, res in enumerate(result["entry"]) if "resourceType" in result and result["resourceType"] == "Bundle" else []:
-                for service in res["item"] if "resourceType" in res and res["resourceType"] == "QuestionnaireResponse" else []:
+            for index, res in enumerate(result["entry"]) if result.get("resourceType") == "Bundle" else []:
+                for service in res["item"] if res.get("resourceType") == "QuestionnaireResponse" else []:
                     filters = self._check_each_item(self, filters, service)
                 
-            all_filters_true = all(value for value in filters.values())
+            all_filters_true = all(filters.values())
             if all_filters_true:
                 filtered_results.append(result["entry"])
             filters = {key: False for key in filters}
@@ -72,9 +72,7 @@ class BaseCpm:
     
     @staticmethod
     def _check_match(self, answers, match):
-        for answer in answers:
-            if answer["valueString"] == match:
-                return True
+        return any(answer["valueString"] == match for answer in answers)
     
     @staticmethod
     def process_questionnaire_response(self, item, data_dict, ldap_data_mapping):
