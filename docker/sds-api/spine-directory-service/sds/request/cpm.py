@@ -75,14 +75,13 @@ class BaseCpm:
         return any(answer["valueString"] == match for answer in answers)
     
     @staticmethod
-    def process_questionnaire_response(self, item, data_dict, ldap_data_mapping):
-        if "resourceType" in item and item["resourceType"] == "QuestionnaireResponse":      
-            for service in item.get("item", []):
-                if service["text"] in ldap_data_mapping:
-                    for answer in service["answer"]:
-                        key = ldap_data_mapping[service["text"]]
-                        value = answer.get("valueInteger", answer.get("valueString"))
-                        data_dict = self.set_data(data_dict, key, value)
+    def process_questionnaire_response(self, item, data_dict, ldap_data_mapping):   
+        for service in item.get("item", []):
+            if service["text"] in ldap_data_mapping:
+                for answer in service["answer"]:
+                    key = ldap_data_mapping[service["text"]]
+                    value = answer.get("valueInteger", answer.get("valueString"))
+                    data_dict = self.set_data(data_dict, key, value)
                             
         return data_dict
     
@@ -101,7 +100,8 @@ class BaseCpm:
         for d in data:
             data_dict = copy.deepcopy(self.DEFAULT_DICT)
             for item in d:
-                data_dict = self.process_questionnaire_response(self, item, data_dict, self.DATA_MAP)
+                if item.get("resourceType") == "QuestionnaireResponse":
+                    data_dict = self.process_questionnaire_response(self, item, data_dict, self.DATA_MAP)
 
             ldap_data.append(data_dict)
 
