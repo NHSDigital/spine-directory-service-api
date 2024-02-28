@@ -43,7 +43,7 @@ async def get_endpoint_from_cpm(ods_code: str, interaction_id: str = None, party
 def request_cpm(endpoint):
     if not use_mock:
         logger.info("Contacting CPM")
-        environment = os.getenv("ENVIRONMENT")
+        environment = "internal-dev-sandbox"
         endpoint = 'Organization/85be7bec-8ec5-11ee-b9d1-0242ac120002'
         headers = {
             'version': '1',
