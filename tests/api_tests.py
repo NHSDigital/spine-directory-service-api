@@ -5,6 +5,7 @@ from tests import conftest
 import pytest
 import os
 from aiohttp import ClientResponse
+from jsonschema import validate
 from api_test_utils import env
 from api_test_utils import poll_until
 from api_test_utils.api_session_client import APISessionClient
@@ -329,3 +330,5 @@ async def test_healthcheck(test_app, api_client: APISessionClient, request_data)
         assert resp.headers['x-correlation-id'] == correlation_id
         assert body['status'] == 'pass'
         assert body['details']['ldap']['status'] == 'pass'
+        
+
