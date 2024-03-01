@@ -5,7 +5,6 @@ from tests import conftest
 import pytest
 import os
 from aiohttp import ClientResponse
-from jsonschema import validate
 from api_test_utils import env
 from api_test_utils import poll_until
 from api_test_utils.api_session_client import APISessionClient

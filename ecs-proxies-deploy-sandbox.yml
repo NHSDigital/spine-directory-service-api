@@ -14,6 +14,11 @@ docker_service:
         value: "STRICT"
       - name: SDS_SPINE_CORE_ODS_CODE
         value: "YES"
+      - name: APIGEE_ENVIRONMENT
+        value: "{{ APIGEE_ENVIRONMENT }}"
+    secrets:
+      - name: APIGEE_URL
+        valueFrom: "/{{ account }}/platform-common/egress/hosts/apigee-internal-dev-sandbox"
     health_check:
       matcher: "200"
       path: "/healthcheck"

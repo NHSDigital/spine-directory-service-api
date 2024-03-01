@@ -47,7 +47,7 @@ def get_endpoint_from_cpm(ods_code: str, interaction_id: str = None, party_key: 
 def request_cpm(endpoint):
     if not use_mock:
         logger.info("Contacting CPM")
-        environment = os.environ["APIGEE_ENVIRONMENT"]
+        #environment = os.environ["APIGEE_ENVIRONMENT"]
         apigee_url = os.environ["APIGEE_URL"]
         endpoint = 'Organization/85be7bec-8ec5-11ee-b9d1-0242ac120002'
         headers = {
