@@ -40,45 +40,49 @@ async def get_endpoint_from_cpm(ods_code: str, interaction_id: str = None, party
     
     return process_cpm_endpoint_request(data=data, query_parts=query_parts)
 
-def request_cpm(endpoint):
-    if not use_mock:
-        logger.info("Contacting CPM")
-        #environment = os.environ["APIGEE_ENVIRONMENT"]
-        apigee_url = os.environ["APIGEE_URL"]
-        endpoint = 'Organization/85be7bec-8ec5-11ee-b9d1-0242ac120002'
-        headers = {
-            'version': '1',
-            'Authorization': 'letmein',
-            'Content-Type': 'application/json',
-            'apikey': 'hA0qKwUDOANnkR1diPorVAnnLdICgIjd',
-        }
-        logger.info("Requesting data from... https://{apigee_url}/rowan-test-client/{endpoint}", fparams={"apigee_url": apigee_url, "endpoint": endpoint})
-        try:
-            result = requests.get(f'https://{apigee_url}/rowan-test-client/{endpoint}', headers=headers, timeout=5) #, params=params #)
-            logger.info("Response was... {result}", fparams={"result": result.json()})
+def make_get_request(call_name: str, url, headers=None, params=None):
+    res = requests.get(url, headers=headers, params=params)
+    handle_error(res, call_name)
+    return res
+
+def handle_error(response, call_name):
+    if response.status_code != 200 and response.status_code != 404:
+        detail = f"Request to {call_name} failed with message: {response.text}"
+        logger.info(detail)
+        raise SDSException(detail)
+
+class CpmClient:
+    def __init__(self, client_id: str, apigee_url: str,  endpoint: str) -> None:
+        self._client_id = client_id
+        self._apigee_url = apigee_url
+        self._endpoint = endpoint
+    
+    def get_cpm(self):
+        if not use_mock:
+            logger.info("Contacting CPM")
+            url = f"https://{self._apigee_url}/rowan-test-client"
+            endpoint = 'Organization/85be7bec-8ec5-11ee-b9d1-0242ac120002'
+            headers = {
+                'version': '1',
+                'Authorization': 'letmein',
+                'Content-Type': 'application/json',
+                'apikey': self._client_id,
+            }
+            params = {}
+            logger.info("Requesting data from... {url}/{endpoint}", fparams={"url": url, "endpoint": endpoint})
+            res = make_get_request(call_name="SDS get_cpm", url=f"{url}/{endpoint}", params=params)
             return result.status_code
-        except Timeout as t:
-            logger.info("Timeout occurred.... {exception}", fparams={"exception": t})
-            raise SDSException("Timeout occurred")
-        except requests.exceptions.RequestException as e:
-            logger.info("An exception occurred.... {exception}", fparams={"exception": e})
-            raise SDSException("Unable to contact CPM")
-        except requests.exceptions.ConnectionError as ce:
-            logger.info("Connection error occurred.... {exception}", fparams={"exception": ce})
-            raise SDSException("Connection error occurred")
-        except requests.exceptions.ConnectTimeout as ct:
-            logger.info("Connection timeout error occurred.... {exception}", fparams={"exception": ct})
-            raise SDSException("Connection timeout error occurred")
-        except requests.exceptions.ReadTimeout as rt:
-            logger.info("Read timeout error occurred.... {exception}", fparams={"exception": rt})
-            raise SDSException("Read timeout error occurred")
-    else:
-        # TODO: temporary functionality, will just load the mock for now but eventually it will return from CPM
-        dir_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.path.join("tests", "test_data", "cpm", RETURNED_ENDPOINTS_JSON))
-        if endpoint.lower().capitalize() == "Device":
-            dir_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.path.join("tests", "test_data", "cpm", RETURNED_DEVICES_JSON))
-        with open(dir_path, 'r') as f:
-            return json.load(f)
+        else:
+            # TODO: temporary functionality, will just load the mock for now but eventually it will return from CPM
+            dir_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.path.join("tests", "test_data", "cpm", RETURNED_ENDPOINTS_JSON))
+            if endpoint.lower().capitalize() == "Device":
+                dir_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.path.join("tests", "test_data", "cpm", RETURNED_DEVICES_JSON))
+            with open(dir_path, 'r') as f:
+                return json.load(f)
+    
+    def _get_response(self, res):
+        if res.status_code != 504:
+            return res.status_code
 
 def process_cpm_endpoint_request(data: dict, query_parts: dict):
     endpoints = EndpointCpm(data=data, query_parts=query_parts)
