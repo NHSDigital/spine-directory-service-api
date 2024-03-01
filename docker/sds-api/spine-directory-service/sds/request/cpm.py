@@ -50,6 +50,16 @@ def get_endpoint_from_cpm(ods_code: str, interaction_id: str = None, party_key: 
         }
     ]
 
+def process_cpm_endpoint_request(data: dict, query_parts: dict):
+    endpoints = EndpointCpm(data=data, query_parts=query_parts)
+    filtered_endpoints = endpoints.filter_cpm_response()
+    return endpoints.transform_to_ldap(filtered_endpoints)
+
+def process_cpm_device_request(data: dict, query_parts: dict):
+    devices = DeviceCpm(data=data, query_parts=query_parts)
+    filtered_devices = devices.filter_cpm_response()
+    return devices.transform_to_ldap(filtered_devices)
+
 def make_get_request(call_name: str, url, headers=None, params=None):
     res = requests.get(url, headers=headers, params=params)
     handle_error(res, call_name)
@@ -85,7 +95,7 @@ class CpmClient:
         else:
             # TODO: temporary functionality, will just load the mock for now but eventually it will return from CPM
             dir_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.path.join("tests", "test_data", "cpm", RETURNED_ENDPOINTS_JSON))
-            if endpoint.lower().capitalize() == "Device":
+            if self._endpoint.lower().capitalize() == "Device":
                 dir_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.path.join("tests", "test_data", "cpm", RETURNED_DEVICES_JSON))
             with open(dir_path, 'r') as f:
                 return json.load(f)
@@ -93,16 +103,6 @@ class CpmClient:
     def _get_response(self, res):
         if res.status_code != 504:
             return res.status_code
-
-def process_cpm_endpoint_request(data: dict, query_parts: dict):
-    endpoints = EndpointCpm(data=data, query_parts=query_parts)
-    filtered_endpoints = endpoints.filter_cpm_response()
-    return endpoints.transform_to_ldap(filtered_endpoints)
-
-def process_cpm_device_request(data: dict, query_parts: dict):
-    devices = DeviceCpm(data=data, query_parts=query_parts)
-    filtered_devices = devices.filter_cpm_response()
-    return devices.transform_to_ldap(filtered_devices)
 
 class BaseCpm:
     FILTER_MAP = {}
