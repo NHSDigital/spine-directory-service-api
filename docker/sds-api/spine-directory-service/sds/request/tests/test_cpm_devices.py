@@ -4,7 +4,7 @@ import tornado.web
 
 from unittest import TestCase
 from jsonschema import validate
-from request.cpm import DeviceCpm, process_cpm_device_request, request_cpm
+from request.cpm import DeviceCpm, process_cpm_device_request, CpmClient
 from request.tests.test_data.cpm.schema import device_schema_json
 from lookup.sds_exception import SDSException
 
