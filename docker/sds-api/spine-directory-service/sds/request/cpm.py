@@ -22,7 +22,7 @@ logger = log.IntegrationAdaptorsLogger(__name__)
 def get_device_from_cpm(org_code: str, interaction_id: str, manufacturing_organization: str = None, party_key: str = None) -> List:
     query_parts = locals()
     try:
-        client_id = "hA0qKwUDOANnkR1diPorVAnnLdICgIjd" # os.environ["SDS_SECRET_CLIENT_KEY"]
+        client_id = "JrxvR6WsyTEu8BVVA1qhTbKqoktoVn0y" # os.environ["SDS_SECRET_CLIENT_KEY"]
         apigee_url = os.environ["APIGEE_URL"]
     except KeyError as e:
         raise KeyError(f"Environment variable is required {e}")
@@ -66,7 +66,7 @@ def make_get_request(call_name: str, url, headers=None, params=None):
     return res
 
 def handle_error(response, call_name):
-    if response.status_code != 200 and response.status_code != 404:
+    if response.status_code != 200 or response.status_code != 404:
         detail = f"Request to {call_name} failed with message: {response.text}"
         logger.info(detail)
         raise SDSException(detail)
