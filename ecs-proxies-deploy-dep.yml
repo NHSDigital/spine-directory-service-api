@@ -22,7 +22,7 @@ docker_service:
       - name: SDS_SECRET_CA_CERTS
         valueFrom: "arn:aws:secretsmanager:eu-west-2:{{ PTL_ACCOUNT_ID }}:secret:ptl/ca-certs/nhsd-ptl/sub-ca/crt"
       - name: APIGEE_URL
-        valueFrom: "/{{ account }}/platform-common/egress/hosts/apigee-int"
+        valueFrom: "/{{ account }}/platform-common/egress/hosts/apigee-internal-dev"
     health_check:
       matcher: "200"
       path: "/healthcheck"

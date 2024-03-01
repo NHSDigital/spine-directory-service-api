@@ -22,7 +22,7 @@ logger = log.IntegrationAdaptorsLogger(__name__)
 def get_device_from_cpm(org_code: str, interaction_id: str, manufacturing_organization: str = None, party_key: str = None) -> List:
     query_parts = locals()
     try:
-        client_id = os.environ["SDS_SECRET_CLIENT_KEY"]
+        client_id = "3UDvwqZ5viES1mz7S2vz1zFqonSY868n" # os.environ["SDS_SECRET_CLIENT_KEY"]
         apigee_url = os.environ["APIGEE_URL"]
     except KeyError as e:
         raise KeyError(f"Environment variable is required {e}")
