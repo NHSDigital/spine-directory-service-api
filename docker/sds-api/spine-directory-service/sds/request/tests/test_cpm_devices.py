@@ -3,7 +3,9 @@ import os
 import tornado.web
 
 from unittest import TestCase
-from request.cpm import DeviceCpm, process_cpm_device_request
+from jsonschema import validate
+from request.cpm import DeviceCpm, process_cpm_device_request, request_cpm
+from request.tests.test_data.cpm.schema import device_schema_json
 from lookup.sds_exception import SDSException
 
 RETURNED_DEVICES_JSON = "returned_devices.json"
@@ -331,3 +333,8 @@ class TestCPMDevice(TestCase):
         expected = [EXPECTED_LDAP_1]
         result = process_cpm_device_request(incoming_json, filt)
         self.assertEqual(result, expected)
+        
+    # def test_request_cpm(self):
+    #     result = request_cpm("Device")
+    #     print(validate(json.dumps(result), device_schema_json))
+    #     assert validate(result, device_schema_json)

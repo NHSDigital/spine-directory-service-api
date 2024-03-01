@@ -6,6 +6,7 @@ verify_ssl = true
 [dev-packages]
 coverage = "~=4.5"
 unittest-xml-reporting = "~=2.5"
+jsonschema = "*"
 
 [packages]
 tornado = "~=6.1"
@@ -13,7 +14,6 @@ ldap3 = "~=2.8.1"
 isodate = "~=0.6"
 python-json-logger = "~=2.0.1"
 requests = "~=2.31.0"
-jsonschema = "*"
 
 [requires]
 python_version = "3.8"
