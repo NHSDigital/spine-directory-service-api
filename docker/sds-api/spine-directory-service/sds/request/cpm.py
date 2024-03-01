@@ -62,6 +62,9 @@ def process_cpm_device_request(data: dict, query_parts: dict):
 
 def make_get_request(call_name: str, url, headers=None, params=None):
     res = requests.get(url, headers=headers, params=params)
+    logger.info("SDS get_cpm - Response code returned is... {res}", fparams={"res": res.status_code})
+    logger.info("SDS get_cpm - Response text returned is... {res}", fparams={"res": res.text})
+    logger.info("SDS get_cpm - Response json returned is... {res}", fparams={"res": res.json()})
     handle_error(res, call_name)
     return res
 
