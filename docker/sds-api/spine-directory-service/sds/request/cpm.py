@@ -56,7 +56,7 @@ def make_get_request(call_name: str, url, headers=None, params=None):
     return res
 
 def handle_error(response, call_name):
-    if response.status_code != 200 or response.status_code != 404:
+    if response.status_code != 200 and response.status_code != 404:
         detail = f"Request to {call_name} failed with message: {response.text}"
         logger.info(detail)
         raise SDSException(detail)
@@ -81,7 +81,7 @@ class CpmClient:
             params = {}
             logger.info("Requesting data from... {url}/{endpoint}", fparams={"url": url, "endpoint": endpoint})
             res = make_get_request(call_name="SDS get_cpm", url=f"{url}/{endpoint}", params=params)
-            return result.status_code
+            return self._get_response(res=res)
         else:
             # TODO: temporary functionality, will just load the mock for now but eventually it will return from CPM
             dir_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.path.join("tests", "test_data", "cpm", RETURNED_ENDPOINTS_JSON))
