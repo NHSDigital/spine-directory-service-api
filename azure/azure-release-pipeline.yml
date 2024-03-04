@@ -34,6 +34,7 @@ extends:
     enable_status_monitoring: true
     jinja_templates:
     hosted_target_healthcheck_suffix: /healthcheck/deep
+    prod_producer_approval: true
     apigee_deployments:
       - environment: internal-dev
         post_deploy:
