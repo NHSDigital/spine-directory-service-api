@@ -53,11 +53,21 @@ def get_endpoint_from_cpm(ods_code: str, interaction_id: str = None, party_key: 
     
     if not use_mock:
         return [dict(
-            nhsAsClient = [str(data)],
-            nhsAsSvcIA = [str(data)],
-            nhsMhsManufacturerOrg = str(data),
-            nhsMhsPartyKey = str(data),
-            nhsIdCode = str(data),
+            nhsIDCode = str(data),
+            nhsMHSAckRequested = str(data),
+            nhsMhsActor = [str(data)],
+            nhsMhsCPAId = str(data),
+            nhsMHSDuplicateElimination = str(data),
+            nhsMHSEndPoint = [str(data)],
+            nhsMhsFQDN = str(data),
+            nhsMHsIN = str(data),
+            nhsMHSPartyKey = str(data),
+            nhsMHSPersistDuration = str(data),
+            nhsMHSRetries = data,
+            nhsMHSRetryInterval = str(data),
+            nhsMHsSN = str(data),
+            nhsMhsSvcIA = str(data),
+            nhsMHSSyncReplyMode = str(data),
             uniqueIdentifier = [str(data)]
         )]
     return process_cpm_endpoint_request(data=data, query_parts=query_parts)
@@ -74,10 +84,6 @@ def process_cpm_device_request(data: dict, query_parts: dict):
 
 def make_get_request(call_name: str, url, headers=None, params=None):
     res = requests.get(url, headers=headers, params=params)
-    # Log everything!
-    logger.info("SDS get_cpm - Response code returned is... {res}", fparams={"res": res.status_code})
-    logger.info("SDS get_cpm - Response text returned is... {res}", fparams={"res": res.text})
-    logger.info("SDS get_cpm - Response json returned is... {res}", fparams={"res": res.json()})
     handle_error(res, call_name)
     return res
 
