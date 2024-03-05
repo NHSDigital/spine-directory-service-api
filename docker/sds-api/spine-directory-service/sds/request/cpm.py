@@ -42,13 +42,25 @@ def get_device_from_cpm(org_code: str, interaction_id: str, manufacturing_organi
 
 
 def get_endpoint_from_cpm(ods_code: str, interaction_id: str = None, party_key: str = None) -> List:
-    return [
-        {
-            "ods-code": ods_code,
-            "interaction_id": interaction_id,
-            "party_key": party_key
-        }
-    ]
+    query_parts = locals()
+    try:
+        client_id = "JrxvR6WsyTEu8BVVA1qhTbKqoktoVn0y" # os.environ["SDS_SECRET_CLIENT_KEY"]
+        apigee_url = os.environ["APIGEE_URL"]
+    except KeyError as e:
+        raise KeyError(f"Environment variable is required {e}")
+    cpm_client = CpmClient(client_id=client_id, apigee_url=apigee_url, endpoint="endpoint")
+    data = cpm_client.get_cpm()
+    
+    if not use_mock:
+        return [dict(
+            nhsAsClient = [str(data)],
+            nhsAsSvcIA = [str(data)],
+            nhsMhsManufacturerOrg = str(data),
+            nhsMhsPartyKey = str(data),
+            nhsIdCode = str(data),
+            uniqueIdentifier = [str(data)]
+        )]
+    return process_cpm_endpoint_request(data=data, query_parts=query_parts)
 
 def process_cpm_endpoint_request(data: dict, query_parts: dict):
     endpoints = EndpointCpm(data=data, query_parts=query_parts)
@@ -70,7 +82,7 @@ def make_get_request(call_name: str, url, headers=None, params=None):
     return res
 
 def handle_error(response, call_name):
-    if response.status_code != 200 and response.status_code != 404:
+    if response.status_code != 200 and response.status_code != 404 and response.status_code != 401:
         detail = f"Request to {call_name} failed with message: {response.text}"
         logger.info(detail)
         raise SDSException(detail)
@@ -90,11 +102,11 @@ class CpmClient:
                 'version': '1',
                 'Authorization': 'letmein',
                 'Content-Type': 'application/json',
-                'apikey': self._client_id,
+                'apiKey': self._client_id,
             }
             params = {}
             logger.info("Requesting data from... {url}/{endpoint}", fparams={"url": url, "endpoint": endpoint})
-            res = make_get_request(call_name="SDS get_cpm", url=f"{url}/{endpoint}", params=params)
+            res = make_get_request(call_name="SDS get_cpm", url=f"{url}/{endpoint}", headers=headers, params=params)
             return self._get_response(res=res)
         else:
             # TODO: temporary functionality, will just load the mock for now but eventually it will return from CPM
