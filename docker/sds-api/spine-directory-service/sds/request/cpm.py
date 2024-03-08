@@ -75,7 +75,7 @@ class CpmClient:
         if not use_mock:
             logger.info("Contacting CPM")
             url = f"https://{self._apigee_url}/cpm-dev-sandbox"
-            endpoint = f"Device?type={endpoint}"
+            search_endpoint = f"Device?type={self._endpoint}"
             headers = {
                 'version': '1',
                 'Authorization': 'letmein',
@@ -83,8 +83,8 @@ class CpmClient:
                 'apiKey': self._client_id,
             }
             params = {}
-            logger.info("Requesting data from... {url}/{endpoint}", fparams={"url": url, "endpoint": endpoint})
-            res = make_get_request(call_name="SDS get_cpm", url=f"{url}/{endpoint}", headers=headers, params=params)
+            logger.info("Requesting data from... {url}/{endpoint}", fparams={"url": url, "endpoint": search_endpoint})
+            res = make_get_request(call_name="SDS get_cpm", url=f"{url}/{search_endpoint}", headers=headers, params=params)
             return self._get_response(res=res)
         else:
             # TODO: temporary functionality, will just load the mock for now but eventually it will return from CPM
