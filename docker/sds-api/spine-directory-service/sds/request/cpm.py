@@ -91,8 +91,7 @@ class CpmClient:
                 return json.load(f)
     
     def _get_response(self, res):
-        if res.status_code != 200:
-            return res.json()
+        return res.json()
 
 def process_cpm_endpoint_request(data: dict, query_parts: dict):
     endpoints = EndpointCpm(data=data, query_parts=query_parts)
