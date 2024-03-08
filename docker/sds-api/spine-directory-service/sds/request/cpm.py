@@ -95,8 +95,7 @@ class CpmClient:
                 return json.load(f)
     
     def _get_response(self, res):
-        if res.status_code != 200:
-            return res.json()
+        return res.json()
 
 class BaseCpm:
     FILTER_MAP = {}
