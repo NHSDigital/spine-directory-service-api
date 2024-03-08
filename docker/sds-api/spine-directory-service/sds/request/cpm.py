@@ -71,7 +71,7 @@ class CpmClient:
         if not use_mock:
             logger.info("Contacting CPM")
             url = f"https://{self._apigee_url}/cpm-dev-sandbox"
-            search_endpoint = f"Device?type={self._endpoint}"
+            search_endpoint = f"Device?device_type={self._endpoint}"
             headers = {
                 'version': '1',
                 'Authorization': 'letmein',
