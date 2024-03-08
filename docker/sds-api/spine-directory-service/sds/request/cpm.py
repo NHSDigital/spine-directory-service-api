@@ -70,8 +70,8 @@ class CpmClient:
     def get_cpm(self):
         if not use_mock:
             logger.info("Contacting CPM")
-            url = f"https://{self._apigee_url}/rowan-test-client"
-            endpoint = 'Organization/85be7bec-8ec5-11ee-b9d1-0242ac120002'
+            url = f"https://{self._apigee_url}/cpm-dev-sandbox"
+            endpoint = f"Device?type={endpoint}"
             headers = {
                 'version': '1',
                 'Authorization': 'letmein',
@@ -91,8 +91,8 @@ class CpmClient:
                 return json.load(f)
     
     def _get_response(self, res):
-        if res.status_code != 504:
-            return res.status_code
+        if res.status_code != 200:
+            return res.json()
 
 def process_cpm_endpoint_request(data: dict, query_parts: dict):
     endpoints = EndpointCpm(data=data, query_parts=query_parts)
