@@ -26,18 +26,9 @@ def get_device_from_cpm(org_code: str, interaction_id: str, manufacturing_organi
         apigee_url = os.environ["APIGEE_URL"]
     except KeyError as e:
         raise KeyError(f"Environment variable is required {e}")
-    cpm_client = CpmClient(client_id=client_id, apigee_url=apigee_url, endpoint="device")
+    cpm_client = CpmClient(client_id=client_id, apigee_url=apigee_url, endpoint="product")
     data = cpm_client.get_cpm()
-    
-    if not use_mock:
-        return [dict(
-            nhsAsClient = [str(data)],
-            nhsAsSvcIA = [str(data)],
-            nhsMhsManufacturerOrg = str(data),
-            nhsMhsPartyKey = str(data),
-            nhsIdCode = str(data),
-            uniqueIdentifier = [str(data)]
-        )]
+
     return process_cpm_device_request(data=data, query_parts=query_parts)
 
 
@@ -51,25 +42,6 @@ def get_endpoint_from_cpm(ods_code: str, interaction_id: str = None, party_key: 
     cpm_client = CpmClient(client_id=client_id, apigee_url=apigee_url, endpoint="endpoint")
     data = cpm_client.get_cpm()
     
-    if not use_mock:
-        return [dict(
-            nhsIDCode = str(data),
-            nhsMHSAckRequested = str(data),
-            nhsMhsActor = [str(data)],
-            nhsMhsCPAId = str(data),
-            nhsMHSDuplicateElimination = str(data),
-            nhsMHSEndPoint = [str(data)],
-            nhsMhsFQDN = str(data),
-            nhsMHsIN = str(data),
-            nhsMHSPartyKey = str(data),
-            nhsMHSPersistDuration = str(data),
-            nhsMHSRetries = data,
-            nhsMHSRetryInterval = str(data),
-            nhsMHsSN = str(data),
-            nhsMhsSvcIA = str(data),
-            nhsMHSSyncReplyMode = str(data),
-            uniqueIdentifier = [str(data)]
-        )]
     return process_cpm_endpoint_request(data=data, query_parts=query_parts)
 
 def process_cpm_endpoint_request(data: dict, query_parts: dict):
@@ -102,8 +74,8 @@ class CpmClient:
     def get_cpm(self):
         if not use_mock:
             logger.info("Contacting CPM")
-            url = f"https://{self._apigee_url}/rowan-test-client"
-            endpoint = 'Organization/85be7bec-8ec5-11ee-b9d1-0242ac120002'
+            url = f"https://{self._apigee_url}/cpm-dev-sandbox"
+            endpoint = f"Device?type={endpoint}"
             headers = {
                 'version': '1',
                 'Authorization': 'letmein',
@@ -123,8 +95,8 @@ class CpmClient:
                 return json.load(f)
     
     def _get_response(self, res):
-        if res.status_code != 504:
-            return res.status_code
+        if res.status_code != 200:
+            return res.json()
 
 class BaseCpm:
     FILTER_MAP = {}
