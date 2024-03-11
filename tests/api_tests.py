@@ -375,6 +375,7 @@ async def test_device_from_cpm(test_app, api_client: APISessionClient, request_d
         allow_retries=True
     ) as resp:
         body = await resp.json()
+        print(body)
         assert resp.status == request_data['status_code'], str(resp.status) + " " + str(resp.headers) + " " + str(body)
         assert 'x-correlation-id' in resp.headers, resp.headers
         assert resp.headers['x-correlation-id'] == correlation_id

@@ -14,7 +14,7 @@ from utilities import integration_adaptors_logger as log
 logger = log.IntegrationAdaptorsLogger(__name__)
 
 
-def get_device_from_cpm(org_code: str, interaction_id: str, manufacturing_organization: str = None, party_key: str = None) -> List:
+async def get_device_from_cpm(org_code: str, interaction_id: str, manufacturing_organization: str = None, party_key: str = None) -> List:
     query_parts = locals()
     try:
         client_id = "JrxvR6WsyTEu8BVVA1qhTbKqoktoVn0y" # os.environ["SDS_SECRET_CLIENT_KEY"]
@@ -22,12 +22,12 @@ def get_device_from_cpm(org_code: str, interaction_id: str, manufacturing_organi
     except KeyError as e:
         raise KeyError(f"Environment variable is required {e}")
     cpm_client = CpmClient(client_id=client_id, apigee_url=apigee_url, endpoint="product")
-    data = cpm_client.get_cpm()
+    data = await cpm_client.get_cpm()
 
     return process_cpm_device_request(data=data, query_parts=query_parts)
 
 
-def get_endpoint_from_cpm(ods_code: str, interaction_id: str = None, party_key: str = None) -> List:
+async def get_endpoint_from_cpm(ods_code: str, interaction_id: str = None, party_key: str = None) -> List:
     query_parts = locals()
     try:
         client_id = "JrxvR6WsyTEu8BVVA1qhTbKqoktoVn0y" # os.environ["SDS_SECRET_CLIENT_KEY"]
@@ -35,7 +35,7 @@ def get_endpoint_from_cpm(ods_code: str, interaction_id: str = None, party_key: 
     except KeyError as e:
         raise KeyError(f"Environment variable is required {e}")
     cpm_client = CpmClient(client_id=client_id, apigee_url=apigee_url, endpoint="endpoint")
-    data = cpm_client.get_cpm()
+    data = await cpm_client.get_cpm()
     
     return process_cpm_endpoint_request(data=data, query_parts=query_parts)
 
@@ -66,7 +66,7 @@ class CpmClient:
         self._apigee_url = apigee_url
         self._endpoint = endpoint
     
-    def get_cpm(self):
+    async def get_cpm(self):
         logger.info("Contacting CPM")
         url = f"https://{self._apigee_url}/cpm-dev-sandbox"
         search_endpoint = f"Device?device_type={self._endpoint}"
@@ -79,9 +79,9 @@ class CpmClient:
         params = {}
         logger.info("Requesting data from... {url}/{endpoint}", fparams={"url": url, "endpoint": search_endpoint})
         res = make_get_request(call_name="SDS get_cpm", url=f"{url}/{search_endpoint}", headers=headers, params=params)
-        return self._get_response(res=res)
+        return await self._get_response(res=res)
     
-    def _get_response(self, res):
+    async def _get_response(self, res):
         return res.json()
 
 class BaseCpm:
