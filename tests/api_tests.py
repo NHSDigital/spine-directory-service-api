@@ -19,6 +19,7 @@ DEVICE_ORGANIZATION_FHIR_IDENTIFIER = 'https://fhir.nhs.uk/Id/ods-organization-c
 DEVICE_INTERACTION_ID_FHIR_IDENTIFIER = 'https://fhir.nhs.uk/Id/nhsServiceInteractionId'
 DEVICE_PARTY_KEY_FHIR_IDENTIFIER = 'https://fhir.nhs.uk/Id/nhsMhsPartyKey'
 DEVICE_MANUFACTURING_ORGANIZATION_FHIR_IDENTIFIER = 'https://fhir.nhs.uk/Id/ods-organization-code'
+USE_CPM_ARGUMENT = 'iwanttogetdatafromcpm'
 
 
 def _build_test_path(endpoint: str, query_params: dict = None) -> str:
@@ -329,5 +330,61 @@ async def test_healthcheck(test_app, api_client: APISessionClient, request_data)
         assert resp.headers['x-correlation-id'] == correlation_id
         assert body['status'] == 'pass'
         assert body['details']['ldap']['status'] == 'pass'
+
+
+@pytest.mark.e2e
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    "request_data",
+    [
+        {
+            'endpoint': 'Device',
+            'query_params': {
+                'organization': f'{DEVICE_ORGANIZATION_FHIR_IDENTIFIER}|5NR',
+                'identifier': f'{DEVICE_INTERACTION_ID_FHIR_IDENTIFIER}|urn:nhs:names:services:lrs:MCCI_IN010000UK13',
+                'use_cpm': USE_CPM_ARGUMENT
+            },
+            'status_code': 200,
+            'result_count': 1
+        },
+        {
+            'endpoint': 'Device',
+            'query_params': {
+                'organization': f'{DEVICE_ORGANIZATION_FHIR_IDENTIFIER}|FOO',
+                'identifier': f'{DEVICE_INTERACTION_ID_FHIR_IDENTIFIER}|urn:nhs:names:services:lrs:MCCI_IN010000UK13',
+                'use_cpm': USE_CPM_ARGUMENT
+            },
+            'status_code': 200,
+            'result_count': 0
+        }
+    ]
+)
+async def test_device_from_cpm(test_app, api_client: APISessionClient, request_data):
+    correlation_id = str(uuid4())
+    headers = {
+        'apikey': test_app.client_id,
+        'x-correlation-id': correlation_id,
+        'cache-control': 'no-cache',
+    }
+
+    uri = _build_test_path(request_data['endpoint'], request_data['query_params'])
+
+    async with api_client.get(
+        uri,
+        headers=headers,
+        allow_retries=True
+    ) as resp:
+        body = await resp.json()
+        assert resp.status == request_data['status_code'], str(resp.status) + " " + str(resp.headers) + " " + str(body)
+        assert 'x-correlation-id' in resp.headers, resp.headers
+        assert resp.headers['x-correlation-id'] == correlation_id
+
+        resource_type = body['resourceType']
+        if resp.status == 200:
+            assert resource_type == 'Bundle', body
+            assert len(body['entry']) == request_data['result_count'], body
+            assert body['total'] == request_data['result_count'], body
+        else:
+            assert resource_type == 'OperationOutcome', body
         
 

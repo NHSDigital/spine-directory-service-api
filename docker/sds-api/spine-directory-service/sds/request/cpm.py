@@ -9,12 +9,6 @@ from request.base_handler import ORG_CODE_QUERY_PARAMETER_NAME, ORG_CODE_FHIR_ID
     IDENTIFIER_QUERY_PARAMETER_NAME, SERVICE_ID_FHIR_IDENTIFIER, PARTY_KEY_FHIR_IDENTIFIER
 from request.cpm_config import DEVICE_FILTER_MAP, ENDPOINT_FILTER_MAP, DEVICE_DATA_MAP, ENDPOINT_DATA_MAP, DEFAULT_ENDPOINT_DICT, DEFAULT_DEVICE_DICT
 
-#TODO: Remove when connection to CPM is made.
-import os
-import json
-RETURNED_DEVICES_JSON = "returned_devices.json"
-RETURNED_ENDPOINTS_JSON = "returned_endpoints.json"
-use_mock = False
 from utilities import integration_adaptors_logger as log
 logger = log.IntegrationAdaptorsLogger(__name__)
 
@@ -72,27 +66,19 @@ class CpmClient:
         self._endpoint = endpoint
     
     def get_cpm(self):
-        if not use_mock:
-            logger.info("Contacting CPM")
-            url = f"https://{self._apigee_url}/cpm-dev-sandbox"
-            search_endpoint = f"Device?device_type={self._endpoint}"
-            headers = {
-                'version': '1',
-                'Authorization': 'letmein',
-                'Content-Type': 'application/json',
-                'apiKey': self._client_id,
-            }
-            params = {}
-            logger.info("Requesting data from... {url}/{endpoint}", fparams={"url": url, "endpoint": search_endpoint})
-            res = make_get_request(call_name="SDS get_cpm", url=f"{url}/{search_endpoint}", headers=headers, params=params)
-            return self._get_response(res=res)
-        else:
-            # TODO: temporary functionality, will just load the mock for now but eventually it will return from CPM
-            dir_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.path.join("tests", "test_data", "cpm", RETURNED_ENDPOINTS_JSON))
-            if self._endpoint.lower().capitalize() == "Device":
-                dir_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.path.join("tests", "test_data", "cpm", RETURNED_DEVICES_JSON))
-            with open(dir_path, 'r') as f:
-                return json.load(f)
+        logger.info("Contacting CPM")
+        url = f"https://{self._apigee_url}/cpm-dev-sandbox"
+        search_endpoint = f"Device?device_type={self._endpoint}"
+        headers = {
+            'version': '1',
+            'Authorization': 'letmein',
+            'Content-Type': 'application/json',
+            'apiKey': self._client_id,
+        }
+        params = {}
+        logger.info("Requesting data from... {url}/{endpoint}", fparams={"url": url, "endpoint": search_endpoint})
+        res = make_get_request(call_name="SDS get_cpm", url=f"{url}/{search_endpoint}", headers=headers, params=params)
+        return self._get_response(res=res)
     
     def _get_response(self, res):
         return res.json()
