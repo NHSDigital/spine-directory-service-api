@@ -68,27 +68,19 @@ class CpmClient:
         self._endpoint = endpoint
     
     def get_cpm(self):
-        if not use_mock:
-            logger.info("Contacting CPM")
-            url = f"https://{self._apigee_url}/cpm-dev-sandbox"
-            search_endpoint = f"Device?device_type={self._endpoint}"
-            headers = {
-                'version': '1',
-                'Authorization': 'letmein',
-                'Content-Type': 'application/json',
-                'apiKey': self._client_id,
-            }
-            params = {}
-            logger.info("Requesting data from... {url}/{endpoint}", fparams={"url": url, "endpoint": search_endpoint})
-            res = make_get_request(call_name="SDS get_cpm", url=f"{url}/{search_endpoint}", headers=headers, params=params)
-            return self._get_response(res=res)
-        else:
-            # TODO: temporary functionality, will just load the mock for now but eventually it will return from CPM
-            dir_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.path.join("tests", "test_data", "cpm", RETURNED_ENDPOINTS_JSON))
-            if self._endpoint.lower().capitalize() == "Device":
-                dir_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.path.join("tests", "test_data", "cpm", RETURNED_DEVICES_JSON))
-            with open(dir_path, 'r') as f:
-                return json.load(f)
+        logger.info("Contacting CPM")
+        url = f"https://{self._apigee_url}/cpm-dev-sandbox"
+        search_endpoint = f"Device?device_type={self._endpoint}"
+        headers = {
+            'version': '1',
+            'Authorization': 'letmein',
+            'Content-Type': 'application/json',
+            'apiKey': self._client_id,
+        }
+        params = {}
+        logger.info("Requesting data from... {url}/{endpoint}", fparams={"url": url, "endpoint": search_endpoint})
+        res = make_get_request(call_name="SDS get_cpm", url=f"{url}/{search_endpoint}", headers=headers, params=params)
+        return self._get_response(res=res)
     
     def _get_response(self, res):
         return res.json()
