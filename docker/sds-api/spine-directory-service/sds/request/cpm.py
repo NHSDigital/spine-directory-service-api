@@ -15,7 +15,7 @@ from utilities import integration_adaptors_logger as log
 logger = log.IntegrationAdaptorsLogger(__name__)
 
 
-def get_device_from_cpm(org_code: str, interaction_id: str, manufacturing_organization: str = None, party_key: str = None) -> List:
+async def get_device_from_cpm(org_code: str, interaction_id: str, manufacturing_organization: str = None, party_key: str = None) -> List:
     query_parts = locals()
     try:
         client_id = os.environ["CPM_CLIENT_KEY"]
@@ -67,7 +67,7 @@ class CpmClient:
         self._apigee_url = apigee_url
         self._endpoint = endpoint
     
-    def get_cpm(self):
+    async def get_cpm(self):
         logger.info("Contacting CPM")
         url = f"https://{self._apigee_url}/cpm-dev-sandbox"
         search_endpoint = f"Device?device_type={self._endpoint}"
@@ -80,9 +80,9 @@ class CpmClient:
         params = {}
         logger.info("Requesting data from... {url}/{endpoint}", fparams={"url": url, "endpoint": search_endpoint})
         res = make_get_request(call_name="SDS get_cpm", url=f"{url}/{search_endpoint}", headers=headers, params=params)
-        return self._get_response(res=res)
+        return await self._get_response(res=res)
     
-    def _get_response(self, res):
+    async def _get_response(self, res):
         return res.json()
 
 def process_cpm_endpoint_request(data: dict, query_parts: dict):
