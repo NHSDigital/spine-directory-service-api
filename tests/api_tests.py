@@ -340,7 +340,7 @@ async def test_healthcheck(test_app, api_client: APISessionClient, request_data)
         {
             'endpoint': 'Device',
             'query_params': {
-                'organization': f'{DEVICE_ORGANIZATION_FHIR_IDENTIFIER}|5NR',
+                'organization': f'{ENDPOINT_ORGANIZATION_FHIR_IDENTIFIER}|5NR',
                 'identifier': f'{DEVICE_INTERACTION_ID_FHIR_IDENTIFIER}|urn:nhs:names:services:lrs:MCCI_IN010000UK13',
                 'use_cpm': USE_CPM_ARGUMENT
             },
@@ -350,7 +350,7 @@ async def test_healthcheck(test_app, api_client: APISessionClient, request_data)
         {
             'endpoint': 'Device',
             'query_params': {
-                'organization': f'{DEVICE_ORGANIZATION_FHIR_IDENTIFIER}|FOO',
+                'organization': f'{ENDPOINT_ORGANIZATION_FHIR_IDENTIFIER}|FOO',
                 'identifier': f'{DEVICE_INTERACTION_ID_FHIR_IDENTIFIER}|urn:nhs:names:services:lrs:MCCI_IN010000UK13',
                 'use_cpm': USE_CPM_ARGUMENT
             },
@@ -375,7 +375,6 @@ async def test_device_from_cpm(test_app, api_client: APISessionClient, request_d
         allow_retries=True
     ) as resp:
         body = await resp.json()
-        print(body)
         assert resp.status == request_data['status_code'], str(resp.status) + " " + str(resp.headers) + " " + str(body)
         assert 'x-correlation-id' in resp.headers, resp.headers
         assert resp.headers['x-correlation-id'] == correlation_id
