@@ -1,0 +1,244 @@
+[
+    [
+        {
+            "fullUrl": "https://cpm.co.uk/Device/39ae1fe2-dd84-4d9a-af2a-ca0e63f53cae",
+            "resource": {
+                "resourceType": "Device",
+                "deviceName": [
+                    {
+                        "name": "CPM-Test-Device",
+                        "type": "user-friendly-name"
+                    }
+                ],
+                "definition": {
+                    "identifier": {
+                        "system": "connecting-party-manager/device-type",
+                        "value": "instance"
+                    }
+                },
+                "identifier": [
+                    {
+                        "system": "https://fhir.nhs.uk/Id/nhsSpineASID",
+                        "value": "010057927542"
+                    }
+                ],
+                "owner": {
+                    "identifier": {
+                        "system": "connecting-party-manager/product-team-id",
+                        "value": "ae2ab026-0b53-7e7c-7a65-f0407a6e75f5"
+                    }
+                }
+            },
+            "search": {
+                "mode": "match"
+            }
+        },
+        {
+            "resourceType": "QuestionnaireResponse",
+            "identifier": "010057927542",
+            "questionnaire": "https://cpm.co.uk/Questionnaire/spine_device|v1",
+            "status": "completed",
+            "subject": {
+                "reference": "https://cpm.co.uk/Device/39ae1fe2-dd84-4d9a-af2a-ca0e63f53cae"
+            },
+            "authored": "<dateTime>",
+            "author": {
+                "reference": "https://cpm.co.uk/Organization/ae2ab026-0b53-7e7c-7a65-f0407a6e75f5"
+            },
+            "item": [
+                {
+                    "link_id": "object_class",
+                    "text": "object_class",
+                    "answer": [
+                        {
+                            "valueString": "nhsAS"
+                        },
+                        {
+                            "valueString": "top"
+                        }
+                    ]
+                },
+                {
+                    "link_id": "nhs_approver_urp",
+                    "text": "nhs_approver_urp",
+                    "answer": [
+                        {
+                            "valueString": "uniqueIdentifier=562983788547,uniqueIdentifier=883298590547,uid=503560389549,ou=People,o=nhs"
+                        }
+                    ]
+                },
+                {
+                    "link_id": "nhs_as_client",
+                    "text": "nhs_as_client",
+                    "answer": [
+                        {
+                            "valueString": "5NR"
+                        }
+                    ]
+                },
+                {
+                    "link_id": "nhs_as_svc_ia",
+                    "text": "nhs_as_svc_ia",
+                    "answer": [
+                        {
+                            "valueString": "urn:oasis:names:tc:ebxml-msg:service:Acknowledgment"
+                        },
+                        {
+                            "valueString": "urn:oasis:names:tc:ebxml-msg:service:MessageError"
+                        },
+                        {
+                            "valueString": "urn:nhs:names:services:lrs:REPC_IN020000UK01"
+                        },
+                        {
+                            "valueString": "urn:nhs:names:services:lrs:REPC_IN050000UK01"
+                        },
+                        {
+                            "valueString": "urn:nhs:names:services:lrs:REPC_IN040000UK01"
+                        },
+                        {
+                            "valueString": "urn:nhs:names:services:lrs:REPC_IN030000UK01"
+                        },
+                        {
+                            "valueString": "urn:nhs:names:services:lrs:QUPC_IN010000UK01"
+                        },
+                        {
+                            "valueString": "urn:nhs:names:services:lrs:REPC_IN050000UK13"
+                        },
+                        {
+                            "valueString": "urn:nhs:names:services:lrs:REPC_IN060000UK01"
+                        },
+                        {
+                            "valueString": "urn:nhs:names:services:lrs:REPC_IN080000UK01"
+                        },
+                        {
+                            "valueString": "urn:nhs:names:services:lrs:QUQI_IN010000UK14"
+                        },
+                        {
+                            "valueString": "urn:nhs:names:services:lrs:QUPC_IN030000UK14"
+                        },
+                        {
+                            "valueString": "urn:nhs:names:services:lrs:QUPC_IN010000UK15"
+                        },
+                        {
+                            "valueString": "urn:nhs:names:services:lrs:QUPC_IN040000UK14"
+                        },
+                        {
+                            "valueString": "urn:nhs:names:services:lrs:REPC_IN070000UK01"
+                        },
+                        {
+                            "valueString": "urn:nhs:names:services:lrs:REPC_IN010000UK01"
+                        },
+                        {
+                            "valueString": "urn:nhs:names:services:lrs:REPC_IN110000UK01"
+                        },
+                        {
+                            "valueString": "urn:nhs:names:services:lrs:REPC_IN020000UK13"
+                        },
+                        {
+                            "valueString": "urn:nhs:names:services:lrs:REPC_IN010000UK15"
+                        },
+                        {
+                            "valueString": "urn:nhs:names:services:lrs:MCCI_IN010000UK13"
+                        },
+                        {
+                            "valueString": "urn:nhs:names:services:lrs:REPC_IN040000UK15"
+                        },
+                        {
+                            "valueString": "urn:nhs:names:services:lrsquery:QUPC_IN040000UK14"
+                        },
+                        {
+                            "valueString": "urn:nhs:names:services:lrsquery:QUPC_IN030000UK14"
+                        },
+                        {
+                            "valueString": "urn:nhs:names:services:lrsquery:QUQI_IN010000UK14"
+                        },
+                        {
+                            "valueString": "urn:nhs:names:services:lrsquery:MCCI_IN010000UK13"
+                        }
+                    ]
+                },
+                {
+                    "link_id": "nhs_date_approved",
+                    "text": "nhs_date_approved",
+                    "answer": [
+                        {
+                            "valueDateTime": "2008-04-01T13:18:34"
+                        }
+                    ]
+                },
+                {
+                    "link_id": "nhs_date_requested",
+                    "text": "nhs_date_requested",
+                    "answer": [
+                        {
+                            "valueDateTime": "2008-04-01T12:54:47"
+                        }
+                    ]
+                },
+                {
+                    "link_id": "nhs_id_code",
+                    "text": "nhs_id_code",
+                    "answer": [
+                        {
+                            "valueString": "5NR"
+                        }
+                    ]
+                },
+                {
+                    "link_id": "nhs_mhs_manufacturer_org",
+                    "text": "nhs_mhs_manufacturer_org",
+                    "answer": [
+                        {
+                            "valueString": "LSP02"
+                        }
+                    ]
+                },
+                {
+                    "link_id": "nhs_mhs_party_key",
+                    "text": "nhs_mhs_party_key",
+                    "answer": [
+                        {
+                            "valueString": "5NR-801831"
+                        }
+                    ]
+                },
+                {
+                    "link_id": "nhs_product_key",
+                    "text": "nhs_product_key",
+                    "answer": [
+                        {
+                            "valueInteger": 1113
+                        }
+                    ]
+                },
+                {
+                    "link_id": "nhs_requestor_urp",
+                    "text": "nhs_requestor_urp",
+                    "answer": [
+                        {
+                            "valueString": "uniqueIdentifier=977624345541,uniqueIdentifier=883298590547,uid=503560389549,ou=People,o=nhs"
+                        }
+                    ]
+                },
+                {
+                    "link_id": "nhs_temp_uid",
+                    "text": "nhs_temp_uid",
+                    "answer": [
+                        {
+                            "valueInteger": 1663
+                        }
+                    ]
+                },
+                {
+                    "link_id": "unique_identifier",
+                    "text": "unique_identifier",
+                    "answer": [
+                        {
+                            "valueString": "010057927542"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+]
