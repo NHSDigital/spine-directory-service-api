@@ -15,7 +15,7 @@ from utilities import integration_adaptors_logger as log
 logger = log.IntegrationAdaptorsLogger(__name__)
 
 
-def get_device_from_cpm(org_code: str, interaction_id: str, manufacturing_organization: str = None, party_key: str = None) -> List:
+async def get_device_from_cpm(org_code: str, interaction_id: str, manufacturing_organization: str = None, party_key: str = None) -> List:
     query_parts = locals()
     try:
         client_id = os.environ["CPM_CLIENT_KEY"]
@@ -23,12 +23,12 @@ def get_device_from_cpm(org_code: str, interaction_id: str, manufacturing_organi
     except KeyError as e:
         raise KeyError(f"Environment variable is required {e}")
     cpm_client = CpmClient(client_id=client_id, apigee_url=apigee_url, endpoint="product")
-    data = cpm_client.get_cpm()
+    data = await cpm_client.get_cpm()
 
     return process_cpm_device_request(data=data, query_parts=query_parts)
 
 
-def get_endpoint_from_cpm(ods_code: str, interaction_id: str = None, party_key: str = None) -> List:
+async def get_endpoint_from_cpm(ods_code: str, interaction_id: str = None, party_key: str = None) -> List:
     query_parts = locals()
     try:
         client_id = os.environ["CPM_CLIENT_KEY"]
@@ -36,7 +36,7 @@ def get_endpoint_from_cpm(ods_code: str, interaction_id: str = None, party_key: 
     except KeyError as e:
         raise KeyError(f"Environment variable is required {e}")
     cpm_client = CpmClient(client_id=client_id, apigee_url=apigee_url, endpoint="endpoint")
-    data = cpm_client.get_cpm()
+    data = await cpm_client.get_cpm()
     
     return process_cpm_endpoint_request(data=data, query_parts=query_parts)
 
@@ -67,7 +67,7 @@ class CpmClient:
         self._apigee_url = apigee_url
         self._endpoint = endpoint
     
-    def get_cpm(self):
+    async def get_cpm(self):
         logger.info("Contacting CPM")
         url = f"https://{self._apigee_url}/cpm-dev-sandbox"
         search_endpoint = f"Device?device_type={self._endpoint}"
