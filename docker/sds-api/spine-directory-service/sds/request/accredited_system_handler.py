@@ -40,7 +40,7 @@ class AccreditedSystemRequestHandler(BaseHandler, ErrorHandler):
                     fparams={"org_code": org_code, "service_id": service_id, 'manufacturing_organization': manufacturing_organization, 'party_key': party_key})
 
         if cpm_filter and cpm_filter[0] == CPM_FILTER_IDENTIFIER:
-            ldap_result = await get_device_from_cpm(org_code, service_id, manufacturing_organization, party_key)
+            ldap_result = get_device_from_cpm(org_code, service_id, manufacturing_organization, party_key)
             if 'resourceType' in ldap_result and ldap_result['resourceType'] == 'OperationOutcome':
                 self.write(json.dumps(ldap_result, indent=2, sort_keys=False))
                 self.set_header(HttpHeaders.CONTENT_TYPE, accept_type)
