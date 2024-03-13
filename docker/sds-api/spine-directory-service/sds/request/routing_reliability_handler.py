@@ -70,12 +70,12 @@ class RoutingReliabilityRequestHandler(BaseHandler, ErrorHandler):
                 self.set_header(HttpHeaders.CONTENT_TYPE, accept_type)
                 self.set_header(HttpHeaders.X_CORRELATION_ID, mdc.correlation_id.get()) 
             else:
-                self._build_output(ldap_results, accept_type)
+                await self._build_output(ldap_results, accept_type)
         else:
             ldap_result = await self.sds_client.get_mhs_details(org_code, service_id, party_key)
-            self._build_output(ldap_results, accept_type)
+            await self._build_output(ldap_results, accept_type)
         
-    def _build_output(self, ldap_results, accept_type):
+    async def _build_output(self, ldap_results, accept_type):
         logger.info("Obtained routing and reliability information. {ldap_results}",
                     fparams={"ldap_results": ldap_results})
         
