@@ -333,8 +333,3 @@ class TestCPMDevice(TestCase):
         expected = [EXPECTED_LDAP_1]
         result = process_cpm_device_request(incoming_json, filt)
         self.assertEqual(result, expected)
-        
-    # def test_request_cpm(self):
-    #     result = request_cpm("Device")
-    #     print(validate(json.dumps(result), device_schema_json))
-    #     assert validate(result, device_schema_json)
