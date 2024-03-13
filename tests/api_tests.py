@@ -133,6 +133,7 @@ async def test_endpoints_are_secured(api_client: APISessionClient, endpoint):
                 'identifier': f'{ENDPOINT_INTERACTION_ID_FHIR_IDENTIFIER}|urn:nhs:names:services:gpconnect:documents:fhir:rest:search:documentreference-1',
             },
             'status_code': 200,
+            'result_count': 0
         },
         # condition 2: Endpoint organization query parameters present with party key
         {
@@ -142,6 +143,7 @@ async def test_endpoints_are_secured(api_client: APISessionClient, endpoint):
                 'identifier': f'{ENDPOINT_PARTY_KEY_FHIR_IDENTIFIER}|TEST-PARTY-KEY',
             },
             'status_code': 200,
+            'result_count': 0
         },
         # condition 3: Endpoint all query parameters present
         {
@@ -154,6 +156,7 @@ async def test_endpoints_are_secured(api_client: APISessionClient, endpoint):
                 ]
             },
             'status_code': 200,
+            'result_count': 0
         },
         # condition 4: Endpoint organization query parameter missing but service id and party key present
         {
@@ -165,6 +168,7 @@ async def test_endpoints_are_secured(api_client: APISessionClient, endpoint):
                 ]
             },
             'status_code': 200,
+            'result_count': 0
         },
         # condition 5: Endpoint unsupported query parameters present
         {
@@ -178,6 +182,7 @@ async def test_endpoints_are_secured(api_client: APISessionClient, endpoint):
                 'unsupported': 'unsupported_parameter_value',
             },
             'status_code': 400,
+            'result_count': 0
         },
         # condition 6: Endpoint missing mandatory query parameters
         {
@@ -186,6 +191,7 @@ async def test_endpoints_are_secured(api_client: APISessionClient, endpoint):
                 'identifier': f'{ENDPOINT_PARTY_KEY_FHIR_IDENTIFIER}|TEST-PARTY-KEY',
             },
             'status_code': 400,
+            'result_count': 0
         },
         # condition 7: Endpoint invalid fhir identifier on mandatory query parameter
         {
@@ -195,6 +201,7 @@ async def test_endpoints_are_secured(api_client: APISessionClient, endpoint):
                 'identifier': f'{ENDPOINT_INTERACTION_ID_FHIR_IDENTIFIER}|urn:nhs:names:services:gpconnect:documents:fhir:rest:search:documentreference-1',
             },
             'status_code': 400,
+            'result_count': 0
         },
         # condition 8: Device mandatory query parameters present
         {
@@ -204,6 +211,7 @@ async def test_endpoints_are_secured(api_client: APISessionClient, endpoint):
                 'identifier': f'{DEVICE_INTERACTION_ID_FHIR_IDENTIFIER}|urn:nhs:names:services:psis:REPC_IN150016UK05',
             },
             'status_code': 200,
+            'result_count': 0
         },
         # condition 9: Device optional query parameters present
         {
@@ -217,6 +225,7 @@ async def test_endpoints_are_secured(api_client: APISessionClient, endpoint):
                 'manufacturing-organization': f'{DEVICE_MANUFACTURING_ORGANIZATION_FHIR_IDENTIFIER}|YES',
             },
             'status_code': 200,
+            'result_count': 0
         },
         # condition 10: Device unsupported query parameters present
         {
@@ -231,6 +240,7 @@ async def test_endpoints_are_secured(api_client: APISessionClient, endpoint):
                 'unsupported': 'unsupported_parameter_value',
             },
             'status_code': 400,
+            'result_count': 0
         },
         # condition 11: Device missing mandatory query parameters
         {
@@ -244,6 +254,7 @@ async def test_endpoints_are_secured(api_client: APISessionClient, endpoint):
                 'unsupported': 'unsupported_parameter_value',
             },
             'status_code': 400,
+            'result_count': 0
         },
         # condition 12: Device invalid fhir identifier on mandatory query parameter
         {
@@ -253,7 +264,30 @@ async def test_endpoints_are_secured(api_client: APISessionClient, endpoint):
                 'identifier': f'{DEVICE_INTERACTION_ID_FHIR_IDENTIFIER}|urn:nhs:names:services:psis:REPC_IN150016UK05',
             },
             'status_code': 400,
+            'result_count': 0
         },
+        # condition 13: Return a Device from CPM
+        {
+            'endpoint': 'Device',
+            'query_params': {
+                'organization': f'{ENDPOINT_ORGANIZATION_FHIR_IDENTIFIER}|5NR',
+                'identifier': f'{DEVICE_INTERACTION_ID_FHIR_IDENTIFIER}|urn:nhs:names:services:lrs:MCCI_IN010000UK13',
+                'use_cpm': USE_CPM_ARGUMENT
+            },
+            'status_code': 200,
+            'result_count': 1
+        },
+        # condition 14: Return no Devices from CPM, no matches
+        {
+            'endpoint': 'Device',
+            'query_params': {
+                'organization': f'{ENDPOINT_ORGANIZATION_FHIR_IDENTIFIER}|FOO',
+                'identifier': f'{DEVICE_INTERACTION_ID_FHIR_IDENTIFIER}|urn:nhs:names:services:lrs:MCCI_IN010000UK13',
+                'use_cpm': USE_CPM_ARGUMENT
+            },
+            'status_code': 200,
+            'result_count': 0
+        }
     ],
     ids=[
         'condition 1: Endpoint organization query parameters present with service id',
@@ -268,6 +302,8 @@ async def test_endpoints_are_secured(api_client: APISessionClient, endpoint):
         'condition 10: Device unsupported query parameters present',
         'condition 11: Device missing mandatory query parameters',
         'condition 12: Device invalid fhir identifier on mandatory query parameter',
+        'condition 13: Return a Device from CPM',
+        'condition 14: Return no Devices from CPM, no matches',
     ]
 )
 async def test_endpoints(test_app, api_client: APISessionClient, request_data):
@@ -292,8 +328,8 @@ async def test_endpoints(test_app, api_client: APISessionClient, request_data):
         resource_type = body['resourceType']
         if resp.status == 200:
             assert resource_type == 'Bundle', body
-            assert len(body['entry']) == 0, body
-            assert body['total'] == 0, body
+            assert len(body['entry']) == request_data['result_count'], body
+            assert body['total'] == request_data['result_count'], body
         else:
             assert resource_type == 'OperationOutcome', body
 
@@ -330,61 +366,3 @@ async def test_healthcheck(test_app, api_client: APISessionClient, request_data)
         assert resp.headers['x-correlation-id'] == correlation_id
         assert body['status'] == 'pass'
         assert body['details']['ldap']['status'] == 'pass'
-
-
-@pytest.mark.e2e
-@pytest.mark.asyncio
-@pytest.mark.parametrize(
-    "request_data",
-    [
-        {
-            'endpoint': 'Device',
-            'query_params': {
-                'organization': f'{ENDPOINT_ORGANIZATION_FHIR_IDENTIFIER}|5NR',
-                'identifier': f'{DEVICE_INTERACTION_ID_FHIR_IDENTIFIER}|urn:nhs:names:services:lrs:MCCI_IN010000UK13',
-                'use_cpm': USE_CPM_ARGUMENT
-            },
-            'status_code': 200,
-            'result_count': 1
-        },
-        {
-            'endpoint': 'Device',
-            'query_params': {
-                'organization': f'{ENDPOINT_ORGANIZATION_FHIR_IDENTIFIER}|FOO',
-                'identifier': f'{DEVICE_INTERACTION_ID_FHIR_IDENTIFIER}|urn:nhs:names:services:lrs:MCCI_IN010000UK13',
-                'use_cpm': USE_CPM_ARGUMENT
-            },
-            'status_code': 200,
-            'result_count': 0
-        }
-    ]
-)
-async def test_device_from_cpm(test_app, api_client: APISessionClient, request_data):
-    correlation_id = str(uuid4())
-    headers = {
-        'apikey': test_app.client_id,
-        'x-correlation-id': correlation_id,
-        'cache-control': 'no-cache',
-    }
-
-    uri = _build_test_path(request_data['endpoint'], request_data['query_params'])
-
-    async with api_client.get(
-        uri,
-        headers=headers,
-        allow_retries=True
-    ) as resp:
-        body = await resp.json()
-        assert resp.status == request_data['status_code'], str(resp.status) + " " + str(resp.headers) + " " + str(body)
-        assert 'x-correlation-id' in resp.headers, resp.headers
-        assert resp.headers['x-correlation-id'] == correlation_id
-
-        resource_type = body['resourceType']
-        if resp.status == 200:
-            assert resource_type == 'Bundle', body
-            assert len(body['entry']) == request_data['result_count'], body
-            assert body['total'] == request_data['result_count'], body
-        else:
-            assert resource_type == 'OperationOutcome', body
-        
-
