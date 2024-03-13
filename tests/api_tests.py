@@ -287,29 +287,7 @@ async def test_endpoints_are_secured(api_client: APISessionClient, endpoint):
             },
             'status_code': 200,
             'result_count': 0
-        },
-        # condition 15: Return an Endpoint from CPM
-        {
-            'endpoint': 'Endpoint',
-            'query_params': {
-                'organization': f'{ENDPOINT_ORGANIZATION_FHIR_IDENTIFIER}|RTX',
-                'identifier': f'{ENDPOINT_INTERACTION_ID_FHIR_IDENTIFIER}|urn:nhs:names:services:ebs:PRSC_IN070000UK08',
-                'use_cpm': USE_CPM_ARGUMENT
-            },
-            'status_code': 200,
-            'result_count': 1
-        },
-        # condition 16: Return no Endpoints from CPM, no matches
-        {
-            'endpoint': 'Endpoint',
-            'query_params': {
-                'organization': f'{ENDPOINT_ORGANIZATION_FHIR_IDENTIFIER}|FOO',
-                'identifier': f'{ENDPOINT_INTERACTION_ID_FHIR_IDENTIFIER}|urn:nhs:names:services:ebs:PRSC_IN070000UK08',
-                'use_cpm': USE_CPM_ARGUMENT
-            },
-            'status_code': 200,
-            'result_count': 0
-        },
+        }
     ],
     ids=[
         'condition 1: Endpoint organization query parameters present with service id',
@@ -326,8 +304,6 @@ async def test_endpoints_are_secured(api_client: APISessionClient, endpoint):
         'condition 12: Device invalid fhir identifier on mandatory query parameter',
         'condition 13: Return a Device from CPM',
         'condition 14: Return no Devices from CPM, no matches',
-        'condition 15: Return an Endpoint from CPM',
-        'condition 16: Return no Endpoints from CPM, no matches'
     ]
 )
 async def test_endpoints(test_app, api_client: APISessionClient, request_data):

@@ -65,22 +65,14 @@ class RoutingReliabilityRequestHandler(BaseHandler, ErrorHandler):
         
         if cpm_filter and cpm_filter[0] == CPM_FILTER_IDENTIFIER:
             ldap_results = await get_endpoint_from_cpm(org_code, service_id, party_key)
-            if 'resourceType' in ldap_result and ldap_result['resourceType'] == 'OperationOutcome':
-                self.write(json.dumps(ldap_result, indent=2, sort_keys=False))
-                self.set_header(HttpHeaders.CONTENT_TYPE, accept_type)
-                self.set_header(HttpHeaders.X_CORRELATION_ID, mdc.correlation_id.get()) 
-            else:
-                await self._build_output(ldap_results, accept_type)
         else:
-            ldap_result = await self.sds_client.get_mhs_details(org_code, service_id, party_key)
-            await self._build_output(ldap_results, accept_type)
+            ldap_results = await self.sds_client.get_mhs_details(org_code, service_id, party_key)
         
-    async def _build_output(self, ldap_results, accept_type):
         logger.info("Obtained routing and reliability information. {ldap_results}",
                     fparams={"ldap_results": ldap_results})
-        
+
         await self._handle_forward_reliable_results(ldap_results)
-        
+
         base_url = f"{self.request.protocol}://{self.request.host}{self.request.path}/"
         full_url = unquote(self.request.full_url())
 
@@ -93,7 +85,7 @@ class RoutingReliabilityRequestHandler(BaseHandler, ErrorHandler):
         self.write(json.dumps(bundle, indent=2, sort_keys=False))
         self.set_header(HttpHeaders.CONTENT_TYPE, accept_type)
         self.set_header(HttpHeaders.X_CORRELATION_ID, mdc.correlation_id.get())
-        
+
     async def _handle_forward_reliable_results(self, ldap_results: List[dict]):
         forward_reliable_address_cache: Optional[str] = None
         forward_express_address_cache: Optional[str] = None
