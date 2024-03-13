@@ -315,7 +315,7 @@ async def test_endpoints(test_app, api_client: APISessionClient, request_data):
     }
 
     query_params = request_data['query_params']
-    uri = _build_test_path(request_data['endpoint'], query_params=query_params)
+    uri = _build_test_path(request_data['endpoint'], query_params)
     
     async with api_client.get(
         uri,
