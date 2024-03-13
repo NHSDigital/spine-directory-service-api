@@ -1,5 +1,8 @@
 # Changelog
 
+## 2024-03-13
+- [PI-237] Make a Device request to CPM
+
 ## 2024-02-20
 - [PI-238] Filter the results returned from CPM (Device)
 - [PI-239] Translate CPM results into SDS FHIR (Device)
