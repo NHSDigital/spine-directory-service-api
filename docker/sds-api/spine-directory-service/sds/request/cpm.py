@@ -85,51 +85,6 @@ class CpmClient:
     def _get_response(self, res):
         return res.json()
 
-def process_cpm_endpoint_request(data: dict, query_parts: dict):
-    endpoints = EndpointCpm(data=data, query_parts=query_parts)
-    filtered_endpoints = endpoints.filter_cpm_response()
-    return endpoints.transform_to_ldap(filtered_endpoints)
-
-def process_cpm_device_request(data: dict, query_parts: dict):
-    devices = DeviceCpm(data=data, query_parts=query_parts)
-    filtered_devices = devices.filter_cpm_response()
-    return devices.transform_to_ldap(filtered_devices)
-
-def make_get_request(call_name: str, url, headers=None, params=None):
-    res = requests.get(url, headers=headers, params=params)
-    handle_error(res, call_name)
-    return res
-
-def handle_error(response, call_name):
-    if response.status_code != 200 and response.status_code != 404:
-        detail = f"Request to {call_name} failed with message: {response.text}"
-        logger.info(detail)
-        raise SDSException(detail)
-
-class CpmClient:
-    def __init__(self, client_id: str, apigee_url: str,  endpoint: str) -> None:
-        self._client_id = client_id
-        self._apigee_url = apigee_url
-        self._endpoint = endpoint
-    
-    async def get_cpm(self):
-        logger.info("Contacting CPM")
-        url = f"https://{self._apigee_url}"
-        search_endpoint = f"Device?device_type={self._endpoint}"
-        headers = {
-            'version': '1',
-            'Authorization': 'letmein',
-            'Content-Type': 'application/json',
-            'apiKey': self._client_id,
-        }
-        params = {}
-        logger.info("Requesting data from... {url}/{endpoint}", fparams={"url": url, "endpoint": search_endpoint})
-        res = make_get_request(call_name="SDS get_cpm", url=f"{url}/{search_endpoint}", headers=headers, params=params)
-        return self._get_response(res=res)
-    
-    def _get_response(self, res):
-        return res.json()
-
 class BaseCpm:
     FILTER_MAP = {}
     DATA_MAP = {}
