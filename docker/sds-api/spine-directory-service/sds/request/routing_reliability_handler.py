@@ -71,7 +71,7 @@ class RoutingReliabilityRequestHandler(BaseHandler, ErrorHandler):
         logger.info("Obtained routing and reliability information. {ldap_results}",
                     fparams={"ldap_results": ldap_results})
 
-        await self._handle_forward_reliable_results(ldap_results)
+        await self._handle_forward_reliable_results(ldap_results, cpm_filter)
 
         base_url = f"{self.request.protocol}://{self.request.host}{self.request.path}/"
         full_url = unquote(self.request.full_url())
@@ -86,7 +86,7 @@ class RoutingReliabilityRequestHandler(BaseHandler, ErrorHandler):
         self.set_header(HttpHeaders.CONTENT_TYPE, accept_type)
         self.set_header(HttpHeaders.X_CORRELATION_ID, mdc.correlation_id.get())
 
-    async def _handle_forward_reliable_results(self, ldap_results: List[dict]):
+    async def _handle_forward_reliable_results(self, ldap_results: List[dict], cpm_filter: List = None):
         forward_reliable_address_cache: Optional[str] = None
         forward_express_address_cache: Optional[str] = None
 
@@ -97,22 +97,25 @@ class RoutingReliabilityRequestHandler(BaseHandler, ErrorHandler):
                 if interaction in FORWARD_RELIABLE_INTERACTIONS:
                     forward_reliable_address_cache = \
                         forward_reliable_address_cache \
-                        or await self._get_address(FORWARD_RELIABLE_CORE_SPINE_SERVICE_INTERACTION)
+                        or await self._get_address(FORWARD_RELIABLE_CORE_SPINE_SERVICE_INTERACTION, cpm_filter)
                     address = forward_reliable_address_cache
                 elif interaction in FORWARD_EXPRESS_INTERACTIONS:
                     forward_express_address_cache = \
                         forward_express_address_cache \
-                        or await self._get_address(FORWARD_EXPRESS_CORE_SPINE_SERVICE_INTERACTION)
+                        or await self._get_address(FORWARD_EXPRESS_CORE_SPINE_SERVICE_INTERACTION, cpm_filter)
                     address = forward_express_address_cache
 
                 if address:
                     ldap_result['nhsMHSEndPoint'] = [address]
 
-    async def _get_address(self, service_id: str) -> str:
+    async def _get_address(self, service_id: str, cpm_filter: List = None) -> str:
         spine_core_ods_code = config.get_config('SPINE_CORE_ODS_CODE')
         logger.info("Looking up forward reliable/express routing and reliability information. {org_code}, {service_id}",
                     fparams={"org_code": spine_core_ods_code, "service_id": service_id})
-        ldap_results = await self.sds_client.get_mhs_details(spine_core_ods_code, service_id)
+        if cpm_filter and cpm_filter[0] == CPM_FILTER_IDENTIFIER:
+            ldap_results = await get_endpoint_from_cpm(spine_core_ods_code, service_id)
+        else:
+            ldap_results = await self.sds_client.get_mhs_details(spine_core_ods_code, service_id)
         logger.info("Obtained forward reliable/express routing and reliability information. {ldap_results}",
                     fparams={"ldap_results": ldap_results})
 
@@ -144,7 +147,7 @@ class RoutingReliabilityRequestHandler(BaseHandler, ErrorHandler):
     def _validate_query_params(self):
         query_params = self.request.arguments
         for query_param in query_params.keys():
-            if query_param not in [ORG_CODE_QUERY_PARAMETER_NAME, IDENTIFIER_QUERY_PARAMETER_NAME]:
+            if query_param not in [ORG_CODE_QUERY_PARAMETER_NAME, IDENTIFIER_QUERY_PARAMETER_NAME, CPM_FILTER]:
                 raise tornado.web.HTTPError(
                     status_code=400,
                     log_message=f"Illegal query parameter '{query_param}'")
@@ -156,6 +159,8 @@ class RoutingReliabilityRequestHandler(BaseHandler, ErrorHandler):
                 if query_param == IDENTIFIER_QUERY_PARAMETER_NAME \
                         and not query_param_value.startswith(f"{SERVICE_ID_FHIR_IDENTIFIER}|") \
                         and not query_param_value.startswith(f"{PARTY_KEY_FHIR_IDENTIFIER}|"):
+                    self._raise_invalid_identifier_query_param_error()
+                if query_param == CPM_FILTER and query_param_value.lower() != CPM_FILTER_IDENTIFIER:
                     self._raise_invalid_identifier_query_param_error()
 
     @staticmethod

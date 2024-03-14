@@ -28,7 +28,7 @@ async def get_device_from_cpm(org_code: str, interaction_id: str, manufacturing_
     return process_cpm_device_request(data=data, query_parts=query_parts)
 
 
-async def get_endpoint_from_cpm(ods_code: str, interaction_id: str = None, party_key: str = None) -> List:
+async def get_endpoint_from_cpm(org_code: str, interaction_id: str = None, party_key: str = None) -> List:
     query_parts = locals()
     try:
         client_id = os.environ["CPM_CLIENT_KEY"]
