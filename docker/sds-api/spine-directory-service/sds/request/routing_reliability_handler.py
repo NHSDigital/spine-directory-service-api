@@ -144,7 +144,7 @@ class RoutingReliabilityRequestHandler(BaseHandler, ErrorHandler):
     def _validate_query_params(self):
         query_params = self.request.arguments
         for query_param in query_params.keys():
-            if query_param not in [ORG_CODE_QUERY_PARAMETER_NAME, IDENTIFIER_QUERY_PARAMETER_NAME]:
+            if query_param not in [ORG_CODE_QUERY_PARAMETER_NAME, IDENTIFIER_QUERY_PARAMETER_NAME, CPM_FILTER]:
                 raise tornado.web.HTTPError(
                     status_code=400,
                     log_message=f"Illegal query parameter '{query_param}'")
@@ -156,6 +156,8 @@ class RoutingReliabilityRequestHandler(BaseHandler, ErrorHandler):
                 if query_param == IDENTIFIER_QUERY_PARAMETER_NAME \
                         and not query_param_value.startswith(f"{SERVICE_ID_FHIR_IDENTIFIER}|") \
                         and not query_param_value.startswith(f"{PARTY_KEY_FHIR_IDENTIFIER}|"):
+                    self._raise_invalid_identifier_query_param_error()
+                if query_param == CPM_FILTER and query_param_value != CPM_FILTER_IDENTIFIER:
                     self._raise_invalid_identifier_query_param_error()
 
     @staticmethod
