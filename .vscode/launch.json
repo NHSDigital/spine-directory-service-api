@@ -25,7 +25,8 @@
                 "SDS_LDAP_DISABLE_TLS": "False",
                 "SDS_LDAP_CONNECTION_RETRIES": "3",
                 "SDS_LDAP_LAZY_CONNECTION": "True",
-                "LOCAL_VENV": "True"
+                "LOCAL_VENV": "True",
+                "ENVIRONMENT": "internal-dev-sandbox"
             }
         }
     ]

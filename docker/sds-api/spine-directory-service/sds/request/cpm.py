@@ -1,5 +1,9 @@
+import asyncio
+import os
 import copy
 import tornado
+import requests
+from requests.exceptions import Timeout
 
 from typing import List
 from lookup.sds_exception import SDSException
@@ -7,26 +11,34 @@ from request.base_handler import ORG_CODE_QUERY_PARAMETER_NAME, ORG_CODE_FHIR_ID
     IDENTIFIER_QUERY_PARAMETER_NAME, SERVICE_ID_FHIR_IDENTIFIER, PARTY_KEY_FHIR_IDENTIFIER
 from request.cpm_config import DEVICE_FILTER_MAP, ENDPOINT_FILTER_MAP, DEVICE_DATA_MAP, ENDPOINT_DATA_MAP, DEFAULT_ENDPOINT_DICT, DEFAULT_DEVICE_DICT
 
+from utilities import integration_adaptors_logger as log
+logger = log.IntegrationAdaptorsLogger(__name__)
 
-async def get_device_from_cpm(ods_code: str, interaction_id: str, manufacturing_organization: str = None, party_key: str = None) -> List:
-    return [
-        {
-            "ods-code": ods_code,
-            "interaction_id": interaction_id,
-            "manufacturing_organisation": manufacturing_organization,
-            "party_key": party_key
-        }
-    ]
+
+async def get_device_from_cpm(org_code: str, interaction_id: str, manufacturing_organization: str = None, party_key: str = None) -> List:
+    query_parts = locals()
+    try:
+        client_id = os.environ["CPM_CLIENT_KEY"]
+        apigee_url = f"{os.environ['APIGEE_URL']}/{os.environ['CPM_PATH_URL']}"
+    except KeyError as e:
+        raise KeyError(f"Environment variable is required {e}")
+    cpm_client = CpmClient(client_id=client_id, apigee_url=apigee_url, endpoint="product")
+    data = await cpm_client.get_cpm()
+
+    return process_cpm_device_request(data=data, query_parts=query_parts)
 
 
 async def get_endpoint_from_cpm(ods_code: str, interaction_id: str = None, party_key: str = None) -> List:
-    return [
-        {
-            "ods-code": ods_code,
-            "interaction_id": interaction_id,
-            "party_key": party_key
-        }
-    ]
+    query_parts = locals()
+    try:
+        client_id = os.environ["CPM_CLIENT_KEY"]
+        apigee_url = f"{os.environ['APIGEE_URL']}/{os.environ['CPM_PATH_URL']}"
+    except KeyError as e:
+        raise KeyError(f"Environment variable is required {e}")
+    cpm_client = CpmClient(client_id=client_id, apigee_url=apigee_url, endpoint="endpoint")
+    data = await cpm_client.get_cpm()
+    
+    return process_cpm_endpoint_request(data=data, query_parts=query_parts)
 
 def process_cpm_endpoint_request(data: dict, query_parts: dict):
     endpoints = EndpointCpm(data=data, query_parts=query_parts)
@@ -37,6 +49,41 @@ def process_cpm_device_request(data: dict, query_parts: dict):
     devices = DeviceCpm(data=data, query_parts=query_parts)
     filtered_devices = devices.filter_cpm_response()
     return devices.transform_to_ldap(filtered_devices)
+
+def make_get_request(call_name: str, url, headers=None, params=None):
+    res = requests.get(url, headers=headers, params=params)
+    handle_error(res, call_name)
+    return res
+
+def handle_error(response, call_name):
+    if response.status_code != 200 and response.status_code != 404:
+        detail = f"Request to {call_name} failed with message: {response.text}"
+        logger.info(detail)
+        raise SDSException(detail)
+
+class CpmClient:
+    def __init__(self, client_id: str, apigee_url: str,  endpoint: str) -> None:
+        self._client_id = client_id
+        self._apigee_url = apigee_url
+        self._endpoint = endpoint
+    
+    async def get_cpm(self):
+        logger.info("Contacting CPM")
+        url = f"https://{self._apigee_url}"
+        search_endpoint = f"Device?device_type={self._endpoint}"
+        headers = {
+            'version': '1',
+            'Authorization': 'letmein',
+            'Content-Type': 'application/json',
+            'apiKey': self._client_id,
+        }
+        params = {}
+        logger.info("Requesting data from... {url}/{endpoint}", fparams={"url": url, "endpoint": search_endpoint})
+        res = make_get_request(call_name="SDS get_cpm", url=f"{url}/{search_endpoint}", headers=headers, params=params)
+        return self._get_response(res=res)
+    
+    def _get_response(self, res):
+        return res.json()
 
 class BaseCpm:
     FILTER_MAP = {}
@@ -49,8 +96,7 @@ class BaseCpm:
 
     def filter_cpm_response(self):
         filtered_results = []
-        filters = {key: False for key in self.query_parts}
-        
+        filters = {key: False for key, value in self.query_parts.items() if value is not None}
         for result in self.data["entry"]:
             for index, res in enumerate(result["entry"]) if result.get("resourceType") == "Bundle" else []:
                 for service in res["item"] if res.get("resourceType") == "QuestionnaireResponse" else []:
@@ -67,7 +113,9 @@ class BaseCpm:
     def _check_each_item(self, filters, service):
         for key, value in self.query_parts.items():
             if service["text"] == self.FILTER_MAP[key]:
-                filters[key] = self._check_match(self, service["answer"], value)
+                match = self._check_match(self, service["answer"], value)
+                if match:
+                    filters[key] = match
         return filters
     
     @staticmethod
