@@ -1,0 +1,28 @@
+
+#docker_service_cpu: 256
+#docker_service_memory: 512
+
+docker_service:
+  - name: sds-api
+    expose: true
+    environment:
+      - name: SDS_LOG_LEVEL
+        value: NOTSET
+      - name: SDS_MOCK_LDAP_RESPONSE
+        value: "TRUE"
+      - name: SDS_MOCK_LDAP_MODE
+        value: "STRICT"
+      - name: SDS_SPINE_CORE_ODS_CODE
+        value: "YES"
+      - name: CPM_CLIENT_KEY
+        value: JrxvR6WsyTEu8BVVA1qhTbKqoktoVn0y
+      - name: CPM_PATH_URL
+        value: cpm-qa-sandbox
+    secrets:
+      - name: SDS_SECRET_CLIENT_KEY
+        valueFrom: "arn:aws:secretsmanager:eu-west-2:{{ PTL_ACCOUNT_ID }}:secret:ptl/cis/ldap.nis1.national.ncrs.nhs.uk/key"
+      - name: APIGEE_URL
+        valueFrom: "/{{ account }}/platform-common/egress/hosts/apigee-internal-qa-sandbox"
+    health_check:
+      matcher: "200"
+      path: "/healthcheck"
