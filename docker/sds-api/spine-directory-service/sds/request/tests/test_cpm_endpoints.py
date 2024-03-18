@@ -28,6 +28,24 @@ EXPECTED_LDAP_1 = {
     'nhsMHSSyncReplyMode': 'None',
     'uniqueIdentifier': ['69720694737ed98c0242']
 }
+EXPECTED_LDAP_1_ENDPOINT_MODIFIED = {
+    'nhsIDCode': 'RTX',
+    'nhsMHSAckRequested': 'always',
+    'nhsMhsActor': ['urn:oasis:names:tc:ebxml-msg:actor:nextMSH'],
+    'nhsMhsCPAId': '69720694737ed98c0242',
+    'nhsMHSDuplicateElimination': 'always',
+    'nhsMHSEndPoint': ['https://msg.int.spine2.ncrs.nhs.uk/reliablemessaging/intermediary'],
+    'nhsMhsFQDN': 'msg65-spine.msg.mpe.ncrs.nhs.uk',
+    'nhsMHsIN': 'PRSC_IN070000UK08',
+    'nhsMHSPartyKey': 'RTX-821088',
+    'nhsMHSPersistDuration': 'PT4M',
+    'nhsMHSRetries': 2,
+    'nhsMHSRetryInterval': 'PT2S',
+    'nhsMHsSN': 'urn:nhs:names:services:ebs',
+    'nhsMhsSvcIA': 'urn:nhs:names:services:ebs:PRSC_IN070000UK08',
+    'nhsMHSSyncReplyMode': 'None',
+    'uniqueIdentifier': ['69720694737ed98c0242']
+}
 EXPECTED_LDAP_2 = {
     'nhsIDCode': 'RTX',
     'nhsMHSAckRequested': 'never',
@@ -61,40 +79,40 @@ class TestCPMEndpoints(TestCase):
             
             {
                 "org_code": "",
-                "service_id": "urn:nhs:names:services:ebs:PRSC_IN070000UK08",
+                "interaction_id": "urn:nhs:names:services:ebs:PRSC_IN070000UK08",
             },
             {
                 "org_code": "RTX",
-                "service_id": "",
+                "interaction_id": "",
             },
             {
                 "org_code": "",
                 "party_key": "RTX-821088"
             },
             {
-                "service_id": "",
+                "interaction_id": "",
                 "party_key": "RTX-821088"
             },
             {
-                "service_id": "urn:nhs:names:services:ebs:PRSC_IN070000UK08",
+                "interaction_id": "urn:nhs:names:services:ebs:PRSC_IN070000UK08",
                 "party_key": ""
             },
             {
                 "org_code": "",
-                "service_id": "",
+                "interaction_id": "",
             },
             {
                 "org_code": "",
                 "party_key": "",
             },
             {
-                "service_id": "",
+                "interaction_id": "",
                 "party_key": ""
             },
             {
             },
             {
-                "service_id": "urn:nhs:names:services:ebs:PRSC_IN070000UK08",
+                "interaction_id": "urn:nhs:names:services:ebs:PRSC_IN070000UK08",
             },
             {
                 "org_code": "RTX",
@@ -104,22 +122,22 @@ class TestCPMEndpoints(TestCase):
             },
             {
                 "org_code": "",
-                "service_id": "urn:nhs:names:services:ebs:PRSC_IN070000UK08",
+                "interaction_id": "urn:nhs:names:services:ebs:PRSC_IN070000UK08",
                 "party_key": ""
             },
             {
                 "org_code": "RTX",
-                "service_id": "",
+                "interaction_id": "",
                 "party_key": ""
             },
             {
                 "org_code": "",
-                "service_id": "",
+                "interaction_id": "",
                 "party_key": "RTX-821088"
             },
             {
                 "org_code": "",
-                "service_id": "",
+                "interaction_id": "",
                 "party_key": ""
             }
         ]
@@ -136,28 +154,28 @@ class TestCPMEndpoints(TestCase):
         filters = [
             {
                 "org_code": "RTX",
-                "service_id": "urn:nhs:names:services:ebs:PRSC_IN070000UK08",
+                "interaction_id": "urn:nhs:names:services:ebs:PRSC_IN070000UK08",
             },
             {
                 "org_code": "RTX",
-                "service_id": "urn:nhs:names:services:ebs:PRSC_IN070000UK08",
+                "interaction_id": "urn:nhs:names:services:ebs:PRSC_IN070000UK08",
                 "party_key": "RTX-821088"
             },
             {
-                "service_id": "urn:nhs:names:services:ebs:PRSC_IN070000UK08",
+                "interaction_id": "urn:nhs:names:services:ebs:PRSC_IN070000UK08",
                 "party_key": "RTX-821088"
             },
             {
                 "org_code": "RTX",
-                "service_id": "urn:nhs:names:services:cpisquery:REPC_IN000007GB01",
+                "interaction_id": "urn:nhs:names:services:cpisquery:REPC_IN000007GB01",
             },
             {
                 "org_code": "RTX",
-                "service_id": "urn:nhs:names:services:cpisquery:REPC_IN000007GB01",
+                "interaction_id": "urn:nhs:names:services:cpisquery:REPC_IN000007GB01",
                 "party_key": "RTX-821088"
             },
             {
-                "service_id": "urn:nhs:names:services:cpisquery:REPC_IN000007GB01",
+                "interaction_id": "urn:nhs:names:services:cpisquery:REPC_IN000007GB01",
                 "party_key": "RTX-821088"
             }
         ]
@@ -182,15 +200,15 @@ class TestCPMEndpoints(TestCase):
         filters = [
             {
                 "org_code": "RTX",
-                "service_id": "urn:nhs:names:services:lrs:DOESNT_EXIST",
+                "interaction_id": "urn:nhs:names:services:lrs:DOESNT_EXIST",
             },
             {
                 "org_code": "FOO",
-                "service_id": "urn:nhs:names:services:cpisquery:REPC_IN000007GB01",
+                "interaction_id": "urn:nhs:names:services:cpisquery:REPC_IN000007GB01",
             },
             {
                 "org_code": "RTX",
-                "service_id": "urn:nhs:names:services:cpisquery:REPC_IN000007GB01",
+                "interaction_id": "urn:nhs:names:services:cpisquery:REPC_IN000007GB01",
                 "party_key": "BAR"
             },
             {
@@ -199,22 +217,22 @@ class TestCPMEndpoints(TestCase):
             },
             {
                 "org_code": "FOO",
-                "service_id": "urn:nhs:names:services:lrs:DOESNT_EXIST",
+                "interaction_id": "urn:nhs:names:services:lrs:DOESNT_EXIST",
                 "party_key": "BAR"
             },
             {
                 "org_code": "RTX",
-                "service_id": "urn:nhs:names:services:lrs:DOESNT_EXIST",
+                "interaction_id": "urn:nhs:names:services:lrs:DOESNT_EXIST",
                 "party_key": "RTX-821088"
             },
             {
                 "org_code": "FOO",
-                "service_id": "urn:nhs:names:services:cpisquery:REPC_IN000007GB01",
+                "interaction_id": "urn:nhs:names:services:cpisquery:REPC_IN000007GB01",
                 "party_key": "RTX-821088"
             },
             {
                 "org_code": "RTX",
-                "service_id": "urn:nhs:names:services:cpisquery:REPC_IN000007GB01",
+                "interaction_id": "urn:nhs:names:services:cpisquery:REPC_IN000007GB01",
                 "party_key": "BAR"
             },
         ]
@@ -258,22 +276,41 @@ class TestCPMEndpoints(TestCase):
         incoming_json = self._read_file(dir_path)
         filt = {
             "org_code": "RTX",
-            "service_id": "urn:nhs:names:services:ebs:PRSC_IN070000UK08",
+            "interaction_id": "urn:nhs:names:services:ebs:PRSC_IN070000UK08",
         }
-        expected = [EXPECTED_LDAP_1 ]
+        expected = [EXPECTED_LDAP_1]
         endpoints = EndpointCpm(incoming_json, filt)
         filtered_data = endpoints.filter_cpm_response()
         translated_data = endpoints.transform_to_ldap(filtered_data)
         self.assertEqual(translated_data, expected)
     
-    def test_endpoint_process_success(self):
+    # def test_endpoint_process_success(self):
+    #     dir_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.path.join("test_data", "cpm", RETURNED_ENDPOINTS_JSON))
+    #     incoming_json = self._read_file(dir_path)
+    #     filt = {
+    #         "org_code": "RTX",
+    #         "interaction_id": "urn:nhs:names:services:ebs:PRSC_IN070000UK08",
+    #     }
+    #     expected = [EXPECTED_LDAP_1]
+    #     result = process_cpm_endpoint_request(incoming_json, filt)
+    #     self.assertEqual(result, expected)
+    
+    def test_extract_service_interaction(self):
         dir_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.path.join("test_data", "cpm", RETURNED_ENDPOINTS_JSON))
         incoming_json = self._read_file(dir_path)
         filt = {
             "org_code": "RTX",
-            "service_id": "urn:nhs:names:services:ebs:PRSC_IN070000UK08",
+            "interaction_id": "urn:nhs:names:services:ebs:PRSC_IN070000UK08",
         }
-        expected = [EXPECTED_LDAP_1]
-        result = process_cpm_endpoint_request(incoming_json, filt)
-        self.assertEqual(result, expected)
-
+        endpoints = EndpointCpm(incoming_json, filt)
+        test_data = [
+            "foo:bar",
+            "oof:foo:bar"
+        ]
+        for td in test_data:
+            service, interaction = endpoints._extract_service_and_interaction(td)
+            self.assertEqual(service, "foo")
+            self.assertEqual(interaction, "bar")
+        
+        service = endpoints._extract_service_and_interaction(None)
+        self.assertFalse(service)

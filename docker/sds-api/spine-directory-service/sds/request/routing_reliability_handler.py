@@ -15,24 +15,9 @@ from request.http_headers import HttpHeaders
 from request.tracking_ids_headers_reader import read_tracking_id_headers
 from utilities import timing, integration_adaptors_logger as log, mdc
 from utilities import config
+from utilities.constants import RELIABLE_SERVICES, FORWARD_RELIABLE_INTERACTIONS, FORWARD_EXPRESS_INTERACTIONS, FORWARD_RELIABLE_CORE_SPINE_SERVICE_INTERACTION, FORWARD_EXPRESS_CORE_SPINE_SERVICE_INTERACTION
 
 logger = log.IntegrationAdaptorsLogger(__name__)
-
-RELIABLE_SERVICES = [
-    'cc', 'ebs', 'ebsepr', 'ebsnpr', 'gp2gp', 'pat', 'itk', 'dis',
-    'ed', 'op', 'caf', 'adm', 'ooh', 'am', 'mh', 'nd', 'dir']
-FORWARD_RELIABLE_INTERACTIONS = [
-    'COPC_IN000001UK01', 'PRSC_IN040000UK08', 'PRSC_IN080000UK07', 'PRPA_IN010000UK07', 'PRPA_IN020000UK06',
-    'PRSC_IN050000UK06', 'PRSC_IN090000UK09', 'PRPA_IN030000UK08', 'PRSC_IN100000UK06', 'PRSC_IN070000UK08',
-    'PRSC_IN140000UK06', 'RCMR_IN010000UK05', 'RCMR_IN030000UK06', 'PRSC_IN130000UK07', 'PRSC_IN110000UK08',
-    'PRSC_IN060000UK06', 'PRSC_IN150000UK06', 'POLB_IN020006UK01', 'POLB_IN020005UK01', 'COMT_IN000004GB01',
-    'MCCI_IN010000UK13'
-]
-FORWARD_EXPRESS_INTERACTIONS = [
-    'PRSC_IN080000UK03', 'PRSC_IN040000UK03'
-]
-FORWARD_RELIABLE_CORE_SPINE_SERVICE_INTERACTION = 'urn:nhs:names:services:tms:ReliableIntermediary'
-FORWARD_EXPRESS_CORE_SPINE_SERVICE_INTERACTION = 'urn:nhs:names:services:tms:ExpressIntermediary'
 
 
 class RoutingReliabilityRequestHandler(BaseHandler, ErrorHandler):
@@ -65,13 +50,16 @@ class RoutingReliabilityRequestHandler(BaseHandler, ErrorHandler):
         
         if cpm_filter and cpm_filter[0] == CPM_FILTER_IDENTIFIER:
             ldap_results = await get_endpoint_from_cpm(org_code, service_id, party_key)
+            
+            logger.info("Obtained routing and reliability information. {ldap_results}",
+                        fparams={"ldap_results": ldap_results})
         else:
             ldap_results = await self.sds_client.get_mhs_details(org_code, service_id, party_key)
-        
-        logger.info("Obtained routing and reliability information. {ldap_results}",
-                    fparams={"ldap_results": ldap_results})
+            
+            logger.info("Obtained routing and reliability information. {ldap_results}",
+                        fparams={"ldap_results": ldap_results})
 
-        await self._handle_forward_reliable_results(ldap_results, cpm_filter)
+            await self._handle_forward_reliable_results(ldap_results)
 
         base_url = f"{self.request.protocol}://{self.request.host}{self.request.path}/"
         full_url = unquote(self.request.full_url())
@@ -86,7 +74,7 @@ class RoutingReliabilityRequestHandler(BaseHandler, ErrorHandler):
         self.set_header(HttpHeaders.CONTENT_TYPE, accept_type)
         self.set_header(HttpHeaders.X_CORRELATION_ID, mdc.correlation_id.get())
 
-    async def _handle_forward_reliable_results(self, ldap_results: List[dict], cpm_filter: List = None):
+    async def _handle_forward_reliable_results(self, ldap_results: List[dict]):
         forward_reliable_address_cache: Optional[str] = None
         forward_express_address_cache: Optional[str] = None
 
@@ -97,25 +85,22 @@ class RoutingReliabilityRequestHandler(BaseHandler, ErrorHandler):
                 if interaction in FORWARD_RELIABLE_INTERACTIONS:
                     forward_reliable_address_cache = \
                         forward_reliable_address_cache \
-                        or await self._get_address(FORWARD_RELIABLE_CORE_SPINE_SERVICE_INTERACTION, cpm_filter)
+                        or await self._get_address(FORWARD_RELIABLE_CORE_SPINE_SERVICE_INTERACTION)
                     address = forward_reliable_address_cache
                 elif interaction in FORWARD_EXPRESS_INTERACTIONS:
                     forward_express_address_cache = \
                         forward_express_address_cache \
-                        or await self._get_address(FORWARD_EXPRESS_CORE_SPINE_SERVICE_INTERACTION, cpm_filter)
+                        or await self._get_address(FORWARD_EXPRESS_CORE_SPINE_SERVICE_INTERACTION)
                     address = forward_express_address_cache
 
                 if address:
                     ldap_result['nhsMHSEndPoint'] = [address]
 
-    async def _get_address(self, service_id: str, cpm_filter: List = None) -> str:
+    async def _get_address(self, service_id: str) -> str:
         spine_core_ods_code = config.get_config('SPINE_CORE_ODS_CODE')
         logger.info("Looking up forward reliable/express routing and reliability information. {org_code}, {service_id}",
                     fparams={"org_code": spine_core_ods_code, "service_id": service_id})
-        if cpm_filter and cpm_filter[0] == CPM_FILTER_IDENTIFIER:
-            ldap_results = await get_endpoint_from_cpm(spine_core_ods_code, service_id)
-        else:
-            ldap_results = await self.sds_client.get_mhs_details(spine_core_ods_code, service_id)
+        ldap_results = await self.sds_client.get_mhs_details(spine_core_ods_code, service_id)
         logger.info("Obtained forward reliable/express routing and reliability information. {ldap_results}",
                     fparams={"ldap_results": ldap_results})
 
