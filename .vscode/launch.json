@@ -26,7 +26,9 @@
                 "SDS_LDAP_CONNECTION_RETRIES": "3",
                 "SDS_LDAP_LAZY_CONNECTION": "True",
                 "LOCAL_VENV": "True",
-                "ENVIRONMENT": "internal-dev-sandbox"
+                "APIGEE_URL": "internal-dev-sandbox.api.service.nhs.uk",
+                "CPM_CLIENT_KEY": "JrxvR6WsyTEu8BVVA1qhTbKqoktoVn0y",
+                "CPM_PATH_URL": "cpm-dev-sandbox"
             }
         }
     ]
