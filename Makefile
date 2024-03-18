@@ -66,8 +66,8 @@ release: clean publish build-proxy
 	for f in $(_dist_include); do cp -r $$f dist; done
 	cp ecs-proxies-deploy-internal-dev.yml dist/ecs-deploy-internal-dev.yml
 	cp ecs-proxies-deploy-internal-qa.yml dist/ecs-deploy-internal-qa.yml
-	cp ecs-proxies-deploy.yml dist/ecs-deploy-int.yml
-	cp ecs-proxies-deploy.yml dist/ecs-deploy-ref.yml
+	cp ecs-proxies-deploy-int.yml dist/ecs-deploy-int.yml
+	cp ecs-proxies-deploy-ref.yml dist/ecs-deploy-ref.yml
 	cp ecs-proxies-deploy-dep.yml dist/ecs-deploy-dev.yml
 	cp ecs-proxies-deploy-prod.yml dist/ecs-deploy-prod.yml
 	cp ecs-proxies-deploy-internal-qa-sandbox.yml dist/ecs-deploy-internal-qa-sandbox.yml

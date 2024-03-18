@@ -23,6 +23,8 @@ docker_service:
         valueFrom: "arn:aws:secretsmanager:eu-west-2:{{ PROD_ACCOUNT_ID }}:secret:prod/cis/ldap.national.ncrs.nhs.uk/crt"
       - name: SDS_SECRET_CA_CERTS
         valueFrom: "arn:aws:secretsmanager:eu-west-2:{{ PROD_ACCOUNT_ID }}:secret:prod/ca-certs/nhsd-prod/root-ca/crt"
+      - name: APIGEE_URL
+        valueFrom: "/{{ account }}/platform-common/egress/hosts/apigee-prod"
     health_check:
       matcher: "200"
       path: "/healthcheck"
