@@ -358,6 +358,28 @@ async def test_endpoints(test_app, api_client: APISessionClient, request_data):
         else:
             assert resource_type == 'OperationOutcome', body
     
+    # Re-run with use_cpm as a query
+    query_params_cpm = request_data['query_params']
+    query_params_cpm['use_cpm'] = USE_CPM_ARGUMENT
+    uri_cpm = _build_test_path(request_data['endpoint'], query_params=query_params_cpm)
+    
+    async with api_client.get(
+        uri,
+        headers=headers,
+        allow_retries=True
+    ) as resp:
+        body = await resp.json()
+        assert resp.status == request_data['status_code'], str(resp.status) + " " + str(resp.headers) + " " + str(body)
+        assert 'x-correlation-id' in resp.headers, resp.headers
+        assert resp.headers['x-correlation-id'] == correlation_id
+        resource_type = body['resourceType']
+        if resp.status == 200:
+            assert resource_type == 'Bundle', body
+            assert len(body['entry']) == request_data['result_count'], body
+            assert body['total'] == request_data['result_count'], body
+        else:
+            assert resource_type == 'OperationOutcome', body
+    
 
 @pytest.mark.e2e
 @pytest.mark.asyncio
