@@ -3,7 +3,9 @@ import os
 import tornado.web
 
 from unittest import TestCase
+from unittest.mock import patch, call
 from request.cpm import EndpointCpm, process_cpm_endpoint_request
+from utilities import test_utilities
 
 RETURNED_ENDPOINTS_JSON = "returned_endpoints.json"
 FILTERED_ENDPOINT_1 = "filtered_endpoint.json"
@@ -64,6 +66,7 @@ EXPECTED_LDAP_2 = {
     'nhsMHSSyncReplyMode': 'MSHSignalsOnly',
     'uniqueIdentifier': ['798bc45334bbb95b51de']
 }
+SPINE_CORE_ORG_CODE = "YES"
 
 class TestCPMEndpoints(TestCase):
     
@@ -71,6 +74,14 @@ class TestCPMEndpoints(TestCase):
     def _read_file(file):
         with open(file, 'r') as f:
             return json.load(f)
+    
+    @staticmethod
+    def _set_core_spine_ods_code(mock_config, ods_code):
+        def config_values(*args, **kwargs):
+            return {
+                "SPINE_CORE_ODS_CODE": ods_code
+            }[args[0]]
+        mock_config.side_effect = config_values
     
     def test_filter_results_unsuccessful_missing_required_endpoint(self):
         dir_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.path.join("test_data", "cpm", RETURNED_ENDPOINTS_JSON))
@@ -284,17 +295,6 @@ class TestCPMEndpoints(TestCase):
         translated_data = endpoints.transform_to_ldap(filtered_data)
         self.assertEqual(translated_data, expected)
     
-    # def test_endpoint_process_success(self):
-    #     dir_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.path.join("test_data", "cpm", RETURNED_ENDPOINTS_JSON))
-    #     incoming_json = self._read_file(dir_path)
-    #     filt = {
-    #         "org_code": "RTX",
-    #         "interaction_id": "urn:nhs:names:services:ebs:PRSC_IN070000UK08",
-    #     }
-    #     expected = [EXPECTED_LDAP_1]
-    #     result = process_cpm_endpoint_request(incoming_json, filt)
-    #     self.assertEqual(result, expected)
-    
     def test_extract_service_interaction(self):
         dir_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.path.join("test_data", "cpm", RETURNED_ENDPOINTS_JSON))
         incoming_json = self._read_file(dir_path)
@@ -314,3 +314,29 @@ class TestCPMEndpoints(TestCase):
         
         service = endpoints._extract_service_and_interaction(None)
         self.assertFalse(service)
+    
+    @patch('utilities.config.get_config')
+    def test_endpoint_process_success(self, mock_config):
+        self._set_core_spine_ods_code(mock_config, SPINE_CORE_ORG_CODE)
+        dir_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.path.join("test_data", "cpm", RETURNED_ENDPOINTS_JSON))
+        incoming_json = self._read_file(dir_path)
+        filt = {
+            "org_code": "RTX",
+            "interaction_id": "urn:nhs:names:services:ebs:PRSC_IN070000UK08",
+        }
+        expected = [EXPECTED_LDAP_1_ENDPOINT_MODIFIED]
+        result = process_cpm_endpoint_request(incoming_json, filt)
+        self.assertEqual(result, expected)
+    
+    @patch('utilities.config.get_config')
+    def test_endpoint_process_success_reliability_not_applied(self, mock_config):
+        self._set_core_spine_ods_code(mock_config, SPINE_CORE_ORG_CODE)
+        dir_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.path.join("test_data", "cpm", RETURNED_ENDPOINTS_JSON))
+        incoming_json = self._read_file(dir_path)
+        filt = {
+            "org_code": "RTX",
+            "interaction_id": "urn:nhs:names:services:cpisquery:REPC_IN000007GB01",
+        }
+        expected = [EXPECTED_LDAP_2]
+        result = process_cpm_endpoint_request(incoming_json, filt)
+        self.assertEqual(result, expected)
