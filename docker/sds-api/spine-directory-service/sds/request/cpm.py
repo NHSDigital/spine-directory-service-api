@@ -211,7 +211,7 @@ class EndpointCpm(BaseCpm):
         service_part = parts[-2]
 
         return service_part, interaction_part
-    
+
     def _get_address(self, service_id: str) -> str:
         spine_core_ods_code = config.get_config('SPINE_CORE_ODS_CODE')
         logger.info("Looking up forward reliable/express routing and reliability information. {org_code}, {service_id}",
@@ -224,11 +224,19 @@ class EndpointCpm(BaseCpm):
         filtered_address_endpoint = address_endpoint.filter_cpm_response()
         ldap_address = address_endpoint.transform_to_ldap(filtered_address_endpoint)
         
-        address = ldap_address[0] if len(ldap_address) == 1 else self._raise_value_error("result", ldap_address)
-        return address.get('nhsMHSEndPoint') if len(address) == 1 else self._raise_value_error("address", address)
-    
+        address = []
+        try:
+            if len(ldap_address) != 1:
+                address = ldap_address[0] if len(ldap_address) == 1 else self._raise_value_error("result", ldap_address)
+                return address.get('nhsMHSEndPoint') if len(address) == 1 else self._raise_value_error("address", address)
+        except IndexError as e:
+            self._raise_index_error("result", ldap_address)
+            
     def _raise_value_error(self, message: str, address: List = []):
         raise ValueError(f"Expected 1 {message} for forward reliable/express routing and reliability but got {str(len(address))}")
+    
+    def _raise_index_error(self, message: str, address: List = []):
+        raise IndexError(f"Expected 1 {message} for forward reliable/express routing and reliability but got {str(len(address))}")
 
     
     def _raise_invalid_query_params_error(self):
