@@ -224,13 +224,12 @@ class EndpointCpm(BaseCpm):
         filtered_address_endpoint = address_endpoint.filter_cpm_response()
         ldap_address = address_endpoint.transform_to_ldap(filtered_address_endpoint)
         
-        if len(ldap_address) == 1:
-            if len(ldap_address[0].get('nhsMHSEndPoint', [])) == 1:
-                return ldap_address[0].get('nhsMHSEndPoint', [])[0]
-            else:
-                raise ValueError(f"Expected 1 address for forward reliable/express routing and reliability but got {str(len(addresses))}")
-        else:
-            raise ValueError(f"Expected 1 result for forward reliable/express routing and reliability but got {str(len(ldap_address))}")
+        address = ldap_address[0] if len(ldap_address) == 1 else self._raise_value_error("result", ldap_address)
+        return address.get('nhsMHSEndPoint') if len(address) == 1 else self._raise_value_error("address", address)
+    
+    def _raise_value_error(self, message: str, address: List = []):
+        raise ValueError(f"Expected 1 {message} for forward reliable/express routing and reliability but got {str(len(address))}")
+
     
     def _raise_invalid_query_params_error(self):
         org_code = f'{ORG_CODE_QUERY_PARAMETER_NAME}={ORG_CODE_FHIR_IDENTIFIER}|value'
