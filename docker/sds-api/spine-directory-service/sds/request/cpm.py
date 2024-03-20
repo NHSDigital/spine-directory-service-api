@@ -188,8 +188,7 @@ class EndpointCpm(BaseCpm):
                 
         return ldap_results
     
-    @staticmethod
-    def _get_interaction_address(interaction: str):
+    def _get_interaction_address(self, interaction: str):
         forward_address_cache: Optional[str] = None
         forward_address_cache = forward_address_cache or self._get_address(interaction)
         return forward_address_cache
