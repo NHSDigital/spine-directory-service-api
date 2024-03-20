@@ -59,7 +59,7 @@ def make_get_request(call_name: str, url, headers=None, params=None):
     return res
 
 def handle_error(response, call_name):
-    if response.status_code != 200 and response.status_code != 404:
+    if response.status_code != 200:
         detail = f"Request to {call_name} failed with message: {response.text}"
         logger.info(detail)
         raise SDSException(detail)
