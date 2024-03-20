@@ -10,7 +10,7 @@ from lookup.sds_exception import SDSException
 from request.base_handler import ORG_CODE_QUERY_PARAMETER_NAME, ORG_CODE_FHIR_IDENTIFIER, \
     IDENTIFIER_QUERY_PARAMETER_NAME, SERVICE_ID_FHIR_IDENTIFIER, PARTY_KEY_FHIR_IDENTIFIER
 from request.cpm_config import DEVICE_FILTER_MAP, ENDPOINT_FILTER_MAP, DEVICE_DATA_MAP, ENDPOINT_DATA_MAP, DEFAULT_ENDPOINT_DICT, DEFAULT_DEVICE_DICT
-from utilities.constants import RELIABLE_SERVICES, FORWARD_RELIABLE_INTERACTIONS, FORWARD_EXPRESS_INTERACTIONS, FORWARD_RELIABLE_CORE_SPINE_SERVICE_INTERACTION, FORWARD_EXPRESS_CORE_SPINE_SERVICE_INTERACTION
+from utilities.constants import INTERACTION_MAPPINGS
 from utilities import config
 from utilities import integration_adaptors_logger as log
 
@@ -174,28 +174,25 @@ class EndpointCpm(BaseCpm):
             self._raise_invalid_query_params_error()
     
     def set_mhs_endpoint(self, ldap_results):
-        forward_reliable_address_cache: Optional[str] = None
-        forward_express_address_cache: Optional[str] = None
-        
         for key, ldap_result in enumerate(ldap_results):
             service, interaction = self._extract_service_and_interaction(ldap_result['nhsMhsSvcIA'])
             if service in RELIABLE_SERVICES:
                 address: Optional[str] = None
-                if interaction in FORWARD_RELIABLE_INTERACTIONS:
-                    forward_reliable_address_cache = \
-                        forward_reliable_address_cache \
-                        or self._get_address(FORWARD_RELIABLE_CORE_SPINE_SERVICE_INTERACTION)
-                    address = forward_reliable_address_cache
-                elif interaction in FORWARD_EXPRESS_INTERACTIONS:
-                    forward_express_address_cache = \
-                        forward_express_address_cache \
-                        or self._get_address(FORWARD_EXPRESS_CORE_SPINE_SERVICE_INTERACTION)
-                    address = forward_express_address_cache
+                for interactions, core_spine_interaction in INTERACTION_MAPPINGS.items():
+                    if interaction in interactions:
+                        address = self._get_interaction_address(core_spine_interaction)
+                        break
 
                 if address:
                     ldap_results[key]['nhsMHSEndPoint'] = [address]
                 
         return ldap_results
+    
+    @staticmethod
+    def _get_interaction_address(interaction: str):
+        forward_address_cache: Optional[str] = None
+        forward_address_cache = forward_address_cache or self._get_address(interaction)
+        return forward_address_cache
     
     @staticmethod
     def _extract_service_and_interaction(service_interaction: str):
