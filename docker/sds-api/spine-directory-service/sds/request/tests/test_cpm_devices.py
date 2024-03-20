@@ -3,7 +3,9 @@ import os
 import tornado.web
 
 from unittest import TestCase
-from request.cpm import DeviceCpm, process_cpm_device_request
+from jsonschema import validate
+from request.cpm import DeviceCpm, process_cpm_device_request, CpmClient
+from request.tests.test_data.cpm.schema import device_schema_json
 from lookup.sds_exception import SDSException
 
 RETURNED_DEVICES_JSON = "returned_devices.json"
@@ -43,7 +45,7 @@ EXPECTED_LDAP_1 = {
     'nhsMhsManufacturerOrg': 'LSP02', 
     'nhsMhsPartyKey': '5NR-801831', 
     'nhsIdCode': '5NR', 
-    'uniqueIdentifier': '010057927542'
+    'uniqueIdentifier': ['010057927542']
 }
 
 EXPECTED_LDAP_2 = {
@@ -119,7 +121,7 @@ EXPECTED_LDAP_2 = {
     'nhsMhsManufacturerOrg': 'LSP02', 
     'nhsMhsPartyKey': 'RTX-806845', 
     'nhsIdCode': 'RTX', 
-    'uniqueIdentifier': '798706756516'
+    'uniqueIdentifier': ['798706756516']
 }
 
 class TestCPMDevice(TestCase):
