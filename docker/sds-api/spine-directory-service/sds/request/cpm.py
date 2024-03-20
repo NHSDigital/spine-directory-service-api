@@ -10,7 +10,7 @@ from lookup.sds_exception import SDSException
 from request.base_handler import ORG_CODE_QUERY_PARAMETER_NAME, ORG_CODE_FHIR_IDENTIFIER, \
     IDENTIFIER_QUERY_PARAMETER_NAME, SERVICE_ID_FHIR_IDENTIFIER, PARTY_KEY_FHIR_IDENTIFIER
 from request.cpm_config import DEVICE_FILTER_MAP, ENDPOINT_FILTER_MAP, DEVICE_DATA_MAP, ENDPOINT_DATA_MAP, DEFAULT_ENDPOINT_DICT, DEFAULT_DEVICE_DICT
-from utilities.constants import INTERACTION_MAPPINGS
+from utilities.constants import INTERACTION_MAPPINGS, RELIABLE_SERVICES
 from utilities import config
 from utilities import integration_adaptors_logger as log
 
