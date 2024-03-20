@@ -222,9 +222,9 @@ class EndpointCpm(BaseCpm):
         
         address = []
         try:
-            if len(ldap_address) != 1:
+            if len(ldap_address) == 1:
                 address = ldap_address[0] if len(ldap_address) == 1 else self._raise_value_error("result", ldap_address)
-                return address.get('nhsMHSEndPoint') if len(address) == 1 else self._raise_value_error("address", address)
+                return address.get('nhsMHSEndPoint') if len(address['nhsMHSEndPoint']) == 1 else self._raise_value_error("address", address)
         except IndexError:
             self._raise_index_error("result", ldap_address)
             
