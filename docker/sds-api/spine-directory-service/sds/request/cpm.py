@@ -184,7 +184,7 @@ class EndpointCpm(BaseCpm):
                         break
 
                 if address:
-                    ldap_results[key]['nhsMHSEndPoint'] = [address]
+                    ldap_results[key]['nhsMHSEndPoint'] = address
                 
         return ldap_results
     
