@@ -178,7 +178,7 @@ class EndpointCpm(BaseCpm):
             service, interaction = self._extract_service_and_interaction(ldap_result['nhsMhsSvcIA'])
             if service in RELIABLE_SERVICES:
                 address: Optional[str] = None
-                for interactions, core_spine_interaction in INTERACTION_MAPPINGS.items():
+                for core_spine_interaction, interactions in INTERACTION_MAPPINGS.items():
                     if interaction in interactions:
                         address = self._get_interaction_address(core_spine_interaction)
                         break
