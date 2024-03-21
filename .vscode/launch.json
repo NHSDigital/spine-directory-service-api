@@ -26,7 +26,8 @@
                 "SDS_LDAP_CONNECTION_RETRIES": "3",
                 "SDS_LDAP_LAZY_CONNECTION": "True",
                 "LOCAL_VENV": "True",
-                "ENVIRONMENT": "internal-dev-sandbox"
+                "ENVIRONMENT": "internal-dev-sandbox",
+                "CPM_CLIENT_KEY": "JrxvR6WsyTEu8BVVA1qhTbKqoktoVn0y"
             }
         }
     ]

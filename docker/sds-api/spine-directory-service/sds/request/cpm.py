@@ -10,7 +10,6 @@ from lookup.sds_exception import SDSException
 from request.base_handler import ORG_CODE_QUERY_PARAMETER_NAME, ORG_CODE_FHIR_IDENTIFIER, \
     IDENTIFIER_QUERY_PARAMETER_NAME, SERVICE_ID_FHIR_IDENTIFIER, PARTY_KEY_FHIR_IDENTIFIER
 from request.cpm_config import DEVICE_FILTER_MAP, ENDPOINT_FILTER_MAP, DEVICE_DATA_MAP, ENDPOINT_DATA_MAP, DEFAULT_ENDPOINT_DICT, DEFAULT_DEVICE_DICT
-
 from utilities import integration_adaptors_logger as log
 logger = log.IntegrationAdaptorsLogger(__name__)
 
@@ -18,10 +17,10 @@ logger = log.IntegrationAdaptorsLogger(__name__)
 async def get_device_from_cpm(org_code: str, interaction_id: str, manufacturing_organization: str = None, party_key: str = None) -> List:
     query_parts = locals()
     try:
-        client_id = os.environ["CPM_CLIENT_KEY"]
+        client_id = os.environ['CPM_CLIENT_KEY']
         apigee_url = f"{os.environ['APIGEE_URL']}/{os.environ['CPM_PATH_URL']}"
     except KeyError as e:
-        raise KeyError(f"Environment variable is required {e}")
+        raise KeyError(f"Environment variable is required {e} env vars equal: {os.environ}")
     cpm_client = CpmClient(client_id=client_id, apigee_url=apigee_url, endpoint="product")
     data = await cpm_client.get_cpm()
 
@@ -31,7 +30,7 @@ async def get_device_from_cpm(org_code: str, interaction_id: str, manufacturing_
 async def get_endpoint_from_cpm(ods_code: str, interaction_id: str = None, party_key: str = None) -> List:
     query_parts = locals()
     try:
-        client_id = os.environ["CPM_CLIENT_KEY"]
+        client_id = os.environ['CPM_CLIENT_KEY']
         apigee_url = f"{os.environ['APIGEE_URL']}/{os.environ['CPM_PATH_URL']}"
     except KeyError as e:
         raise KeyError(f"Environment variable is required {e}")
@@ -52,12 +51,12 @@ def process_cpm_device_request(data: dict, query_parts: dict):
 
 def make_get_request(call_name: str, url, headers=None, params=None):
     res = requests.get(url, headers=headers, params=params)
-    handle_error(res, call_name)
+    handle_error(res, call_name, headers, params)
     return res
 
-def handle_error(response, call_name):
-    if response.status_code != 200 and response.status_code != 404:
-        detail = f"Request to {call_name} failed with message: {response.text}"
+def handle_error(response, call_name, headers, params):
+    if response.status_code != 200:
+        detail = f"Request to {call_name} failed with message: {response.text} with headers: {headers} and params: {params} and env vars: {os.environ}"
         logger.info(detail)
         raise SDSException(detail)
 
