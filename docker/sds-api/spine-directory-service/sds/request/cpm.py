@@ -180,18 +180,13 @@ class EndpointCpm(BaseCpm):
                 address: Optional[str] = None
                 for core_spine_interaction, interactions in INTERACTION_MAPPINGS.items():
                     if interaction in interactions:
-                        address = self._get_interaction_address(core_spine_interaction)
+                        address = self._get_address(core_spine_interaction)
                         break
 
                 if address:
                     ldap_results[key]['nhsMHSEndPoint'] = address
                 
         return ldap_results
-    
-    def _get_interaction_address(self, interaction: str):
-        forward_address_cache: Optional[str] = None
-        forward_address_cache = forward_address_cache or self._get_address(interaction)
-        return forward_address_cache
     
     @staticmethod
     def _extract_service_and_interaction(service_interaction: str):
