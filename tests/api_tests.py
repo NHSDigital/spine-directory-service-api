@@ -287,7 +287,29 @@ async def test_endpoints_are_secured(api_client: APISessionClient, endpoint):
             },
             'status_code': 200,
             'result_count': 0
-        }
+        },
+        # condition 15: Return an Endpoint from CPM
+        {
+            'endpoint': 'Endpoint',
+            'query_params': {
+                'organization': f'{ENDPOINT_ORGANIZATION_FHIR_IDENTIFIER}|RTX',
+                'identifier': f'{ENDPOINT_INTERACTION_ID_FHIR_IDENTIFIER}|urn:nhs:names:services:ebs:PRSC_IN070000UK08',
+                'use_cpm': USE_CPM_ARGUMENT
+            },
+            'status_code': 200,
+            'result_count': 1
+        },
+        # condition 16: Return no Endpoints from CPM, no matches
+        {
+            'endpoint': 'Endpoint',
+            'query_params': {
+                'organization': f'{ENDPOINT_ORGANIZATION_FHIR_IDENTIFIER}|FOO',
+                'identifier': f'{ENDPOINT_INTERACTION_ID_FHIR_IDENTIFIER}|urn:nhs:names:services:ebs:PRSC_IN070000UK08',
+                'use_cpm': USE_CPM_ARGUMENT
+            },
+            'status_code': 200,
+            'result_count': 0
+        },
     ],
     ids=[
         'condition 1: Endpoint organization query parameters present with service id',
@@ -304,6 +326,8 @@ async def test_endpoints_are_secured(api_client: APISessionClient, endpoint):
         'condition 12: Device invalid fhir identifier on mandatory query parameter',
         'condition 13: Return a Device from CPM',
         'condition 14: Return no Devices from CPM, no matches',
+        'condition 15: Return an Endpoint from CPM',
+        'condition 16: Return no Endpoints from CPM, no matches',
     ]
 )
 async def test_endpoints(test_app, api_client: APISessionClient, request_data):
@@ -316,21 +340,30 @@ async def test_endpoints(test_app, api_client: APISessionClient, request_data):
 
     query_params = request_data['query_params']
     uri = _build_test_path(request_data['endpoint'], query_params)
+    await _assert_response(api_client, uri, headers, request_data['result_count'], request_data['status_code'], correlation_id)
     
+    # Re-run with use_cpm as a query
+    query_params_cpm = request_data['query_params']
+    query_params_cpm['use_cpm'] = USE_CPM_ARGUMENT
+    uri_cpm = _build_test_path(request_data['endpoint'], query_params=query_params_cpm)
+    await _assert_response(api_client, uri_cpm, headers, request_data['result_count'], request_data['status_code'], correlation_id)
+
+       
+async def _assert_response(api_client, uri, headers, result_count, expected_status, correlation_id):
     async with api_client.get(
         uri,
         headers=headers,
         allow_retries=True
     ) as resp:
         body = await resp.json()
-        assert resp.status == request_data['status_code'], str(resp.status) + " " + str(resp.headers) + " " + str(body)
+        assert resp.status == expected_status, str(resp.status) + " " + str(resp.headers) + " " + str(body)
         assert 'x-correlation-id' in resp.headers, resp.headers
         assert resp.headers['x-correlation-id'] == correlation_id
         resource_type = body['resourceType']
         if resp.status == 200:
             assert resource_type == 'Bundle', body
-            assert len(body['entry']) == request_data['result_count'], body
-            assert body['total'] == request_data['result_count'], body
+            assert len(body['entry']) == result_count, body
+            assert body['total'] == result_count, body
         else:
             assert resource_type == 'OperationOutcome', body
     

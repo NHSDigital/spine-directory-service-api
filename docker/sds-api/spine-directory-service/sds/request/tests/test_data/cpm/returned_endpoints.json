@@ -678,6 +678,678 @@
                     ]
                 }
             ]
+        },
+        {
+            "resourceType": "Bundle",
+            "id": "11C55B9F-0D7A-41DB-8BE6-306DABA69701",
+            "type": "collection",
+            "total": 1,
+            "link": [
+                {
+                    "relation": "self",
+                    "url": "https://cpm.co.uk/Device/39ae1fe2-dd84-4d9a-af2a-ca0e63f53cah"
+                }
+            ],
+            "entry": [
+                {
+                    "fullUrl": "https://cpm.co.uk/Device/39ae1fe2-dd84-4d9a-af2a-ca0e63f53cah",
+                    "resource": {
+                        "resourceType": "Device",
+                        "deviceName": [
+                            {
+                                "name": "ReliableIntermediary",
+                                "type": "user-friendly-name"
+                            }
+                        ],
+                        "definition": {
+                            "identifier": {
+                                "system": "connecting-party-manager/device-type",
+                                "value": "endpoint"
+                            }
+                        },
+                        "identifier": [
+                            {
+                                "system": "https://fhir.nhs.uk/Id/nhsMhsPartyKey|Extension-SDS-NhsServiceInteractionId",
+                                "value": "YES-0000806|urn:nhs:names:services:tms:ReliableIntermediary"
+                            },
+                            {
+                                "system": "https://fhir.nhs.uk/Id/nhsMHSId",
+                                "value": "S20001A000192"
+                            }
+                        ],
+                        "owner": {
+                            "identifier": {
+                                "system": "connecting-party-manager/product-team-id",
+                                "value": "ae2ab026-0b53-7e7c-7a65-f0407a6e75f5"
+                            }
+                        }
+                    },
+                    "search": {"mode": "match"}
+                },
+                {
+                    "resourceType": "QuestionnaireResponse",
+                    "identifier": "YES-0000806|urn:nhs:names:services:tms:ReliableIntermediary",
+                    "questionnaire": "https://cpm.co.uk/Questionnaire/spine_endpoint|v1",
+                    "status": "completed",
+                    "subject": {
+                        "reference": "https://cpm.co.uk/Device/39ae1fe2-dd84-4d9a-af2a-ca0e63f53cah"
+                    },
+                    "authored": "<dateTime>",
+                    "author": {
+                        "reference": "https://cpm.co.uk/Organization/ae2ab026-0b53-7e7c-7a65-f0407a6e75f5"
+                    },
+                    "item": [
+                        {
+                            "link_id": "object_class",
+                            "text": "object_class",
+                            "answer": [
+                                {"valueString": "nhsMhs"},
+                                {"valueString": "top"}
+                            ]
+                        },
+                        {
+                            "linkId": "nhs_mhs_actor",
+                            "text": "nhs_mhs_actor",
+                            "answer": []
+                        },
+                        {
+                            "link_id": "nhs_id_code",
+                            "text": "nhs_id_code",
+                            "answer": [{"valueString": "YES"}]
+                        },
+                        {
+                            "link_id": "nhs_mhs_ack_requested",
+                            "text": "nhs_mhs_ack_requested",
+                            "answer": [{"valueString": "never"}]
+                        },
+                        {
+                            "link_id": "nhs_mhs_cpa_id",
+                            "text": "nhs_mhs_cpa_id",
+                            "answer": [
+                                {"valueString": "S20001A000192"}
+                            ]
+                        },
+                        {
+                            "link_id": "nhs_mhs_duplicate_elimination",
+                            "text": "nhs_mhs_duplicate_elimination",
+                            "answer": [{"valueString": "never"}]
+                        },
+                        {
+                            "link_id": "nhs_mhs_end_point",
+                            "text": "nhs_mhs_end_point",
+                            "answer": [
+                                {
+                                    "valueString": "https://msg.int.spine2.ncrs.nhs.uk/reliablemessaging/intermediary"
+                                }
+                            ]
+                        },
+                        {
+                            "link_id": "nhs_mhs_fqdn",
+                            "text": "nhs_mhs_fqdn",
+                            "answer": [
+                                {"valueString": "msg.int.spine2.ncrs.nhs.uk"}
+                            ]
+                        },
+                        {
+                            "link_id": "nhs_mhs_in",
+                            "text": "nhs_mhs_in",
+                            "answer": [{"valueString": "ReliableIntermediary"}]
+                        },
+                        {
+                            "link_id": "nhs_mhs_party_key",
+                            "text": "nhs_mhs_party_key",
+                            "answer": [{"valueString": "YES-0000806"}]
+                        },
+                        {
+                            "link_id": "nhs_mhs_sn",
+                            "text": "nhs_mhs_sn",
+                            "answer": [
+                                {"valueString": "urn:nhs:names:services:tms"}
+                            ]
+                        },
+                        {
+                            "link_id": "nhs_mhs_svc_ia",
+                            "text": "nhs_mhs_svc_ia",
+                            "answer": [
+                                {
+                                    "valueString": "urn:nhs:names:services:tms:ReliableIntermediary"
+                                }
+                            ]
+                        },
+                        {
+                            "link_id": "nhs_mhs_sync_reply_mode",
+                            "text": "nhs_mhs_sync_reply_mode",
+                            "answer": [{"valueString": "None"}]
+                        },
+                        {
+                            "linkId": "nhs_mhs_persist_duration",
+                            "text": "nhs_mhs_persist_duration",
+                            "answer": []
+                        },
+                        {
+                            "linkId": "nhs_mhs_retries",
+                            "text": "nhs_mhs_retries",
+                            "answer": []
+                        },
+                        {
+                            "linkId": "nhs_mhs_retry_interval",
+                            "text": "nhs_mhs_retry_interval",
+                            "answer": []
+                        },
+                        {
+                            "link_id": "unique_identifier",
+                            "text": "unique_identifier",
+                            "answer": [
+                                {"valueString": "S20001A000192"}
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "resourceType": "Bundle",
+            "id": "11C55B9F-0D7A-41DB-8BE6-306DABA69701",
+            "type": "collection",
+            "total": 1,
+            "link": [
+                {
+                    "relation": "self",
+                    "url": "https://cpm.co.uk/Device/39ae1fe2-dd84-4d9a-af2a-ca0e63f53cah"
+                }
+            ],
+            "entry": [
+                {
+                    "fullUrl": "https://cpm.co.uk/Device/39ae1fe2-dd84-4d9a-af2a-ca0e63f53cah",
+                    "resource": {
+                        "resourceType": "Device",
+                        "deviceName": [
+                            {
+                                "name": "ReliableIntermediary",
+                                "type": "user-friendly-name"
+                            }
+                        ],
+                        "definition": {
+                            "identifier": {
+                                "system": "connecting-party-manager/device-type",
+                                "value": "endpoint"
+                            }
+                        },
+                        "identifier": [
+                            {
+                                "system": "https://fhir.nhs.uk/Id/nhsMhsPartyKey|Extension-SDS-NhsServiceInteractionId",
+                                "value": "YEA-801248|urn:nhs:names:services:tms:ReliableIntermediary"
+                            },
+                            {
+                                "system": "https://fhir.nhs.uk/Id/nhsMHSId",
+                                "value": "S2001930A2012103"
+                            }
+                        ],
+                        "owner": {
+                            "identifier": {
+                                "system": "connecting-party-manager/product-team-id",
+                                "value": "ae2ab026-0b53-7e7c-7a65-f0407a6e75f5"
+                            }
+                        }
+                    },
+                    "search": {"mode": "match"}
+                },
+                {
+                    "resourceType": "QuestionnaireResponse",
+                    "identifier": "YEA-801248|urn:nhs:names:services:tms:ReliableIntermediary",
+                    "questionnaire": "https://cpm.co.uk/Questionnaire/spine_endpoint|v1",
+                    "status": "completed",
+                    "subject": {
+                        "reference": "https://cpm.co.uk/Device/39ae1fe2-dd84-4d9a-af2a-ca0e63f53cah"
+                    },
+                    "authored": "<dateTime>",
+                    "author": {
+                        "reference": "https://cpm.co.uk/Organization/ae2ab026-0b53-7e7c-7a65-f0407a6e75f5"
+                    },
+                    "item": [
+                        {
+                            "link_id": "object_class",
+                            "text": "object_class",
+                            "answer": [
+                                {"valueString": "nhsMhs"},
+                                {"valueString": "top"}
+                            ]
+                        },
+                        {
+                            "linkId": "nhs_mhs_actor",
+                            "text": "nhs_mhs_actor",
+                            "answer": []
+                        },
+                        {
+                            "link_id": "nhs_id_code",
+                            "text": "nhs_id_code",
+                            "answer": [{"valueString": "YEA"}]
+                        },
+                        {
+                            "link_id": "nhs_mhs_ack_requested",
+                            "text": "nhs_mhs_ack_requested",
+                            "answer": [{"valueString": "never"}]
+                        },
+                        {
+                            "link_id": "nhs_mhs_cpa_id",
+                            "text": "nhs_mhs_cpa_id",
+                            "answer": [
+                                {"valueString": "S2001930A2012103"}
+                            ]
+                        },
+                        {
+                            "link_id": "nhs_mhs_duplicate_elimination",
+                            "text": "nhs_mhs_duplicate_elimination",
+                            "answer": [{"valueString": "never"}]
+                        },
+                        {
+                            "link_id": "nhs_mhs_end_point",
+                            "text": "nhs_mhs_end_point",
+                            "answer": [
+                                {
+                                    "valueString": "https://rmmid.nis1.national.ncrs.nhs.uk/reliablemessaging/forwardreliable"
+                                }
+                            ]
+                        },
+                        {
+                            "link_id": "nhs_mhs_fqdn",
+                            "text": "nhs_mhs_fqdn",
+                            "answer": [
+                                {"valueString": "appliedendpoint.spine.nhs.uk"}
+                            ]
+                        },
+                        {
+                            "link_id": "nhs_mhs_in",
+                            "text": "nhs_mhs_in",
+                            "answer": [{"valueString": "ReliableIntermediary"}]
+                        },
+                        {
+                            "link_id": "nhs_mhs_party_key",
+                            "text": "nhs_mhs_party_key",
+                            "answer": [{"valueString": "YEA-801248"}]
+                        },
+                        {
+                            "link_id": "nhs_mhs_sn",
+                            "text": "nhs_mhs_sn",
+                            "answer": [
+                                {"valueString": "urn:nhs:names:services:tms"}
+                            ]
+                        },
+                        {
+                            "link_id": "nhs_mhs_svc_ia",
+                            "text": "nhs_mhs_svc_ia",
+                            "answer": [
+                                {
+                                    "valueString": "urn:nhs:names:services:tms:ReliableIntermediary"
+                                }
+                            ]
+                        },
+                        {
+                            "link_id": "nhs_mhs_sync_reply_mode",
+                            "text": "nhs_mhs_sync_reply_mode",
+                            "answer": [{"valueString": "None"}]
+                        },
+                        {
+                            "linkId": "nhs_mhs_persist_duration",
+                            "text": "nhs_mhs_persist_duration",
+                            "answer": []
+                        },
+                        {
+                            "linkId": "nhs_mhs_retries",
+                            "text": "nhs_mhs_retries",
+                            "answer": []
+                        },
+                        {
+                            "linkId": "nhs_mhs_retry_interval",
+                            "text": "nhs_mhs_retry_interval",
+                            "answer": []
+                        },
+                        {
+                            "link_id": "unique_identifier",
+                            "text": "unique_identifier",
+                            "answer": [
+                                {"valueString": "S2001930A2012103"}
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "resourceType": "Bundle",
+            "id": "11C55B9F-0D7A-41DB-8BE6-306DABA69701",
+            "type": "collection",
+            "total": 1,
+            "link": [
+                {
+                    "relation": "self",
+                    "url": "https://cpm.co.uk/Device/39ae1fe2-dd84-4d9a-af2a-ca0e63f53cah"
+                }
+            ],
+            "entry": [
+                {
+                    "fullUrl": "https://cpm.co.uk/Device/39ae1fe2-dd84-4d9a-af2a-ca0e63f53cah",
+                    "resource": {
+                        "resourceType": "Device",
+                        "deviceName": [
+                            {
+                                "name": "ExpressIntermediary",
+                                "type": "user-friendly-name"
+                            }
+                        ],
+                        "definition": {
+                            "identifier": {
+                                "system": "connecting-party-manager/device-type",
+                                "value": "endpoint"
+                            }
+                        },
+                        "identifier": [
+                            {
+                                "system": "https://fhir.nhs.uk/Id/nhsMhsPartyKey|Extension-SDS-NhsServiceInteractionId",
+                                "value": "YES-0000806|urn:nhs:names:services:tms:ExpressIntermediary"
+                            },
+                            {
+                                "system": "https://fhir.nhs.uk/Id/nhsMHSId",
+                                "value": "S20001A000190"
+                            }
+                        ],
+                        "owner": {
+                            "identifier": {
+                                "system": "connecting-party-manager/product-team-id",
+                                "value": "ae2ab026-0b53-7e7c-7a65-f0407a6e75f5"
+                            }
+                        }
+                    },
+                    "search": {"mode": "match"}
+                },
+                {
+                    "resourceType": "QuestionnaireResponse",
+                    "identifier": "YES-0000806|urn:nhs:names:services:tms:ExpressIntermediary",
+                    "questionnaire": "https://cpm.co.uk/Questionnaire/spine_endpoint|v1",
+                    "status": "completed",
+                    "subject": {
+                        "reference": "https://cpm.co.uk/Device/39ae1fe2-dd84-4d9a-af2a-ca0e63f53cah"
+                    },
+                    "authored": "<dateTime>",
+                    "author": {
+                        "reference": "https://cpm.co.uk/Organization/ae2ab026-0b53-7e7c-7a65-f0407a6e75f5"
+                    },
+                    "item": [
+                        {
+                            "link_id": "object_class",
+                            "text": "object_class",
+                            "answer": [
+                                {"valueString": "nhsMhs"},
+                                {"valueString": "top"}
+                            ]
+                        },
+                        {
+                            "linkId": "nhs_mhs_actor",
+                            "text": "nhs_mhs_actor",
+                            "answer": []
+                        },
+                        {
+                            "link_id": "nhs_id_code",
+                            "text": "nhs_id_code",
+                            "answer": [{"valueString": "YES"}]
+                        },
+                        {
+                            "link_id": "nhs_mhs_ack_requested",
+                            "text": "nhs_mhs_ack_requested",
+                            "answer": [{"valueString": "never"}]
+                        },
+                        {
+                            "link_id": "nhs_mhs_cpa_id",
+                            "text": "nhs_mhs_cpa_id",
+                            "answer": [
+                                {"valueString": "S20001A000190"}
+                            ]
+                        },
+                        {
+                            "link_id": "nhs_mhs_duplicate_elimination",
+                            "text": "nhs_mhs_duplicate_elimination",
+                            "answer": [{"valueString": "never"}]
+                        },
+                        {
+                            "link_id": "nhs_mhs_end_point",
+                            "text": "nhs_mhs_end_point",
+                            "answer": [
+                                {
+                                    "valueString": "https://msg.int.spine2.ncrs.nhs.uk/reliablemessaging/intermediary"
+                                }
+                            ]
+                        },
+                        {
+                            "link_id": "nhs_mhs_fqdn",
+                            "text": "nhs_mhs_fqdn",
+                            "answer": [
+                                {"valueString": "msg.int.spine2.ncrs.nhs.uk"}
+                            ]
+                        },
+                        {
+                            "link_id": "nhs_mhs_in",
+                            "text": "nhs_mhs_in",
+                            "answer": [{"valueString": "ExpressIntermediary"}]
+                        },
+                        {
+                            "link_id": "nhs_mhs_party_key",
+                            "text": "nhs_mhs_party_key",
+                            "answer": [{"valueString": "YES-0000806"}]
+                        },
+                        {
+                            "link_id": "nhs_mhs_sn",
+                            "text": "nhs_mhs_sn",
+                            "answer": [
+                                {"valueString": "urn:nhs:names:services:tms"}
+                            ]
+                        },
+                        {
+                            "link_id": "nhs_mhs_svc_ia",
+                            "text": "nhs_mhs_svc_ia",
+                            "answer": [
+                                {
+                                    "valueString": "urn:nhs:names:services:tms:ExpressIntermediary"
+                                }
+                            ]
+                        },
+                        {
+                            "link_id": "nhs_mhs_sync_reply_mode",
+                            "text": "nhs_mhs_sync_reply_mode",
+                            "answer": [{"valueString": "None"}]
+                        },
+                        {
+                            "linkId": "nhs_mhs_persist_duration",
+                            "text": "nhs_mhs_persist_duration",
+                            "answer": []
+                        },
+                        {
+                            "linkId": "nhs_mhs_retries",
+                            "text": "nhs_mhs_retries",
+                            "answer": []
+                        },
+                        {
+                            "linkId": "nhs_mhs_retry_interval",
+                            "text": "nhs_mhs_retry_interval",
+                            "answer": []
+                        },
+                        {
+                            "link_id": "unique_identifier",
+                            "text": "unique_identifier",
+                            "answer": [
+                                {"valueString": "S20001A000190"}
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "resourceType": "Bundle",
+            "id": "11C55B9F-0D7A-41DB-8BE6-306DABA69701",
+            "type": "collection",
+            "total": 1,
+            "link": [
+                {
+                    "relation": "self",
+                    "url": "https://cpm.co.uk/Device/39ae1fe2-dd84-4d9a-af2a-ca0e63f53cah"
+                }
+            ],
+            "entry": [
+                {
+                    "fullUrl": "https://cpm.co.uk/Device/39ae1fe2-dd84-4d9a-af2a-ca0e63f53cah",
+                    "resource": {
+                        "resourceType": "Device",
+                        "deviceName": [
+                            {
+                                "name": "ExpressIntermediary",
+                                "type": "user-friendly-name"
+                            }
+                        ],
+                        "definition": {
+                            "identifier": {
+                                "system": "connecting-party-manager/device-type",
+                                "value": "endpoint"
+                            }
+                        },
+                        "identifier": [
+                            {
+                                "system": "https://fhir.nhs.uk/Id/nhsMhsPartyKey|Extension-SDS-NhsServiceInteractionId",
+                                "value": "YEA-801248|urn:nhs:names:services:tms:ExpressIntermediary"
+                            },
+                            {
+                                "system": "https://fhir.nhs.uk/Id/nhsMHSId",
+                                "value": "S2001930A2012104"
+                            }
+                        ],
+                        "owner": {
+                            "identifier": {
+                                "system": "connecting-party-manager/product-team-id",
+                                "value": "ae2ab026-0b53-7e7c-7a65-f0407a6e75f5"
+                            }
+                        }
+                    },
+                    "search": {"mode": "match"}
+                },
+                {
+                    "resourceType": "QuestionnaireResponse",
+                    "identifier": "YEA-801248|urn:nhs:names:services:tms:ExpressIntermediary",
+                    "questionnaire": "https://cpm.co.uk/Questionnaire/spine_endpoint|v1",
+                    "status": "completed",
+                    "subject": {
+                        "reference": "https://cpm.co.uk/Device/39ae1fe2-dd84-4d9a-af2a-ca0e63f53cah"
+                    },
+                    "authored": "<dateTime>",
+                    "author": {
+                        "reference": "https://cpm.co.uk/Organization/ae2ab026-0b53-7e7c-7a65-f0407a6e75f5"
+                    },
+                    "item": [
+                        {
+                            "link_id": "object_class",
+                            "text": "object_class",
+                            "answer": [
+                                {"valueString": "nhsMhs"},
+                                {"valueString": "top"}
+                            ]
+                        },
+                        {
+                            "linkId": "nhs_mhs_actor",
+                            "text": "nhs_mhs_actor",
+                            "answer": []
+                        },
+                        {
+                            "link_id": "nhs_id_code",
+                            "text": "nhs_id_code",
+                            "answer": [{"valueString": "YEA"}]
+                        },
+                        {
+                            "link_id": "nhs_mhs_ack_requested",
+                            "text": "nhs_mhs_ack_requested",
+                            "answer": [{"valueString": "never"}]
+                        },
+                        {
+                            "link_id": "nhs_mhs_cpa_id",
+                            "text": "nhs_mhs_cpa_id",
+                            "answer": [
+                                {"valueString": "S2001930A2012104"}
+                            ]
+                        },
+                        {
+                            "link_id": "nhs_mhs_duplicate_elimination",
+                            "text": "nhs_mhs_duplicate_elimination",
+                            "answer": [{"valueString": "never"}]
+                        },
+                        {
+                            "link_id": "nhs_mhs_end_point",
+                            "text": "nhs_mhs_end_point",
+                            "answer": [
+                                {
+                                    "valueString": "https://ummid.nis1.national.ncrs.nhs.uk/reliablemessaging/intermediary"
+                                }
+                            ]
+                        },
+                        {
+                            "link_id": "nhs_mhs_fqdn",
+                            "text": "nhs_mhs_fqdn",
+                            "answer": [
+                                {"valueString": "appliedendpoint.spine.nhs.uk"}
+                            ]
+                        },
+                        {
+                            "link_id": "nhs_mhs_in",
+                            "text": "nhs_mhs_in",
+                            "answer": [{"valueString": "ExpressIntermediary"}]
+                        },
+                        {
+                            "link_id": "nhs_mhs_party_key",
+                            "text": "nhs_mhs_party_key",
+                            "answer": [{"valueString": "YEA-801248"}]
+                        },
+                        {
+                            "link_id": "nhs_mhs_sn",
+                            "text": "nhs_mhs_sn",
+                            "answer": [
+                                {"valueString": "urn:nhs:names:services:tms"}
+                            ]
+                        },
+                        {
+                            "link_id": "nhs_mhs_svc_ia",
+                            "text": "nhs_mhs_svc_ia",
+                            "answer": [
+                                {
+                                    "valueString": "urn:nhs:names:services:tms:ExpressIntermediary"
+                                }
+                            ]
+                        },
+                        {
+                            "link_id": "nhs_mhs_sync_reply_mode",
+                            "text": "nhs_mhs_sync_reply_mode",
+                            "answer": [{"valueString": "None"}]
+                        },
+                        {
+                            "linkId": "nhs_mhs_persist_duration",
+                            "text": "nhs_mhs_persist_duration",
+                            "answer": []
+                        },
+                        {
+                            "linkId": "nhs_mhs_retries",
+                            "text": "nhs_mhs_retries",
+                            "answer": []
+                        },
+                        {
+                            "linkId": "nhs_mhs_retry_interval",
+                            "text": "nhs_mhs_retry_interval",
+                            "answer": []
+                        },
+                        {
+                            "link_id": "unique_identifier",
+                            "text": "unique_identifier",
+                            "answer": [
+                                {"valueString": "S2001930A2012104"}
+                            ]
+                        }
+                    ]
+                }
+            ]
         }
     ]
 }
