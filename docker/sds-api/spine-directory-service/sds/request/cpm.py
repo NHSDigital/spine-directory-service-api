@@ -55,12 +55,12 @@ def process_cpm_device_request(data: dict, query_parts: dict):
 
 def make_get_request(call_name: str, url, headers=None, params=None):
     res = requests.get(url, headers=headers, params=params)
-    handle_error(res, call_name)
+    handle_error(res, call_name, url, headers, params)
     return res
 
-def handle_error(response, call_name):
+def handle_error(response, call_name, url, headers, params):
     if response.status_code != 200:
-        detail = f"Request to {call_name} failed with message: {response.text}"
+        detail = f"Request to {call_name} failed with message: {response.text} : to {url} with {headers}"
         logger.info(detail)
         raise SDSException(detail)
 
