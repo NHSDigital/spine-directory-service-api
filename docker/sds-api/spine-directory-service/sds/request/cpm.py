@@ -23,7 +23,7 @@ async def get_device_from_cpm(org_code: str, interaction_id: str, manufacturing_
         client_id = os.environ["CPM_CLIENT_KEY"]
         apigee_url = f"{os.environ['APIGEE_URL']}/{os.environ['CPM_PATH_URL']}"
     except KeyError as e:
-        raise KeyError(f"Environment variable is required {e} env vars available are: {os.environ}")
+        raise KeyError(f"Environment variable is required {e}")
     cpm_client = CpmClient(client_id=client_id, apigee_url=apigee_url, endpoint="product")
     data = await cpm_client.get_cpm()
 
@@ -36,7 +36,7 @@ async def get_endpoint_from_cpm(org_code: str, interaction_id: str = None, party
         client_id = os.environ["CPM_CLIENT_KEY"]
         apigee_url = f"{os.environ['APIGEE_URL']}/{os.environ['CPM_PATH_URL']}"
     except KeyError as e:
-        raise KeyError(f"Environment variable is required {e} env vars available are: {os.environ}")
+        raise KeyError(f"Environment variable is required {e}")
     cpm_client = CpmClient(client_id=client_id, apigee_url=apigee_url, endpoint="endpoint")
     data = await cpm_client.get_cpm()
     
@@ -60,7 +60,7 @@ def make_get_request(call_name: str, url, headers=None, params=None):
 
 def handle_error(response, call_name, url, headers, params):
     if response.status_code != 200:
-        detail = f"Request to {call_name} failed with message: {response.text} : to {url} with {headers}"
+        detail = f"Request to {call_name} failed with message: {response.text}"
         logger.info(detail)
         raise SDSException(detail)
 
