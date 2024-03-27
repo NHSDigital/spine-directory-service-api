@@ -146,6 +146,7 @@ class RoutingReliabilityRequestHandler(BaseHandler, ErrorHandler):
                         and not query_param_value.startswith(f"{PARTY_KEY_FHIR_IDENTIFIER}|"):
                     self._raise_invalid_identifier_query_param_error()
                 if query_param == CPM_FILTER and query_param_value.lower() != CPM_FILTER_IDENTIFIER:
+                    # Raise if not correct.
                     self._raise_invalid_identifier_query_param_error()
 
     @staticmethod
