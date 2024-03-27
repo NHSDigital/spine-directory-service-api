@@ -1,5 +1,8 @@
 # Changelog
 
+## 2024-03-22
+- [PI-250] Make an Endpoint request to CPM
+
 ## 2024-03-13
 - [PI-237] Make a Device request to CPM
 

@@ -10,8 +10,10 @@ from lookup.sds_exception import SDSException
 from request.base_handler import ORG_CODE_QUERY_PARAMETER_NAME, ORG_CODE_FHIR_IDENTIFIER, \
     IDENTIFIER_QUERY_PARAMETER_NAME, SERVICE_ID_FHIR_IDENTIFIER, PARTY_KEY_FHIR_IDENTIFIER
 from request.cpm_config import DEVICE_FILTER_MAP, ENDPOINT_FILTER_MAP, DEVICE_DATA_MAP, ENDPOINT_DATA_MAP, DEFAULT_ENDPOINT_DICT, DEFAULT_DEVICE_DICT
-
+from utilities.constants import INTERACTION_MAPPINGS, RELIABLE_SERVICES
+from utilities import config
 from utilities import integration_adaptors_logger as log
+
 logger = log.IntegrationAdaptorsLogger(__name__)
 
 
@@ -28,7 +30,7 @@ async def get_device_from_cpm(org_code: str, interaction_id: str, manufacturing_
     return process_cpm_device_request(data=data, query_parts=query_parts)
 
 
-async def get_endpoint_from_cpm(ods_code: str, interaction_id: str = None, party_key: str = None) -> List:
+async def get_endpoint_from_cpm(org_code: str, interaction_id: str = None, party_key: str = None) -> List:
     query_parts = locals()
     try:
         client_id = os.environ["CPM_CLIENT_KEY"]
@@ -43,7 +45,8 @@ async def get_endpoint_from_cpm(ods_code: str, interaction_id: str = None, party
 def process_cpm_endpoint_request(data: dict, query_parts: dict):
     endpoints = EndpointCpm(data=data, query_parts=query_parts)
     filtered_endpoints = endpoints.filter_cpm_response()
-    return endpoints.transform_to_ldap(filtered_endpoints)
+    ldap_converted = endpoints.transform_to_ldap(filtered_endpoints)
+    return endpoints.set_mhs_endpoint(ldap_converted)
 
 def process_cpm_device_request(data: dict, query_parts: dict):
     devices = DeviceCpm(data=data, query_parts=query_parts)
@@ -56,7 +59,7 @@ def make_get_request(call_name: str, url, headers=None, params=None):
     return res
 
 def handle_error(response, call_name):
-    if response.status_code != 200 and response.status_code != 404:
+    if response.status_code != 200:
         detail = f"Request to {call_name} failed with message: {response.text}"
         logger.info(detail)
         raise SDSException(detail)
@@ -169,6 +172,63 @@ class EndpointCpm(BaseCpm):
         non_empty_count = sum(1 for value in query_parts.values() if value and value != 0)
         if non_empty_count < 2:
             self._raise_invalid_query_params_error()
+    
+    def set_mhs_endpoint(self, ldap_results):
+        for key, ldap_result in enumerate(ldap_results):
+            service, interaction = self._extract_service_and_interaction(ldap_result['nhsMhsSvcIA'])
+            if service in RELIABLE_SERVICES:
+                address: Optional[str] = None
+                for core_spine_interaction, interactions in INTERACTION_MAPPINGS.items():
+                    if interaction in interactions:
+                        address = self._get_address(core_spine_interaction)
+                        break
+
+                if address:
+                    ldap_results[key]['nhsMHSEndPoint'] = address
+                
+        return ldap_results
+    
+    @staticmethod
+    def _extract_service_and_interaction(service_interaction: str):
+        if not service_interaction:
+            return False
+
+        parts = service_interaction.split(':')
+
+        if len(parts) < 2:
+            raise RuntimeError(f"Invalid service interaction: {service_interaction}")
+
+        interaction_part = parts[-1]
+        service_part = parts[-2]
+
+        return service_part, interaction_part
+
+    def _get_address(self, service_id: str) -> str:
+        spine_core_ods_code = config.get_config('SPINE_CORE_ODS_CODE')
+        logger.info("Looking up forward reliable/express routing and reliability information. {org_code}, {service_id}",
+                    fparams={"org_code": spine_core_ods_code, "service_id": service_id})
+        query_params = {
+            "org_code": spine_core_ods_code,
+            "interaction_id": service_id
+        }
+        address_endpoint = EndpointCpm(data=self.data, query_parts=query_params)
+        filtered_address_endpoint = address_endpoint.filter_cpm_response()
+        ldap_address = address_endpoint.transform_to_ldap(filtered_address_endpoint)
+        
+        address = []
+        try:
+            if len(ldap_address) == 1:
+                address = ldap_address[0] if len(ldap_address) == 1 else self._raise_value_error("result", ldap_address)
+                return address.get('nhsMHSEndPoint') if len(address['nhsMHSEndPoint']) == 1 else self._raise_value_error("address", address)
+        except IndexError:
+            self._raise_index_error("result", ldap_address)
+            
+    def _raise_value_error(self, message: str, address: List = []):
+        raise ValueError(f"Expected 1 {message} for forward reliable/express routing and reliability but got {str(len(address))}")
+    
+    def _raise_index_error(self, message: str, address: List = []):
+        raise IndexError(f"Expected 1 {message} for forward reliable/express routing and reliability but got {str(len(address))}")
+
     
     def _raise_invalid_query_params_error(self):
         org_code = f'{ORG_CODE_QUERY_PARAMETER_NAME}={ORG_CODE_FHIR_IDENTIFIER}|value'

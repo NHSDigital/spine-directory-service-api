@@ -7,7 +7,7 @@ DEVICE_FILTER_MAP = {
 
 ENDPOINT_FILTER_MAP = {
     "org_code": "nhs_id_code",
-    "service_id": "nhs_mhs_svc_ia",
+    "interaction_id": "nhs_mhs_svc_ia",
     "party_key": "nhs_mhs_party_key"
 }
 

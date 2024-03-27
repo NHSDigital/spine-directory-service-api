@@ -85,3 +85,5 @@ class AccreditedSystemRequestHandler(BaseHandler, ErrorHandler):
                 if query_param == MANUFACTURING_ORGANIZATION_QUERY_PARAMETER_NAME \
                     and not query_param_value.startswith(f"{MANUFACTURING_ORGANIZATION_FHIR_IDENTIFIER}|"):
                     self._raise_invalid_query_param_error(MANUFACTURING_ORGANIZATION_QUERY_PARAMETER_NAME, MANUFACTURING_ORGANIZATION_FHIR_IDENTIFIER)
+                if query_param == CPM_FILTER and query_param_value.lower() != CPM_FILTER_IDENTIFIER:
+                    self._raise_invalid_identifier_query_param_error()
