@@ -19,8 +19,8 @@ DEVICE_ORGANIZATION_FHIR_IDENTIFIER = 'https://fhir.nhs.uk/Id/ods-organization-c
 DEVICE_INTERACTION_ID_FHIR_IDENTIFIER = 'https://fhir.nhs.uk/Id/nhsServiceInteractionId'
 DEVICE_PARTY_KEY_FHIR_IDENTIFIER = 'https://fhir.nhs.uk/Id/nhsMhsPartyKey'
 DEVICE_MANUFACTURING_ORGANIZATION_FHIR_IDENTIFIER = 'https://fhir.nhs.uk/Id/ods-organization-code'
-USE_CPM_ARGUMENT = 'iwanttogetdatafromcpm'
-CPM_FILTER = 'use_cpm'
+USE_CPM_ARGUMENT = "iwanttogetdatafromcpm"
+CPM_FILTER = "use_cpm"
 
 
 def _build_test_path(endpoint: str, query_params: dict = None) -> str:

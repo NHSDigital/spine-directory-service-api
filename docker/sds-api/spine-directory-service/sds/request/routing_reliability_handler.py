@@ -134,7 +134,7 @@ class RoutingReliabilityRequestHandler(BaseHandler, ErrorHandler):
             if query_param not in [ORG_CODE_QUERY_PARAMETER_NAME, IDENTIFIER_QUERY_PARAMETER_NAME, CPM_FILTER]:
                 raise tornado.web.HTTPError(
                     status_code=400,
-                    log_message=f"Illegal query parameter '{query_param}'")
+                    log_message=f"Illegal query parameter Endpoint'{query_param}'")
             for query_param_value in query_params[query_param]:
                 query_param_value = query_param_value.decode("utf-8")
                 if query_param == ORG_CODE_QUERY_PARAMETER_NAME \
