@@ -40,20 +40,19 @@ class RoutingReliabilityRequestHandler(BaseHandler, ErrorHandler):
         party_key = self.get_optional_query_param(IDENTIFIER_QUERY_PARAMETER_NAME, PARTY_KEY_FHIR_IDENTIFIER)
         cpm_filter = self.get_optional_query_param(CPM_FILTER, CPM_FILTER_IDENTIFIER)
 
-        if (org_code and not service_id and not party_key) or (not org_code and (not service_id or not party_key)):
-            self._raise_invalid_query_params_error()
-
         accept_type = get_valid_accept_type(self.request.headers)
 
-        logger.info("Looking up routing and reliability information. {org_code}, {service_id}, {party_key}",
-                    fparams={"org_code": org_code, "service_id": service_id, "party_key": party_key})
-        
+        logger.info("Looking up routing and reliability information. {org_code}, {service_id}, {party_key}", fparams={"org_code": org_code, "service_id": service_id, "party_key": party_key})
+            
         if cpm_filter and cpm_filter[0] == CPM_FILTER_IDENTIFIER:
             ldap_results = await get_endpoint_from_cpm(org_code, service_id, party_key)
             
             logger.info("Obtained routing and reliability information. {ldap_results}",
                         fparams={"ldap_results": ldap_results})
         else:
+            if (org_code and not service_id and not party_key) or (not org_code and (not service_id or not party_key)):
+                self._raise_invalid_query_params_error()
+            
             ldap_results = await self.sds_client.get_mhs_details(org_code, service_id, party_key)
             
             logger.info("Obtained routing and reliability information. {ldap_results}",
