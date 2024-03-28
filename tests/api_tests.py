@@ -20,6 +20,7 @@ DEVICE_INTERACTION_ID_FHIR_IDENTIFIER = 'https://fhir.nhs.uk/Id/nhsServiceIntera
 DEVICE_PARTY_KEY_FHIR_IDENTIFIER = 'https://fhir.nhs.uk/Id/nhsMhsPartyKey'
 DEVICE_MANUFACTURING_ORGANIZATION_FHIR_IDENTIFIER = 'https://fhir.nhs.uk/Id/ods-organization-code'
 USE_CPM_ARGUMENT = 'iwanttogetdatafromcpm'
+CPM_FILTER = 'use_cpm'
 
 
 def _build_test_path(endpoint: str, query_params: dict = None) -> str:
@@ -344,8 +345,11 @@ async def test_endpoints(test_app, api_client: APISessionClient, request_data):
     
     # Re-run with use_cpm as a query
     query_params_cpm = request_data['query_params']
-    query_params_cpm['use_cpm'] = USE_CPM_ARGUMENT
+    query_params_cpm[CPM_FILTER] = USE_CPM_ARGUMENT
+    print(query_params_cpm)
     uri_cpm = _build_test_path(request_data['endpoint'], query_params=query_params_cpm)
+    print(uri_cpm)
+    print(headers)
     await _assert_response(api_client, uri_cpm, headers, request_data['result_count'], request_data['status_code'], correlation_id)
 
        
