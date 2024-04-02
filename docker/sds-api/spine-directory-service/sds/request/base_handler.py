@@ -49,7 +49,7 @@ class BaseHandler(tornado.web.RequestHandler):
             result_value = (last_value and last_value[last_value.index("|") + 1:]) or None
             return result_value
         else:
-            value = self.get_query_arguments(query_param_name) or None
+            value = self.get_query_arguments(query_param_name)
             return value
 
     def _raise_invalid_query_param_error(self, query_param_name, fhir_identifier):
