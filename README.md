@@ -40,6 +40,9 @@ pipenv install
 source .venv/bin/activate
 ```
 Make sure VSCode is using the correct interpreter inside your .venv folder
+```
+"CPM_CLIENT_KEY": "YOUR_API_KEY_GOES_HERE"
+```
 Then you can run the VSCode debugger.
 
 ### Local Docker Install
