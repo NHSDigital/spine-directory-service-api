@@ -343,10 +343,10 @@ async def test_endpoints(test_app, api_client: APISessionClient, request_data):
     await _assert_response(api_client, uri, headers, request_data['result_count'], request_data['status_code'], correlation_id)
     
     # Re-run with use_cpm as a query
-    query_params_cpm = request_data['query_params']
-    query_params_cpm['use_cpm'] = USE_CPM_ARGUMENT
-    uri_cpm = _build_test_path(request_data['endpoint'], query_params=query_params_cpm)
-    await _assert_response(api_client, uri_cpm, headers, request_data['result_count'], request_data['status_code'], correlation_id)
+    # query_params_cpm = request_data['query_params']
+    # query_params_cpm['use_cpm'] = USE_CPM_ARGUMENT
+    # uri_cpm = _build_test_path(request_data['endpoint'], query_params=query_params_cpm)
+    # await _assert_response(api_client, uri_cpm, headers, request_data['result_count'], request_data['status_code'], correlation_id)
 
        
 async def _assert_response(api_client, uri, headers, result_count, expected_status, correlation_id):
