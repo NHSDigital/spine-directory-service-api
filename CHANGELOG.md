@@ -1,5 +1,8 @@
 # Changelog
 
+## 2024-04-08
+- [PI-275] Use secrets for the apikey
+
 ## 2024-03-22
 - [PI-250] Make an Endpoint request to CPM
 

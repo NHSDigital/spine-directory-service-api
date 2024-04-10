@@ -400,3 +400,34 @@ async def test_healthcheck(test_app, api_client: APISessionClient, request_data)
         assert resp.headers['x-correlation-id'] == correlation_id
         assert body['status'] == 'pass'
         assert body['details']['ldap']['status'] == 'pass'
+
+
+@pytest.mark.securitytest
+@pytest.mark.smoketest
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    "request_data",
+    [
+        {
+            'endpoint': 'Device',
+            'query_params': {
+                'organization': f'{ENDPOINT_ORGANIZATION_FHIR_IDENTIFIER}|5NR',
+                'identifier': f'{DEVICE_INTERACTION_ID_FHIR_IDENTIFIER}|urn:nhs:names:services:lrs:MCCI_IN010000UK13',
+                'use_cpm': USE_CPM_ARGUMENT
+            },
+            'status_code': 200,
+            'result_count': 0
+        }
+    ],
+)
+async def test_check_device_is_connected_to_cpm(test_app, api_client: APISessionClient, request_data):
+    correlation_id = str(uuid4())
+    headers = {
+        'apikey': test_app.client_id,
+        'x-correlation-id': correlation_id,
+        'cache-control': 'no-cache',
+    }
+    query_params = request_data['query_params']
+    uri = _build_test_path(request_data['endpoint'], query_params)
+    async with api_client.get(uri, headers=headers, allow_retries=True) as resp:
+        assert resp.status == 200
