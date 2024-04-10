@@ -56,5 +56,5 @@ extends:
         post_deploy:
           - template: ./templates/run-tests.yml
             parameters:
-              e2e_tests: false
-              smoke_tests: false
+              e2e_tests: true
+              smoke_tests: true
