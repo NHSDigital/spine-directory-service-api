@@ -37,6 +37,7 @@ extends:
       - ptl/cis/ldap.nis1.national.ncrs.nhs.uk/key
       - ptl/cis/ldap.nis1.national.ncrs.nhs.uk/crt
       - ptl/veit07.devspineservices.nhs.uk/root-ca/crt
+      - ptl/spine-directory-service/cpm-apikey
     config_ids:
       - /ptl/api-deployment/sds/ldap/private-key
       - /ptl/api-deployment/sds/ldap/client-cert
