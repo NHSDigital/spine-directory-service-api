@@ -14,8 +14,6 @@ docker_service:
         value: "STRICT"
       - name: SDS_SPINE_CORE_ODS_CODE
         value: "YES"
-      - name: CPM_CLIENT_KEY
-        value: JrxvR6WsyTEu8BVVA1qhTbKqoktoVn0y
       - name: CPM_PATH_URL
         value: cpm-dev-sandbox
     secrets:
