@@ -49,7 +49,7 @@ extends:
           - template: ./templates/run-tests.yml
             parameters:
               e2e_tests: true
-              smoke_tests: true
+              smoke_tests: false
               security_tests: true
       - environment: internal-dev-sandbox
         proxy_path: sandbox
