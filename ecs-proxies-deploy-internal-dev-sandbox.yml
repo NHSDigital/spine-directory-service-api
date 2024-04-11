@@ -19,8 +19,6 @@ docker_service:
       - name: CPM_CLIENT_KEY
         value: JrxvR6WsyTEu8BVVA1qhTbKqoktoVn0y
     secrets:
-      - name: GPC_CLIENT_ID
-        valueFrom: "arn:aws:secretsmanager:eu-west-2:{{ PTL_ACCOUNT_ID }}:secret:ptl/gp-connect-access-record-fhir-api/gp-connect-mediation-app/CLIENT_ID_INT"
       - name: APIGEE_URL
         valueFrom: "/{{ account }}/platform-common/egress/hosts/apigee-internal-dev-sandbox"
     health_check:
