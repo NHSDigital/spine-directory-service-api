@@ -16,9 +16,9 @@ docker_service:
         value: "YES"
       - name: CPM_PATH_URL
         value: cpm-dev-sandbox
-      - name: CPM_CLIENT_KEY
-        value: JrxvR6WsyTEu8BVVA1qhTbKqoktoVn0y
     secrets:
+      - name: CPM_CLIENT_KEY
+        valueFrom: "arn:aws:secretsmanager:eu-west-2:{{ PTL_ACCOUNT_ID }}:secret:ptl/spine-directory-service/cpm-apikey"
       - name: APIGEE_URL
         valueFrom: "/{{ account }}/platform-common/egress/hosts/apigee-internal-dev-sandbox"
     health_check:
