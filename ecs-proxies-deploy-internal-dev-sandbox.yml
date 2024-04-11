@@ -24,11 +24,11 @@ docker_service:
         value: "{{ service_name }}"
       - name: APIGEE_ENV
         value: "{{ APIGEE_ENVIRONMENT }}"
+      - name: PTL_ACCOUNT_ID
+        value: "{{ PTL_ACCOUNT_ID }}"
     secrets:
       - name: APIGEE_URL
         valueFrom: "/{{ account }}/platform-common/egress/hosts/apigee-internal-dev-sandbox"
-      - name: CPM_CLIENT_KEY_4
-        valueFrom: "/{{ account }}/{{ service_name }}/{{ APIGEE_ENVIRONMENT }}/cpm-apikey"
     health_check:
       matcher: "200"
       path: "/healthcheck"
