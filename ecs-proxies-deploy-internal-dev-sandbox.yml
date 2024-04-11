@@ -17,6 +17,8 @@ docker_service:
       - name: CPM_PATH_URL
         value: cpm-dev-sandbox
     secrets:
+      - name: GPC_CLIENT_ID
+        valueFrom: "arn:aws:secretsmanager:eu-west-2:{{ PTL_ACCOUNT_ID }}:secret:ptl/gp-connect-access-record-fhir-api/gp-connect-mediation-app/CLIENT_ID_INT"
       - name: CPM_CLIENT_KEY
         valueFrom: "arn:aws:secretsmanager:eu-west-2:{{ PTL_ACCOUNT_ID }}:secret:ptl/spine-directory-service/cpm-apikey"
       - name: APIGEE_URL
