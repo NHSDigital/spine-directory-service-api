@@ -24,8 +24,6 @@ docker_service:
         value: "{{ service_name }}"
       - name: APIGEE_ENV
         value: "{{ APIGEE_ENVIRONMENT  }}"
-      - name: PTL_ACCOUNT_ID
-        value: "{{ PTL_ACCOUNT_ID }}"
     secrets:
       - name: APIGEE_URL
         valueFrom: "/{{ account }}/platform-common/egress/hosts/apigee-internal-dev-sandbox"
