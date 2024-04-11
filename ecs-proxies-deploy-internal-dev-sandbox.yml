@@ -18,9 +18,13 @@ docker_service:
         value: cpm-dev-sandbox
       - name: CPM_CLIENT_KEY
         value: JrxvR6WsyTEu8BVVA1qhTbKqoktoVn0y
+      - name: ACCOUNT
+        value: "{{ account }}"
+      - name: SERVICE_NAME
+        value: "{{ service_name }}"
+      - name: APIGEE_ENV
+        value: "{{ APIGEE_ENVIRONMENT  }}"
     secrets:
-      - name: CPM_CLIENT_KEY_B
-        valueFrom: "/{{ account }}/{{ service_name }}/{{ APIGEE_ENVIRONMENT }}/ptl/spine-directory-service/cpm-apikey"
       - name: APIGEE_URL
         valueFrom: "/{{ account }}/platform-common/egress/hosts/apigee-internal-dev-sandbox"
       - name: APIGEE_URL_2
