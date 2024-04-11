@@ -23,7 +23,7 @@ docker_service:
       - name: SERVICE_NAME
         value: "{{ service_name }}"
       - name: APIGEE_ENV
-        value: "{{ APIGEE_ENVIRONMENT  }}"
+        value: "{{ APIGEE_ENVIRONMENT }}"
     secrets:
       - name: APIGEE_URL
         valueFrom: "/{{ account }}/platform-common/egress/hosts/apigee-internal-dev-sandbox"
