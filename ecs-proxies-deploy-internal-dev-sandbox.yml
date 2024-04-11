@@ -25,6 +25,8 @@ docker_service:
         valueFrom: "arn:aws:secretsmanager:eu-west-2:{{ PTL_ACCOUNT_ID }}:secret:ptl/spine-directory-service/cpm-apikey"
       - name: APIGEE_URL
         valueFrom: "/{{ account }}/platform-common/egress/hosts/apigee-internal-dev-sandbox"
+      - name: CPM_CLIENT_KEY_B
+        valueFrom: "/{{ account }}/{{ service_name }}/{{ APIGEE_ENVIRONMENT }}/ptl/spine-directory-service/cpm-apikey"
     health_check:
       matcher: "200"
       path: "/healthcheck"

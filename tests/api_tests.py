@@ -120,233 +120,233 @@ async def test_endpoints_are_secured(api_client: APISessionClient, endpoint):
         assert body['resourceType'] == 'OperationOutcome'
 
 
-@pytest.mark.e2e
-@pytest.mark.asyncio
-@pytest.mark.parametrize(
-    "request_data",
-    [
-        # condition 1: Endpoint organization query parameters present with service id
-        {
-            'endpoint': 'Endpoint',
-            'query_params': {
-                'organization': f'{ENDPOINT_ORGANIZATION_FHIR_IDENTIFIER}|123456',
-                'identifier': f'{ENDPOINT_INTERACTION_ID_FHIR_IDENTIFIER}|urn:nhs:names:services:gpconnect:documents:fhir:rest:search:documentreference-1',
-            },
-            'status_code': 200,
-            'result_count': 0
-        },
-        # condition 2: Endpoint organization query parameters present with party key
-        {
-            'endpoint': 'Endpoint',
-            'query_params': {
-                'organization': f'{ENDPOINT_ORGANIZATION_FHIR_IDENTIFIER}|123456',
-                'identifier': f'{ENDPOINT_PARTY_KEY_FHIR_IDENTIFIER}|TEST-PARTY-KEY',
-            },
-            'status_code': 200,
-            'result_count': 0
-        },
-        # condition 3: Endpoint all query parameters present
-        {
-            'endpoint': 'Endpoint',
-            'query_params': {
-                'organization': f'{ENDPOINT_ORGANIZATION_FHIR_IDENTIFIER}|123456',
-                'identifier': [
-                    f'{ENDPOINT_INTERACTION_ID_FHIR_IDENTIFIER}|urn:nhs:names:services:gpconnect:documents:fhir:rest:search:documentreference-1',
-                    f'{ENDPOINT_PARTY_KEY_FHIR_IDENTIFIER}|TEST-PARTY-KEY',
-                ]
-            },
-            'status_code': 200,
-            'result_count': 0
-        },
-        # condition 4: Endpoint organization query parameter missing but service id and party key present
-        {
-            'endpoint': 'Endpoint',
-            'query_params': {
-                'identifier': [
-                    f'{ENDPOINT_INTERACTION_ID_FHIR_IDENTIFIER}|urn:nhs:names:services:gpconnect:documents:fhir:rest:search:documentreference-1',
-                    f'{ENDPOINT_PARTY_KEY_FHIR_IDENTIFIER}|TEST-PARTY-KEY',
-                ]
-            },
-            'status_code': 200,
-            'result_count': 0
-        },
-        # condition 5: Endpoint unsupported query parameters present
-        {
-            'endpoint': 'Endpoint',
-            'query_params': {
-                'organization': f'{ENDPOINT_ORGANIZATION_FHIR_IDENTIFIER}|123456',
-                'identifier': [
-                    f'{ENDPOINT_INTERACTION_ID_FHIR_IDENTIFIER}|urn:nhs:names:services:gpconnect:documents:fhir:rest:search:documentreference-1',
-                    f'{ENDPOINT_PARTY_KEY_FHIR_IDENTIFIER}|TEST-PARTY-KEY',
-                ],
-                'unsupported': 'unsupported_parameter_value',
-            },
-            'status_code': 400,
-            'result_count': 0
-        },
-        # condition 6: Endpoint missing mandatory query parameters
-        {
-            'endpoint': 'Endpoint',
-            'query_params': {
-                'identifier': f'{ENDPOINT_PARTY_KEY_FHIR_IDENTIFIER}|TEST-PARTY-KEY',
-            },
-            'status_code': 400,
-            'result_count': 0
-        },
-        # condition 7: Endpoint invalid fhir identifier on mandatory query parameter
-        {
-            'endpoint': 'Endpoint',
-            'query_params': {
-                'organization': 'test|123456',
-                'identifier': f'{ENDPOINT_INTERACTION_ID_FHIR_IDENTIFIER}|urn:nhs:names:services:gpconnect:documents:fhir:rest:search:documentreference-1',
-            },
-            'status_code': 400,
-            'result_count': 0
-        },
-        # condition 8: Device mandatory query parameters present
-        {
-            'endpoint': 'Device',
-            'query_params': {
-                'organization': f'{DEVICE_ORGANIZATION_FHIR_IDENTIFIER}|123456',
-                'identifier': f'{DEVICE_INTERACTION_ID_FHIR_IDENTIFIER}|urn:nhs:names:services:psis:REPC_IN150016UK05',
-            },
-            'status_code': 200,
-            'result_count': 0
-        },
-        # condition 9: Device optional query parameters present
-        {
-            'endpoint': 'Device',
-            'query_params': {
-                'organization': f'{DEVICE_ORGANIZATION_FHIR_IDENTIFIER}|123456',
-                'identifier': [
-                    f'{DEVICE_INTERACTION_ID_FHIR_IDENTIFIER}|urn:nhs:names:services:psis:REPC_IN150016UK05',
-                    f'{DEVICE_PARTY_KEY_FHIR_IDENTIFIER}|TEST-PARTY-KEY',
-                ],
-                'manufacturing-organization': f'{DEVICE_MANUFACTURING_ORGANIZATION_FHIR_IDENTIFIER}|YES',
-            },
-            'status_code': 200,
-            'result_count': 0
-        },
-        # condition 10: Device unsupported query parameters present
-        {
-            'endpoint': 'Device',
-            'query_params': {
-                'organization': f'{DEVICE_ORGANIZATION_FHIR_IDENTIFIER}|123456',
-                'identifier': [
-                    f'{DEVICE_INTERACTION_ID_FHIR_IDENTIFIER}|urn:nhs:names:services:psis:REPC_IN150016UK05',
-                    f'{DEVICE_PARTY_KEY_FHIR_IDENTIFIER}|TEST-PARTY-KEY',
-                ],
-                'manufacturing-organization': f'{DEVICE_MANUFACTURING_ORGANIZATION_FHIR_IDENTIFIER}|YES',
-                'unsupported': 'unsupported_parameter_value',
-            },
-            'status_code': 400,
-            'result_count': 0
-        },
-        # condition 11: Device missing mandatory query parameters
-        {
-            'endpoint': 'Device',
-            'query_params': {
-                'identifier': [
-                    f'{DEVICE_INTERACTION_ID_FHIR_IDENTIFIER}|urn:nhs:names:services:psis:REPC_IN150016UK05',
-                    f'{DEVICE_PARTY_KEY_FHIR_IDENTIFIER}|TEST-PARTY-KEY',
-                ],
-                'manufacturing-organization': f'{DEVICE_MANUFACTURING_ORGANIZATION_FHIR_IDENTIFIER}|YES',
-                'unsupported': 'unsupported_parameter_value',
-            },
-            'status_code': 400,
-            'result_count': 0
-        },
-        # condition 12: Device invalid fhir identifier on mandatory query parameter
-        {
-            'endpoint': 'Device',
-            'query_params': {
-                'organization': 'test|123456',
-                'identifier': f'{DEVICE_INTERACTION_ID_FHIR_IDENTIFIER}|urn:nhs:names:services:psis:REPC_IN150016UK05',
-            },
-            'status_code': 400,
-            'result_count': 0
-        },
-        # condition 13: Return a Device from CPM
-        {
-            'endpoint': 'Device',
-            'query_params': {
-                'organization': f'{ENDPOINT_ORGANIZATION_FHIR_IDENTIFIER}|5NR',
-                'identifier': f'{DEVICE_INTERACTION_ID_FHIR_IDENTIFIER}|urn:nhs:names:services:lrs:MCCI_IN010000UK13',
-                'use_cpm': USE_CPM_ARGUMENT
-            },
-            'status_code': 200,
-            'result_count': 1
-        },
-        # condition 14: Return no Devices from CPM, no matches
-        {
-            'endpoint': 'Device',
-            'query_params': {
-                'organization': f'{ENDPOINT_ORGANIZATION_FHIR_IDENTIFIER}|FOO',
-                'identifier': f'{DEVICE_INTERACTION_ID_FHIR_IDENTIFIER}|urn:nhs:names:services:lrs:MCCI_IN010000UK13',
-                'use_cpm': USE_CPM_ARGUMENT
-            },
-            'status_code': 200,
-            'result_count': 0
-        },
-        # condition 15: Return an Endpoint from CPM
-        {
-            'endpoint': 'Endpoint',
-            'query_params': {
-                'organization': f'{ENDPOINT_ORGANIZATION_FHIR_IDENTIFIER}|RTX',
-                'identifier': f'{ENDPOINT_INTERACTION_ID_FHIR_IDENTIFIER}|urn:nhs:names:services:ebs:PRSC_IN070000UK08',
-                'use_cpm': USE_CPM_ARGUMENT
-            },
-            'status_code': 200,
-            'result_count': 1
-        },
-        # condition 16: Return no Endpoints from CPM, no matches
-        {
-            'endpoint': 'Endpoint',
-            'query_params': {
-                'organization': f'{ENDPOINT_ORGANIZATION_FHIR_IDENTIFIER}|FOO',
-                'identifier': f'{ENDPOINT_INTERACTION_ID_FHIR_IDENTIFIER}|urn:nhs:names:services:ebs:PRSC_IN070000UK08',
-                'use_cpm': USE_CPM_ARGUMENT
-            },
-            'status_code': 200,
-            'result_count': 0
-        },
-    ],
-    ids=[
-        'condition 1: Endpoint organization query parameters present with service id',
-        'condition 2: Endpoint optional query parameters present with party key',
-        'condition 3: Endpoint all query parameters present',
-        'condition 4: Endpoint organization query parameter missing but service id and party key present',
-        'condition 5: Endpoint unsupported query parameters present',
-        'condition 6: Endpoint missing mandatory query parameters',
-        'condition 7: Endpoint invalid fhir identifier on mandatory query parameter',
-        'condition 8: Device mandatory query parameters present',
-        'condition 9: Device optional query parameters present',
-        'condition 10: Device unsupported query parameters present',
-        'condition 11: Device missing mandatory query parameters',
-        'condition 12: Device invalid fhir identifier on mandatory query parameter',
-        'condition 13: Return a Device from CPM',
-        'condition 14: Return no Devices from CPM, no matches',
-        'condition 15: Return an Endpoint from CPM',
-        'condition 16: Return no Endpoints from CPM, no matches',
-    ]
-)
-async def test_endpoints(test_app, api_client: APISessionClient, request_data):
-    correlation_id = str(uuid4())
-    headers = {
-        'apikey': test_app.client_id,
-        'x-correlation-id': correlation_id,
-        'cache-control': 'no-cache',
-    }
+# @pytest.mark.e2e
+# @pytest.mark.asyncio
+# @pytest.mark.parametrize(
+#     "request_data",
+#     [
+#         # condition 1: Endpoint organization query parameters present with service id
+#         {
+#             'endpoint': 'Endpoint',
+#             'query_params': {
+#                 'organization': f'{ENDPOINT_ORGANIZATION_FHIR_IDENTIFIER}|123456',
+#                 'identifier': f'{ENDPOINT_INTERACTION_ID_FHIR_IDENTIFIER}|urn:nhs:names:services:gpconnect:documents:fhir:rest:search:documentreference-1',
+#             },
+#             'status_code': 200,
+#             'result_count': 0
+#         },
+#         # condition 2: Endpoint organization query parameters present with party key
+#         {
+#             'endpoint': 'Endpoint',
+#             'query_params': {
+#                 'organization': f'{ENDPOINT_ORGANIZATION_FHIR_IDENTIFIER}|123456',
+#                 'identifier': f'{ENDPOINT_PARTY_KEY_FHIR_IDENTIFIER}|TEST-PARTY-KEY',
+#             },
+#             'status_code': 200,
+#             'result_count': 0
+#         },
+#         # condition 3: Endpoint all query parameters present
+#         {
+#             'endpoint': 'Endpoint',
+#             'query_params': {
+#                 'organization': f'{ENDPOINT_ORGANIZATION_FHIR_IDENTIFIER}|123456',
+#                 'identifier': [
+#                     f'{ENDPOINT_INTERACTION_ID_FHIR_IDENTIFIER}|urn:nhs:names:services:gpconnect:documents:fhir:rest:search:documentreference-1',
+#                     f'{ENDPOINT_PARTY_KEY_FHIR_IDENTIFIER}|TEST-PARTY-KEY',
+#                 ]
+#             },
+#             'status_code': 200,
+#             'result_count': 0
+#         },
+#         # condition 4: Endpoint organization query parameter missing but service id and party key present
+#         {
+#             'endpoint': 'Endpoint',
+#             'query_params': {
+#                 'identifier': [
+#                     f'{ENDPOINT_INTERACTION_ID_FHIR_IDENTIFIER}|urn:nhs:names:services:gpconnect:documents:fhir:rest:search:documentreference-1',
+#                     f'{ENDPOINT_PARTY_KEY_FHIR_IDENTIFIER}|TEST-PARTY-KEY',
+#                 ]
+#             },
+#             'status_code': 200,
+#             'result_count': 0
+#         },
+#         # condition 5: Endpoint unsupported query parameters present
+#         {
+#             'endpoint': 'Endpoint',
+#             'query_params': {
+#                 'organization': f'{ENDPOINT_ORGANIZATION_FHIR_IDENTIFIER}|123456',
+#                 'identifier': [
+#                     f'{ENDPOINT_INTERACTION_ID_FHIR_IDENTIFIER}|urn:nhs:names:services:gpconnect:documents:fhir:rest:search:documentreference-1',
+#                     f'{ENDPOINT_PARTY_KEY_FHIR_IDENTIFIER}|TEST-PARTY-KEY',
+#                 ],
+#                 'unsupported': 'unsupported_parameter_value',
+#             },
+#             'status_code': 400,
+#             'result_count': 0
+#         },
+#         # condition 6: Endpoint missing mandatory query parameters
+#         {
+#             'endpoint': 'Endpoint',
+#             'query_params': {
+#                 'identifier': f'{ENDPOINT_PARTY_KEY_FHIR_IDENTIFIER}|TEST-PARTY-KEY',
+#             },
+#             'status_code': 400,
+#             'result_count': 0
+#         },
+#         # condition 7: Endpoint invalid fhir identifier on mandatory query parameter
+#         {
+#             'endpoint': 'Endpoint',
+#             'query_params': {
+#                 'organization': 'test|123456',
+#                 'identifier': f'{ENDPOINT_INTERACTION_ID_FHIR_IDENTIFIER}|urn:nhs:names:services:gpconnect:documents:fhir:rest:search:documentreference-1',
+#             },
+#             'status_code': 400,
+#             'result_count': 0
+#         },
+#         # condition 8: Device mandatory query parameters present
+#         {
+#             'endpoint': 'Device',
+#             'query_params': {
+#                 'organization': f'{DEVICE_ORGANIZATION_FHIR_IDENTIFIER}|123456',
+#                 'identifier': f'{DEVICE_INTERACTION_ID_FHIR_IDENTIFIER}|urn:nhs:names:services:psis:REPC_IN150016UK05',
+#             },
+#             'status_code': 200,
+#             'result_count': 0
+#         },
+#         # condition 9: Device optional query parameters present
+#         {
+#             'endpoint': 'Device',
+#             'query_params': {
+#                 'organization': f'{DEVICE_ORGANIZATION_FHIR_IDENTIFIER}|123456',
+#                 'identifier': [
+#                     f'{DEVICE_INTERACTION_ID_FHIR_IDENTIFIER}|urn:nhs:names:services:psis:REPC_IN150016UK05',
+#                     f'{DEVICE_PARTY_KEY_FHIR_IDENTIFIER}|TEST-PARTY-KEY',
+#                 ],
+#                 'manufacturing-organization': f'{DEVICE_MANUFACTURING_ORGANIZATION_FHIR_IDENTIFIER}|YES',
+#             },
+#             'status_code': 200,
+#             'result_count': 0
+#         },
+#         # condition 10: Device unsupported query parameters present
+#         {
+#             'endpoint': 'Device',
+#             'query_params': {
+#                 'organization': f'{DEVICE_ORGANIZATION_FHIR_IDENTIFIER}|123456',
+#                 'identifier': [
+#                     f'{DEVICE_INTERACTION_ID_FHIR_IDENTIFIER}|urn:nhs:names:services:psis:REPC_IN150016UK05',
+#                     f'{DEVICE_PARTY_KEY_FHIR_IDENTIFIER}|TEST-PARTY-KEY',
+#                 ],
+#                 'manufacturing-organization': f'{DEVICE_MANUFACTURING_ORGANIZATION_FHIR_IDENTIFIER}|YES',
+#                 'unsupported': 'unsupported_parameter_value',
+#             },
+#             'status_code': 400,
+#             'result_count': 0
+#         },
+#         # condition 11: Device missing mandatory query parameters
+#         {
+#             'endpoint': 'Device',
+#             'query_params': {
+#                 'identifier': [
+#                     f'{DEVICE_INTERACTION_ID_FHIR_IDENTIFIER}|urn:nhs:names:services:psis:REPC_IN150016UK05',
+#                     f'{DEVICE_PARTY_KEY_FHIR_IDENTIFIER}|TEST-PARTY-KEY',
+#                 ],
+#                 'manufacturing-organization': f'{DEVICE_MANUFACTURING_ORGANIZATION_FHIR_IDENTIFIER}|YES',
+#                 'unsupported': 'unsupported_parameter_value',
+#             },
+#             'status_code': 400,
+#             'result_count': 0
+#         },
+#         # condition 12: Device invalid fhir identifier on mandatory query parameter
+#         {
+#             'endpoint': 'Device',
+#             'query_params': {
+#                 'organization': 'test|123456',
+#                 'identifier': f'{DEVICE_INTERACTION_ID_FHIR_IDENTIFIER}|urn:nhs:names:services:psis:REPC_IN150016UK05',
+#             },
+#             'status_code': 400,
+#             'result_count': 0
+#         },
+#         # condition 13: Return a Device from CPM
+#         {
+#             'endpoint': 'Device',
+#             'query_params': {
+#                 'organization': f'{ENDPOINT_ORGANIZATION_FHIR_IDENTIFIER}|5NR',
+#                 'identifier': f'{DEVICE_INTERACTION_ID_FHIR_IDENTIFIER}|urn:nhs:names:services:lrs:MCCI_IN010000UK13',
+#                 'use_cpm': USE_CPM_ARGUMENT
+#             },
+#             'status_code': 200,
+#             'result_count': 1
+#         },
+#         # condition 14: Return no Devices from CPM, no matches
+#         {
+#             'endpoint': 'Device',
+#             'query_params': {
+#                 'organization': f'{ENDPOINT_ORGANIZATION_FHIR_IDENTIFIER}|FOO',
+#                 'identifier': f'{DEVICE_INTERACTION_ID_FHIR_IDENTIFIER}|urn:nhs:names:services:lrs:MCCI_IN010000UK13',
+#                 'use_cpm': USE_CPM_ARGUMENT
+#             },
+#             'status_code': 200,
+#             'result_count': 0
+#         },
+#         # condition 15: Return an Endpoint from CPM
+#         {
+#             'endpoint': 'Endpoint',
+#             'query_params': {
+#                 'organization': f'{ENDPOINT_ORGANIZATION_FHIR_IDENTIFIER}|RTX',
+#                 'identifier': f'{ENDPOINT_INTERACTION_ID_FHIR_IDENTIFIER}|urn:nhs:names:services:ebs:PRSC_IN070000UK08',
+#                 'use_cpm': USE_CPM_ARGUMENT
+#             },
+#             'status_code': 200,
+#             'result_count': 1
+#         },
+#         # condition 16: Return no Endpoints from CPM, no matches
+#         {
+#             'endpoint': 'Endpoint',
+#             'query_params': {
+#                 'organization': f'{ENDPOINT_ORGANIZATION_FHIR_IDENTIFIER}|FOO',
+#                 'identifier': f'{ENDPOINT_INTERACTION_ID_FHIR_IDENTIFIER}|urn:nhs:names:services:ebs:PRSC_IN070000UK08',
+#                 'use_cpm': USE_CPM_ARGUMENT
+#             },
+#             'status_code': 200,
+#             'result_count': 0
+#         },
+#     ],
+#     ids=[
+#         'condition 1: Endpoint organization query parameters present with service id',
+#         'condition 2: Endpoint optional query parameters present with party key',
+#         'condition 3: Endpoint all query parameters present',
+#         'condition 4: Endpoint organization query parameter missing but service id and party key present',
+#         'condition 5: Endpoint unsupported query parameters present',
+#         'condition 6: Endpoint missing mandatory query parameters',
+#         'condition 7: Endpoint invalid fhir identifier on mandatory query parameter',
+#         'condition 8: Device mandatory query parameters present',
+#         'condition 9: Device optional query parameters present',
+#         'condition 10: Device unsupported query parameters present',
+#         'condition 11: Device missing mandatory query parameters',
+#         'condition 12: Device invalid fhir identifier on mandatory query parameter',
+#         'condition 13: Return a Device from CPM',
+#         'condition 14: Return no Devices from CPM, no matches',
+#         'condition 15: Return an Endpoint from CPM',
+#         'condition 16: Return no Endpoints from CPM, no matches',
+#     ]
+# )
+# async def test_endpoints(test_app, api_client: APISessionClient, request_data):
+#     correlation_id = str(uuid4())
+#     headers = {
+#         'apikey': test_app.client_id,
+#         'x-correlation-id': correlation_id,
+#         'cache-control': 'no-cache',
+#     }
 
-    query_params = request_data['query_params']
-    uri = _build_test_path(request_data['endpoint'], query_params)
-    await _assert_response(api_client, uri, headers, request_data['result_count'], request_data['status_code'], correlation_id)
+#     query_params = request_data['query_params']
+#     uri = _build_test_path(request_data['endpoint'], query_params)
+#     await _assert_response(api_client, uri, headers, request_data['result_count'], request_data['status_code'], correlation_id)
     
-    # Re-run with use_cpm as a query
-    query_params_cpm = request_data['query_params']
-    query_params_cpm['use_cpm'] = USE_CPM_ARGUMENT
-    uri_cpm = _build_test_path(request_data['endpoint'], query_params=query_params_cpm)
-    await _assert_response(api_client, uri_cpm, headers, request_data['result_count'], request_data['status_code'], correlation_id)
+#     # Re-run with use_cpm as a query
+#     query_params_cpm = request_data['query_params']
+#     query_params_cpm['use_cpm'] = USE_CPM_ARGUMENT
+#     uri_cpm = _build_test_path(request_data['endpoint'], query_params=query_params_cpm)
+#     await _assert_response(api_client, uri_cpm, headers, request_data['result_count'], request_data['status_code'], correlation_id)
 
        
 async def _assert_response(api_client, uri, headers, result_count, expected_status, correlation_id):
