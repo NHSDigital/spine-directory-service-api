@@ -19,9 +19,15 @@ docker_service:
       - name: CPM_CLIENT_KEY
         value: JrxvR6WsyTEu8BVVA1qhTbKqoktoVn0y
     secrets:
+      - name: CPM_CLIENT_KEY_A
+        valueFrom: "arn:aws:secretsmanager:eu-west-2:{{ PTL_ACCOUNT_ID }}:secret:ptl/spine-directory-service/cpm-apikey"
+      - name: CPM_CLIENT_KEY_B
+        valueFrom: "/{{ account }}/{{ service_name }}/{{ APIGEE_ENVIRONMENT }}/ptl/spine-directory-service/cpm-apikey"
       - name: GPC_CLIENT_ID
         valueFrom: "arn:aws:secretsmanager:eu-west-2:{{ PTL_ACCOUNT_ID }}:secret:ptl/gp-connect-access-record-fhir-api/gp-connect-mediation-app/CLIENT_ID_INT"
       - name: APIGEE_URL
+        valueFrom: "/{{ account }}/platform-common/egress/hosts/apigee-internal-dev-sandbox"
+      - name: APIGEE_URL_2
         valueFrom: "/{{ account }}/platform-common/egress/hosts/apigee-internal-dev-sandbox"
     health_check:
       matcher: "200"
