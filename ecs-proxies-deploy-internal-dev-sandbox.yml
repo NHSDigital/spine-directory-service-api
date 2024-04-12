@@ -16,17 +16,11 @@ docker_service:
         value: "YES"
       - name: CPM_PATH_URL
         value: cpm-dev-sandbox
-      - name: ACCOUNT
-        value: "{{ account }}"
-      - name: SERVICE_NAME
-        value: "{{ service_name }}"
-      - name: APIGEE_ENV
-        value: "{{ APIGEE_ENVIRONMENT  }}"
     secrets:
       - name: APIGEE_URL
         valueFrom: "/{{ account }}/platform-common/egress/hosts/apigee-internal-dev-sandbox"
       - name: CPM_CLIENT_KEY
-        valueFrom: "arn:aws:ssm:eu-west-2:958002497996:parameter/ptl/sds/cpm-apikey"
+        valueFrom: "/ptl/sds/cpm-apikey"
     health_check:
       matcher: "200"
       path: "/healthcheck"

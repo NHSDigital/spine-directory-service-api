@@ -14,11 +14,7 @@ docker_service:
         value: ldap.nis1.national.ncrs.nhs.uk
       - name: SDS_SPINE_CORE_ODS_CODE
         value: "YES"
-      - name: CPM_PATH_URL
-        value: cpm-dev
     secrets:
-      - name: CPM_CLIENT_KEY
-        value: "/{{ account }}/{{ service_name }}/cpm-apikey"
       - name: SDS_SECRET_CLIENT_KEY
         valueFrom: "arn:aws:secretsmanager:eu-west-2:{{ PTL_ACCOUNT_ID }}:secret:ptl/cis/ldap.nis1.national.ncrs.nhs.uk/key"
       - name: SDS_SECRET_CLIENT_CERT
