@@ -16,8 +16,6 @@ docker_service:
         value: "YES"
       - name: CPM_PATH_URL
         value: cpm-dev-sandbox
-      - name: CPM_CLIENT_KEY
-        value: JrxvR6WsyTEu8BVVA1qhTbKqoktoVn0y
       - name: ACCOUNT
         value: "{{ account }}"
       - name: SERVICE_NAME
