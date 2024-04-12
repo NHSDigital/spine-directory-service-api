@@ -15,7 +15,7 @@ docker_service:
       - name: SDS_SPINE_CORE_ODS_CODE
         value: "YES"
       - name: CPM_PATH_URL
-        value: cpm-dev-sandbox
+        value: cpm-dev
     secrets:
       - name: CPM_CLIENT_KEY
         value: "/{{ account }}/{{ service_name }}/cpm-apikey"
