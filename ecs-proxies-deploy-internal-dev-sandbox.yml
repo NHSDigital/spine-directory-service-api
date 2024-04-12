@@ -18,8 +18,6 @@ docker_service:
         value: cpm-dev-sandbox
       - name: SERVICE_NAME
         value: "{{ service_name }}"
-      - name: SHORT_SERVICE_NAME
-        value: "{{ short_service_name }}"
       - name: SERVICE_ID
         value: "{{ service_id }}"
     secrets:
