@@ -29,12 +29,8 @@ docker_service:
     secrets:
       - name: APIGEE_URL
         valueFrom: "/{{ account }}/platform-common/egress/hosts/apigee-internal-dev-sandbox"
-      - name: CPM_CLIENT_KEY_2
-        valueFrom: "/{{ account }}/{{ service_name }}/{{ APIGEE_ENVIRONMENT }}/ptl/spine-directory-service/cpm-apikey"
-      - name: CPM_CLIENT_KEY_3
-        valueFrom: "/{{ account }}/spine-directory-service/{{ APIGEE_ENVIRONMENT }}/cpm-apikey"
-      - name: CPM_CLIENT_KEY_4
-        valueFrom: "/{{ account }}/{{ service_name }}/{{ APIGEE_ENVIRONMENT }}/cpm-apikey"
+      - name: CPM_CLIENT_KEY
+        valueFrom: "/{{ account }}/{{ service_name }}/cpm-apikey"
     health_check:
       matcher: "200"
       path: "/healthcheck"
