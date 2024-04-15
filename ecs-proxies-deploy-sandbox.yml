@@ -15,12 +15,12 @@ docker_service:
       - name: SDS_SPINE_CORE_ODS_CODE
         value: "YES"
       - name: CPM_PATH_URL
-        value: cpm-qa-sandbox
+        value: cpm-sandbox
     secrets:
       - name: CPM_CLIENT_KEY
         valueFrom: "/{{ account }}/api-deployment/{{ service_name }}/cpm-apikey"
       - name: APIGEE_URL
-        valueFrom: "/{{ account }}/platform-common/egress/hosts/apigee-internal-qa-sandbox"
+        valueFrom: "/{{ account }}/platform-common/egress/hosts/apigee-sandbox"
     health_check:
       matcher: "200"
       path: "/healthcheck"
