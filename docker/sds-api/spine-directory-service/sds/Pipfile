@@ -16,7 +16,7 @@ requests = "~=2.31.0"
 jsonschema = "*"
 
 [requires]
-python_version = "3.8"
+python_version = "3.8.17"
 
 [scripts]
 unittests = 'python -m xmlrunner -o test-reports -v'
