@@ -16,6 +16,7 @@ steps:
         export APIGEE_APP_ID="${{ parameters.external_env_test_app_id }}"
         export STATUS_ENDPOINT_API_KEY="$(status-endpoint-api-key)"
         export SOURCE_COMMIT_ID="$(Build.SourceVersion)"
+        export ENVIRONMENT="$(ENVIRONMENT)"
         ${{ parameters.test_command }}
       workingDirectory: $(Pipeline.Workspace)/s/$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)
       displayName: Run ${{ parameters.test_command }}

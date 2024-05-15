@@ -8,6 +8,7 @@ steps:
         export PROXY_NAME="$(FULLY_QUALIFIED_SERVICE_NAME)"
         export APIGEE_ACCESS_TOKEN="$(secret.AccessToken)"
         export SOURCE_COMMIT_ID="$(Build.SourceVersion)"
+        export ENVIRONMENT="$(ENVIRONMENT)"
         ${{ parameters.test_command }}
       workingDirectory: $(Pipeline.Workspace)/s/$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)
       displayName: Run ${{ parameters.test_command }}
