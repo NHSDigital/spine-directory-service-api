@@ -71,7 +71,7 @@ extends:
             parameters:
               smoke_tests: true
               external_env: true
-              external_env_test_app_id: "AN2SYvsgUzZlGsapVH5tGcKOQprcChfy"
+              external_env_test_app_id: "361bffa4-aa29-422b-82b5-08f88bec164f"
       - environment: dev # dep
         depends_on:
           - internal_qa
@@ -92,7 +92,7 @@ extends:
             parameters:
               smoke_tests: true
               external_env: true
-              external_env_test_app_id: "6BsT7jsTn6GeLUKw10D56nfPQTEXfOSA"
+              external_env_test_app_id: "60aeca0f-d963-4c96-b705-eb95fc99dfe5"
       - environment: prod
         depends_on:
             - internal_qa
@@ -102,4 +102,4 @@ extends:
             parameters:
               smoke_tests: true
               external_env: true
-              external_env_test_app_id: "Q8fcL0AI6pvwGsrgkdBLmmyq6FYB41se"
+              external_env_test_app_id: "906b4a95-55d0-4b56-83eb-722f0ed31cdf"
