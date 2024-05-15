@@ -48,9 +48,9 @@ extends:
         post_deploy:
           - template: ./templates/run-tests.yml
             parameters:
+              e2e_tests: true
               smoke_tests: true
-              external_env: true
-              external_env_test_app_id: "01ad34e9-9085-417f-b000-c0384a8a03d3"
+              security_tests: true
       - environment: internal-dev-sandbox
         proxy_path: sandbox
         post_deploy:
