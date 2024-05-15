@@ -1,3 +1,12 @@
+<<<<<<< HEAD
+=======
+from typing import List
+from uuid import uuid4
+from time import time, sleep
+
+import requests
+from tests import conftest
+>>>>>>> c12ee12 (feature/PI-275-test-broken-envs some test fixes)
 import pytest
 import requests
 from uuid import uuid4
@@ -18,6 +27,7 @@ DEVICE_MANUFACTURING_ORGANIZATION_FHIR_IDENTIFIER = (
 )
 USE_CPM_ARGUMENT = "iwanttogetdatafromcpm"
 
+IS_PROD = conftest.get_env("ENVIRONMENT").lower() in ["int, sandbox", "prod"]
 
 def _build_test_path(endpoint: str, query_params: dict = None) -> str:
     def _map_kv(kv: tuple):
