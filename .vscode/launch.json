@@ -6,7 +6,7 @@
     "configurations": [
         {
             "name": "SDS",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "program": "./docker/sds-api/spine-directory-service/sds/main.py",
             "console": "integratedTerminal",

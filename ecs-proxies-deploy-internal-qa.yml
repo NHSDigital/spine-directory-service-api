@@ -18,7 +18,7 @@ docker_service:
         value: cpm-qa
     secrets:
       - name: CPM_CLIENT_KEY
-        valueFrom: "/{{ account }}/api-deployment/{{ service_name }}/cpm-apikey"
+        valueFrom: "/{{ account }}/api-deployment/{{ service_name }}/internal-qa/cpm-apikey"
       - name: SDS_SECRET_CLIENT_KEY
         valueFrom: "arn:aws:secretsmanager:eu-west-2:{{ PTL_ACCOUNT_ID }}:secret:ptl/cis/ldap.vn1.national.ncrs.nhs.uk/key"
       - name: SDS_SECRET_CLIENT_CERT

@@ -1,3 +1,6 @@
+
+from uuid import uuid4
+
 import pytest
 import requests
 from uuid import uuid4
@@ -17,7 +20,6 @@ DEVICE_MANUFACTURING_ORGANIZATION_FHIR_IDENTIFIER = (
     "https://fhir.nhs.uk/Id/ods-organization-code"
 )
 USE_CPM_ARGUMENT = "iwanttogetdatafromcpm"
-
 
 def _build_test_path(endpoint: str, query_params: dict = None) -> str:
     def _map_kv(kv: tuple):
@@ -375,7 +377,7 @@ def _assert_response(url, headers, result_count, expected_status, correlation_id
         assert resource_type == "OperationOutcome", body
 
 
-@pytest.mark.e2e
+@pytest.mark.smoketest
 @pytest.mark.parametrize(
     "request_data",
     [
