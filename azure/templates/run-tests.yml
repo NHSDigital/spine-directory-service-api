@@ -11,6 +11,14 @@ parameters:
     type: boolean
     displayName: Toggle security tests
     default: false
+  - name: external_env
+    type: boolean
+    displayName: Environment is external (nhsd-prod org)
+    default: false
+  - name: external_env_test_app_id
+    type: string
+    displayName: Test for use only with external envs (nhsd-prod org)
+    default: ''
 
 steps:
   - task: s3-cache-action@1
@@ -26,12 +34,36 @@ steps:
     workingDirectory: $(Pipeline.Workspace)/s/$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)
     condition: ne(variables['CacheRestored-Pytest'], 'true')
     displayName: Setup pytests
+
   # Smoketests
-  - ${{ if parameters.smoke_tests }}:
-    - template: ../components/run-smoke-tests.yml
+  - ${{ if and(parameters.smoke_tests, not(parameters.external_env)) }}:
+    - template: ../components/run-tests.yml
+      parameters:
+        test_command: make smoketest
+  - ${{ if and(parameters.smoke_tests, parameters.external_env) }}:
+    - template: ../components/run-tests.yml
+      parameters:
+        test_command: make smoketest-prod
+        external_env_test_app_id: ${{ parameters.external_env_test_app_id }}
+
   # e2e tests
-  - ${{ if parameters.e2e_tests }}:
-    - template: ../components/run-e2e-tests.yml
+  - ${{ if and(parameters.e2e_tests, not(parameters.external_env)) }}:
+    - template: ../components/run-tests.yml
+      parameters:
+        test_command: make e2etest
+  - ${{ if and(parameters.e2e_tests, parameters.external_env) }}:
+    - template: ../components/run-tests.yml
+      parameters:
+        test_command: make e2etest-prod
+        external_env_test_app_id: ${{ parameters.external_env_test_app_id }}
+
   # security tests
-  - ${{ if parameters.security_tests }}:
-    - template: ../components/run-security-tests.yml
+  - ${{ if and(parameters.security_tests, not(parameters.external_env)) }}:
+    - template: ../components/run-tests.yml
+      parameters:
+        test_command: make securitytest
+  - ${{ if and(parameters.security_tests, parameters.external_env) }}:
+    - template: ../components/run-tests.yml
+      parameters:
+        test_command: make securitytest-prod
+        external_env_test_app_id: ${{ parameters.external_env_test_app_id }}

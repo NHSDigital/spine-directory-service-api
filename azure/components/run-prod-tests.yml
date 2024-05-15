@@ -1,0 +1,27 @@
+parameters:
+  - name: test_command
+    type: string
+    default: make test-prod
+  - name: external_env_test_app_id
+    type: string
+    displayName: Test for use only with external envs (nhsd-prod org)
+    default: ''
+
+steps:
+    # In order to run tests in prod you must supply the unique ID of an Apigee app
+    # that has authorized access to your service proxy.
+    - bash: |
+        export PROXY_NAME="$(FULLY_QUALIFIED_SERVICE_NAME)"
+        export APIGEE_ACCESS_TOKEN="$(secret.AccessToken)"
+        export APIGEE_APP_ID="${{ external_env_test_app_id }}"
+        export STATUS_ENDPOINT_API_KEY="$(STATUS_ENDPOINT_API_KEY)"
+        export SOURCE_COMMIT_ID="$(Build.SourceVersion)"
+        ${{ parameters.test_command }}
+      workingDirectory: $(Pipeline.Workspace)/s/$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)
+      displayName: Run smoketests
+    - task: PublishTestResults@2
+      displayName: 'Publish smoketest results'
+      condition: always()
+      inputs:
+        testResultsFiles: '$(Pipeline.Workspace)/s/$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)/smoketest-report.xml'
+        failTaskOnFailedTests: true

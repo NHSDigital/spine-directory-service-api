@@ -40,7 +40,9 @@ extends:
         post_deploy:
           - template: ./templates/run-tests.yml
             parameters:
+              e2e_tests: true
               smoke_tests: true
+              security_tests: true
       - environment: internal-qa
         post_deploy:
           - template: ./templates/run-tests.yml
@@ -68,6 +70,8 @@ extends:
           - template: ./templates/run-tests.yml
             parameters:
               smoke_tests: true
+              external_env: true
+              external_env_test_app_id: "GETID"
       - environment: dev # dep
         depends_on:
           - internal_qa
@@ -76,6 +80,8 @@ extends:
           - template: ./templates/run-tests.yml
             parameters:
               smoke_tests: true
+              external_env: true
+              external_env_test_app_id: "GETID"
       - environment: sandbox
         proxy_path: sandbox
         depends_on:
@@ -85,6 +91,8 @@ extends:
           - template: ./templates/run-tests.yml
             parameters:
               smoke_tests: true
+              external_env: true
+              external_env_test_app_id: "GETID"
       - environment: prod
         depends_on:
             - internal_qa
@@ -93,3 +101,5 @@ extends:
           - template: ./templates/run-tests.yml
             parameters:
               smoke_tests: true
+              external_env: true
+              external_env_test_app_id: "GETID"

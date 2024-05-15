@@ -76,15 +76,57 @@ release: clean publish build-proxy
 
 dist: release
 
-test: smoketest e2etest
+#################
+# Test commands #
+#################
 
-pytest-guards: guard-SERVICE_BASE_PATH guard-APIGEE_ENVIRONMENT guard-SOURCE_COMMIT_ID guard-STATUS_ENDPOINT_API_KEY
+TEST_CMD := @APIGEE_ACCESS_TOKEN=$(APIGEE_ACCESS_TOKEN) \
+		poetry run pytest -v \
+		--color=yes \
+		--api-name=spine-directory-service \
+		--proxy-name=$(PROXY_NAME) \
+		-s
 
-smoketest: pytest-guards
-	poetry run python -m pytest -v --junitxml=smoketest-report.xml -s -m smoketest
+PROD_TEST_CMD := $(TEST_CMD) \
+		--apigee-app-id=$(APIGEE_APP_ID) \
+		--apigee-organization=nhsd-prod \
+		--status-endpoint-api-key=$(STATUS_ENDPOINT_API_KEY)
 
-e2etest: pytest-guards
-	poetry run python -m pytest -v --junitxml=e2e-report.xml -s -m e2e
+#Command to run end-to-end smoketests post-deployment to verify the environment is working
+test:
+	$(TEST_CMD) \
+	--junitxml=test-report.xml \
 
-securitytest: pytest-guards
-	poetry run python -m pytest -v --junitxml=securitytest-report.xml -s -m securitytest
+smoketest:
+	$(TEST_CMD) \
+	--junitxml=smoketest-report.xml \
+	-m smoketest
+
+e2etest:
+	$(TEST_CMD) \
+	--junitxml=test-report.xml \
+	-m e2e
+
+securitytest:
+	$(TEST_CMD) \
+	--junitxml=test-report.xml \
+	-m securitytest
+
+test-prod:
+	$(PROD_CMD) \
+	--junitxml=test-report.xml \
+
+smoketest-prod:
+	$(PROD_TEST_CMD) \
+	--junitxml=smoketest-report.xml \
+	-m smoketest
+
+e2etest-prod:
+	$(PROD_CMD) \
+	--junitxml=test-report.xml \
+	-m e2e
+
+securitytest-prod:
+	$(PROD_CMD) \
+	--junitxml=test-report.xml \
+	-m securitytest
