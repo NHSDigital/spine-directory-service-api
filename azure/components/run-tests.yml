@@ -7,13 +7,12 @@ steps:
     - bash: |
         export PROXY_NAME="$(FULLY_QUALIFIED_SERVICE_NAME)"
         export APIGEE_ACCESS_TOKEN="$(secret.AccessToken)"
-        export STATUS_ENDPOINT_API_KEY="$(STATUS_ENDPOINT_API_KEY)"
         export SOURCE_COMMIT_ID="$(Build.SourceVersion)"
         ${{ parameters.test_command }}
       workingDirectory: $(Pipeline.Workspace)/s/$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)
-      displayName: Run full test suite
+      displayName: Run ${{ parameters.test_command }}
     - task: PublishTestResults@2
-      displayName: 'Publish test results'
+      displayName: Publish test results for ${{ parameters.test_command }}
       condition: always()
       inputs:
         testResultsFiles: '$(Pipeline.Workspace)/s/$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)/test-report.xml'
