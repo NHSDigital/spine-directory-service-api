@@ -90,7 +90,7 @@ def test_wait_for_status(nhsd_apim_proxy_url, status_endpoint_auth_headers):
     assert deployed_commitId == getenv("SOURCE_COMMIT_ID")
 
 
-@pytest.mark.smoketest
+@pytest.mark.securitytest
 @pytest.mark.parametrize("endpoint", ["_status", "Endpoint", "Device"])
 def test_endpoints_are_secured(nhsd_apim_proxy_url, endpoint):
     resp = requests.get(f"{nhsd_apim_proxy_url}/{endpoint}")
