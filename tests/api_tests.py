@@ -21,6 +21,8 @@ DEVICE_MANUFACTURING_ORGANIZATION_FHIR_IDENTIFIER = (
 )
 USE_CPM_ARGUMENT = "iwanttogetdatafromcpm"
 
+
+
 def _build_test_path(endpoint: str, query_params: dict = None) -> str:
     def _map_kv(kv: tuple):
         (key, values) = kv
@@ -393,17 +395,32 @@ def _assert_response(url, headers, result_count, expected_status, correlation_id
         }
     ],
 )
-@pytest.mark.nhsd_apim_authorization({"access": "application", "level": "level0"})
-def test_check_device_is_connected_to_cpm(
-    nhsd_apim_proxy_url, nhsd_apim_auth_headers, request_data
+def test_check_device_is_connected_to_cpm_ptl(
+    nhsd_apim_proxy_url, request_data
 ):
+    SDS_TEST_APP_CLIENT_IDS = {
+        "int": "IQCAZ4bCRw7vhUgqLINk5BazGNcj6qEJ",
+        "internal-dev": "yIO0cig5XaqYePR9x9IihpdDKB932Be4", 
+        "internal-qa": "TOZ8h88LedqjgNsRxqlAs9vP4HxPlvhs",
+        "internal-dev-sandbox": "yIO0cig5XaqYePR9x9IihpdDKB932Be4",
+        "internal-qa-sandbox": "TOZ8h88LedqjgNsRxqlAs9vP4HxPlvhs",
+        "ref": "Kr8ZcXON1jGTkcgyYJ4Gr1c4AP3g1e2j",
+        "sandbox": "6BsT7jsTn6GeLUKw10D56nfPQTEXfOSA",
+        "prod": "RBC"
+    }
+    ENVIRONMENT = getenv("ENVIRONMENT")
+    SDS_CLIENT_ID = SDS_TEST_APP_CLIENT_IDS[ENVIRONMENT]
+
     correlation_id = str(uuid4())
-    nhsd_apim_auth_headers["x-correlation-id"] = correlation_id
-    nhsd_apim_auth_headers["cache-control"] = "no-cache"
+    headers = {}
+    headers["x-correlation-id"] = correlation_id
+    headers["cache-control"] = "no-cache"
+    headers["apikey"] = SDS_CLIENT_ID
+
 
     query_params = request_data["query_params"]
     path = _build_test_path(request_data["endpoint"], query_params)
     uri = f"{nhsd_apim_proxy_url}/{path}"
 
-    resp = requests.get(uri, headers=nhsd_apim_auth_headers)
+    resp = requests.get(uri, headers=headers)
     assert resp.status_code == 200
