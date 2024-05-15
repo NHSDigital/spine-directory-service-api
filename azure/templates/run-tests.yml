@@ -41,7 +41,7 @@ steps:
       parameters:
         test_command: make smoketest
   - ${{ if and(parameters.smoke_tests, parameters.external_env) }}:
-    - template: ../components/run-tests.yml
+    - template: ../components/run-prod-tests.yml
       parameters:
         test_command: make smoketest-prod
         external_env_test_app_id: ${{ parameters.external_env_test_app_id }}
@@ -52,7 +52,7 @@ steps:
       parameters:
         test_command: make e2etest
   - ${{ if and(parameters.e2e_tests, parameters.external_env) }}:
-    - template: ../components/run-tests.yml
+    - template: ../components/run-prod-tests.yml
       parameters:
         test_command: make e2etest-prod
         external_env_test_app_id: ${{ parameters.external_env_test_app_id }}
@@ -63,7 +63,7 @@ steps:
       parameters:
         test_command: make securitytest
   - ${{ if and(parameters.security_tests, parameters.external_env) }}:
-    - template: ../components/run-tests.yml
+    - template: ../components/run-prod-tests.yml
       parameters:
         test_command: make securitytest-prod
         external_env_test_app_id: ${{ parameters.external_env_test_app_id }}
