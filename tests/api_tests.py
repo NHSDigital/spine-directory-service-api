@@ -407,8 +407,5 @@ def test_check_device_is_connected_to_cpm(
     path = _build_test_path(request_data["endpoint"], query_params)
     uri = f"{nhsd_apim_proxy_url}/{path}"
 
-    print("path", path)
-    print("uri", uri)
-
     resp = requests.get(uri, headers=nhsd_apim_auth_headers)
     assert resp.status_code == 200
