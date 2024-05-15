@@ -406,7 +406,7 @@ def test_check_device_is_connected_to_cpm_ptl(
         "internal-qa-sandbox": "TOZ8h88LedqjgNsRxqlAs9vP4HxPlvhs",
         "ref": "Kr8ZcXON1jGTkcgyYJ4Gr1c4AP3g1e2j",
         "sandbox": "6BsT7jsTn6GeLUKw10D56nfPQTEXfOSA",
-        "prod": "RBC"
+        "prod": "TBC"
     }
     ENVIRONMENT = getenv("ENVIRONMENT")
     SDS_CLIENT_ID = SDS_TEST_APP_CLIENT_IDS[ENVIRONMENT]
