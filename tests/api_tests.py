@@ -379,7 +379,7 @@ def _assert_response(url, headers, result_count, expected_status, correlation_id
         assert resource_type == "OperationOutcome", body
 
 
-@pytest.mark.e2e
+@pytest.mark.smoketest
 @pytest.mark.parametrize(
     "request_data",
     [
