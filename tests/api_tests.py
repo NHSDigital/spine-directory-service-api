@@ -21,6 +21,7 @@ DEVICE_MANUFACTURING_ORGANIZATION_FHIR_IDENTIFIER = (
 )
 USE_CPM_ARGUMENT = "iwanttogetdatafromcpm"
 
+IS_PROD = getenv("ENVIRONMENT") in ["int", "prod", "dev", "sandbox"]
 
 
 def _build_test_path(endpoint: str, query_params: dict = None) -> str:
@@ -379,6 +380,7 @@ def _assert_response(url, headers, result_count, expected_status, correlation_id
         assert resource_type == "OperationOutcome", body
 
 
+@pytest.mark.skipif(IS_PROD, reason="cant use test utils for prod")
 @pytest.mark.smoketest
 @pytest.mark.parametrize(
     "request_data",
@@ -395,15 +397,43 @@ def _assert_response(url, headers, result_count, expected_status, correlation_id
         }
     ],
 )
+@pytest.mark.nhsd_apim_authorization({"access": "application", "level": "level0"})
 def test_check_device_is_connected_to_cpm_ptl(
+    nhsd_apim_proxy_url, nhsd_apim_auth_headers, request_data
+):
+    correlation_id = str(uuid4())
+    nhsd_apim_auth_headers["x-correlation-id"] = correlation_id
+    nhsd_apim_auth_headers["cache-control"] = "no-cache"
+
+    query_params = request_data["query_params"]
+    path = _build_test_path(request_data["endpoint"], query_params)
+    uri = f"{nhsd_apim_proxy_url}/{path}"
+
+    resp = requests.get(uri, headers=nhsd_apim_auth_headers)
+    assert resp.status_code == 200
+
+@pytest.mark.skipif( not IS_PROD, reason="can use test utils for ptl")
+@pytest.mark.smoketest
+@pytest.mark.parametrize(
+    "request_data",
+    [
+        {
+            "endpoint": "Device",
+            "query_params": {
+                "organization": f"{ENDPOINT_ORGANIZATION_FHIR_IDENTIFIER}|5NR",
+                "identifier": f"{DEVICE_INTERACTION_ID_FHIR_IDENTIFIER}|urn:nhs:names:services:lrs:MCCI_IN010000UK13",
+                "use_cpm": USE_CPM_ARGUMENT,
+            },
+            "status_code": 200,
+            "result_count": 0,
+        }
+    ],
+)
+def test_check_device_is_connected_to_cpm_prod(
     nhsd_apim_proxy_url, request_data
 ):
     SDS_TEST_APP_CLIENT_IDS = {
         "int": "IQCAZ4bCRw7vhUgqLINk5BazGNcj6qEJ",
-        "internal-dev": "yIO0cig5XaqYePR9x9IihpdDKB932Be4", 
-        "internal-qa": "TOZ8h88LedqjgNsRxqlAs9vP4HxPlvhs",
-        "internal-dev-sandbox": "yIO0cig5XaqYePR9x9IihpdDKB932Be4",
-        "internal-qa-sandbox": "TOZ8h88LedqjgNsRxqlAs9vP4HxPlvhs",
         "ref": "Kr8ZcXON1jGTkcgyYJ4Gr1c4AP3g1e2j",
         "sandbox": "6BsT7jsTn6GeLUKw10D56nfPQTEXfOSA",
         "prod": "TBC"
