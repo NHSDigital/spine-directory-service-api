@@ -13,7 +13,7 @@ steps:
     - bash: |
         export PROXY_NAME="spine-directory-service-int"
         export APIGEE_ACCESS_TOKEN="$(secret.AccessToken)"
-        export APIGEE_APP_ID="${{ external_env_test_app_id }}"
+        export APIGEE_APP_ID="${{ parameters.external_env_test_app_id }}"
         export STATUS_ENDPOINT_API_KEY="$(status-endpoint-api-key)"
         export SOURCE_COMMIT_ID="$(Build.SourceVersion)"
         ${{ parameters.test_command }}
