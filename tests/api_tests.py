@@ -1,8 +1,6 @@
 
-from typing import List
 from uuid import uuid4
 
-import requests
 import pytest
 import requests
 from uuid import uuid4
