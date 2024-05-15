@@ -73,7 +73,7 @@ class CpmClient:
     async def get_cpm(self):
         logger.info("Contacting CPM")
         url = f"https://{self._apigee_url}"
-        search_endpoint = f"Device?device_type={self._endpoint}"
+        search_endpoint = f"Device?device_type={self._endpoint}&use_mock=true"
         headers = {
             'version': '1',
             'Authorization': 'letmein',
