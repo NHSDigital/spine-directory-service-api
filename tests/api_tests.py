@@ -22,6 +22,7 @@ DEVICE_MANUFACTURING_ORGANIZATION_FHIR_IDENTIFIER = (
 USE_CPM_ARGUMENT = "iwanttogetdatafromcpm"
 
 IS_PROD = getenv("ENVIRONMENT") in ["int", "prod", "dev", "sandbox"]
+IS_DEV = getenv("ENVIRONMENT") in ["dep"]
 
 
 def _build_test_path(endpoint: str, query_params: dict = None) -> str:
@@ -63,7 +64,6 @@ def test_wait_for_ping(nhsd_apim_proxy_url):
         pytest.fail("Timeout Error - max retries")
 
     assert deployed_commitId == getenv("SOURCE_COMMIT_ID")
-
 
 @pytest.mark.smoketest
 def test_wait_for_status(nhsd_apim_proxy_url, status_endpoint_auth_headers):
@@ -413,6 +413,7 @@ def test_check_device_is_connected_to_cpm_ptl(
     assert resp.status_code == 200
 
 @pytest.mark.skipif( not IS_PROD, reason="can use test utils for ptl")
+@pytest.mark.skipif( IS_DEV, reason="CPM does not have a dev env")
 @pytest.mark.smoketest
 @pytest.mark.parametrize(
     "request_data",
@@ -434,7 +435,6 @@ def test_check_device_is_connected_to_cpm_prod(
 ):
     SDS_TEST_APP_CLIENT_IDS = {
         "int": "IQCAZ4bCRw7vhUgqLINk5BazGNcj6qEJ",
-        "ref": "Kr8ZcXON1jGTkcgyYJ4Gr1c4AP3g1e2j",
         "sandbox": "6BsT7jsTn6GeLUKw10D56nfPQTEXfOSA",
         "prod": "TBC"
     }

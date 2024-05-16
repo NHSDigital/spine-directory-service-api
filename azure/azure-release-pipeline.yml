@@ -81,7 +81,7 @@ extends:
             parameters:
               smoke_tests: true
               external_env: true
-              external_env_test_app_id: "GETID"
+              external_env_test_app_id: "8P7dTojrA6i4MI1MQply4XHetoBDuDjb"
       - environment: sandbox
         proxy_path: sandbox
         depends_on:
