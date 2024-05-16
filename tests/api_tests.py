@@ -22,7 +22,7 @@ DEVICE_MANUFACTURING_ORGANIZATION_FHIR_IDENTIFIER = (
 USE_CPM_ARGUMENT = "iwanttogetdatafromcpm"
 
 IS_PROD = getenv("ENVIRONMENT") in ["int", "prod", "dev", "sandbox"]
-IS_DEV = getenv("ENVIRONMENT") in ["dep"]
+IS_DEV = getenv("ENVIRONMENT") in ["dev"]
 
 
 def _build_test_path(endpoint: str, query_params: dict = None) -> str:
