@@ -34,8 +34,8 @@ extends:
     short_service_name: ${{ variables.short_service_name }}
     deploy_review_sandbox: true
     secret_ids:
-      - ptl/cis/ldap.nis1.national.ncrs.nhs.uk/key
-      - ptl/cis/ldap.nis1.national.ncrs.nhs.uk/crt
+      - ptl/client/ldap.nis1.national.ncrs.nhs.uk/key
+      - ptl/client/ldap.nis1.national.ncrs.nhs.uk/crt
       - ptl/veit07.devspineservices.nhs.uk/root-ca/crt
     config_ids:
       - /ptl/api-deployment/sds/ldap/private-key
