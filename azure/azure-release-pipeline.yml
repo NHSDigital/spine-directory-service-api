@@ -100,6 +100,6 @@ extends:
         post_deploy:
           - template: ./templates/run-tests.yml
             parameters:
-              smoke_tests: false
+              smoke_tests: true
               external_env: true
               external_env_test_app_id: "906b4a95-55d0-4b56-83eb-722f0ed31cdf"
