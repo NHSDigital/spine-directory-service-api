@@ -415,6 +415,7 @@ def test_check_device_is_connected_to_cpm_ptl(
 
 @pytest.mark.skipif( not IS_PROD, reason="can use test utils for ptl")
 @pytest.mark.skipif( IS_DEV, reason="CPM does not have a dev env")
+@pytest.mark.skipif( getenv("ENVIRONMENT") == "prod", reason="TEMP measure for cert deployment")
 @pytest.mark.smoketest
 @pytest.mark.parametrize(
     "request_data",
