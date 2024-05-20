@@ -19,7 +19,7 @@ DEVICE_PARTY_KEY_FHIR_IDENTIFIER = "https://fhir.nhs.uk/Id/nhsMhsPartyKey"
 DEVICE_MANUFACTURING_ORGANIZATION_FHIR_IDENTIFIER = (
     "https://fhir.nhs.uk/Id/ods-organization-code"
 )
-USE_CPM_ARGUMENT = "iwanttogetdatafromcpm"
+USE_LDAP_ARGUMENT = "true"
 
 IS_PROD = getenv("ENVIRONMENT") in ["int", "prod", "dev", "sandbox"]
 IS_DEV = getenv("ENVIRONMENT") in ["dev"]
@@ -134,6 +134,7 @@ def test_healthcheck(nhsd_apim_proxy_url, nhsd_apim_auth_headers):
             "query_params": {
                 "organization": f"{ENDPOINT_ORGANIZATION_FHIR_IDENTIFIER}|123456",
                 "identifier": f"{ENDPOINT_INTERACTION_ID_FHIR_IDENTIFIER}|urn:nhs:names:services:gpconnect:documents:fhir:rest:search:documentreference-1",
+                "use_ldap": USE_LDAP_ARGUMENT,
             },
             "status_code": 200,
             "result_count": 0,
@@ -144,6 +145,7 @@ def test_healthcheck(nhsd_apim_proxy_url, nhsd_apim_auth_headers):
             "query_params": {
                 "organization": f"{ENDPOINT_ORGANIZATION_FHIR_IDENTIFIER}|123456",
                 "identifier": f"{ENDPOINT_PARTY_KEY_FHIR_IDENTIFIER}|TEST-PARTY-KEY",
+                "use_ldap": USE_LDAP_ARGUMENT,
             },
             "status_code": 200,
             "result_count": 0,
@@ -157,6 +159,7 @@ def test_healthcheck(nhsd_apim_proxy_url, nhsd_apim_auth_headers):
                     f"{ENDPOINT_INTERACTION_ID_FHIR_IDENTIFIER}|urn:nhs:names:services:gpconnect:documents:fhir:rest:search:documentreference-1",
                     f"{ENDPOINT_PARTY_KEY_FHIR_IDENTIFIER}|TEST-PARTY-KEY",
                 ],
+                "use_ldap": USE_LDAP_ARGUMENT,
             },
             "status_code": 200,
             "result_count": 0,
@@ -168,7 +171,8 @@ def test_healthcheck(nhsd_apim_proxy_url, nhsd_apim_auth_headers):
                 "identifier": [
                     f"{ENDPOINT_INTERACTION_ID_FHIR_IDENTIFIER}|urn:nhs:names:services:gpconnect:documents:fhir:rest:search:documentreference-1",
                     f"{ENDPOINT_PARTY_KEY_FHIR_IDENTIFIER}|TEST-PARTY-KEY",
-                ]
+                ],
+                "use_ldap": USE_LDAP_ARGUMENT,
             },
             "status_code": 200,
             "result_count": 0,
@@ -182,6 +186,7 @@ def test_healthcheck(nhsd_apim_proxy_url, nhsd_apim_auth_headers):
                     f"{ENDPOINT_INTERACTION_ID_FHIR_IDENTIFIER}|urn:nhs:names:services:gpconnect:documents:fhir:rest:search:documentreference-1",
                     f"{ENDPOINT_PARTY_KEY_FHIR_IDENTIFIER}|TEST-PARTY-KEY",
                 ],
+                "use_ldap": USE_LDAP_ARGUMENT,
                 "unsupported": "unsupported_parameter_value",
             },
             "status_code": 400,
@@ -192,6 +197,7 @@ def test_healthcheck(nhsd_apim_proxy_url, nhsd_apim_auth_headers):
             "endpoint": "Endpoint",
             "query_params": {
                 "identifier": f"{ENDPOINT_PARTY_KEY_FHIR_IDENTIFIER}|TEST-PARTY-KEY",
+                "use_ldap": USE_LDAP_ARGUMENT,
             },
             "status_code": 400,
             "result_count": 0,
@@ -202,6 +208,7 @@ def test_healthcheck(nhsd_apim_proxy_url, nhsd_apim_auth_headers):
             "query_params": {
                 "organization": "test|123456",
                 "identifier": f"{ENDPOINT_INTERACTION_ID_FHIR_IDENTIFIER}|urn:nhs:names:services:gpconnect:documents:fhir:rest:search:documentreference-1",
+                "use_ldap": USE_LDAP_ARGUMENT,
             },
             "status_code": 400,
             "result_count": 0,
@@ -212,6 +219,7 @@ def test_healthcheck(nhsd_apim_proxy_url, nhsd_apim_auth_headers):
             "query_params": {
                 "organization": f"{DEVICE_ORGANIZATION_FHIR_IDENTIFIER}|123456",
                 "identifier": f"{DEVICE_INTERACTION_ID_FHIR_IDENTIFIER}|urn:nhs:names:services:psis:REPC_IN150016UK05",
+                "use_ldap": USE_LDAP_ARGUMENT,
             },
             "status_code": 200,
             "result_count": 0,
@@ -226,6 +234,7 @@ def test_healthcheck(nhsd_apim_proxy_url, nhsd_apim_auth_headers):
                     f"{DEVICE_PARTY_KEY_FHIR_IDENTIFIER}|TEST-PARTY-KEY",
                 ],
                 "manufacturing-organization": f"{DEVICE_MANUFACTURING_ORGANIZATION_FHIR_IDENTIFIER}|YES",
+                "use_ldap": USE_LDAP_ARGUMENT,
             },
             "status_code": 200,
             "result_count": 0,
@@ -240,6 +249,7 @@ def test_healthcheck(nhsd_apim_proxy_url, nhsd_apim_auth_headers):
                     f"{DEVICE_PARTY_KEY_FHIR_IDENTIFIER}|TEST-PARTY-KEY",
                 ],
                 "manufacturing-organization": f"{DEVICE_MANUFACTURING_ORGANIZATION_FHIR_IDENTIFIER}|YES",
+                "use_ldap": USE_LDAP_ARGUMENT,
                 "unsupported": "unsupported_parameter_value",
             },
             "status_code": 400,
@@ -254,6 +264,7 @@ def test_healthcheck(nhsd_apim_proxy_url, nhsd_apim_auth_headers):
                     f"{DEVICE_PARTY_KEY_FHIR_IDENTIFIER}|TEST-PARTY-KEY",
                 ],
                 "manufacturing-organization": f"{DEVICE_MANUFACTURING_ORGANIZATION_FHIR_IDENTIFIER}|YES",
+                "use_ldap": USE_LDAP_ARGUMENT,
                 "unsupported": "unsupported_parameter_value",
             },
             "status_code": 400,
@@ -265,6 +276,7 @@ def test_healthcheck(nhsd_apim_proxy_url, nhsd_apim_auth_headers):
             "query_params": {
                 "organization": "test|123456",
                 "identifier": f"{DEVICE_INTERACTION_ID_FHIR_IDENTIFIER}|urn:nhs:names:services:psis:REPC_IN150016UK05",
+                "use_ldap": USE_LDAP_ARGUMENT,
             },
             "status_code": 400,
             "result_count": 0,
@@ -275,7 +287,6 @@ def test_healthcheck(nhsd_apim_proxy_url, nhsd_apim_auth_headers):
             "query_params": {
                 "organization": f"{ENDPOINT_ORGANIZATION_FHIR_IDENTIFIER}|5NR",
                 "identifier": f"{DEVICE_INTERACTION_ID_FHIR_IDENTIFIER}|urn:nhs:names:services:lrs:MCCI_IN010000UK13",
-                "use_cpm": USE_CPM_ARGUMENT,
             },
             "status_code": 200,
             "result_count": 1,
@@ -286,7 +297,6 @@ def test_healthcheck(nhsd_apim_proxy_url, nhsd_apim_auth_headers):
             "query_params": {
                 "organization": f"{ENDPOINT_ORGANIZATION_FHIR_IDENTIFIER}|FOO",
                 "identifier": f"{DEVICE_INTERACTION_ID_FHIR_IDENTIFIER}|urn:nhs:names:services:lrs:MCCI_IN010000UK13",
-                "use_cpm": USE_CPM_ARGUMENT,
             },
             "status_code": 200,
             "result_count": 0,
@@ -297,7 +307,6 @@ def test_healthcheck(nhsd_apim_proxy_url, nhsd_apim_auth_headers):
             "query_params": {
                 "organization": f"{ENDPOINT_ORGANIZATION_FHIR_IDENTIFIER}|RTX",
                 "identifier": f"{ENDPOINT_INTERACTION_ID_FHIR_IDENTIFIER}|urn:nhs:names:services:ebs:PRSC_IN070000UK08",
-                "use_cpm": USE_CPM_ARGUMENT,
             },
             "status_code": 200,
             "result_count": 1,
@@ -308,7 +317,6 @@ def test_healthcheck(nhsd_apim_proxy_url, nhsd_apim_auth_headers):
             "query_params": {
                 "organization": f"{ENDPOINT_ORGANIZATION_FHIR_IDENTIFIER}|FOO",
                 "identifier": f"{ENDPOINT_INTERACTION_ID_FHIR_IDENTIFIER}|urn:nhs:names:services:ebs:PRSC_IN070000UK08",
-                "use_cpm": USE_CPM_ARGUMENT,
             },
             "status_code": 200,
             "result_count": 0,
@@ -350,10 +358,11 @@ def test_endpoints(nhsd_apim_proxy_url, nhsd_apim_auth_headers, request_data):
         correlation_id,
     )
 
-    # Re-run with use_cpm as a query
-    query_params_cpm = request_data["query_params"]
-    query_params_cpm["use_cpm"] = USE_CPM_ARGUMENT
-    path_cpm = _build_test_path(request_data["endpoint"], query_params=query_params_cpm)
+    # Re-run without use_ldap as a query
+    query_params_ldap = request_data["query_params"]
+    if "use_ldap" in query_params_ldap:
+        del query_params_ldap["use_ldap"]
+    path_cpm = _build_test_path(request_data["endpoint"], query_params=query_params_ldap)
     uri_cpm = f"{nhsd_apim_proxy_url}/{path_cpm}"
     _assert_response(
         uri_cpm,
@@ -391,7 +400,6 @@ def _assert_response(url, headers, result_count, expected_status, correlation_id
             "query_params": {
                 "organization": f"{ENDPOINT_ORGANIZATION_FHIR_IDENTIFIER}|5NR",
                 "identifier": f"{DEVICE_INTERACTION_ID_FHIR_IDENTIFIER}|urn:nhs:names:services:lrs:MCCI_IN010000UK13",
-                "use_cpm": USE_CPM_ARGUMENT,
             },
             "status_code": 200,
             "result_count": 0,
@@ -425,7 +433,6 @@ def test_check_device_is_connected_to_cpm_ptl(
             "query_params": {
                 "organization": f"{ENDPOINT_ORGANIZATION_FHIR_IDENTIFIER}|5NR",
                 "identifier": f"{DEVICE_INTERACTION_ID_FHIR_IDENTIFIER}|urn:nhs:names:services:lrs:MCCI_IN010000UK13",
-                "use_cpm": USE_CPM_ARGUMENT,
             },
             "status_code": 200,
             "result_count": 0,

@@ -13,8 +13,8 @@ ORG_CODE_FHIR_IDENTIFIER = "https://fhir.nhs.uk/Id/ods-organization-code"
 SERVICE_ID_FHIR_IDENTIFIER = "https://fhir.nhs.uk/Id/nhsServiceInteractionId"
 PARTY_KEY_FHIR_IDENTIFIER = "https://fhir.nhs.uk/Id/nhsMhsPartyKey"
 MANUFACTURING_ORGANIZATION_FHIR_IDENTIFIER = "https://fhir.nhs.uk/Id/ods-organization-code"
-CPM_FILTER = "use_cpm"
-CPM_FILTER_IDENTIFIER = "iwanttogetdatafromcpm"
+LDAP_FILTER = "use_ldap"
+LDAP_FILTER_IDENTIFIER = "true"
 
 
 class BaseHandler(tornado.web.RequestHandler):
@@ -42,7 +42,7 @@ class BaseHandler(tornado.web.RequestHandler):
         return value
 
     def get_optional_query_param(self, query_param_name: str, fhir_identifier: str) -> Optional[str]:
-        if query_param_name != CPM_FILTER:
+        if query_param_name != LDAP_FILTER:
             values = list(filter(lambda value: "|" in value and value.split("|")[0] == fhir_identifier and value[value.index("|") + 1:].strip(), self.get_query_arguments(query_param_name)))
 
             last_value = values and values[-1]

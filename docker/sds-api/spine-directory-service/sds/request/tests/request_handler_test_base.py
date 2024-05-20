@@ -18,6 +18,7 @@ FORWARD_RELIABLE_SERVICE_ID = "urn:nhs:names:services:gp2gp:RCMR_IN010000UK05"
 CORE_SPINE_FORWARD_RELIABLE_SERVICE_ID = "urn:nhs:names:services:tms:ReliableIntermediary"
 PARTY_KEY = "some_party_key"
 MANUFACTURING_ORG = "some_manufacturer"
+LDAP_FILTER = "true"
 FIXED_UUID = "f0f0e921-92ca-4a88-a550-2dbb36f703af"
 
 DEVICE_PATH = "/device"
@@ -113,13 +114,14 @@ class RequestHandlerTestBase(ABC, tornado.testing.AsyncHTTPTestCase):
                 self._assert_405_operation_outcome(response.body.decode())
 
     @staticmethod
-    def _build_endpoint_url(org_code: Optional[str] = ORG_CODE, service_id: Optional[str] = SERVICE_ID, party_key: Optional[str] = PARTY_KEY):
+    def _build_endpoint_url(org_code: Optional[str] = ORG_CODE, service_id: Optional[str] = SERVICE_ID, party_key: Optional[str] = PARTY_KEY, use_ldap: Optional[str] = LDAP_FILTER):
         url = "/endpoint"
 
         org_code = f"organization=https://fhir.nhs.uk/Id/ods-organization-code|{org_code}" if org_code is not None else None
         service_id = f"identifier=https://fhir.nhs.uk/Id/nhsServiceInteractionId|{service_id}" if service_id is not None else None
         party_key = f"identifier=https://fhir.nhs.uk/Id/nhsMhsPartyKey|{party_key}" if party_key is not None else None
-        query_params = "&".join(filter(lambda query_param: query_param, [org_code, service_id, party_key]))
+        use_ldap = f"use_ldap={LDAP_FILTER}" if use_ldap is not None else None
+        query_params = "&".join(filter(lambda query_param: query_param, [org_code, service_id, party_key, use_ldap]))
 
         url = f"{url}?{query_params}" if query_params else url
         return url
@@ -129,17 +131,18 @@ class RequestHandlerTestBase(ABC, tornado.testing.AsyncHTTPTestCase):
             org_code: Optional[str] = ORG_CODE,
             service_id: Optional[str] = SERVICE_ID,
             party_key: Optional[str] = PARTY_KEY,
-            manufacturing_organization: Optional[str] = MANUFACTURING_ORG):
+            manufacturing_organization: Optional[str] = MANUFACTURING_ORG,
+            use_ldap: Optional[str] = LDAP_FILTER):
 
         path = DEVICE_PATH
-
+        
         org_code = f"organization=https://fhir.nhs.uk/Id/ods-organization-code|{org_code}" if org_code is not None else None
         service_id = f"identifier=https://fhir.nhs.uk/Id/nhsServiceInteractionId|{service_id}" if service_id is not None else None
         party_key = f"identifier=https://fhir.nhs.uk/Id/nhsMhsPartyKey|{party_key}" if party_key is not None else None
         manufacturing_organization = f"manufacturing-organization=https://fhir.nhs.uk/Id/ods-organization-code|{manufacturing_organization}" if manufacturing_organization is not None else None
+        use_ldap = f"use_ldap={LDAP_FILTER}" if use_ldap is not None else None
 
-        query_params = "&".join(filter(lambda query_param: query_param, [org_code, service_id, party_key, manufacturing_organization]))
-
+        query_params = "&".join(filter(lambda query_param: query_param, [org_code, service_id, party_key, manufacturing_organization, use_ldap]))
         path = f"{path}?{query_params}" if query_params else path
         return path
 
