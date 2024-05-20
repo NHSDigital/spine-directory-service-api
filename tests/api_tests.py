@@ -65,6 +65,7 @@ def test_wait_for_ping(nhsd_apim_proxy_url):
 
     assert deployed_commitId == getenv("SOURCE_COMMIT_ID")
 
+
 @pytest.mark.smoketest
 def test_wait_for_status(nhsd_apim_proxy_url, status_endpoint_auth_headers):
     retries = 0
