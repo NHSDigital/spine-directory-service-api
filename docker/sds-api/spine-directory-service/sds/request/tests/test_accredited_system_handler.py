@@ -1,5 +1,5 @@
 from os import path
-from request.tests.request_handler_test_base import RequestHandlerTestBase, ORG_CODE, SERVICE_ID, PARTY_KEY, MANUFACTURING_ORG
+from request.tests.request_handler_test_base import RequestHandlerTestBase, ORG_CODE, SERVICE_ID, PARTY_KEY, MANUFACTURING_ORG, LDAP_FILTER
 from utilities import test_utilities
 
 EXPECTED_SINGLE_DEVICE_JSON_FILE_PATH = path.join(path.dirname(__file__), "examples/single_device.json")
@@ -32,7 +32,7 @@ class TestAccreditedSystemHandler(RequestHandlerTestBase):
         self.sds_client.get_as_details.return_value = test_utilities.awaitable(SINGLE_ACCREDITED_SYSTEM_DETAILS)
 
         super()._test_get(
-            super()._build_device_url(party_key=None, manufacturing_organization=None),
+            super()._build_device_url(party_key=None, manufacturing_organization=None, use_ldap=LDAP_FILTER),
             EXPECTED_SINGLE_DEVICE_JSON_FILE_PATH)
 
         self.sds_client.get_as_details.assert_called_with(ORG_CODE, SERVICE_ID, None, None)
@@ -41,7 +41,7 @@ class TestAccreditedSystemHandler(RequestHandlerTestBase):
         self.sds_client.get_as_details.return_value = test_utilities.awaitable(MULTIPLE_ACCREDITED_SYSTEM_DETAILS)
 
         super()._test_get(
-            super()._build_device_url(party_key=None, manufacturing_organization=None),
+            super()._build_device_url(party_key=None, manufacturing_organization=None, use_ldap=LDAP_FILTER),
             EXPECTED_MULTIPLE_DEVICES_JSON_FILE_PATH)
 
         self.sds_client.get_as_details.assert_called_with(ORG_CODE, SERVICE_ID, None, None)
