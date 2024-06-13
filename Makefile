@@ -12,7 +12,7 @@ install-python:
 	poetry install
 
 install-node:
-	npm install
+	npm install --legacy-peer-deps
 
 install-hooks:
 	cp scripts/pre-commit .git/hooks/pre-commit

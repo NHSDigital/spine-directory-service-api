@@ -3,20 +3,19 @@
   "version": "0.0.1",
   "description": "OAS (Swagger v3) API Definition for Template API",
   "scripts": {
-    "lint": "node_modules/.bin/speccy lint specification/spine-directory-service.yaml --skip default-and-example-are-redundant",
-    "publish": "mkdir -p build && node_modules/.bin/speccy resolve specification/spine-directory-service.yaml -i | poetry run python scripts/yaml2json.py | poetry run python scripts/set_version.py > build/spine-directory-service.json",
-    "serve": "node_modules/.bin/speccy serve build/spine-directory-service.json",
+    "lint": "openapi-generator-cli validate -i specification/spine-directory-service.yaml --skip default-and-example-are-redundant",
+    "publish": "openapi-generator-cli generate -i specification/spine-directory-service.yaml --generator-key v3.0 -g openapi -o build && rm openapitools.json && mv build/openapi.json build/spine-directory-service.json",
     "check-licenses": "node_modules/.bin/license-checker --failOn GPL --failOn LGPL"
   },
   "author": "NHS Digital",
   "license": "MIT",
   "homepage": "https://github.com/NHSDigital/spine-directory-service-api",
-  "dependencies": {
-    "speccy": "^0.11.0"
-  },
   "devDependencies": {
     "apigeetool": "^0.16.4",
     "license-checker": "^25.0.1",
     "minimist": "^1.2.6"
+  },
+  "dependencies": {
+    "@openapitools/openapi-generator-cli": "^2.5.1"
   }
 }
