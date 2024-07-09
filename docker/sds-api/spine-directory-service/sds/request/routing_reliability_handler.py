@@ -31,7 +31,7 @@ class RoutingReliabilityRequestHandler(BaseHandler, ErrorHandler):
 
     @timing.time_request
     async def get(self):
-        read_tracking_id_headers(self.request.headers)
+        tracking_id_headers = read_tracking_id_headers(self.request.headers)
 
         self._validate_query_params()
 
@@ -47,15 +47,20 @@ class RoutingReliabilityRequestHandler(BaseHandler, ErrorHandler):
 
         logger.info("Looking up routing and reliability information. {org_code}, {service_id}, {party_key}",
                     fparams={"org_code": org_code, "service_id": service_id, "party_key": party_key})
-        
+
         if cpm_filter and cpm_filter[0] == CPM_FILTER_IDENTIFIER:
-            ldap_results = await get_endpoint_from_cpm(org_code, service_id, party_key)
-            
+            ldap_results = await get_endpoint_from_cpm(
+                org_code=org_code,
+                interaction_id=service_id,
+                party_key=party_key,
+                tracking_id_headers=tracking_id_headers
+            )
+
             logger.info("Obtained routing and reliability information. {ldap_results}",
                         fparams={"ldap_results": ldap_results})
         else:
             ldap_results = await self.sds_client.get_mhs_details(org_code, service_id, party_key)
-            
+
             logger.info("Obtained routing and reliability information. {ldap_results}",
                         fparams={"ldap_results": ldap_results})
 

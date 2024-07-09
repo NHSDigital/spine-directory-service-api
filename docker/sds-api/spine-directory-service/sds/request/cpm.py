@@ -17,29 +17,27 @@ from utilities import integration_adaptors_logger as log
 logger = log.IntegrationAdaptorsLogger(__name__)
 
 
-async def get_device_from_cpm(org_code: str, interaction_id: str, manufacturing_organization: str = None, party_key: str = None) -> List:
-    query_parts = locals()
+async def get_device_from_cpm(tracking_id_headers: dict, **query_parts) -> List:
     try:
         client_id = os.environ["CPM_CLIENT_KEY"]
         apigee_url = f"{os.environ['APIGEE_URL']}/{os.environ['CPM_PATH_URL']}"
     except KeyError as e:
         raise KeyError(f"Environment variable is required {e}")
     cpm_client = CpmClient(client_id=client_id, apigee_url=apigee_url, endpoint="product")
-    data = await cpm_client.get_cpm()
+    data = await cpm_client.get_cpm(extra_headers=tracking_id_headers)
 
     return process_cpm_device_request(data=data, query_parts=query_parts)
 
 
-async def get_endpoint_from_cpm(org_code: str, interaction_id: str = None, party_key: str = None) -> List:
-    query_parts = locals()
+async def get_endpoint_from_cpm(tracking_id_headers: dict, **query_parts) -> List:
     try:
         client_id = os.environ["CPM_CLIENT_KEY"]
         apigee_url = f"{os.environ['APIGEE_URL']}/{os.environ['CPM_PATH_URL']}"
     except KeyError as e:
         raise KeyError(f"Environment variable is required {e}")
     cpm_client = CpmClient(client_id=client_id, apigee_url=apigee_url, endpoint="endpoint")
-    data = await cpm_client.get_cpm()
-    
+    data = await cpm_client.get_cpm(extra_headers=tracking_id_headers)
+
     return process_cpm_endpoint_request(data=data, query_parts=query_parts)
 
 def process_cpm_endpoint_request(data: dict, query_parts: dict):
@@ -69,8 +67,8 @@ class CpmClient:
         self._client_id = client_id
         self._apigee_url = apigee_url
         self._endpoint = endpoint
-    
-    async def get_cpm(self):
+
+    async def get_cpm(self, extra_headers: dict):
         logger.info("Contacting CPM")
         url = f"https://{self._apigee_url}"
         search_endpoint = f"Device?device_type={self._endpoint}&use_mock=true"
@@ -79,12 +77,13 @@ class CpmClient:
             'Authorization': 'letmein',
             'Content-Type': 'application/json',
             'apiKey': self._client_id,
+            **extra_headers
         }
         params = {}
         logger.info("Requesting data from... {url}/{endpoint}", fparams={"url": url, "endpoint": search_endpoint})
         res = make_get_request(call_name="SDS get_cpm", url=f"{url}/{search_endpoint}", headers=headers, params=params)
         return self._get_response(res=res)
-    
+
     def _get_response(self, res):
         return res.json()
 
@@ -92,7 +91,7 @@ class BaseCpm:
     FILTER_MAP = {}
     DATA_MAP = {}
     DEFAULT_DICT = {}
-    
+
     def __init__(self, data, query_parts):
         self.data = data
         self.query_parts = query_parts
@@ -104,14 +103,14 @@ class BaseCpm:
             for index, res in enumerate(result["entry"]) if result.get("resourceType") == "Bundle" else []:
                 for service in res["item"] if res.get("resourceType") == "QuestionnaireResponse" else []:
                     filters = self._check_each_item(self, filters, service)
-                
+
             all_filters_true = all(filters.values())
             if all_filters_true:
                 filtered_results.append(result["entry"])
             filters = {key: False for key in filters}
-        
+
         return filtered_results
-    
+
     @staticmethod
     def _check_each_item(self, filters, service):
         for key, value in self.query_parts.items():
@@ -120,34 +119,34 @@ class BaseCpm:
                 if match:
                     filters[key] = match
         return filters
-    
+
     @staticmethod
     def _check_match(self, answers, match):
         return any(answer["valueString"] == match for answer in answers)
-    
+
     @staticmethod
-    def process_questionnaire_response(self, item, data_dict, ldap_data_mapping):   
+    def process_questionnaire_response(self, item, data_dict, ldap_data_mapping):
         for service in item.get("item", []):
             if service["text"] in ldap_data_mapping:
                 for answer in service["answer"]:
                     key = ldap_data_mapping[service["text"]]
                     value = answer.get("valueInteger", answer.get("valueString"))
                     data_dict = self.set_data(data_dict, key, value)
-                            
+
         return data_dict
-    
+
     @staticmethod
     def set_data(data_dict, key, value):
         if isinstance(data_dict[key], list):
             data_dict[key].append(value)
         else:
             data_dict[key] = value
-        
+
         return data_dict
-    
+
     def transform_to_ldap(self, data: List) -> List:
         ldap_data = []
-        
+
         for d in data:
             data_dict = copy.deepcopy(self.DEFAULT_DICT)
             for item in d:
@@ -157,22 +156,22 @@ class BaseCpm:
             ldap_data.append(data_dict)
 
         return ldap_data
-    
+
 
 class EndpointCpm(BaseCpm):
     FILTER_MAP = ENDPOINT_FILTER_MAP
     DATA_MAP = ENDPOINT_DATA_MAP
     DEFAULT_DICT = DEFAULT_ENDPOINT_DICT
-    
+
     def __init__(self, data, query_parts):
         self.validate_filters(query_parts)
         super().__init__(data, query_parts)
-    
+
     def validate_filters(self, query_parts):
         non_empty_count = sum(1 for value in query_parts.values() if value and value != 0)
         if non_empty_count < 2:
             self._raise_invalid_query_params_error()
-    
+
     def set_mhs_endpoint(self, ldap_results):
         for key, ldap_result in enumerate(ldap_results):
             service, interaction = self._extract_service_and_interaction(ldap_result['nhsMhsSvcIA'])
@@ -185,9 +184,9 @@ class EndpointCpm(BaseCpm):
 
                 if address:
                     ldap_results[key]['nhsMHSEndPoint'] = address
-                
+
         return ldap_results
-    
+
     @staticmethod
     def _extract_service_and_interaction(service_interaction: str):
         if not service_interaction:
@@ -214,7 +213,7 @@ class EndpointCpm(BaseCpm):
         address_endpoint = EndpointCpm(data=self.data, query_parts=query_params)
         filtered_address_endpoint = address_endpoint.filter_cpm_response()
         ldap_address = address_endpoint.transform_to_ldap(filtered_address_endpoint)
-        
+
         address = []
         try:
             if len(ldap_address) == 1:
@@ -222,14 +221,14 @@ class EndpointCpm(BaseCpm):
                 return address.get('nhsMHSEndPoint') if len(address['nhsMHSEndPoint']) == 1 else self._raise_value_error("address", address)
         except IndexError:
             self._raise_index_error("result", ldap_address)
-            
+
     def _raise_value_error(self, message: str, address: List = []):
         raise ValueError(f"Expected 1 {message} for forward reliable/express routing and reliability but got {str(len(address))}")
-    
+
     def _raise_index_error(self, message: str, address: List = []):
         raise IndexError(f"Expected 1 {message} for forward reliable/express routing and reliability but got {str(len(address))}")
 
-    
+
     def _raise_invalid_query_params_error(self):
         org_code = f'{ORG_CODE_QUERY_PARAMETER_NAME}={ORG_CODE_FHIR_IDENTIFIER}|value'
         party_key = f'{IDENTIFIER_QUERY_PARAMETER_NAME}={PARTY_KEY_FHIR_IDENTIFIER}|value'
@@ -250,11 +249,11 @@ class DeviceCpm(BaseCpm):
     FILTER_MAP = DEVICE_FILTER_MAP
     DATA_MAP = DEVICE_DATA_MAP
     DEFAULT_DICT = DEFAULT_DEVICE_DICT
-    
+
     def __init__(self, data, query_parts):
         self.validate_filters(query_parts)
         super().__init__(data, query_parts)
-    
+
     def validate_filters(self, query_parts):
         if "org_code" not in query_parts or "interaction_id" not in query_parts or not query_parts["org_code"] or not query_parts["interaction_id"]:
             raise SDSException("org_code and interaction_id must be provided")
