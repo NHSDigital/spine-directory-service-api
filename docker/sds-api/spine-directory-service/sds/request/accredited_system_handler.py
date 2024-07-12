@@ -23,7 +23,7 @@ class AccreditedSystemRequestHandler(BaseHandler, ErrorHandler):
 
     @timing.time_request
     async def get(self):
-        read_tracking_id_headers(self.request.headers)
+        tracking_id_headers = read_tracking_id_headers(self.request.headers)
 
         self._validate_query_params()
 
@@ -40,17 +40,17 @@ class AccreditedSystemRequestHandler(BaseHandler, ErrorHandler):
                     fparams={"org_code": org_code, "service_id": service_id, 'manufacturing_organization': manufacturing_organization, 'party_key': party_key})
 
         if cpm_filter and cpm_filter[0] == CPM_FILTER_IDENTIFIER:
-            ldap_result = await get_device_from_cpm(org_code, service_id, manufacturing_organization, party_key)
+            ldap_result = await get_device_from_cpm(org_code=org_code, interaction_id=service_id, manufacturing_organization=manufacturing_organization, party_key=party_key, tracking_id_headers=tracking_id_headers)
             if 'resourceType' in ldap_result and ldap_result['resourceType'] == 'OperationOutcome':
                 self.write(json.dumps(ldap_result, indent=2, sort_keys=False))
                 self.set_header(HttpHeaders.CONTENT_TYPE, accept_type)
-                self.set_header(HttpHeaders.X_CORRELATION_ID, mdc.correlation_id.get()) 
+                self.set_header(HttpHeaders.X_CORRELATION_ID, mdc.correlation_id.get())
             else:
                 self._build_output(ldap_result, accept_type)
         else:
             ldap_result = await self.sds_client.get_as_details(org_code, service_id, manufacturing_organization, party_key)
             self._build_output(ldap_result, accept_type)
-        
+
     def _build_output(self, ldap_result, accept_type):
         logger.info("Obtained accredited system information. {ldap_result}",
                     fparams={"ldap_result": ldap_result})
