@@ -1,3 +1,13 @@
+import os
+CPM_FILTER = "use_cpm"
+CPM_FILTER_IDENTIFIER = "iwanttogetdatafromcpm"
+
+
+def is_cpm_query(cpm_filter: str) -> bool:
+    if os.environ.get("USE_CPM") == "1":
+        return True
+    return cpm_filter == CPM_FILTER_IDENTIFIER
+
 DEVICE_FILTER_MAP = {
     "org_code": "nhs_id_code",
     "interaction_id": "nhs_as_svc_ia",

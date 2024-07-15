@@ -1,11 +1,9 @@
-import asyncio
 import os
 import copy
 import tornado
 import requests
-from requests.exceptions import Timeout
 
-from typing import List
+from typing import List, Optional
 from lookup.sds_exception import SDSException
 from request.base_handler import ORG_CODE_QUERY_PARAMETER_NAME, ORG_CODE_FHIR_IDENTIFIER, \
     IDENTIFIER_QUERY_PARAMETER_NAME, SERVICE_ID_FHIR_IDENTIFIER, PARTY_KEY_FHIR_IDENTIFIER
