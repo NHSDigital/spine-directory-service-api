@@ -5,7 +5,7 @@ import tornado
 import requests
 from requests.exceptions import Timeout
 
-from typing import List
+from typing import List, Dict
 from lookup.sds_exception import SDSException
 from request.base_handler import ORG_CODE_QUERY_PARAMETER_NAME, ORG_CODE_FHIR_IDENTIFIER, \
     IDENTIFIER_QUERY_PARAMETER_NAME, SERVICE_ID_FHIR_IDENTIFIER, PARTY_KEY_FHIR_IDENTIFIER
@@ -23,10 +23,10 @@ async def get_device_from_cpm(tracking_id_headers: dict, **query_parts) -> List:
         apigee_url = f"{os.environ['APIGEE_URL']}/{os.environ['CPM_PATH_URL']}"
     except KeyError as e:
         raise KeyError(f"Environment variable is required {e}")
-    cpm_client = CpmClient(client_id=client_id, apigee_url=apigee_url, endpoint="product")
+    cpm_client = DeviceClient(client_id=client_id, apigee_url=apigee_url, endpoint="product", query_params=query_parts)
     data = await cpm_client.get_cpm(extra_headers=tracking_id_headers)
 
-    return process_cpm_device_request(data=data, query_parts=query_parts)
+    return process_cpm_device_request(data=data)
 
 
 async def get_endpoint_from_cpm(tracking_id_headers: dict, **query_parts) -> List:
@@ -35,21 +35,19 @@ async def get_endpoint_from_cpm(tracking_id_headers: dict, **query_parts) -> Lis
         apigee_url = f"{os.environ['APIGEE_URL']}/{os.environ['CPM_PATH_URL']}"
     except KeyError as e:
         raise KeyError(f"Environment variable is required {e}")
-    cpm_client = CpmClient(client_id=client_id, apigee_url=apigee_url, endpoint="endpoint")
+    cpm_client = EndpointClient(client_id=client_id, apigee_url=apigee_url, endpoint="endpoint", query_params=query_parts)
     data = await cpm_client.get_cpm(extra_headers=tracking_id_headers)
 
     return process_cpm_endpoint_request(data=data, query_parts=query_parts)
 
-def process_cpm_endpoint_request(data: dict, query_parts: dict):
-    endpoints = EndpointCpm(data=data, query_parts=query_parts)
-    filtered_endpoints = endpoints.filter_cpm_response()
-    ldap_converted = endpoints.transform_to_ldap(filtered_endpoints)
+def process_cpm_endpoint_request(data: dict):
+    endpoints = EndpointCpm(data=data)
+    ldap_converted = endpoints.transform_to_ldap(endpoints)
     return endpoints.set_mhs_endpoint(ldap_converted)
 
-def process_cpm_device_request(data: dict, query_parts: dict):
-    devices = DeviceCpm(data=data, query_parts=query_parts)
-    filtered_devices = devices.filter_cpm_response()
-    return devices.transform_to_ldap(filtered_devices)
+def process_cpm_device_request(data: dict):
+    devices = BaseCpm(data=data)
+    return devices.transform_to_ldap(devices)
 
 def make_get_request(call_name: str, url, headers=None, params=None):
     res = requests.get(url, headers=headers, params=params)
@@ -63,15 +61,16 @@ def handle_error(response, call_name):
         raise SDSException(detail)
 
 class CpmClient:
-    def __init__(self, client_id: str, apigee_url: str,  endpoint: str) -> None:
+    def __init__(self, client_id: str, apigee_url: str,  endpoint: str, query_params: dict) -> None:
         self._client_id = client_id
         self._apigee_url = apigee_url
         self._endpoint = endpoint
-
+        self._params = self._set_params(query_params)
+        
     async def get_cpm(self, extra_headers: dict):
         logger.info("Contacting CPM")
         url = f"https://{self._apigee_url}"
-        search_endpoint = f"Device?device_type={self._endpoint}&use_mock=true"
+        search_endpoint = f"Device"
         headers = {
             'version': '1',
             'Authorization': 'letmein',
@@ -79,50 +78,52 @@ class CpmClient:
             'apiKey': self._client_id,
             **extra_headers
         }
-        params = {}
-        logger.info("Requesting data from... {url}/{endpoint}", fparams={"url": url, "endpoint": search_endpoint})
-        res = make_get_request(call_name="SDS get_cpm", url=f"{url}/{search_endpoint}", headers=headers, params=params)
+        logger.info("Requesting data from... {url}/{endpoint}", fparams={"url": url, "endpoint": search_endpoint,  "query_params": self._params})
+        res = make_get_request(call_name="SDS get_cpm", url=f"{url}/{search_endpoint}", headers=headers, params=self._params)
         return self._get_response(res=res)
+
+    def _set_params(self, query_params: Dict[str, str]) -> Dict[str, str]:
+        params = {key: value for key, value in query_params.items() if value is not None}
+        params['device_type'] = self._endpoint
+        params['use_mock'] = "true"
+        return params
 
     def _get_response(self, res):
         return res.json()
+
+class DeviceClient(CpmClient):
+    def __init__(self, client_id: str, apigee_url: str,  endpoint: str, query_params: dict) -> None:
+        self.validate_filters(query_params)
+        super().__init__(client_id, apigee_url, endpoint, query_params)
+
+    def validate_filters(self, query_params):
+        if "org_code" not in query_params or "interaction_id" not in query_params or not query_params["org_code"] or not query_params["interaction_id"]:
+            raise SDSException("org_code and interaction_id must be provided")
+
+class EndpointClient(CpmClient):
+    def __init__(self, client_id: str, apigee_url: str,  endpoint: str, query_params: dict) -> None:
+        self.validate_filters(query_params)
+        super().__init__(client_id, apigee_url, endpoint, query_params)
+
+    def validate_filters(self, query_params):
+        non_empty_count = sum(1 for value in query_params.values() if value and value != 0)
+        if non_empty_count < 2:
+            self._raise_invalid_query_params_error()
+    
+    def _raise_invalid_query_params_error(self):
+        org_code = f'{ORG_CODE_QUERY_PARAMETER_NAME}={ORG_CODE_FHIR_IDENTIFIER}|value'
+        party_key = f'{IDENTIFIER_QUERY_PARAMETER_NAME}={PARTY_KEY_FHIR_IDENTIFIER}|value'
+        service_id = f'{IDENTIFIER_QUERY_PARAMETER_NAME}={SERVICE_ID_FHIR_IDENTIFIER}|value'
+        log_message=f"Missing or invalid query parameters. Should one of following combinations: ['{org_code}&{service_id}&{party_key}','{org_code}&{service_id}','{org_code}&{party_key}','{service_id}&{party_key}']"
+        raise SDSException(log_message)
 
 class BaseCpm:
     FILTER_MAP = {}
     DATA_MAP = {}
     DEFAULT_DICT = {}
 
-    def __init__(self, data, query_parts):
+    def __init__(self, data):
         self.data = data
-        self.query_parts = query_parts
-
-    def filter_cpm_response(self):
-        filtered_results = []
-        filters = {key: False for key, value in self.query_parts.items() if value is not None}
-        for result in self.data["entry"]:
-            for index, res in enumerate(result["entry"]) if result.get("resourceType") == "Bundle" else []:
-                for service in res["item"] if res.get("resourceType") == "QuestionnaireResponse" else []:
-                    filters = self._check_each_item(self, filters, service)
-
-            all_filters_true = all(filters.values())
-            if all_filters_true:
-                filtered_results.append(result["entry"])
-            filters = {key: False for key in filters}
-
-        return filtered_results
-
-    @staticmethod
-    def _check_each_item(self, filters, service):
-        for key, value in self.query_parts.items():
-            if service["text"] == self.FILTER_MAP[key]:
-                match = self._check_match(self, service["answer"], value)
-                if match:
-                    filters[key] = match
-        return filters
-
-    @staticmethod
-    def _check_match(self, answers, match):
-        return any(answer["valueString"] == match for answer in answers)
 
     @staticmethod
     def process_questionnaire_response(self, item, data_dict, ldap_data_mapping):
@@ -163,14 +164,8 @@ class EndpointCpm(BaseCpm):
     DATA_MAP = ENDPOINT_DATA_MAP
     DEFAULT_DICT = DEFAULT_ENDPOINT_DICT
 
-    def __init__(self, data, query_parts):
-        self.validate_filters(query_parts)
-        super().__init__(data, query_parts)
-
-    def validate_filters(self, query_parts):
-        non_empty_count = sum(1 for value in query_parts.values() if value and value != 0)
-        if non_empty_count < 2:
-            self._raise_invalid_query_params_error()
+    def __init__(self, data):
+        super().__init__(data)
 
     def set_mhs_endpoint(self, ldap_results):
         for key, ldap_result in enumerate(ldap_results):
@@ -227,33 +222,3 @@ class EndpointCpm(BaseCpm):
 
     def _raise_index_error(self, message: str, address: List = []):
         raise IndexError(f"Expected 1 {message} for forward reliable/express routing and reliability but got {str(len(address))}")
-
-
-    def _raise_invalid_query_params_error(self):
-        org_code = f'{ORG_CODE_QUERY_PARAMETER_NAME}={ORG_CODE_FHIR_IDENTIFIER}|value'
-        party_key = f'{IDENTIFIER_QUERY_PARAMETER_NAME}={PARTY_KEY_FHIR_IDENTIFIER}|value'
-        service_id = f'{IDENTIFIER_QUERY_PARAMETER_NAME}={SERVICE_ID_FHIR_IDENTIFIER}|value'
-
-        raise tornado.web.HTTPError(
-            status_code=400,
-            log_message=f"Missing or invalid query parameters. "
-                        f"Should one of following combinations: ["
-                        f"'{org_code}&{service_id}&{party_key}'"
-                        f"'{org_code}&{service_id}'"
-                        f"'{org_code}&{party_key}'"
-                        f"'{service_id}&{party_key}'"
-                        "]")
-
-
-class DeviceCpm(BaseCpm):
-    FILTER_MAP = DEVICE_FILTER_MAP
-    DATA_MAP = DEVICE_DATA_MAP
-    DEFAULT_DICT = DEFAULT_DEVICE_DICT
-
-    def __init__(self, data, query_parts):
-        self.validate_filters(query_parts)
-        super().__init__(data, query_parts)
-
-    def validate_filters(self, query_parts):
-        if "org_code" not in query_parts or "interaction_id" not in query_parts or not query_parts["org_code"] or not query_parts["interaction_id"]:
-            raise SDSException("org_code and interaction_id must be provided")
