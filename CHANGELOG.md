@@ -1,5 +1,11 @@
 # Changelog
 
+## 2024=07-18
+-[PI-453] USE_CPM external toggle
+
+## 2024-07-10
+- [PI-283] CPM header propagation
+
 ## 2024-04-08
 - [PI-275] Use secrets for the apikey
 
