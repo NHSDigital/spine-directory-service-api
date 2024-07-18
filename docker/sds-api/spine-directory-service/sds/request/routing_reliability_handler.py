@@ -5,7 +5,7 @@ import tornado
 from tornado.web import MissingArgumentError
 from urllib.parse import unquote
 
-from request.cpm import get_endpoint_from_cpm
+from request.cpm import get_endpoint_from_cpm, should_use_cpm
 from request.base_handler import BaseHandler, ORG_CODE_QUERY_PARAMETER_NAME, ORG_CODE_FHIR_IDENTIFIER, \
     IDENTIFIER_QUERY_PARAMETER_NAME, SERVICE_ID_FHIR_IDENTIFIER, PARTY_KEY_FHIR_IDENTIFIER, CPM_FILTER, CPM_FILTER_IDENTIFIER
 from request.content_type_validator import get_valid_accept_type
@@ -38,7 +38,7 @@ class RoutingReliabilityRequestHandler(BaseHandler, ErrorHandler):
         org_code = self.get_optional_query_param(ORG_CODE_QUERY_PARAMETER_NAME, ORG_CODE_FHIR_IDENTIFIER)
         service_id = self.get_optional_query_param(IDENTIFIER_QUERY_PARAMETER_NAME, SERVICE_ID_FHIR_IDENTIFIER)
         party_key = self.get_optional_query_param(IDENTIFIER_QUERY_PARAMETER_NAME, PARTY_KEY_FHIR_IDENTIFIER)
-        cpm_filter = self.get_optional_query_param(CPM_FILTER, CPM_FILTER_IDENTIFIER)
+        use_cpm = should_use_cpm(handler=self)
 
         if (org_code and not service_id and not party_key) or (not org_code and (not service_id or not party_key)):
             self._raise_invalid_query_params_error()
@@ -48,7 +48,7 @@ class RoutingReliabilityRequestHandler(BaseHandler, ErrorHandler):
         logger.info("Looking up routing and reliability information. {org_code}, {service_id}, {party_key}",
                     fparams={"org_code": org_code, "service_id": service_id, "party_key": party_key})
 
-        if cpm_filter and cpm_filter[0] == CPM_FILTER_IDENTIFIER:
+        if use_cpm:
             ldap_results = await get_endpoint_from_cpm(
                 org_code=org_code,
                 interaction_id=service_id,
