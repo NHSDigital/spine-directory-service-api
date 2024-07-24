@@ -1,5 +1,6 @@
 import asyncio
 import os
+import json
 import copy
 import tornado
 import requests
@@ -9,13 +10,12 @@ from typing import List, Dict
 from lookup.sds_exception import SDSException
 from request.base_handler import ORG_CODE_QUERY_PARAMETER_NAME, ORG_CODE_FHIR_IDENTIFIER, \
     IDENTIFIER_QUERY_PARAMETER_NAME, SERVICE_ID_FHIR_IDENTIFIER, PARTY_KEY_FHIR_IDENTIFIER
-from request.cpm_config import DEVICE_FILTER_MAP, ENDPOINT_FILTER_MAP, DEVICE_DATA_MAP, ENDPOINT_DATA_MAP, DEFAULT_ENDPOINT_DICT, DEFAULT_DEVICE_DICT
+from request.cpm_config import DEVICE_DATA_MAP, ENDPOINT_DATA_MAP, DEFAULT_ENDPOINT_DICT, DEFAULT_DEVICE_DICT
 from utilities.constants import INTERACTION_MAPPINGS, RELIABLE_SERVICES
 from utilities import config
 from utilities import integration_adaptors_logger as log
 
 logger = log.IntegrationAdaptorsLogger(__name__)
-
 
 async def get_device_from_cpm(tracking_id_headers: dict, **query_parts) -> List:
     try:
@@ -25,7 +25,6 @@ async def get_device_from_cpm(tracking_id_headers: dict, **query_parts) -> List:
         raise KeyError(f"Environment variable is required {e}")
     cpm_client = DeviceClient(client_id=client_id, apigee_url=apigee_url, endpoint="product", query_params=query_parts)
     data = await cpm_client.get_cpm(extra_headers=tracking_id_headers)
-
     return process_cpm_device_request(data=data)
 
 
@@ -37,17 +36,17 @@ async def get_endpoint_from_cpm(tracking_id_headers: dict, **query_parts) -> Lis
         raise KeyError(f"Environment variable is required {e}")
     cpm_client = EndpointClient(client_id=client_id, apigee_url=apigee_url, endpoint="endpoint", query_params=query_parts)
     data = await cpm_client.get_cpm(extra_headers=tracking_id_headers)
-
-    return process_cpm_endpoint_request(data=data, query_parts=query_parts)
+    return process_cpm_endpoint_request(data=data)
 
 def process_cpm_endpoint_request(data: dict):
     endpoints = EndpointCpm(data=data)
-    ldap_converted = endpoints.transform_to_ldap(endpoints)
+    ldap_converted = endpoints.transform_to_ldap()
     return endpoints.set_mhs_endpoint(ldap_converted)
 
 def process_cpm_device_request(data: dict):
-    devices = BaseCpm(data=data)
-    return devices.transform_to_ldap(devices)
+    devices = DeviceCpm(data=data)
+    ldap_converted = devices.transform_to_ldap()
+    return devices.transform_to_ldap()
 
 def make_get_request(call_name: str, url, headers=None, params=None):
     res = requests.get(url, headers=headers, params=params)
@@ -97,6 +96,11 @@ class DeviceClient(CpmClient):
         super().__init__(client_id, apigee_url, endpoint, query_params)
 
     def validate_filters(self, query_params):
+        allowed_filters = ["org_code", "interaction_id", "manufacturing_organization", "party_key"]
+        for key, value in query_params.items():
+            if key not in allowed_filters:
+                raise SDSException(f"{key} not allowed in filters")
+
         if "org_code" not in query_params or "interaction_id" not in query_params or not query_params["org_code"] or not query_params["interaction_id"]:
             raise SDSException("org_code and interaction_id must be provided")
 
@@ -118,7 +122,6 @@ class EndpointClient(CpmClient):
         raise SDSException(log_message)
 
 class BaseCpm:
-    FILTER_MAP = {}
     DATA_MAP = {}
     DEFAULT_DICT = {}
 
@@ -127,13 +130,12 @@ class BaseCpm:
 
     @staticmethod
     def process_questionnaire_response(self, item, data_dict, ldap_data_mapping):
-        for service in item.get("item", []):
-            if service["text"] in ldap_data_mapping:
-                for answer in service["answer"]:
-                    key = ldap_data_mapping[service["text"]]
-                    value = answer.get("valueInteger", answer.get("valueString"))
-                    data_dict = self.set_data(data_dict, key, value)
-
+        for key, service in item.items():
+            if key in ldap_data_mapping:
+                for answer in service:
+                    new_key = ldap_data_mapping[key]
+                    data_dict = self.set_data(data_dict, new_key, answer)
+                    
         return data_dict
 
     @staticmethod
@@ -145,22 +147,31 @@ class BaseCpm:
 
         return data_dict
 
-    def transform_to_ldap(self, data: List) -> List:
+    def transform_to_ldap(self) -> List:
         ldap_data = []
-
+        data = self.data
         for d in data:
+            questionnaire_responses = d["questionnaire_responses"]
             data_dict = copy.deepcopy(self.DEFAULT_DICT)
-            for item in d:
-                if item.get("resourceType") == "QuestionnaireResponse":
-                    data_dict = self.process_questionnaire_response(self, item, data_dict, self.DATA_MAP)
-
-            ldap_data.append(data_dict)
+            for key, qr in questionnaire_responses.items():
+                for response in qr:
+                    responses = response.get("responses", [])
+                    for resp in responses:
+                        data_dict = self.process_questionnaire_response(self, resp, data_dict, self.DATA_MAP)
+                ldap_data.append(data_dict)
 
         return ldap_data
 
 
+class DeviceCpm(BaseCpm):
+    DATA_MAP = DEVICE_DATA_MAP
+    DEFAULT_DICT = DEFAULT_DEVICE_DICT
+    
+    def __init__(self, data):
+        super().__init__(data)
+    
+
 class EndpointCpm(BaseCpm):
-    FILTER_MAP = ENDPOINT_FILTER_MAP
     DATA_MAP = ENDPOINT_DATA_MAP
     DEFAULT_DICT = DEFAULT_ENDPOINT_DICT
 
