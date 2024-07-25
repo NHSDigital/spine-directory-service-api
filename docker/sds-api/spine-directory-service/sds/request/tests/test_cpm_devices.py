@@ -174,7 +174,7 @@ class TestCPMDevice(TestCase):
         for filt in filters:
             with self.assertRaises(SDSException) as context:
                 DeviceClient(client_id="1234", apigee_url="https://foo.bar", endpoint="product", query_params=filt)
-                self.assertEqual(str(context.exception), 'org_code and interaction_id must be provided')
+            self.assertEqual(str(context.exception), 'org_code and interaction_id must be provided')
         
     def test_filter_results_not_allowed(self):
         filters = [
@@ -234,7 +234,7 @@ class TestCPMDevice(TestCase):
         for filt in filters:
             with self.assertRaises(SDSException) as context:
                 DeviceClient(client_id="1234", apigee_url="https://foo.bar", endpoint="product", query_params=filt)
-                self.assertEqual(str(context.exception), "foo not allowed in filters")
+            self.assertEqual(str(context.exception), "foo not allowed in filters")
     
     
     def test_translated_device_data_device(self):

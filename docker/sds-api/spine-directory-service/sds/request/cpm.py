@@ -37,7 +37,7 @@ async def get_endpoint_from_cpm(tracking_id_headers: dict, **query_parts) -> Lis
     cpm_client = EndpointClient(client_id=client_id, apigee_url=apigee_url, endpoint="endpoint", query_params=query_parts)
     data = await cpm_client.get_cpm(extra_headers=tracking_id_headers)
     ldap_results = process_cpm_endpoint_request(data=data)
-    mhs_converted = await set_mhs_endpoint(ldap_results=ldap_results)
+    mhs_converted = await set_mhs_endpoint(ldap_results=ldap_results, tracking_id_headers=tracking_id_headers)
     return mhs_converted
 
 
@@ -136,7 +136,7 @@ class CpmClient:
     async def get_cpm(self, extra_headers: dict):
         logger.info("Contacting CPM")
         url = f"https://{self._apigee_url}"
-        search_endpoint = f"Device"
+        search_endpoint = "Device"
         headers = {
             'version': '1',
             'Authorization': 'letmein',
