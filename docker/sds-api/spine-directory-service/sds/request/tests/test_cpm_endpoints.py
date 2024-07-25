@@ -179,7 +179,7 @@ class TestCPMEndpoints(TestCase):
         for filt in filters:
             with self.assertRaises(SDSException) as context:
                 EndpointClient(client_id="1234", apigee_url="https://foo.bar", endpoint="endpoint", query_params=filt)
-            self.assertEqual(str(context.exception), 'org_code and interaction_id must be provided')
+            self.assertEqual(str(context.exception), log_message)
     
     def test_filter_results_not_allowed(self):
         org_code = f'{ORG_CODE_QUERY_PARAMETER_NAME}={ORG_CODE_FHIR_IDENTIFIER}|value'
