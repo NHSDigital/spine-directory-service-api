@@ -7,7 +7,7 @@ import unittest
 from unittest import TestCase
 from unittest.mock import patch, call
 from jsonschema import validate
-from request.cpm import EndpointCpm, process_cpm_endpoint_request, CpmClient, get_endpoint_from_cpm, EndpointClient, _extract_service_and_interaction, _set_mhs_endpoint
+from request.cpm import EndpointCpm, process_cpm_endpoint_request, CpmClient, get_endpoint_from_cpm, EndpointClient, _extract_service_and_interaction
 from request.base_handler import ORG_CODE_QUERY_PARAMETER_NAME, ORG_CODE_FHIR_IDENTIFIER, \
     IDENTIFIER_QUERY_PARAMETER_NAME, SERVICE_ID_FHIR_IDENTIFIER, PARTY_KEY_FHIR_IDENTIFIER
 from lookup.sds_exception import SDSException
