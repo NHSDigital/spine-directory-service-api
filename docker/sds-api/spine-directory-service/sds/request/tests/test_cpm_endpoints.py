@@ -106,8 +106,6 @@ class TestCPMEndpoints(TestCase):
         mock_config.side_effect = config_values
     
     def test_filter_results_unsuccessful_missing_required_endpoint(self):
-        dir_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.path.join("test_data", "cpm", RETURNED_ENDPOINTS_JSON))
-        incoming_json = self._read_file(dir_path)
         org_code = f'{ORG_CODE_QUERY_PARAMETER_NAME}={ORG_CODE_FHIR_IDENTIFIER}|value'
         party_key = f'{IDENTIFIER_QUERY_PARAMETER_NAME}={PARTY_KEY_FHIR_IDENTIFIER}|value'
         service_id = f'{IDENTIFIER_QUERY_PARAMETER_NAME}={SERVICE_ID_FHIR_IDENTIFIER}|value'
@@ -181,7 +179,7 @@ class TestCPMEndpoints(TestCase):
         for filt in filters:
             with self.assertRaises(SDSException) as context:
                 EndpointClient(client_id="1234", apigee_url="https://foo.bar", endpoint="endpoint", query_params=filt)
-                self.assertEqual(str(context.exception), 'org_code and interaction_id must be provided')
+            self.assertEqual(str(context.exception), 'org_code and interaction_id must be provided')
     
     def test_filter_results_not_allowed(self):
         org_code = f'{ORG_CODE_QUERY_PARAMETER_NAME}={ORG_CODE_FHIR_IDENTIFIER}|value'
@@ -230,10 +228,10 @@ class TestCPMEndpoints(TestCase):
         for filt in filters:
             with self.assertRaises(SDSException) as context:
                 EndpointClient(client_id="1234", apigee_url="https://foo.bar", endpoint="endpoint", query_params=filt)
-                if "manufacturing_organization" in filt:
-                    self.assertEqual(str(context.exception), "manufacturing_organization not allowed in filters")
-                else:
-                    self.assertEqual(str(context.exception), "foo not allowed in filters")
+            if "manufacturing_organization" in filt:
+                self.assertEqual(str(context.exception), "manufacturing_organization not allowed in filters")
+            else:
+                self.assertEqual(str(context.exception), "foo not allowed in filters")
     
     def test_translated_endpoint_data(self):
         dir_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.path.join("test_data", "cpm", RETURNED_ENDPOINTS_JSON))
