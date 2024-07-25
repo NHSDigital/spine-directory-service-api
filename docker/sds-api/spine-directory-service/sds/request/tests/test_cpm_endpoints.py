@@ -10,7 +10,6 @@ from jsonschema import validate
 from request.cpm import EndpointCpm, process_cpm_endpoint_request, CpmClient, get_endpoint_from_cpm, EndpointClient, _extract_service_and_interaction, _set_mhs_endpoint
 from request.base_handler import ORG_CODE_QUERY_PARAMETER_NAME, ORG_CODE_FHIR_IDENTIFIER, \
     IDENTIFIER_QUERY_PARAMETER_NAME, SERVICE_ID_FHIR_IDENTIFIER, PARTY_KEY_FHIR_IDENTIFIER
-#from request.tests.test_data.cpm.schema import endpoint_schema_json
 from lookup.sds_exception import SDSException
 
 RETURNED_ENDPOINTS_JSON = "returned_endpoints_single.json"
@@ -313,17 +312,6 @@ class TestCPMEndpoints(TestCase):
         service = _extract_service_and_interaction(None)
         self.assertFalse(service)
     
-    # @patch('utilities.config.get_config')
-    # @patch('__main__._get_address')
-    # def test_endpoint_process_success(self, mock_config, mock_get_address):
-    #     mock_get_address.return_value = ['https://msg.int.spine2.ncrs.nhs.uk/reliablemessaging/intermediary']
-    #     self._set_core_spine_ods_code(mock_config, SPINE_CORE_ORG_CODE)
-    #     dir_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.path.join("test_data", "cpm", RETURNED_ENDPOINTS_CHANGE_JSON))
-    #     incoming_json = self._read_file(dir_path)
-    #     expected = [EXPECTED_LDAP_2_ENDPOINT_MODIFIED]
-    #     result = process_cpm_endpoint_request(incoming_json)
-    #     mhs_converted = set_mhs_endpoint(ldap_results=result)
-    #     self.assertEqual(mhs_converted, expected)
     
     @patch('utilities.config.get_config')
     def test_endpoint_process_success_reliability_not_applied(self, mock_config):
@@ -334,6 +322,4 @@ class TestCPMEndpoints(TestCase):
         result = process_cpm_endpoint_request(incoming_json)
         self.assertEqual(result, expected)
 
-# if __name__ == '__main__':
-#     unittest.main()
 
