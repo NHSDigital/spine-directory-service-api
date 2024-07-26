@@ -1,3 +1,16 @@
+FILTER_MAP_DEVICE = dict(
+    org_code = "nhs_as_client",
+    interaction_id = "nhs_as_svc_ia",
+    manufacturing_organization = "nhs_mhs_manufacturer_org",
+    party_key = "nhs_mhs_party_key",
+)
+
+FILTER_MAP_ENDPOINT = dict(
+    org_code = "nhs_id_code",
+    interaction_id = "nhs_as_svc_ia",
+    party_key = "nhs_mhs_party_key",
+)
+
 DEVICE_DATA_MAP = dict(
     nhs_as_svc_ia = "nhsAsSvcIA",
     nhs_mhs_manufacturer_org = "nhsMhsManufacturerOrg",

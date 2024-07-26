@@ -10,7 +10,7 @@ from typing import List, Dict
 from lookup.sds_exception import SDSException
 from request.base_handler import ORG_CODE_QUERY_PARAMETER_NAME, ORG_CODE_FHIR_IDENTIFIER, \
     IDENTIFIER_QUERY_PARAMETER_NAME, SERVICE_ID_FHIR_IDENTIFIER, PARTY_KEY_FHIR_IDENTIFIER
-from request.cpm_config import DEVICE_DATA_MAP, ENDPOINT_DATA_MAP, DEFAULT_ENDPOINT_DICT, DEFAULT_DEVICE_DICT
+from request.cpm_config import DEVICE_DATA_MAP, ENDPOINT_DATA_MAP, DEFAULT_ENDPOINT_DICT, DEFAULT_DEVICE_DICT, FILTER_MAP_DEVICE, FILTER_MAP_ENDPOINT
 from utilities.constants import INTERACTION_MAPPINGS, RELIABLE_SERVICES
 from utilities import config
 from utilities import integration_adaptors_logger as log
@@ -149,7 +149,7 @@ class CpmClient:
         return self._get_response(res=res)
 
     def _set_params(self, query_params: Dict[str, str]) -> Dict[str, str]:
-        params = {key: value for key, value in query_params.items() if value is not None}
+        params = {self.FILTER_MAP.get(key, key): value for key, value in query_params.items() if value is not None}
         params['device_type'] = self._endpoint
         params['use_mock'] = "true"
         return params
@@ -160,6 +160,7 @@ class CpmClient:
 class DeviceClient(CpmClient):
     def __init__(self, client_id: str, apigee_url: str,  endpoint: str, query_params: dict) -> None:
         self.validate_filters(query_params)
+        self.FILTER_MAP = FILTER_MAP_DEVICE
         super().__init__(client_id, apigee_url, endpoint, query_params)
 
     def validate_filters(self, query_params):
@@ -171,9 +172,11 @@ class DeviceClient(CpmClient):
         if "org_code" not in query_params or "interaction_id" not in query_params or not query_params["org_code"] or not query_params["interaction_id"]:
             raise SDSException("org_code and interaction_id must be provided")
 
+
 class EndpointClient(CpmClient):
     def __init__(self, client_id: str, apigee_url: str,  endpoint: str, query_params: dict) -> None:
         self.validate_filters(query_params)
+        self.FILTER_MAP = FILTER_MAP_ENDPOINT
         super().__init__(client_id, apigee_url, endpoint, query_params)
 
     def validate_filters(self, query_params):
