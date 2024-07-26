@@ -127,6 +127,7 @@ def handle_error(response, call_name):
         raise SDSException(detail)
 
 class CpmClient:
+    FILTER_MAP = {}
     def __init__(self, client_id: str, apigee_url: str,  endpoint: str, query_params: dict) -> None:
         self._client_id = client_id
         self._apigee_url = apigee_url
@@ -158,9 +159,9 @@ class CpmClient:
         return res.json()
 
 class DeviceClient(CpmClient):
+    FILTER_MAP = FILTER_MAP_DEVICE
     def __init__(self, client_id: str, apigee_url: str,  endpoint: str, query_params: dict) -> None:
         self.validate_filters(query_params)
-        self.FILTER_MAP = FILTER_MAP_DEVICE
         super().__init__(client_id, apigee_url, endpoint, query_params)
 
     def validate_filters(self, query_params):
@@ -174,9 +175,9 @@ class DeviceClient(CpmClient):
 
 
 class EndpointClient(CpmClient):
+    FILTER_MAP = FILTER_MAP_ENDPOINT
     def __init__(self, client_id: str, apigee_url: str,  endpoint: str, query_params: dict) -> None:
         self.validate_filters(query_params)
-        self.FILTER_MAP = FILTER_MAP_ENDPOINT
         super().__init__(client_id, apigee_url, endpoint, query_params)
 
     def validate_filters(self, query_params):

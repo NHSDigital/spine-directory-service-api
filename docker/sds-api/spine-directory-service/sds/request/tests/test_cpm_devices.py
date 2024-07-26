@@ -310,4 +310,14 @@ class TestCPMDevice(TestCase):
         ]
         for query in filters:
             cpm_client = DeviceClient(client_id="1234", apigee_url="https://foo.bar", endpoint="product", query_params=query)
+            assert "org_code" not in cpm_client._params
+            assert "interaction_id" not in cpm_client._params
+            assert "nhs_as_client" in cpm_client._params
+            assert "nhs_as_svc_ia" in cpm_client._params
+            if "party_key" in query:
+                assert "party_key" not in cpm_client._params
+                assert "nhs_mhs_party_key" in cpm_client._params
+            if "manufacturing_organization" in query:
+                assert "manufacturing_organization" not in cpm_client._params
+                assert "nhs_mhs_manufacturer_org" in cpm_client._params
             assert isinstance(cpm_client, DeviceClient)

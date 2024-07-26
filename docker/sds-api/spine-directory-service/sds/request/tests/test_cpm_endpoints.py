@@ -291,9 +291,16 @@ class TestCPMEndpoints(TestCase):
         ]
         for query in filters:
             cpm_client = EndpointClient(client_id="1234", apigee_url="https://foo.bar", endpoint="endpoint", query_params=query)
+            assert "org_code" not in cpm_client._params
+            assert "interaction_id" not in cpm_client._params
+            if "org_code" in query:
+                assert "nhs_id_code" in cpm_client._params
+            assert "nhs_mhs_svc_ia" in cpm_client._params
+            if "party_key" in query:
+                assert "party_key" not in cpm_client._params
+                assert "nhs_mhs_party_key" in cpm_client._params
             assert isinstance(cpm_client, EndpointClient)
     
-
     def test_extract_service_interaction(self):
         dir_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.path.join("test_data", "cpm", RETURNED_ENDPOINTS_JSON))
         incoming_json = self._read_file(dir_path)

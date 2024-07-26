@@ -7,7 +7,7 @@ FILTER_MAP_DEVICE = dict(
 
 FILTER_MAP_ENDPOINT = dict(
     org_code = "nhs_id_code",
-    interaction_id = "nhs_as_svc_ia",
+    interaction_id = "nhs_mhs_svc_ia",
     party_key = "nhs_mhs_party_key",
 )
 
