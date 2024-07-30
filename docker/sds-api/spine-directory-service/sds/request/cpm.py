@@ -23,7 +23,7 @@ async def get_device_from_cpm(tracking_id_headers: dict, **query_parts) -> List:
         apigee_url = f"{os.environ['APIGEE_URL']}/{os.environ['CPM_PATH_URL']}"
     except KeyError as e:
         raise KeyError(f"Environment variable is required {e}")
-    cpm_client = DeviceClient(client_id=client_id, apigee_url=apigee_url, endpoint="product", query_params=query_parts)
+    cpm_client = DeviceClient(client_id=client_id, apigee_url=apigee_url, query_params=query_parts)
     data = await cpm_client.get_cpm(extra_headers=tracking_id_headers)
     return process_cpm_device_request(data=data)
 
@@ -34,7 +34,7 @@ async def get_endpoint_from_cpm(tracking_id_headers: dict, **query_parts) -> Lis
         apigee_url = f"{os.environ['APIGEE_URL']}/{os.environ['CPM_PATH_URL']}"
     except KeyError as e:
         raise KeyError(f"Environment variable is required {e}")
-    cpm_client = EndpointClient(client_id=client_id, apigee_url=apigee_url, endpoint="endpoint", query_params=query_parts)
+    cpm_client = EndpointClient(client_id=client_id, apigee_url=apigee_url, query_params=query_parts)
     data = await cpm_client.get_cpm(extra_headers=tracking_id_headers)
     ldap_results = process_cpm_endpoint_request(data=data)
     mhs_converted = await set_mhs_endpoint(ldap_results=ldap_results, tracking_id_headers=tracking_id_headers)
@@ -85,7 +85,7 @@ async def _get_address(service_id: str, tracking_id_headers: dict) -> str:
     except KeyError as e:
         raise KeyError(f"Environment variable is required {e}")
     
-    cpm_client = EndpointClient(client_id=client_id, apigee_url=apigee_url, endpoint="endpoint", query_params=query_params)
+    cpm_client = EndpointClient(client_id=client_id, apigee_url=apigee_url, query_params=query_params)
     data = await cpm_client.get_cpm(extra_headers=tracking_id_headers)
     
     address_endpoint = EndpointCpm(data=data)
@@ -128,16 +128,15 @@ def handle_error(response, call_name):
 
 class CpmClient:
     FILTER_MAP = {}
-    def __init__(self, client_id: str, apigee_url: str,  endpoint: str, query_params: dict) -> None:
+    def __init__(self, client_id: str, apigee_url: str, query_params: dict) -> None:
         self._client_id = client_id
         self._apigee_url = apigee_url
-        self._endpoint = endpoint
         self._params = self._set_params(query_params)
         
     async def get_cpm(self, extra_headers: dict):
         logger.info("Contacting CPM")
         url = f"https://{self._apigee_url}"
-        search_endpoint = "Device"
+        search_endpoint = self._endpoint
         headers = {
             'version': '1',
             'Authorization': 'letmein',
@@ -151,8 +150,6 @@ class CpmClient:
 
     def _set_params(self, query_params: Dict[str, str]) -> Dict[str, str]:
         params = {self.FILTER_MAP.get(key, key): value for key, value in query_params.items() if value is not None}
-        params['device_type'] = self._endpoint
-        params['use_mock'] = "true"
         return params
 
     def _get_response(self, res):
@@ -162,7 +159,8 @@ class DeviceClient(CpmClient):
     FILTER_MAP = FILTER_MAP_DEVICE
     def __init__(self, client_id: str, apigee_url: str,  endpoint: str, query_params: dict) -> None:
         self.validate_filters(query_params)
-        super().__init__(client_id, apigee_url, endpoint, query_params)
+        self._endpoint = "searchSdsDevice"
+        super().__init__(client_id, apigee_url, query_params)
 
     def validate_filters(self, query_params):
         allowed_filters = ["org_code", "interaction_id", "manufacturing_organization", "party_key"]
@@ -178,7 +176,8 @@ class EndpointClient(CpmClient):
     FILTER_MAP = FILTER_MAP_ENDPOINT
     def __init__(self, client_id: str, apigee_url: str,  endpoint: str, query_params: dict) -> None:
         self.validate_filters(query_params)
-        super().__init__(client_id, apigee_url, endpoint, query_params)
+        self._endpoint = "searchSdsEndpoint"
+        super().__init__(client_id, apigee_url, query_params)
 
     def validate_filters(self, query_params):
         allowed_filters = ["org_code", "interaction_id", "party_key"]

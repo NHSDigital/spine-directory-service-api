@@ -178,7 +178,7 @@ class TestCPMEndpoints(TestCase):
         ]
         for filt in filters:
             with self.assertRaises(SDSException) as context:
-                EndpointClient(client_id="1234", apigee_url="https://foo.bar", endpoint="endpoint", query_params=filt)
+                EndpointClient(client_id="1234", apigee_url="https://foo.bar", query_params=filt)
             self.assertEqual(str(context.exception), log_message)
     
     def test_filter_results_not_allowed(self):
@@ -227,7 +227,7 @@ class TestCPMEndpoints(TestCase):
         ]
         for filt in filters:
             with self.assertRaises(SDSException) as context:
-                EndpointClient(client_id="1234", apigee_url="https://foo.bar", endpoint="endpoint", query_params=filt)
+                EndpointClient(client_id="1234", apigee_url="https://foo.bar", query_params=filt)
             if "manufacturing_organization" in filt:
                 self.assertEqual(str(context.exception), "manufacturing_organization not allowed in filters")
             else:
@@ -290,7 +290,7 @@ class TestCPMEndpoints(TestCase):
             }
         ]
         for query in filters:
-            cpm_client = EndpointClient(client_id="1234", apigee_url="https://foo.bar", endpoint="endpoint", query_params=query)
+            cpm_client = EndpointClient(client_id="1234", apigee_url="https://foo.bar", query_params=query)
             assert "org_code" not in cpm_client._params
             assert "interaction_id" not in cpm_client._params
             if "org_code" in query:

@@ -173,7 +173,7 @@ class TestCPMDevice(TestCase):
         ]
         for filt in filters:
             with self.assertRaises(SDSException) as context:
-                DeviceClient(client_id="1234", apigee_url="https://foo.bar", endpoint="product", query_params=filt)
+                DeviceClient(client_id="1234", apigee_url="https://foo.bar", query_params=filt)
             self.assertEqual(str(context.exception), 'org_code and interaction_id must be provided')
         
     def test_filter_results_not_allowed(self):
@@ -233,7 +233,7 @@ class TestCPMDevice(TestCase):
         ]
         for filt in filters:
             with self.assertRaises(SDSException) as context:
-                DeviceClient(client_id="1234", apigee_url="https://foo.bar", endpoint="product", query_params=filt)
+                DeviceClient(client_id="1234", apigee_url="https://foo.bar", query_params=filt)
             self.assertEqual(str(context.exception), "foo not allowed in filters")
     
     
@@ -309,7 +309,7 @@ class TestCPMDevice(TestCase):
             },
         ]
         for query in filters:
-            cpm_client = DeviceClient(client_id="1234", apigee_url="https://foo.bar", endpoint="product", query_params=query)
+            cpm_client = DeviceClient(client_id="1234", apigee_url="https://foo.bar", query_params=query)
             assert "org_code" not in cpm_client._params
             assert "interaction_id" not in cpm_client._params
             assert "nhs_as_client" in cpm_client._params
