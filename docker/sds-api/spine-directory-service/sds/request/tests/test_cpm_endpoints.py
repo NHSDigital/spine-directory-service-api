@@ -185,7 +185,6 @@ class TestCPMEndpoints(TestCase):
         org_code = f'{ORG_CODE_QUERY_PARAMETER_NAME}={ORG_CODE_FHIR_IDENTIFIER}|value'
         party_key = f'{IDENTIFIER_QUERY_PARAMETER_NAME}={PARTY_KEY_FHIR_IDENTIFIER}|value'
         service_id = f'{IDENTIFIER_QUERY_PARAMETER_NAME}={SERVICE_ID_FHIR_IDENTIFIER}|value'
-        log_message=f"Missing or invalid query parameters. Should one of following combinations: ['{org_code}&{service_id}&{party_key}','{org_code}&{service_id}','{org_code}&{party_key}','{service_id}&{party_key}']"
         filters = [
             {
                 "org_code": "RTX",
@@ -302,9 +301,6 @@ class TestCPMEndpoints(TestCase):
             assert isinstance(cpm_client, EndpointClient)
     
     def test_extract_service_interaction(self):
-        dir_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.path.join("test_data", "cpm", RETURNED_ENDPOINTS_JSON))
-        incoming_json = self._read_file(dir_path)
-        endpoints = EndpointCpm(incoming_json)
         test_data = [
             "foo:bar",
             "oof:foo:bar"
