@@ -182,9 +182,6 @@ class TestCPMEndpoints(TestCase):
             self.assertEqual(str(context.exception), log_message)
     
     def test_filter_results_not_allowed(self):
-        org_code = f'{ORG_CODE_QUERY_PARAMETER_NAME}={ORG_CODE_FHIR_IDENTIFIER}|value'
-        party_key = f'{IDENTIFIER_QUERY_PARAMETER_NAME}={PARTY_KEY_FHIR_IDENTIFIER}|value'
-        service_id = f'{IDENTIFIER_QUERY_PARAMETER_NAME}={SERVICE_ID_FHIR_IDENTIFIER}|value'
         filters = [
             {
                 "org_code": "RTX",
