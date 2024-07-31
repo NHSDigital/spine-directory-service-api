@@ -43,7 +43,7 @@ async def get_endpoint_from_cpm(tracking_id_headers: dict, **query_parts) -> Lis
 
 async def set_mhs_endpoint(ldap_results: list, tracking_id_headers: dict):
     for key, ldap_result in enumerate(ldap_results):
-        service, interaction = await _extract_service_and_interaction(ldap_result['nhsMhsSvcIA'])
+        service, interaction = _extract_service_and_interaction(ldap_result['nhsMhsSvcIA'])
         if service in RELIABLE_SERVICES:
             address: Optional[str] = None
             for core_spine_interaction, interactions in INTERACTION_MAPPINGS.items():
@@ -116,7 +116,7 @@ def process_cpm_device_request(data: dict):
     return ldap_converted
 
 def make_get_request(call_name: str, url, headers=None, params=None):
-    res = requests.get(url, headers=headers, params=params)
+    res = requests.get(url, params=params, headers=headers)
     handle_error(res, call_name)
     return res
 
@@ -141,7 +141,7 @@ class CpmClient:
             'version': '1',
             'Authorization': 'letmein',
             'Content-Type': 'application/json',
-            'apiKey': self._client_id,
+            'apikey': self._client_id,
             **extra_headers
         }
         logger.info("Requesting data from... {url}/{endpoint}", fparams={"url": url, "endpoint": search_endpoint,  "query_params": self._params})
@@ -157,7 +157,7 @@ class CpmClient:
 
 class DeviceClient(CpmClient):
     FILTER_MAP = FILTER_MAP_DEVICE
-    def __init__(self, client_id: str, apigee_url: str,  endpoint: str, query_params: dict) -> None:
+    def __init__(self, client_id: str, apigee_url: str, query_params: dict) -> None:
         self.validate_filters(query_params)
         self._endpoint = "searchSdsDevice"
         super().__init__(client_id, apigee_url, query_params)
@@ -174,7 +174,7 @@ class DeviceClient(CpmClient):
 
 class EndpointClient(CpmClient):
     FILTER_MAP = FILTER_MAP_ENDPOINT
-    def __init__(self, client_id: str, apigee_url: str,  endpoint: str, query_params: dict) -> None:
+    def __init__(self, client_id: str, apigee_url: str, query_params: dict) -> None:
         self.validate_filters(query_params)
         self._endpoint = "searchSdsEndpoint"
         super().__init__(client_id, apigee_url, query_params)
