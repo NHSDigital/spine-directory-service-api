@@ -42,19 +42,20 @@ async def get_endpoint_from_cpm(tracking_id_headers: dict, **query_parts) -> Lis
 
 
 async def set_mhs_endpoint(ldap_results: list, tracking_id_headers: dict):
-    for key, ldap_result in enumerate(ldap_results):
-        service, interaction = _extract_service_and_interaction(ldap_result['nhsMhsSvcIA'])
-        if service in RELIABLE_SERVICES:
-            address: Optional[str] = None
-            for core_spine_interaction, interactions in INTERACTION_MAPPINGS.items():
-                if interaction in interactions:
-                    address = _get_address(core_spine_interaction, tracking_id_headers)
-                    break
+    if ldap_results:
+        for key, ldap_result in enumerate(ldap_results):
+            service, interaction = _extract_service_and_interaction(ldap_result['nhsMhsSvcIA'])
+            if service in RELIABLE_SERVICES:
+                address: Optional[str] = None
+                for core_spine_interaction, interactions in INTERACTION_MAPPINGS.items():
+                    if interaction in interactions:
+                        address = _get_address(core_spine_interaction, tracking_id_headers)
+                        break
 
-            if address:
-                ldap_results[key]['nhsMHSEndPoint'] = address
+                if address:
+                    ldap_results[key]['nhsMHSEndPoint'] = address
 
-        return ldap_results
+    return ldap_results
 
 def _extract_service_and_interaction(service_interaction: str):
     if not service_interaction:
