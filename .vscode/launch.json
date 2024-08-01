@@ -28,7 +28,6 @@
                 "LOCAL_VENV": "True",
                 "APIGEE_URL": "internal-dev-sandbox.api.service.nhs.uk",
                 "CPM_PATH_URL": "cpm-dev-sandbox",
-                "CPM_CLIENT_KEY": "123"
             }
         }
     ]
