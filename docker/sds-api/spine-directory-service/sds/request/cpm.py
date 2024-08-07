@@ -230,11 +230,12 @@ class BaseCpm:
             questionnaire_responses = d["questionnaire_responses"]
             data_dict = copy.deepcopy(self.DEFAULT_DICT)
             for key, qr in questionnaire_responses.items():
-                for response in qr:
-                    responses = response.get("responses", [])
-                    for resp in responses:
-                        data_dict = self.process_questionnaire_response(self, resp, data_dict, self.DATA_MAP)
-                ldap_data.append(data_dict)
+                for qr_response in qr.items():
+                    for response in qr_response:
+                        responses = response.get("answers", [])
+                        for resp in responses:
+                            data_dict = self.process_questionnaire_response(self, resp, data_dict, self.DATA_MAP)
+                    ldap_data.append(data_dict)
 
         return ldap_data
 

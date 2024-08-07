@@ -22,9 +22,9 @@
             }
         ],
         "questionnaire_responses": {
-            "spine_device/1/2014-01-01:01": [
-                {
-                    "questionnaire": ["spine_device", "1"],
+            "spine_device/1": {
+                "2024-08-07T13:32:19.661736+00:00": {
+                    "questionnaire_id": "spine_device-name-a/1",
                     "status": "active",
                     "responses": [
                         {"object_class": ["nhsas"]},
@@ -96,7 +96,7 @@
                         }
                     ]
                 }
-            ]
+            }
         },
         "status": "active",
         "created_on": "2024-06-14 09:31:14.740983",
@@ -126,9 +126,9 @@
             }
         ],
         "questionnaire_responses": {
-            "spine_device/1/2014-01-01:01": [
-                {
-                    "questionnaire": ["spine_device", "1"],
+            "spine_device/1": {
+                "2024-08-07T13:32:19.661736+00:00": {
+                    "questionnaire_id": "spine_device-name-a/1",
                     "status": "active",
                     "responses": [
                         {"object_class": ["nhsas"]},
@@ -241,7 +241,7 @@
                         }
                     ]
                 }
-            ]
+            }
         },
         "status": "active",
         "created_on": "2024-06-14 09:31:14.740983",
