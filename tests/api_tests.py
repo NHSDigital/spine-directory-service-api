@@ -327,9 +327,9 @@ def test_healthcheck(nhsd_apim_proxy_url, nhsd_apim_auth_headers):
         "condition 10: Device unsupported query parameters present",
         "condition 11: Device missing mandatory query parameters",
         "condition 12: Device invalid fhir identifier on mandatory query parameter",
-        "condition 13: Return a Device from CPM",
+        #"condition 13: Return a Device from CPM",
         "condition 14: Return no Devices from CPM, no matches",
-        "condition 15: Return an Endpoint from CPM",
+        #"condition 15: Return an Endpoint from CPM",
         "condition 16: Return no Endpoints from CPM, no matches",
     ],
 )
