@@ -1,3 +1,4 @@
+import os
 from os import path
 from request.tests.request_handler_test_base import RequestHandlerTestBase, ORG_CODE, SERVICE_ID, PARTY_KEY, MANUFACTURING_ORG
 from utilities import test_utilities
