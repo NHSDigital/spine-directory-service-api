@@ -17,7 +17,7 @@ logger = log.IntegrationAdaptorsLogger(__name__)
 
 
 def should_use_cpm(handler: RequestHandler) -> bool:
-    if os.environ.get("USE_CPM") == "1":
+    if os.environ["USE_CPM"] == "1":
         return True
     return (
         handler.get_query_argument(name=CPM_FILTER, default=None)
