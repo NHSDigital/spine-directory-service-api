@@ -1,5 +1,6 @@
 import json
 import unittest.mock
+from unittest.mock import patch
 import uuid
 from abc import ABC
 from typing import Optional
@@ -36,6 +37,7 @@ class RequestHandlerTestBase(ABC, tornado.testing.AsyncHTTPTestCase):
             (r"/device", accredited_system_handler.AccreditedSystemRequestHandler, {"sds_client": self.sds_client})
         ])
 
+    @patch.dict(os.environ, {"USE_CPM": "0"})
     def _test_get(self, url, expected_json_file_path):
         response = self.fetch(url, method="GET")
 
@@ -46,6 +48,7 @@ class RequestHandlerTestBase(ABC, tornado.testing.AsyncHTTPTestCase):
         self.assertEqual(response.headers.get(HttpHeaders.CONTENT_TYPE, None), "application/fhir+json")
         self.assertIsNotNone(response.headers.get(HttpHeaders.X_CORRELATION_ID, None))
 
+    @patch.dict(os.environ, {"USE_CPM": "0"})
     def _test_correlation_id_is_set_as_response_header(self, url, invalid_url, mock_200, mock_500):
         with self.subTest("X-Correlation-ID is set on 200 response"):
             correlation_id = str(uuid.uuid4()).upper()
@@ -68,6 +71,7 @@ class RequestHandlerTestBase(ABC, tornado.testing.AsyncHTTPTestCase):
             self.assertEqual(response.code, 400)
             self.assertEqual(response.headers.get('X-Correlation-ID'), correlation_id)
 
+    @patch.dict(os.environ, {"USE_CPM": "0"})
     def _test_get_handles_different_accept_header(self, url, expected_json_file_path):
         with self.subTest("Accept header is missing"):
             response = self.fetch(url, method="GET")
@@ -104,6 +108,7 @@ class RequestHandlerTestBase(ABC, tornado.testing.AsyncHTTPTestCase):
 
             self.assertEqual(response.code, 406)
 
+    @patch.dict(os.environ, {"USE_CPM": "0"})
     def _test_should_return_405_when_using_non_get(self, url: str):
         for method in ["POST", "DELETE", "PUT", "OPTIONS"]:
             with self.subTest(f"405 when using {method}"):
@@ -143,6 +148,7 @@ class RequestHandlerTestBase(ABC, tornado.testing.AsyncHTTPTestCase):
         path = f"{path}?{query_params}" if query_params else path
         return path
 
+    @patch.dict(os.environ, {"USE_CPM": "0"})
     def _get_current_and_expected_body(self, response, expected_file_path):
         current = json.loads(message_utilities.replace_uuid(response.body.decode(), FIXED_UUID))
 
@@ -171,6 +177,7 @@ class RequestHandlerTestBase(ABC, tornado.testing.AsyncHTTPTestCase):
 
         return current, expected
 
+    @patch.dict(os.environ, {"USE_CPM": "0"})
     def _assert_400_operation_outcome(self, response_content, diagnostics):
         operation_outcome = json.loads(response_content)
         self.assertEqual(operation_outcome["resourceType"], "OperationOutcome")
@@ -183,6 +190,7 @@ class RequestHandlerTestBase(ABC, tornado.testing.AsyncHTTPTestCase):
         self.assertEqual(coding["code"], 'BAD_REQUEST')
         self.assertEqual(coding["display"], 'Bad request')
 
+    @patch.dict(os.environ, {"USE_CPM": "0"})
     def _assert_405_operation_outcome(self, response_content):
         operation_outcome = json.loads(response_content)
         self.assertEqual(operation_outcome["resourceType"], "OperationOutcome")
@@ -195,6 +203,7 @@ class RequestHandlerTestBase(ABC, tornado.testing.AsyncHTTPTestCase):
         self.assertEqual(coding["code"], 'NOT_IMPLEMENTED')
         self.assertEqual(coding["display"], 'Not implemented')
 
+    @patch.dict(os.environ, {"USE_CPM": "0"})
     def _assert_500_operation_outcome(self, response_content):
         operation_outcome = json.loads(response_content)
         self.assertEqual(operation_outcome["resourceType"], "OperationOutcome")

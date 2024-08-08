@@ -61,6 +61,7 @@ FORWARD_RELIABLE_ROUTING_AND_RELIABILITY_DETAILS = [{
 
 class TestRoutingReliabilityRequestHandler(RequestHandlerTestBase):
 
+    @patch.dict(os.environ, {"USE_CPM": "0"})
     @patch('utilities.config.get_config')
     def test_get_single(self, mock_config):
         self._set_core_spine_ods_code(mock_config, SPINE_CORE_ORG_CODE)
@@ -71,6 +72,7 @@ class TestRoutingReliabilityRequestHandler(RequestHandlerTestBase):
 
         self.sds_client.get_mhs_details.assert_called_with(ORG_CODE, SERVICE_ID, PARTY_KEY)
 
+    @patch.dict(os.environ, {"USE_CPM": "0"})
     @patch('utilities.config.get_config')
     def test_get_multiple(self, mock_config):
         self._set_core_spine_ods_code(mock_config, SPINE_CORE_ORG_CODE)
@@ -81,6 +83,7 @@ class TestRoutingReliabilityRequestHandler(RequestHandlerTestBase):
 
         self.sds_client.get_mhs_details.assert_called_with(ORG_CODE, SERVICE_ID, PARTY_KEY)
 
+    @patch.dict(os.environ, {"USE_CPM": "0"})
     @patch('utilities.config.get_config')
     def test_get_multiple_with_forward_reliable_service(self, mock_config):
         self._set_core_spine_ods_code(mock_config, SPINE_CORE_ORG_CODE)
@@ -100,6 +103,7 @@ class TestRoutingReliabilityRequestHandler(RequestHandlerTestBase):
             call(SPINE_CORE_ORG_CODE, CORE_SPINE_FORWARD_RELIABLE_SERVICE_ID)
         ])
 
+    @patch.dict(os.environ, {"USE_CPM": "0"})
     @patch('utilities.config.get_config')
     def test_supported_query_params(self, mock_config):
         self._set_core_spine_ods_code(mock_config, SPINE_CORE_ORG_CODE)
@@ -117,6 +121,7 @@ class TestRoutingReliabilityRequestHandler(RequestHandlerTestBase):
                 super()._test_get(endpoint_url, EXPECTED_SINGLE_ENDPOINT_JSON_FILE_PATH)
                 self.sds_client.get_mhs_details.assert_called_with(org_code, service_id, party_key)
 
+    @patch.dict(os.environ, {"USE_CPM": "0"})
     @patch('utilities.config.get_config')
     def test_correlation_id_is_set_as_response_header(self, mock_config):
         self._set_core_spine_ods_code(mock_config, SPINE_CORE_ORG_CODE)
@@ -134,6 +139,7 @@ class TestRoutingReliabilityRequestHandler(RequestHandlerTestBase):
             mock500
         )
 
+    @patch.dict(os.environ, {"USE_CPM": "0"})
     def test_get_returns_error(self):
         with self.subTest("Lookup error"):
             self.sds_client.get_mhs_details.side_effect = Exception("some error")
@@ -141,6 +147,7 @@ class TestRoutingReliabilityRequestHandler(RequestHandlerTestBase):
             self.assertEqual(response.code, 500)
             super()._assert_500_operation_outcome(response.body.decode())
 
+    @patch.dict(os.environ, {"USE_CPM": "0"})
     def test_get_handles_missing_params(self):
         error_message = "HTTP 400: Bad Request (Missing or invalid query parameters. Should one of following combinations: ['organization=https://fhir.nhs.uk/Id/ods-organization-code|value&identifier=https://fhir.nhs.uk/Id/nhsServiceInteractionId|value&identifier=https://fhir.nhs.uk/Id/nhsMhsPartyKey|value''organization=https://fhir.nhs.uk/Id/ods-organization-code|value&identifier=https://fhir.nhs.uk/Id/nhsServiceInteractionId|value''organization=https://fhir.nhs.uk/Id/ods-organization-code|value&identifier=https://fhir.nhs.uk/Id/nhsMhsPartyKey|value''identifier=https://fhir.nhs.uk/Id/nhsServiceInteractionId|value&identifier=https://fhir.nhs.uk/Id/nhsMhsPartyKey|value'])"
 
@@ -159,6 +166,7 @@ class TestRoutingReliabilityRequestHandler(RequestHandlerTestBase):
             self.assertEqual(response.code, 400)
             super()._assert_400_operation_outcome(response.body.decode(), error_message)
 
+    @patch.dict(os.environ, {"USE_CPM": "0"})
     @patch('utilities.config.get_config')
     def test_get_handles_different_accept_header(self, mock_config):
         self._set_core_spine_ods_code(mock_config, SPINE_CORE_ORG_CODE)
@@ -168,6 +176,7 @@ class TestRoutingReliabilityRequestHandler(RequestHandlerTestBase):
             super()._build_endpoint_url(),
             EXPECTED_SINGLE_ENDPOINT_JSON_FILE_PATH)
 
+    @patch.dict(os.environ, {"USE_CPM": "0"})
     def test_should_return_405_when_using_non_get(self):
         super()._test_should_return_405_when_using_non_get(super()._build_endpoint_url())
 
