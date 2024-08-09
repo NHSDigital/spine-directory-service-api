@@ -1,3 +1,4 @@
+import os
 import json
 
 from urllib.parse import unquote
@@ -23,32 +24,37 @@ class AccreditedSystemRequestHandler(BaseHandler, ErrorHandler):
 
     @timing.time_request
     async def get(self):
-        tracking_id_headers = read_tracking_id_headers(self.request.headers)
+        # tracking_id_headers = read_tracking_id_headers(self.request.headers)
 
-        self._validate_query_params()
+        # self._validate_query_params()
 
-        org_code = self.get_required_query_param(ORG_CODE_QUERY_PARAMETER_NAME, ORG_CODE_FHIR_IDENTIFIER)
-        service_id = self.get_required_query_param(IDENTIFIER_QUERY_PARAMETER_NAME, SERVICE_ID_FHIR_IDENTIFIER)
+        # org_code = self.get_required_query_param(ORG_CODE_QUERY_PARAMETER_NAME, ORG_CODE_FHIR_IDENTIFIER)
+        # service_id = self.get_required_query_param(IDENTIFIER_QUERY_PARAMETER_NAME, SERVICE_ID_FHIR_IDENTIFIER)
 
-        manufacturing_organization = self.get_optional_query_param(MANUFACTURING_ORGANIZATION_QUERY_PARAMETER_NAME, MANUFACTURING_ORGANIZATION_FHIR_IDENTIFIER)
-        party_key = self.get_optional_query_param(IDENTIFIER_QUERY_PARAMETER_NAME, PARTY_KEY_FHIR_IDENTIFIER)
+        # manufacturing_organization = self.get_optional_query_param(MANUFACTURING_ORGANIZATION_QUERY_PARAMETER_NAME, MANUFACTURING_ORGANIZATION_FHIR_IDENTIFIER)
+        # party_key = self.get_optional_query_param(IDENTIFIER_QUERY_PARAMETER_NAME, PARTY_KEY_FHIR_IDENTIFIER)
 
         accept_type = get_valid_accept_type(self.request.headers)
 
-        logger.info("Looking up accredited system information for {org_code}, {service_id}, {manufacturing_organization}, {party_key}",
-                    fparams={"org_code": org_code, "service_id": service_id, 'manufacturing_organization': manufacturing_organization, 'party_key': party_key})
-
-        if should_use_cpm(handler=self):
-            ldap_result = await get_device_from_cpm(org_code=org_code, interaction_id=service_id, manufacturing_organization=manufacturing_organization, party_key=party_key, tracking_id_headers=tracking_id_headers)
-            if 'resourceType' in ldap_result and ldap_result['resourceType'] == 'OperationOutcome':
-                self.write(json.dumps(ldap_result, indent=2, sort_keys=False))
-                self.set_header(HttpHeaders.CONTENT_TYPE, accept_type)
-                self.set_header(HttpHeaders.X_CORRELATION_ID, mdc.correlation_id.get())
-            else:
-                self._build_output(ldap_result, accept_type)
-        else:
-            ldap_result = await self.sds_client.get_as_details(org_code, service_id, manufacturing_organization, party_key)
-            self._build_output(ldap_result, accept_type)
+        # logger.info("Looking up accredited system information for {org_code}, {service_id}, {manufacturing_organization}, {party_key}",
+        #             fparams={"org_code": org_code, "service_id": service_id, 'manufacturing_organization': manufacturing_organization, 'party_key': party_key})
+        ldap_result = [
+            {
+                "nhsAsClient": [f"USE_CPM set to {str(os.environ['USE_CPM'])}"]
+            }
+        ]
+        self._build_output(ldap_result, accept_type)
+        # if should_use_cpm(handler=self):
+        #     ldap_result = await get_device_from_cpm(org_code=org_code, interaction_id=service_id, manufacturing_organization=manufacturing_organization, party_key=party_key, tracking_id_headers=tracking_id_headers)
+        #     if 'resourceType' in ldap_result and ldap_result['resourceType'] == 'OperationOutcome':
+        #         self.write(json.dumps(ldap_result, indent=2, sort_keys=False))
+        #         self.set_header(HttpHeaders.CONTENT_TYPE, accept_type)
+        #         self.set_header(HttpHeaders.X_CORRELATION_ID, mdc.correlation_id.get())
+        #     else:
+        #         self._build_output(ldap_result, accept_type)
+        # else:
+        #     ldap_result = await self.sds_client.get_as_details(org_code, service_id, manufacturing_organization, party_key)
+        #     self._build_output(ldap_result, accept_type)
 
     def _build_output(self, ldap_result, accept_type):
         logger.info("Obtained accredited system information. {ldap_result}",
