@@ -42,15 +42,11 @@ class BaseHandler(tornado.web.RequestHandler):
         return value
 
     def get_optional_query_param(self, query_param_name: str, fhir_identifier: str) -> Optional[str]:
-        if query_param_name != CPM_FILTER:
-            values = list(filter(lambda value: "|" in value and value.split("|")[0] == fhir_identifier and value[value.index("|") + 1:].strip(), self.get_query_arguments(query_param_name)))
+        values = list(filter(lambda value: "|" in value and value.split("|")[0] == fhir_identifier and value[value.index("|") + 1:].strip(), self.get_query_arguments(query_param_name)))
 
-            last_value = values and values[-1]
-            result_value = (last_value and last_value[last_value.index("|") + 1:]) or None
-            return result_value
-        else:
-            value = self.get_query_arguments(query_param_name)
-            return value
+        last_value = values and values[-1]
+        result_value = (last_value and last_value[last_value.index("|") + 1:]) or None
+        return result_value
 
     def _raise_invalid_query_param_error(self, query_param_name, fhir_identifier):
         raise tornado.web.HTTPError(
