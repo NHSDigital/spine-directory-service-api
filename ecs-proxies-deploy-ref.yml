@@ -27,6 +27,8 @@ docker_service:
         valueFrom: "arn:aws:secretsmanager:eu-west-2:{{ PTL_ACCOUNT_ID }}:secret:ptl/ca-certs/nhsd-ptl/root-ca-g2/crt"
       - name: APIGEE_URL
         valueFrom: "/{{ account }}/platform-common/egress/hosts/apigee-ref"
+      - name: USE_CPM
+        valueFrom: "/{{ account }}/api-deployment/{{ service_name }}/ref/use-cpm"
     health_check:
       matcher: "200"
       path: "/healthcheck"

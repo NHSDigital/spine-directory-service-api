@@ -1,13 +1,12 @@
-import asyncio
 import os
 import copy
 import tornado
 import requests
-from requests.exceptions import Timeout
+from tornado.web import RequestHandler
 
 from typing import List
 from lookup.sds_exception import SDSException
-from request.base_handler import ORG_CODE_QUERY_PARAMETER_NAME, ORG_CODE_FHIR_IDENTIFIER, \
+from request.base_handler import CPM_FILTER, CPM_FILTER_IDENTIFIER, ORG_CODE_QUERY_PARAMETER_NAME, ORG_CODE_FHIR_IDENTIFIER, \
     IDENTIFIER_QUERY_PARAMETER_NAME, SERVICE_ID_FHIR_IDENTIFIER, PARTY_KEY_FHIR_IDENTIFIER
 from request.cpm_config import DEVICE_FILTER_MAP, ENDPOINT_FILTER_MAP, DEVICE_DATA_MAP, ENDPOINT_DATA_MAP, DEFAULT_ENDPOINT_DICT, DEFAULT_DEVICE_DICT
 from utilities.constants import INTERACTION_MAPPINGS, RELIABLE_SERVICES
@@ -15,6 +14,20 @@ from utilities import config
 from utilities import integration_adaptors_logger as log
 
 logger = log.IntegrationAdaptorsLogger(__name__)
+
+
+def should_use_cpm(handler: RequestHandler) -> bool:
+    try: 
+        use_cpm = os.environ["USE_CPM"]
+    except KeyError as e:
+        raise KeyError(f"Environment variable is required {e}")
+    
+    if use_cpm == 1:
+        return True
+    return (
+        handler.get_query_argument(name=CPM_FILTER, default=None)
+        == CPM_FILTER_IDENTIFIER
+    )
 
 
 async def get_device_from_cpm(tracking_id_headers: dict, **query_parts) -> List:
@@ -25,7 +38,13 @@ async def get_device_from_cpm(tracking_id_headers: dict, **query_parts) -> List:
         raise KeyError(f"Environment variable is required {e}")
     cpm_client = CpmClient(client_id=client_id, apigee_url=apigee_url, endpoint="product")
     data = await cpm_client.get_cpm(extra_headers=tracking_id_headers)
-
+    # return [
+    #     {
+    #         "nhsAsClient": [f"USE_CPM set to {str(os.environ['USE_CPM'])}"],
+    #         # "nhsAsSvcIA": [f"CPM_CLIENT_KEY set to {str(os.environ['CPM_CLIENT_KEY'])}"],
+    #         # "nhsMhsManufacturerOrg": f"APIGEE_URL set to {str(os.environ['APIGEE_URL'])}"
+    #     }
+    # ]
     return process_cpm_device_request(data=data, query_parts=query_parts)
 
 

@@ -21,6 +21,8 @@ docker_service:
         valueFrom: "/{{ account }}/api-deployment/{{ service_name }}/internal-qa/cpm-apikey"
       - name: APIGEE_URL
         valueFrom: "/{{ account }}/platform-common/egress/hosts/apigee-internal-qa-sandbox"
+      - name: USE_CPM
+        valueFrom: "/{{ account }}/api-deployment/{{ service_name }}/internal-qa/use-cpm"
     health_check:
       matcher: "200"
       path: "/healthcheck"
