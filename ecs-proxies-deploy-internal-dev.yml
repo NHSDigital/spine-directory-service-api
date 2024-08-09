@@ -16,6 +16,8 @@ docker_service:
         value: "YES"
       - name: CPM_PATH_URL
         value: cpm-dev
+      - name: "USE_CPM"
+        value: "0"
     secrets:
       - name: CPM_CLIENT_KEY
         valueFrom: "/{{ account }}/api-deployment/{{ service_name }}/internal-dev/cpm-apikey"
@@ -26,9 +28,7 @@ docker_service:
       - name: SDS_SECRET_CA_CERTS
         valueFrom: "arn:aws:secretsmanager:eu-west-2:{{ PTL_ACCOUNT_ID }}:secret:ptl/ca-certs/nhsd-ptl/sub-ca/crt"
       - name: APIGEE_URL
-        valueFrom: "/{{ account }}/platform-common/egress/hosts/apigee-internal-dev"
-      - name: USE_CPM
-        valueFrom: "/{{ account }}/api-deployment/{{ service_name }}/internal-dev/use-cpm"        
+        valueFrom: "/{{ account }}/platform-common/egress/hosts/apigee-internal-dev"   
     health_check:
       matcher: "200"
       path: "/healthcheck"
