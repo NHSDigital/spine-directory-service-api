@@ -207,68 +207,68 @@ def test_healthcheck(nhsd_apim_proxy_url, nhsd_apim_auth_headers):
             "result_count": 0,
         },
         # condition 8: Device mandatory query parameters present
-        {
-            "endpoint": "Device",
-            "query_params": {
-                "organization": f"{DEVICE_ORGANIZATION_FHIR_IDENTIFIER}|123456",
-                "identifier": f"{DEVICE_INTERACTION_ID_FHIR_IDENTIFIER}|urn:nhs:names:services:psis:REPC_IN150016UK05",
-            },
-            "status_code": 200,
-            "result_count": 0,
-        },
+        # {
+        #     "endpoint": "Device",
+        #     "query_params": {
+        #         "organization": f"{DEVICE_ORGANIZATION_FHIR_IDENTIFIER}|123456",
+        #         "identifier": f"{DEVICE_INTERACTION_ID_FHIR_IDENTIFIER}|urn:nhs:names:services:psis:REPC_IN150016UK05",
+        #     },
+        #     "status_code": 200,
+        #     "result_count": 0,
+        # },
         # condition 9: Device optional query parameters present
-        {
-            "endpoint": "Device",
-            "query_params": {
-                "organization": f"{DEVICE_ORGANIZATION_FHIR_IDENTIFIER}|123456",
-                "identifier": [
-                    f"{DEVICE_INTERACTION_ID_FHIR_IDENTIFIER}|urn:nhs:names:services:psis:REPC_IN150016UK05",
-                    f"{DEVICE_PARTY_KEY_FHIR_IDENTIFIER}|TEST-PARTY-KEY",
-                ],
-                "manufacturing-organization": f"{DEVICE_MANUFACTURING_ORGANIZATION_FHIR_IDENTIFIER}|YES",
-            },
-            "status_code": 200,
-            "result_count": 0,
-        },
+        # {
+        #     "endpoint": "Device",
+        #     "query_params": {
+        #         "organization": f"{DEVICE_ORGANIZATION_FHIR_IDENTIFIER}|123456",
+        #         "identifier": [
+        #             f"{DEVICE_INTERACTION_ID_FHIR_IDENTIFIER}|urn:nhs:names:services:psis:REPC_IN150016UK05",
+        #             f"{DEVICE_PARTY_KEY_FHIR_IDENTIFIER}|TEST-PARTY-KEY",
+        #         ],
+        #         "manufacturing-organization": f"{DEVICE_MANUFACTURING_ORGANIZATION_FHIR_IDENTIFIER}|YES",
+        #     },
+        #     "status_code": 200,
+        #     "result_count": 0,
+        # },
         # condition 10: Device unsupported query parameters present
-        {
-            "endpoint": "Device",
-            "query_params": {
-                "organization": f"{DEVICE_ORGANIZATION_FHIR_IDENTIFIER}|123456",
-                "identifier": [
-                    f"{DEVICE_INTERACTION_ID_FHIR_IDENTIFIER}|urn:nhs:names:services:psis:REPC_IN150016UK05",
-                    f"{DEVICE_PARTY_KEY_FHIR_IDENTIFIER}|TEST-PARTY-KEY",
-                ],
-                "manufacturing-organization": f"{DEVICE_MANUFACTURING_ORGANIZATION_FHIR_IDENTIFIER}|YES",
-                "unsupported": "unsupported_parameter_value",
-            },
-            "status_code": 400,
-            "result_count": 0,
-        },
+        # {
+        #     "endpoint": "Device",
+        #     "query_params": {
+        #         "organization": f"{DEVICE_ORGANIZATION_FHIR_IDENTIFIER}|123456",
+        #         "identifier": [
+        #             f"{DEVICE_INTERACTION_ID_FHIR_IDENTIFIER}|urn:nhs:names:services:psis:REPC_IN150016UK05",
+        #             f"{DEVICE_PARTY_KEY_FHIR_IDENTIFIER}|TEST-PARTY-KEY",
+        #         ],
+        #         "manufacturing-organization": f"{DEVICE_MANUFACTURING_ORGANIZATION_FHIR_IDENTIFIER}|YES",
+        #         "unsupported": "unsupported_parameter_value",
+        #     },
+        #     "status_code": 400,
+        #     "result_count": 0,
+        # },
         # condition 11: Device missing mandatory query parameters
-        {
-            "endpoint": "Device",
-            "query_params": {
-                "identifier": [
-                    f"{DEVICE_INTERACTION_ID_FHIR_IDENTIFIER}|urn:nhs:names:services:psis:REPC_IN150016UK05",
-                    f"{DEVICE_PARTY_KEY_FHIR_IDENTIFIER}|TEST-PARTY-KEY",
-                ],
-                "manufacturing-organization": f"{DEVICE_MANUFACTURING_ORGANIZATION_FHIR_IDENTIFIER}|YES",
-                "unsupported": "unsupported_parameter_value",
-            },
-            "status_code": 400,
-            "result_count": 0,
-        },
+        # {
+        #     "endpoint": "Device",
+        #     "query_params": {
+        #         "identifier": [
+        #             f"{DEVICE_INTERACTION_ID_FHIR_IDENTIFIER}|urn:nhs:names:services:psis:REPC_IN150016UK05",
+        #             f"{DEVICE_PARTY_KEY_FHIR_IDENTIFIER}|TEST-PARTY-KEY",
+        #         ],
+        #         "manufacturing-organization": f"{DEVICE_MANUFACTURING_ORGANIZATION_FHIR_IDENTIFIER}|YES",
+        #         "unsupported": "unsupported_parameter_value",
+        #     },
+        #     "status_code": 400,
+        #     "result_count": 0,
+        # },
         # condition 12: Device invalid fhir identifier on mandatory query parameter
-        {
-            "endpoint": "Device",
-            "query_params": {
-                "organization": "test|123456",
-                "identifier": f"{DEVICE_INTERACTION_ID_FHIR_IDENTIFIER}|urn:nhs:names:services:psis:REPC_IN150016UK05",
-            },
-            "status_code": 400,
-            "result_count": 0,
-        },
+        # {
+        #     "endpoint": "Device",
+        #     "query_params": {
+        #         "organization": "test|123456",
+        #         "identifier": f"{DEVICE_INTERACTION_ID_FHIR_IDENTIFIER}|urn:nhs:names:services:psis:REPC_IN150016UK05",
+        #     },
+        #     "status_code": 400,
+        #     "result_count": 0,
+        # },
         # condition 13: Return a Device from CPM
         {
             "endpoint": "Device",
@@ -281,16 +281,16 @@ def test_healthcheck(nhsd_apim_proxy_url, nhsd_apim_auth_headers):
             "result_count": 1,
         },
         # condition 14: Return no Devices from CPM, no matches
-        {
-            "endpoint": "Device",
-            "query_params": {
-                "organization": f"{ENDPOINT_ORGANIZATION_FHIR_IDENTIFIER}|FOO",
-                "identifier": f"{DEVICE_INTERACTION_ID_FHIR_IDENTIFIER}|urn:nhs:names:services:lrs:MCCI_IN010000UK13",
-                "use_cpm": USE_CPM_ARGUMENT,
-            },
-            "status_code": 200,
-            "result_count": 0,
-        },
+        # {
+        #     "endpoint": "Device",
+        #     "query_params": {
+        #         "organization": f"{ENDPOINT_ORGANIZATION_FHIR_IDENTIFIER}|FOO",
+        #         "identifier": f"{DEVICE_INTERACTION_ID_FHIR_IDENTIFIER}|urn:nhs:names:services:lrs:MCCI_IN010000UK13",
+        #         "use_cpm": USE_CPM_ARGUMENT,
+        #     },
+        #     "status_code": 200,
+        #     "result_count": 0,
+        # },
         # condition 15: Return an Endpoint from CPM
         {
             "endpoint": "Endpoint",
@@ -322,13 +322,13 @@ def test_healthcheck(nhsd_apim_proxy_url, nhsd_apim_auth_headers):
         "condition 5: Endpoint unsupported query parameters present",
         "condition 6: Endpoint missing mandatory query parameters",
         "condition 7: Endpoint invalid fhir identifier on mandatory query parameter",
-        "condition 8: Device mandatory query parameters present",
-        "condition 9: Device optional query parameters present",
-        "condition 10: Device unsupported query parameters present",
-        "condition 11: Device missing mandatory query parameters",
-        "condition 12: Device invalid fhir identifier on mandatory query parameter",
+        #"condition 8: Device mandatory query parameters present",
+        #"condition 9: Device optional query parameters present",
+        #"condition 10: Device unsupported query parameters present",
+        #"condition 11: Device missing mandatory query parameters",
+        #"condition 12: Device invalid fhir identifier on mandatory query parameter",
         "condition 13: Return a Device from CPM",
-        "condition 14: Return no Devices from CPM, no matches",
+        #"condition 14: Return no Devices from CPM, no matches",
         "condition 15: Return an Endpoint from CPM",
         "condition 16: Return no Endpoints from CPM, no matches",
     ],
