@@ -38,14 +38,14 @@ async def get_device_from_cpm(tracking_id_headers: dict, **query_parts) -> List:
         raise KeyError(f"Environment variable is required {e}")
     cpm_client = CpmClient(client_id=client_id, apigee_url=apigee_url, endpoint="product")
     data = await cpm_client.get_cpm(extra_headers=tracking_id_headers)
-    # return [
-    #     {
-    #         "nhsAsClient": [f"USE_CPM set to {str(os.environ['USE_CPM'])}"],
-    #         # "nhsAsSvcIA": [f"CPM_CLIENT_KEY set to {str(os.environ['CPM_CLIENT_KEY'])}"],
-    #         # "nhsMhsManufacturerOrg": f"APIGEE_URL set to {str(os.environ['APIGEE_URL'])}"
-    #     }
-    # ]
-    return process_cpm_device_request(data=data, query_parts=query_parts)
+    return [
+        {
+            "nhsAsClient": [f"USE_CPM set to {str(os.environ['USE_CPM'])}"],
+            "nhsAsSvcIA": [f"CPM_CLIENT_KEY set to {str(os.environ['CPM_CLIENT_KEY'])}"],
+            "nhsMhsManufacturerOrg": f"APIGEE_URL set to {str(os.environ['APIGEE_URL'])}"
+        }
+    ]
+    #return process_cpm_device_request(data=data, query_parts=query_parts)
 
 
 async def get_endpoint_from_cpm(tracking_id_headers: dict, **query_parts) -> List:
