@@ -16,6 +16,8 @@ docker_service:
         value: "YES"
       - name: CPM_PATH_URL
         value: cpm-dev
+      - name: USE_CPM
+        value: "1"
     secrets:
       - name: CPM_CLIENT_KEY
         valueFrom: "/{{ account }}/api-deployment/{{ service_name }}/internal-dev/cpm-apikey"

@@ -48,18 +48,25 @@ class RoutingReliabilityRequestHandler(BaseHandler, ErrorHandler):
         logger.info("Looking up routing and reliability information. {org_code}, {service_id}, {party_key}",
                     fparams={"org_code": org_code, "service_id": service_id, "party_key": party_key})
         
-        if ldap_filter and ldap_filter[0] == LDAP_FILTER_IDENTIFIER:
+        if os.environ["USE_CPM"] == "1":
+            if ldap_filter and ldap_filter[0] == LDAP_FILTER_IDENTIFIER:
+                ldap_results = await self.sds_client.get_mhs_details(org_code, service_id, party_key)
+
+                logger.info("Obtained routing and reliability information. {ldap_results}",
+                            fparams={"ldap_results": ldap_results})
+
+                await self._handle_forward_reliable_results(ldap_results)
+            else:
+                ldap_results = await get_endpoint_from_cpm(org_code, service_id, party_key)
+                
+                logger.info("Obtained routing and reliability information. {ldap_results}",
+                            fparams={"ldap_results": ldap_results})
+        else:
             ldap_results = await self.sds_client.get_mhs_details(org_code, service_id, party_key)
 
-            logger.info("Obtained routing and reliability information. {ldap_results}",
-                        fparams={"ldap_results": ldap_results})
+            logger.info("Obtained routing and reliability information. {ldap_results}", fparams={"ldap_results": ldap_results})
 
             await self._handle_forward_reliable_results(ldap_results)
-        else:
-            ldap_results = await get_endpoint_from_cpm(org_code, service_id, party_key)
-            
-            logger.info("Obtained routing and reliability information. {ldap_results}",
-                        fparams={"ldap_results": ldap_results})
 
         base_url = f"{self.request.protocol}://{self.request.host}{self.request.path}/"
         full_url = unquote(self.request.full_url())
