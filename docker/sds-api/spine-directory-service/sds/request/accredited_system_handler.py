@@ -7,7 +7,7 @@ import tornado
 from request.cpm import get_device_from_cpm
 from request.base_handler import BaseHandler, ORG_CODE_QUERY_PARAMETER_NAME, ORG_CODE_FHIR_IDENTIFIER, \
     IDENTIFIER_QUERY_PARAMETER_NAME, SERVICE_ID_FHIR_IDENTIFIER, PARTY_KEY_FHIR_IDENTIFIER, \
-    MANUFACTURING_ORGANIZATION_QUERY_PARAMETER_NAME, MANUFACTURING_ORGANIZATION_FHIR_IDENTIFIER, CPM_FILTER, CPM_FILTER_IDENTIFIER
+    MANUFACTURING_ORGANIZATION_QUERY_PARAMETER_NAME, MANUFACTURING_ORGANIZATION_FHIR_IDENTIFIER, LDAP_FILTER, LDAP_FILTER_IDENTIFIER
 from request.content_type_validator import get_valid_accept_type
 from request.error_handler import ErrorHandler
 from request.fhir_json_mapper import build_bundle_resource, build_device_resource
@@ -32,25 +32,29 @@ class AccreditedSystemRequestHandler(BaseHandler, ErrorHandler):
 
         manufacturing_organization = self.get_optional_query_param(MANUFACTURING_ORGANIZATION_QUERY_PARAMETER_NAME, MANUFACTURING_ORGANIZATION_FHIR_IDENTIFIER)
         party_key = self.get_optional_query_param(IDENTIFIER_QUERY_PARAMETER_NAME, PARTY_KEY_FHIR_IDENTIFIER)
-        cpm_filter = self.get_optional_query_param(CPM_FILTER, CPM_FILTER_IDENTIFIER)
+        ldap_filter = self.get_optional_query_param(LDAP_FILTER, LDAP_FILTER_IDENTIFIER)
 
         accept_type = get_valid_accept_type(self.request.headers)
 
         logger.info("Looking up accredited system information for {org_code}, {service_id}, {manufacturing_organization}, {party_key}",
                     fparams={"org_code": org_code, "service_id": service_id, 'manufacturing_organization': manufacturing_organization, 'party_key': party_key})
 
-        if cpm_filter and cpm_filter[0] == CPM_FILTER_IDENTIFIER:
-            ldap_result = await get_device_from_cpm(org_code=org_code, interaction_id=service_id, manufacturing_organization=manufacturing_organization, party_key=party_key, tracking_id_headers=tracking_id_headers)
-            if 'resourceType' in ldap_result and ldap_result['resourceType'] == 'OperationOutcome':
-                self.write(json.dumps(ldap_result, indent=2, sort_keys=False))
-                self.set_header(HttpHeaders.CONTENT_TYPE, accept_type)
-                self.set_header(HttpHeaders.X_CORRELATION_ID, mdc.correlation_id.get())
-            else:
+        if os.environ["USE_CPM"] == "1":
+            if ldap_filter and ldap_filter[0] == LDAP_FILTER_IDENTIFIER:
+                ldap_result = await self.sds_client.get_as_details(org_code, service_id, manufacturing_organization, party_key)
                 self._build_output(ldap_result, accept_type)
+            else:
+                ldap_result = await get_device_from_cpm(org_code, service_id, manufacturing_organization, party_key)
+                if 'resourceType' in ldap_result and ldap_result['resourceType'] == 'OperationOutcome':
+                    self.write(json.dumps(ldap_result, indent=2, sort_keys=False))
+                    self.set_header(HttpHeaders.CONTENT_TYPE, accept_type)
+                    self.set_header(HttpHeaders.X_CORRELATION_ID, mdc.correlation_id.get())
+                else:
+                    self._build_output(ldap_result, accept_type)
         else:
             ldap_result = await self.sds_client.get_as_details(org_code, service_id, manufacturing_organization, party_key)
             self._build_output(ldap_result, accept_type)
-
+        
     def _build_output(self, ldap_result, accept_type):
         logger.info("Obtained accredited system information. {ldap_result}",
                     fparams={"ldap_result": ldap_result})
@@ -69,7 +73,7 @@ class AccreditedSystemRequestHandler(BaseHandler, ErrorHandler):
     def _validate_query_params(self):
         query_params = self.request.arguments
         for query_param in query_params.keys():
-            if query_param not in [ORG_CODE_QUERY_PARAMETER_NAME, IDENTIFIER_QUERY_PARAMETER_NAME, MANUFACTURING_ORGANIZATION_QUERY_PARAMETER_NAME, CPM_FILTER]:
+            if query_param not in [ORG_CODE_QUERY_PARAMETER_NAME, IDENTIFIER_QUERY_PARAMETER_NAME, MANUFACTURING_ORGANIZATION_QUERY_PARAMETER_NAME, LDAP_FILTER]:
                 raise tornado.web.HTTPError(
                     status_code=400,
                     log_message=f"Illegal query parameter '{query_param}'")
@@ -85,5 +89,5 @@ class AccreditedSystemRequestHandler(BaseHandler, ErrorHandler):
                 if query_param == MANUFACTURING_ORGANIZATION_QUERY_PARAMETER_NAME \
                     and not query_param_value.startswith(f"{MANUFACTURING_ORGANIZATION_FHIR_IDENTIFIER}|"):
                     self._raise_invalid_query_param_error(MANUFACTURING_ORGANIZATION_QUERY_PARAMETER_NAME, MANUFACTURING_ORGANIZATION_FHIR_IDENTIFIER)
-                if query_param == CPM_FILTER and query_param_value.lower() != CPM_FILTER_IDENTIFIER:
+                if query_param == LDAP_FILTER and query_param_value.lower() != LDAP_FILTER_IDENTIFIER:
                     self._raise_invalid_identifier_query_param_error()

@@ -7,7 +7,7 @@ from urllib.parse import unquote
 
 from request.cpm import get_endpoint_from_cpm
 from request.base_handler import BaseHandler, ORG_CODE_QUERY_PARAMETER_NAME, ORG_CODE_FHIR_IDENTIFIER, \
-    IDENTIFIER_QUERY_PARAMETER_NAME, SERVICE_ID_FHIR_IDENTIFIER, PARTY_KEY_FHIR_IDENTIFIER, CPM_FILTER, CPM_FILTER_IDENTIFIER
+    IDENTIFIER_QUERY_PARAMETER_NAME, SERVICE_ID_FHIR_IDENTIFIER, PARTY_KEY_FHIR_IDENTIFIER, LDAP_FILTER, LDAP_FILTER_IDENTIFIER
 from request.content_type_validator import get_valid_accept_type
 from request.error_handler import ErrorHandler
 from request.fhir_json_mapper import build_endpoint_resources, build_bundle_resource
@@ -38,7 +38,7 @@ class RoutingReliabilityRequestHandler(BaseHandler, ErrorHandler):
         org_code = self.get_optional_query_param(ORG_CODE_QUERY_PARAMETER_NAME, ORG_CODE_FHIR_IDENTIFIER)
         service_id = self.get_optional_query_param(IDENTIFIER_QUERY_PARAMETER_NAME, SERVICE_ID_FHIR_IDENTIFIER)
         party_key = self.get_optional_query_param(IDENTIFIER_QUERY_PARAMETER_NAME, PARTY_KEY_FHIR_IDENTIFIER)
-        cpm_filter = self.get_optional_query_param(CPM_FILTER, CPM_FILTER_IDENTIFIER)
+        ldap_filter = self.get_optional_query_param(LDAP_FILTER, LDAP_FILTER_IDENTIFIER)
 
         if (org_code and not service_id and not party_key) or (not org_code and (not service_id or not party_key)):
             self._raise_invalid_query_params_error()
@@ -47,22 +47,24 @@ class RoutingReliabilityRequestHandler(BaseHandler, ErrorHandler):
 
         logger.info("Looking up routing and reliability information. {org_code}, {service_id}, {party_key}",
                     fparams={"org_code": org_code, "service_id": service_id, "party_key": party_key})
+        
+        if os.environ["USE_CPM"] == "1":
+            if ldap_filter and ldap_filter[0] == LDAP_FILTER_IDENTIFIER:
+                ldap_results = await self.sds_client.get_mhs_details(org_code, service_id, party_key)
 
-        if cpm_filter and cpm_filter[0] == CPM_FILTER_IDENTIFIER:
-            ldap_results = await get_endpoint_from_cpm(
-                org_code=org_code,
-                interaction_id=service_id,
-                party_key=party_key,
-                tracking_id_headers=tracking_id_headers
-            )
+                logger.info("Obtained routing and reliability information. {ldap_results}",
+                            fparams={"ldap_results": ldap_results})
 
-            logger.info("Obtained routing and reliability information. {ldap_results}",
-                        fparams={"ldap_results": ldap_results})
+                await self._handle_forward_reliable_results(ldap_results)
+            else:
+                ldap_results = await get_endpoint_from_cpm(org_code, service_id, party_key)
+                
+                logger.info("Obtained routing and reliability information. {ldap_results}",
+                            fparams={"ldap_results": ldap_results})
         else:
             ldap_results = await self.sds_client.get_mhs_details(org_code, service_id, party_key)
 
-            logger.info("Obtained routing and reliability information. {ldap_results}",
-                        fparams={"ldap_results": ldap_results})
+            logger.info("Obtained routing and reliability information. {ldap_results}", fparams={"ldap_results": ldap_results})
 
             await self._handle_forward_reliable_results(ldap_results)
 
@@ -137,7 +139,7 @@ class RoutingReliabilityRequestHandler(BaseHandler, ErrorHandler):
     def _validate_query_params(self):
         query_params = self.request.arguments
         for query_param in query_params.keys():
-            if query_param not in [ORG_CODE_QUERY_PARAMETER_NAME, IDENTIFIER_QUERY_PARAMETER_NAME, CPM_FILTER]:
+            if query_param not in [ORG_CODE_QUERY_PARAMETER_NAME, IDENTIFIER_QUERY_PARAMETER_NAME, LDAP_FILTER]:
                 raise tornado.web.HTTPError(
                     status_code=400,
                     log_message=f"Illegal query parameter '{query_param}'")
@@ -150,7 +152,7 @@ class RoutingReliabilityRequestHandler(BaseHandler, ErrorHandler):
                         and not query_param_value.startswith(f"{SERVICE_ID_FHIR_IDENTIFIER}|") \
                         and not query_param_value.startswith(f"{PARTY_KEY_FHIR_IDENTIFIER}|"):
                     self._raise_invalid_identifier_query_param_error()
-                if query_param == CPM_FILTER and query_param_value.lower() != CPM_FILTER_IDENTIFIER:
+                if query_param == LDAP_FILTER and query_param_value.lower() != LDAP_FILTER_IDENTIFIER:
                     # Raise if not correct.
                     self._raise_invalid_identifier_query_param_error()
 
