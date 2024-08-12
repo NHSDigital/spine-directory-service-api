@@ -16,6 +16,8 @@ docker_service:
         value: "YEA"
       - name: CPM_PATH_URL
         value: cpm-prod
+      - name: USE_CPM
+        value: "0"
     secrets:
       - name: SDS_SECRET_CLIENT_KEY
         valueFrom: "arn:aws:secretsmanager:eu-west-2:{{ PROD_ACCOUNT_ID }}:secret:prod/client/ldap.national.ncrs.nhs.uk/key"
@@ -25,8 +27,6 @@ docker_service:
         valueFrom: "arn:aws:secretsmanager:eu-west-2:{{ PROD_ACCOUNT_ID }}:secret:prod/ca-certs/nhsd-prod/root-ca-g2/crt"
       - name: APIGEE_URL
         valueFrom: "/{{ account }}/platform-common/egress/hosts/apigee-prod"
-      - name: USE_CPM
-        valueFrom: "/{{ account }}/api-deployment/{{ service_name }}/use-cpm"
     health_check:
       matcher: "200"
       path: "/healthcheck"
