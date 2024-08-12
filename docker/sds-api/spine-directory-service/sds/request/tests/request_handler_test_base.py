@@ -1,5 +1,7 @@
+import os
 import json
 import unittest.mock
+from unittest.mock import patch
 import uuid
 from abc import ABC
 from typing import Optional
@@ -18,7 +20,6 @@ FORWARD_RELIABLE_SERVICE_ID = "urn:nhs:names:services:gp2gp:RCMR_IN010000UK05"
 CORE_SPINE_FORWARD_RELIABLE_SERVICE_ID = "urn:nhs:names:services:tms:ReliableIntermediary"
 PARTY_KEY = "some_party_key"
 MANUFACTURING_ORG = "some_manufacturer"
-LDAP_FILTER = "true"
 FIXED_UUID = "f0f0e921-92ca-4a88-a550-2dbb36f703af"
 
 DEVICE_PATH = "/device"
@@ -37,6 +38,7 @@ class RequestHandlerTestBase(ABC, tornado.testing.AsyncHTTPTestCase):
             (r"/device", accredited_system_handler.AccreditedSystemRequestHandler, {"sds_client": self.sds_client})
         ])
 
+    @patch.dict(os.environ, {"USE_CPM": "0"})
     def _test_get(self, url, expected_json_file_path):
         response = self.fetch(url, method="GET")
 
@@ -47,6 +49,7 @@ class RequestHandlerTestBase(ABC, tornado.testing.AsyncHTTPTestCase):
         self.assertEqual(response.headers.get(HttpHeaders.CONTENT_TYPE, None), "application/fhir+json")
         self.assertIsNotNone(response.headers.get(HttpHeaders.X_CORRELATION_ID, None))
 
+    @patch.dict(os.environ, {"USE_CPM": "0"})
     def _test_correlation_id_is_set_as_response_header(self, url, invalid_url, mock_200, mock_500):
         with self.subTest("X-Correlation-ID is set on 200 response"):
             correlation_id = str(uuid.uuid4()).upper()
@@ -69,6 +72,7 @@ class RequestHandlerTestBase(ABC, tornado.testing.AsyncHTTPTestCase):
             self.assertEqual(response.code, 400)
             self.assertEqual(response.headers.get('X-Correlation-ID'), correlation_id)
 
+    @patch.dict(os.environ, {"USE_CPM": "0"})
     def _test_get_handles_different_accept_header(self, url, expected_json_file_path):
         with self.subTest("Accept header is missing"):
             response = self.fetch(url, method="GET")
@@ -105,6 +109,7 @@ class RequestHandlerTestBase(ABC, tornado.testing.AsyncHTTPTestCase):
 
             self.assertEqual(response.code, 406)
 
+    @patch.dict(os.environ, {"USE_CPM": "0"})
     def _test_should_return_405_when_using_non_get(self, url: str):
         for method in ["POST", "DELETE", "PUT", "OPTIONS"]:
             with self.subTest(f"405 when using {method}"):
@@ -114,14 +119,13 @@ class RequestHandlerTestBase(ABC, tornado.testing.AsyncHTTPTestCase):
                 self._assert_405_operation_outcome(response.body.decode())
 
     @staticmethod
-    def _build_endpoint_url(org_code: Optional[str] = ORG_CODE, service_id: Optional[str] = SERVICE_ID, party_key: Optional[str] = PARTY_KEY, use_ldap: Optional[str] = LDAP_FILTER):
+    def _build_endpoint_url(org_code: Optional[str] = ORG_CODE, service_id: Optional[str] = SERVICE_ID, party_key: Optional[str] = PARTY_KEY):
         url = "/endpoint"
 
         org_code = f"organization=https://fhir.nhs.uk/Id/ods-organization-code|{org_code}" if org_code is not None else None
         service_id = f"identifier=https://fhir.nhs.uk/Id/nhsServiceInteractionId|{service_id}" if service_id is not None else None
         party_key = f"identifier=https://fhir.nhs.uk/Id/nhsMhsPartyKey|{party_key}" if party_key is not None else None
-        use_ldap = f"use_ldap={LDAP_FILTER}" if use_ldap is not None else None
-        query_params = "&".join(filter(lambda query_param: query_param, [org_code, service_id, party_key, use_ldap]))
+        query_params = "&".join(filter(lambda query_param: query_param, [org_code, service_id, party_key]))
 
         url = f"{url}?{query_params}" if query_params else url
         return url
@@ -131,21 +135,21 @@ class RequestHandlerTestBase(ABC, tornado.testing.AsyncHTTPTestCase):
             org_code: Optional[str] = ORG_CODE,
             service_id: Optional[str] = SERVICE_ID,
             party_key: Optional[str] = PARTY_KEY,
-            manufacturing_organization: Optional[str] = MANUFACTURING_ORG,
-            use_ldap: Optional[str] = LDAP_FILTER):
+            manufacturing_organization: Optional[str] = MANUFACTURING_ORG):
 
         path = DEVICE_PATH
-        
+
         org_code = f"organization=https://fhir.nhs.uk/Id/ods-organization-code|{org_code}" if org_code is not None else None
         service_id = f"identifier=https://fhir.nhs.uk/Id/nhsServiceInteractionId|{service_id}" if service_id is not None else None
         party_key = f"identifier=https://fhir.nhs.uk/Id/nhsMhsPartyKey|{party_key}" if party_key is not None else None
         manufacturing_organization = f"manufacturing-organization=https://fhir.nhs.uk/Id/ods-organization-code|{manufacturing_organization}" if manufacturing_organization is not None else None
-        use_ldap = f"use_ldap={LDAP_FILTER}" if use_ldap is not None else None
 
-        query_params = "&".join(filter(lambda query_param: query_param, [org_code, service_id, party_key, manufacturing_organization, use_ldap]))
+        query_params = "&".join(filter(lambda query_param: query_param, [org_code, service_id, party_key, manufacturing_organization]))
+
         path = f"{path}?{query_params}" if query_params else path
         return path
 
+    @patch.dict(os.environ, {"USE_CPM": "0"})
     def _get_current_and_expected_body(self, response, expected_file_path):
         current = json.loads(message_utilities.replace_uuid(response.body.decode(), FIXED_UUID))
 
@@ -174,6 +178,7 @@ class RequestHandlerTestBase(ABC, tornado.testing.AsyncHTTPTestCase):
 
         return current, expected
 
+    @patch.dict(os.environ, {"USE_CPM": "0"})
     def _assert_400_operation_outcome(self, response_content, diagnostics):
         operation_outcome = json.loads(response_content)
         self.assertEqual(operation_outcome["resourceType"], "OperationOutcome")
@@ -186,6 +191,7 @@ class RequestHandlerTestBase(ABC, tornado.testing.AsyncHTTPTestCase):
         self.assertEqual(coding["code"], 'BAD_REQUEST')
         self.assertEqual(coding["display"], 'Bad request')
 
+    @patch.dict(os.environ, {"USE_CPM": "0"})
     def _assert_405_operation_outcome(self, response_content):
         operation_outcome = json.loads(response_content)
         self.assertEqual(operation_outcome["resourceType"], "OperationOutcome")
@@ -198,6 +204,7 @@ class RequestHandlerTestBase(ABC, tornado.testing.AsyncHTTPTestCase):
         self.assertEqual(coding["code"], 'NOT_IMPLEMENTED')
         self.assertEqual(coding["display"], 'Not implemented')
 
+    @patch.dict(os.environ, {"USE_CPM": "0"})
     def _assert_500_operation_outcome(self, response_content):
         operation_outcome = json.loads(response_content)
         self.assertEqual(operation_outcome["resourceType"], "OperationOutcome")

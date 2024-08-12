@@ -1,8 +1,9 @@
+import os
 from os import path
 from unittest.mock import patch, call
 
 from request.tests.request_handler_test_base import RequestHandlerTestBase, ORG_CODE, SERVICE_ID, PARTY_KEY, \
-    SPINE_CORE_ORG_CODE, FORWARD_RELIABLE_SERVICE_ID, CORE_SPINE_FORWARD_RELIABLE_SERVICE_ID, LDAP_FILTER
+    SPINE_CORE_ORG_CODE, FORWARD_RELIABLE_SERVICE_ID, CORE_SPINE_FORWARD_RELIABLE_SERVICE_ID
 from utilities import test_utilities
 
 EXPECTED_SINGLE_ENDPOINT_JSON_FILE_PATH = path.join(path.dirname(__file__), "examples/single_endpoint.json")
@@ -61,26 +62,29 @@ FORWARD_RELIABLE_ROUTING_AND_RELIABILITY_DETAILS = [{
 
 class TestRoutingReliabilityRequestHandler(RequestHandlerTestBase):
 
+    @patch.dict(os.environ, {"USE_CPM": "0"})
     @patch('utilities.config.get_config')
     def test_get_single(self, mock_config):
         self._set_core_spine_ods_code(mock_config, SPINE_CORE_ORG_CODE)
 
         self.sds_client.get_mhs_details.return_value = test_utilities.awaitable(SINGLE_ROUTING_AND_RELIABILITY_DETAILS)
 
-        super()._test_get(super()._build_endpoint_url(use_ldap=LDAP_FILTER), EXPECTED_SINGLE_ENDPOINT_JSON_FILE_PATH)
+        super()._test_get(super()._build_endpoint_url(), EXPECTED_SINGLE_ENDPOINT_JSON_FILE_PATH)
 
         self.sds_client.get_mhs_details.assert_called_with(ORG_CODE, SERVICE_ID, PARTY_KEY)
 
+    @patch.dict(os.environ, {"USE_CPM": "0"})
     @patch('utilities.config.get_config')
     def test_get_multiple(self, mock_config):
         self._set_core_spine_ods_code(mock_config, SPINE_CORE_ORG_CODE)
 
         self.sds_client.get_mhs_details.return_value = test_utilities.awaitable(MULTIPLE_ROUTING_AND_RELIABILITY_DETAILS)
 
-        super()._test_get(super()._build_endpoint_url(use_ldap=LDAP_FILTER), EXPECTED_MULTIPLE_ENDPOINTS_JSON_FILE_PATH)
+        super()._test_get(super()._build_endpoint_url(), EXPECTED_MULTIPLE_ENDPOINTS_JSON_FILE_PATH)
 
         self.sds_client.get_mhs_details.assert_called_with(ORG_CODE, SERVICE_ID, PARTY_KEY)
 
+    @patch.dict(os.environ, {"USE_CPM": "0"})
     @patch('utilities.config.get_config')
     def test_get_multiple_with_forward_reliable_service(self, mock_config):
         self._set_core_spine_ods_code(mock_config, SPINE_CORE_ORG_CODE)
@@ -93,13 +97,14 @@ class TestRoutingReliabilityRequestHandler(RequestHandlerTestBase):
             test_utilities.awaitable(FORWARD_RELIABLE_ROUTING_AND_RELIABILITY_DETAILS),
             ]
 
-        super()._test_get(super()._build_endpoint_url(service_id=FORWARD_RELIABLE_SERVICE_ID, use_ldap=LDAP_FILTER), EXPECTED_FORWARD_RELIABLE_ENDPOINTS_JSON_FILE_PATH)
+        super()._test_get(super()._build_endpoint_url(service_id=FORWARD_RELIABLE_SERVICE_ID), EXPECTED_FORWARD_RELIABLE_ENDPOINTS_JSON_FILE_PATH)
 
         self.sds_client.get_mhs_details.assert_has_calls([
             call(ORG_CODE, FORWARD_RELIABLE_SERVICE_ID, PARTY_KEY),
             call(SPINE_CORE_ORG_CODE, CORE_SPINE_FORWARD_RELIABLE_SERVICE_ID)
         ])
 
+    @patch.dict(os.environ, {"USE_CPM": "0"})
     @patch('utilities.config.get_config')
     def test_supported_query_params(self, mock_config):
         self._set_core_spine_ods_code(mock_config, SPINE_CORE_ORG_CODE)
@@ -113,10 +118,11 @@ class TestRoutingReliabilityRequestHandler(RequestHandlerTestBase):
             (None, SERVICE_ID, PARTY_KEY),
         ]:
             with self.subTest(f"Endpoint valid query params: org_code={org_code} service_id={service_id} party_key={party_key}"):
-                endpoint_url = super()._build_endpoint_url(org_code=org_code, service_id=service_id, party_key=party_key, use_ldap=LDAP_FILTER)
+                endpoint_url = super()._build_endpoint_url(org_code=org_code, service_id=service_id, party_key=party_key)
                 super()._test_get(endpoint_url, EXPECTED_SINGLE_ENDPOINT_JSON_FILE_PATH)
                 self.sds_client.get_mhs_details.assert_called_with(org_code, service_id, party_key)
 
+    @patch.dict(os.environ, {"USE_CPM": "0"})
     @patch('utilities.config.get_config')
     def test_correlation_id_is_set_as_response_header(self, mock_config):
         self._set_core_spine_ods_code(mock_config, SPINE_CORE_ORG_CODE)
@@ -128,48 +134,52 @@ class TestRoutingReliabilityRequestHandler(RequestHandlerTestBase):
             self.sds_client.get_mhs_details.side_effect = Exception
 
         super()._test_correlation_id_is_set_as_response_header(
-            self._build_endpoint_url(use_ldap=LDAP_FILTER),
-            self._build_endpoint_url(org_code=None, service_id=None, party_key=None, use_ldap=LDAP_FILTER),
+            self._build_endpoint_url(),
+            self._build_endpoint_url(org_code=None, service_id=None, party_key=None),
             mock200,
             mock500
         )
 
+    @patch.dict(os.environ, {"USE_CPM": "0"})
     def test_get_returns_error(self):
         with self.subTest("Lookup error"):
             self.sds_client.get_mhs_details.side_effect = Exception("some error")
-            response = self.fetch(self._build_endpoint_url(use_ldap=LDAP_FILTER), method="GET")
+            response = self.fetch(self._build_endpoint_url(), method="GET")
             self.assertEqual(response.code, 500)
             super()._assert_500_operation_outcome(response.body.decode())
 
+    @patch.dict(os.environ, {"USE_CPM": "0"})
     def test_get_handles_missing_params(self):
         error_message = "HTTP 400: Bad Request (Missing or invalid query parameters. Should one of following combinations: ['organization=https://fhir.nhs.uk/Id/ods-organization-code|value&identifier=https://fhir.nhs.uk/Id/nhsServiceInteractionId|value&identifier=https://fhir.nhs.uk/Id/nhsMhsPartyKey|value''organization=https://fhir.nhs.uk/Id/ods-organization-code|value&identifier=https://fhir.nhs.uk/Id/nhsServiceInteractionId|value''organization=https://fhir.nhs.uk/Id/ods-organization-code|value&identifier=https://fhir.nhs.uk/Id/nhsMhsPartyKey|value''identifier=https://fhir.nhs.uk/Id/nhsServiceInteractionId|value&identifier=https://fhir.nhs.uk/Id/nhsMhsPartyKey|value'])"
 
         with self.subTest("Missing Org Code but Service Id is present"):
-            response = self.fetch(self._build_endpoint_url(org_code=None, service_id=SERVICE_ID, party_key=None, use_ldap=LDAP_FILTER), method="GET")
+            response = self.fetch(self._build_endpoint_url(org_code=None, service_id=SERVICE_ID, party_key=None), method="GET")
             self.assertEqual(response.code, 400)
             super()._assert_400_operation_outcome(response.body.decode(), error_message)
 
         with self.subTest("Missing Org Code but Party Key is present"):
-            response = self.fetch(self._build_endpoint_url(org_code=None, service_id=None, party_key=PARTY_KEY, use_ldap=LDAP_FILTER), method="GET")
+            response = self.fetch(self._build_endpoint_url(org_code=None, service_id=None, party_key=PARTY_KEY), method="GET")
             self.assertEqual(response.code, 400)
             super()._assert_400_operation_outcome(response.body.decode(), error_message)
 
         with self.subTest("Missing Service ID and party key"):
-            response = self.fetch(self._build_endpoint_url(org_code=ORG_CODE, service_id=None, party_key=None, use_ldap=LDAP_FILTER), method="GET")
+            response = self.fetch(self._build_endpoint_url(org_code=ORG_CODE, service_id=None, party_key=None), method="GET")
             self.assertEqual(response.code, 400)
             super()._assert_400_operation_outcome(response.body.decode(), error_message)
 
+    @patch.dict(os.environ, {"USE_CPM": "0"})
     @patch('utilities.config.get_config')
     def test_get_handles_different_accept_header(self, mock_config):
         self._set_core_spine_ods_code(mock_config, SPINE_CORE_ORG_CODE)
 
         self.sds_client.get_mhs_details.return_value = test_utilities.awaitable(SINGLE_ROUTING_AND_RELIABILITY_DETAILS)
         super()._test_get_handles_different_accept_header(
-            super()._build_endpoint_url(use_ldap=LDAP_FILTER),
+            super()._build_endpoint_url(),
             EXPECTED_SINGLE_ENDPOINT_JSON_FILE_PATH)
 
+    @patch.dict(os.environ, {"USE_CPM": "0"})
     def test_should_return_405_when_using_non_get(self):
-        super()._test_should_return_405_when_using_non_get(super()._build_endpoint_url(use_ldap=LDAP_FILTER))
+        super()._test_should_return_405_when_using_non_get(super()._build_endpoint_url())
 
     @staticmethod
     def _set_core_spine_ods_code(mock_config, ods_code):
