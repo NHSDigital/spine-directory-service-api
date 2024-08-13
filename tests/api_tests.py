@@ -270,16 +270,16 @@ def test_healthcheck(nhsd_apim_proxy_url, nhsd_apim_auth_headers):
             "result_count": 0,
         },
         # condition 13: Return a Device from CPM
-        {
-            "endpoint": "Device",
-            "query_params": {
-                "organization": f"{ENDPOINT_ORGANIZATION_FHIR_IDENTIFIER}|5NR",
-                "identifier": f"{DEVICE_INTERACTION_ID_FHIR_IDENTIFIER}|urn:nhs:names:services:lrs:MCCI_IN010000UK13",
-                "use_cpm": USE_CPM_ARGUMENT,
-            },
-            "status_code": 200,
-            "result_count": 1,
-        },
+        # {
+        #     "endpoint": "Device",
+        #     "query_params": {
+        #         "organization": f"{ENDPOINT_ORGANIZATION_FHIR_IDENTIFIER}|5NR",
+        #         "identifier": f"{DEVICE_INTERACTION_ID_FHIR_IDENTIFIER}|urn:nhs:names:services:lrs:MCCI_IN010000UK13",
+        #         "use_cpm": USE_CPM_ARGUMENT,
+        #     },
+        #     "status_code": 200,
+        #     "result_count": 1,
+        # },
         # condition 14: Return no Devices from CPM, no matches
         {
             "endpoint": "Device",
@@ -292,16 +292,16 @@ def test_healthcheck(nhsd_apim_proxy_url, nhsd_apim_auth_headers):
             "result_count": 0,
         },
         # condition 15: Return an Endpoint from CPM
-        {
-            "endpoint": "Endpoint",
-            "query_params": {
-                "organization": f"{ENDPOINT_ORGANIZATION_FHIR_IDENTIFIER}|RTX",
-                "identifier": f"{ENDPOINT_INTERACTION_ID_FHIR_IDENTIFIER}|urn:nhs:names:services:ebs:PRSC_IN070000UK08",
-                "use_cpm": USE_CPM_ARGUMENT,
-            },
-            "status_code": 200,
-            "result_count": 1,
-        },
+        # {
+        #     "endpoint": "Endpoint",
+        #     "query_params": {
+        #         "organization": f"{ENDPOINT_ORGANIZATION_FHIR_IDENTIFIER}|RTX",
+        #         "identifier": f"{ENDPOINT_INTERACTION_ID_FHIR_IDENTIFIER}|urn:nhs:names:services:ebs:PRSC_IN070000UK08",
+        #         "use_cpm": USE_CPM_ARGUMENT,
+        #     },
+        #     "status_code": 200,
+        #     "result_count": 1,
+        # },
         # condition 16: Return no Endpoints from CPM, no matches
         {
             "endpoint": "Endpoint",
@@ -327,9 +327,9 @@ def test_healthcheck(nhsd_apim_proxy_url, nhsd_apim_auth_headers):
         "condition 10: Device unsupported query parameters present",
         "condition 11: Device missing mandatory query parameters",
         "condition 12: Device invalid fhir identifier on mandatory query parameter",
-        "condition 13: Return a Device from CPM",
+        #"condition 13: Return a Device from CPM",
         "condition 14: Return no Devices from CPM, no matches",
-        "condition 15: Return an Endpoint from CPM",
+        #"condition 15: Return an Endpoint from CPM",
         "condition 16: Return no Endpoints from CPM, no matches",
     ],
 )

@@ -1,18 +1,40 @@
 import json
 import os
+import requests
 import tornado.web
+import unittest
 
 from unittest import TestCase
 from unittest.mock import patch, call
-from request.cpm import EndpointCpm, process_cpm_endpoint_request
-from utilities import test_utilities
+from jsonschema import validate
+from request.cpm import EndpointCpm, process_cpm_endpoint_request, CpmClient, get_endpoint_from_cpm, EndpointCpmClient, _extract_service_and_interaction
+from request.base_handler import ORG_CODE_QUERY_PARAMETER_NAME, ORG_CODE_FHIR_IDENTIFIER, \
+    IDENTIFIER_QUERY_PARAMETER_NAME, SERVICE_ID_FHIR_IDENTIFIER, PARTY_KEY_FHIR_IDENTIFIER
+from lookup.sds_exception import SDSException
 
-RETURNED_ENDPOINTS_JSON = "returned_endpoints.json"
-FILTERED_ENDPOINT_1 = "filtered_endpoint.json"
-FILTERED_ENDPOINT_2 = "filtered_endpoint2.json"
-FILTERED_ENDPOINTS = "filtered_endpoints.json"
+RETURNED_ENDPOINTS_JSON = "returned_endpoints_single.json"
+RETURNED_ENDPOINTS_MULTIPLE_JSON = "returned_endpoints_multiple.json"
+RETURNED_ENDPOINTS_CHANGE_JSON = "returned_endpoints_single_endpoint.json"
 
 EXPECTED_LDAP_1 = {
+    'nhsIDCode': 'D81631',
+    'nhsMHSAckRequested': 'never',
+    'nhsMhsActor': ['urn:oasis:names:tc:ebxml-msg:actor:nextMSH'],
+    'nhsMhsCPAId': 'a83e020a3fe9c2988a36',
+    'nhsMHSDuplicateElimination': 'never',
+    'nhsMHSEndPoint': ['https://systmonespine1.tpp.nme.ncrs.nhs.uk/SystmOneMHS/NHSConnect/D81631/STU3/1'],
+    'nhsMhsFQDN': 'systmonespine1.tpp.nme.ncrs.nhs.uk',
+    'nhsMHsIN': 'fhir:rest:read:location-1',
+    'nhsMHSPartyKey': 'D81631-827817',
+    'nhsMHSPersistDuration': 'PT4M',
+    'nhsMHSRetries': 2,
+    'nhsMHSRetryInterval': 'PT2S',
+    'nhsMHsSN': 'urn:nhs:names:services:gpconnect',
+    'nhsMhsSvcIA': 'urn:nhs:names:services:gpconnect:fhir:rest:read:location-1',
+    'nhsMHSSyncReplyMode': 'none',
+    'uniqueIdentifier': ['a83e020a3fe9c2988a36']
+}
+EXPECTED_LDAP_2 = {
     'nhsIDCode': 'RTX',
     'nhsMHSAckRequested': 'always',
     'nhsMhsActor': ['urn:oasis:names:tc:ebxml-msg:actor:nextMSH'],
@@ -27,10 +49,10 @@ EXPECTED_LDAP_1 = {
     'nhsMHSRetryInterval': 'PT2S',
     'nhsMHsSN': 'urn:nhs:names:services:ebs',
     'nhsMhsSvcIA': 'urn:nhs:names:services:ebs:PRSC_IN070000UK08',
-    'nhsMHSSyncReplyMode': 'None',
+    'nhsMHSSyncReplyMode': 'none',
     'uniqueIdentifier': ['69720694737ed98c0242']
 }
-EXPECTED_LDAP_1_ENDPOINT_MODIFIED = {
+EXPECTED_LDAP_2_ENDPOINT_MODIFIED = {
     'nhsIDCode': 'RTX',
     'nhsMHSAckRequested': 'always',
     'nhsMhsActor': ['urn:oasis:names:tc:ebxml-msg:actor:nextMSH'],
@@ -48,7 +70,7 @@ EXPECTED_LDAP_1_ENDPOINT_MODIFIED = {
     'nhsMHSSyncReplyMode': 'None',
     'uniqueIdentifier': ['69720694737ed98c0242']
 }
-EXPECTED_LDAP_2 = {
+EXPECTED_LDAP_3 = {
     'nhsIDCode': 'RTX',
     'nhsMHSAckRequested': 'never',
     'nhsMhsActor': [],
@@ -83,9 +105,12 @@ class TestCPMEndpoints(TestCase):
             }[args[0]]
         mock_config.side_effect = config_values
     
+    @patch.dict(os.environ, {"USE_CPM": "1"})
     def test_filter_results_unsuccessful_missing_required_endpoint(self):
-        dir_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.path.join("test_data", "cpm", RETURNED_ENDPOINTS_JSON))
-        incoming_json = self._read_file(dir_path)
+        org_code = f'{ORG_CODE_QUERY_PARAMETER_NAME}={ORG_CODE_FHIR_IDENTIFIER}|value'
+        party_key = f'{IDENTIFIER_QUERY_PARAMETER_NAME}={PARTY_KEY_FHIR_IDENTIFIER}|value'
+        service_id = f'{IDENTIFIER_QUERY_PARAMETER_NAME}={SERVICE_ID_FHIR_IDENTIFIER}|value'
+        log_message=f"Missing or invalid query parameters. Should one of following combinations: ['{org_code}&{service_id}&{party_key}','{org_code}&{service_id}','{org_code}&{party_key}','{service_id}&{party_key}']"
         filters = [
             
             {
@@ -153,15 +178,91 @@ class TestCPMEndpoints(TestCase):
             }
         ]
         for filt in filters:
-            with self.assertRaises(tornado.web.HTTPError) as context:
-                EndpointCpm(incoming_json, filt)
-            raised_exception = context.exception
-            self.assertEqual(raised_exception.status_code, 400)
-            self.assertEqual(raised_exception.log_message, 'Missing or invalid query parameters. Should one of following combinations: [\'organization=https://fhir.nhs.uk/Id/ods-organization-code|value&identifier=https://fhir.nhs.uk/Id/nhsServiceInteractionId|value&identifier=https://fhir.nhs.uk/Id/nhsMhsPartyKey|value\'\'organization=https://fhir.nhs.uk/Id/ods-organization-code|value&identifier=https://fhir.nhs.uk/Id/nhsServiceInteractionId|value\'\'organization=https://fhir.nhs.uk/Id/ods-organization-code|value&identifier=https://fhir.nhs.uk/Id/nhsMhsPartyKey|value\'\'identifier=https://fhir.nhs.uk/Id/nhsServiceInteractionId|value&identifier=https://fhir.nhs.uk/Id/nhsMhsPartyKey|value\']')
+            with self.assertRaises(SDSException) as context:
+                EndpointCpmClient(client_id="1234", apigee_url="https://foo.bar", query_params=filt)
+            self.assertEqual(str(context.exception), log_message)
     
-    def test_filter_results_successful_required_endpoints(self):
+    @patch.dict(os.environ, {"USE_CPM": "1"})
+    def test_filter_results_not_allowed(self):
+        filters = [
+            {
+                "org_code": "RTX",
+                "interaction_id": "urn:nhs:names:services:ebs:PRSC_IN070000UK08",
+                "foo": "bar",
+            },
+            {
+                "org_code": "RTX",
+                "interaction_id": "urn:nhs:names:services:ebs:PRSC_IN070000UK08",
+                "party_key": "RTX-821088",
+                "foo": "bar",
+            },
+            {
+                "interaction_id": "urn:nhs:names:services:ebs:PRSC_IN070000UK08",
+                "party_key": "RTX-821088",
+                "foo": "bar",
+            },
+            {
+                "org_code": "RTX",
+                "interaction_id": "urn:nhs:names:services:cpisquery:REPC_IN000007GB01",
+                "foo": "bar",
+            },
+            {
+                "org_code": "RTX",
+                "interaction_id": "urn:nhs:names:services:cpisquery:REPC_IN000007GB01",
+                "party_key": "RTX-821088",
+                "foo": "bar",
+            },
+            {
+                "interaction_id": "urn:nhs:names:services:cpisquery:REPC_IN000007GB01",
+                "party_key": "RTX-821088",
+                "foo": "bar",
+            },
+            {
+                "interaction_id": "urn:nhs:names:services:cpisquery:REPC_IN000007GB01",
+                "party_key": "RTX-821088",
+                "manufacturing_organization": "LSP02",
+            }
+        ]
+        for filt in filters:
+            with self.assertRaises(SDSException) as context:
+                EndpointCpmClient(client_id="1234", apigee_url="https://foo.bar", query_params=filt)
+            if "manufacturing_organization" in filt:
+                self.assertEqual(str(context.exception), "manufacturing_organization not allowed in filters")
+            else:
+                self.assertEqual(str(context.exception), "foo not allowed in filters")
+    
+    @patch.dict(os.environ, {"USE_CPM": "1"})
+    def test_translated_endpoint_data(self):
         dir_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.path.join("test_data", "cpm", RETURNED_ENDPOINTS_JSON))
         incoming_json = self._read_file(dir_path)
+        expected = [EXPECTED_LDAP_1]
+        endpoints = EndpointCpm(incoming_json)
+        translated_data = endpoints.transform_to_ldap()
+        self.assertEqual(translated_data, expected)
+    
+    @patch.dict(os.environ, {"USE_CPM": "1"})
+    def test_translated_endpoint_data_multiple_endpoints(self):
+        dir_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.path.join("test_data", "cpm", RETURNED_ENDPOINTS_MULTIPLE_JSON))
+        incoming_json = self._read_file(dir_path)
+        expected = [
+            EXPECTED_LDAP_1, 
+            EXPECTED_LDAP_2
+        ]
+        endpoints = EndpointCpm(incoming_json)
+        translated_data = endpoints.transform_to_ldap()
+        assert len(translated_data) == 2
+        self.assertEqual(translated_data, expected)
+    
+    @patch.dict(os.environ, {"USE_CPM": "1"})
+    def test_endpoint_process_success(self):
+        dir_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.path.join("test_data", "cpm", RETURNED_ENDPOINTS_JSON))
+        incoming_json = self._read_file(dir_path)
+        expected = [EXPECTED_LDAP_1]
+        result = process_cpm_endpoint_request(incoming_json)
+        self.assertEqual(result, expected)
+    
+    @patch.dict(os.environ, {"USE_CPM": "1"})
+    def test_allowed_query_params(self):
         filters = [
             {
                 "org_code": "RTX",
@@ -190,153 +291,40 @@ class TestCPMEndpoints(TestCase):
                 "party_key": "RTX-821088"
             }
         ]
-        expected = [
-            FILTERED_ENDPOINT_1,
-            FILTERED_ENDPOINT_1,
-            FILTERED_ENDPOINT_1,
-            FILTERED_ENDPOINT_2,
-            FILTERED_ENDPOINT_2,
-            FILTERED_ENDPOINT_2
-        ]
-        for index, filt in enumerate(filters):
-            exp = self._read_file(os.path.join(os.path.dirname(os.path.realpath(__file__)), os.path.join("test_data", "cpm", expected[index])))
-            endpoints = EndpointCpm(incoming_json, filt)
-            filtered_data = endpoints.filter_cpm_response()
-            assert len(filtered_data) == 1
-            self.assertEqual(filtered_data, exp)
+        for query in filters:
+            cpm_client = EndpointCpmClient(client_id="1234", apigee_url="https://foo.bar", query_params=query)
+            assert "org_code" not in cpm_client._params
+            assert "interaction_id" not in cpm_client._params
+            if "org_code" in query:
+                assert "nhs_id_code" in cpm_client._params
+            assert "nhs_mhs_svc_ia" in cpm_client._params
+            if "party_key" in query:
+                assert "party_key" not in cpm_client._params
+                assert "nhs_mhs_party_key" in cpm_client._params
+            assert isinstance(cpm_client, EndpointCpmClient)
     
-    def test_filter_results_no_results_required_endpoint(self):
-        dir_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.path.join("test_data", "cpm", RETURNED_ENDPOINTS_JSON))
-        incoming_json = self._read_file(dir_path)
-        filters = [
-            {
-                "org_code": "RTX",
-                "interaction_id": "urn:nhs:names:services:lrs:DOESNT_EXIST",
-            },
-            {
-                "org_code": "FOO",
-                "interaction_id": "urn:nhs:names:services:cpisquery:REPC_IN000007GB01",
-            },
-            {
-                "org_code": "RTX",
-                "interaction_id": "urn:nhs:names:services:cpisquery:REPC_IN000007GB01",
-                "party_key": "BAR"
-            },
-            {
-                "org_code": "RTX",
-                "party_key": "BAR"
-            },
-            {
-                "org_code": "FOO",
-                "interaction_id": "urn:nhs:names:services:lrs:DOESNT_EXIST",
-                "party_key": "BAR"
-            },
-            {
-                "org_code": "RTX",
-                "interaction_id": "urn:nhs:names:services:lrs:DOESNT_EXIST",
-                "party_key": "RTX-821088"
-            },
-            {
-                "org_code": "FOO",
-                "interaction_id": "urn:nhs:names:services:cpisquery:REPC_IN000007GB01",
-                "party_key": "RTX-821088"
-            },
-            {
-                "org_code": "RTX",
-                "interaction_id": "urn:nhs:names:services:cpisquery:REPC_IN000007GB01",
-                "party_key": "BAR"
-            },
-        ]
-        expected = []
-        for filt in filters:
-            endpoints = EndpointCpm(incoming_json, filt)
-            filtered_data = endpoints.filter_cpm_response()
-            assert len(filtered_data) == 0
-            self.assertEqual(filtered_data, expected)
-
-    def test_translated_endpoint_data_endpoint(self):
-        filt = {
-            "org_code": "RTX",
-            "interaction_id": "urn:nhs:names:services:lrs:MCCI_IN010000UK13"
-        }
-        expected = [EXPECTED_LDAP_1 ]
-        dir_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.path.join("test_data", "cpm", FILTERED_ENDPOINT_1))
-        incoming_json = self._read_file(dir_path)
-        endpoints = EndpointCpm(incoming_json, filt)
-        translated_data = endpoints.transform_to_ldap(incoming_json)
-        self.assertEqual(translated_data, expected)
-
-    def test_translated_device_data_multiple_devices(self):
-        filt = {
-            "org_code": "5NR",
-            "party_key": "RTX-821088"
-        }
-        expected = [
-            EXPECTED_LDAP_1 ,
-            EXPECTED_LDAP_2 
-        ]
-        dir_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.path.join("test_data", "cpm", FILTERED_ENDPOINTS))
-        incoming_json = self._read_file(dir_path)
-        endpoints = EndpointCpm(incoming_json, filt)
-        translated_data = endpoints.transform_to_ldap(incoming_json)
-        assert len(translated_data) == 2
-        self.assertEqual(translated_data, expected)
-
-    def test_translated_endpoint_full_process(self):
-        dir_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.path.join("test_data", "cpm", RETURNED_ENDPOINTS_JSON))
-        incoming_json = self._read_file(dir_path)
-        filt = {
-            "org_code": "RTX",
-            "interaction_id": "urn:nhs:names:services:ebs:PRSC_IN070000UK08",
-        }
-        expected = [EXPECTED_LDAP_1]
-        endpoints = EndpointCpm(incoming_json, filt)
-        filtered_data = endpoints.filter_cpm_response()
-        translated_data = endpoints.transform_to_ldap(filtered_data)
-        self.assertEqual(translated_data, expected)
-    
+    @patch.dict(os.environ, {"USE_CPM": "1"})
     def test_extract_service_interaction(self):
-        dir_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.path.join("test_data", "cpm", RETURNED_ENDPOINTS_JSON))
-        incoming_json = self._read_file(dir_path)
-        filt = {
-            "org_code": "RTX",
-            "interaction_id": "urn:nhs:names:services:ebs:PRSC_IN070000UK08",
-        }
-        endpoints = EndpointCpm(incoming_json, filt)
         test_data = [
             "foo:bar",
             "oof:foo:bar"
         ]
         for td in test_data:
-            service, interaction = endpoints._extract_service_and_interaction(td)
+            service, interaction =_extract_service_and_interaction(td)
             self.assertEqual(service, "foo")
             self.assertEqual(interaction, "bar")
         
-        service = endpoints._extract_service_and_interaction(None)
+        service = _extract_service_and_interaction(None)
         self.assertFalse(service)
     
-    @patch('utilities.config.get_config')
-    def test_endpoint_process_success(self, mock_config):
-        self._set_core_spine_ods_code(mock_config, SPINE_CORE_ORG_CODE)
-        dir_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.path.join("test_data", "cpm", RETURNED_ENDPOINTS_JSON))
-        incoming_json = self._read_file(dir_path)
-        filt = {
-            "org_code": "RTX",
-            "interaction_id": "urn:nhs:names:services:ebs:PRSC_IN070000UK08",
-        }
-        expected = [EXPECTED_LDAP_1_ENDPOINT_MODIFIED]
-        result = process_cpm_endpoint_request(incoming_json, filt)
-        self.assertEqual(result, expected)
-    
+    @patch.dict(os.environ, {"USE_CPM": "1"})
     @patch('utilities.config.get_config')
     def test_endpoint_process_success_reliability_not_applied(self, mock_config):
         self._set_core_spine_ods_code(mock_config, SPINE_CORE_ORG_CODE)
         dir_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.path.join("test_data", "cpm", RETURNED_ENDPOINTS_JSON))
         incoming_json = self._read_file(dir_path)
-        filt = {
-            "org_code": "RTX",
-            "interaction_id": "urn:nhs:names:services:cpisquery:REPC_IN000007GB01",
-        }
-        expected = [EXPECTED_LDAP_2]
-        result = process_cpm_endpoint_request(incoming_json, filt)
+        expected = [EXPECTED_LDAP_1]
+        result = process_cpm_endpoint_request(incoming_json)
         self.assertEqual(result, expected)
+
+

@@ -1,17 +1,18 @@
 import json
 import os
+import requests
 import tornado.web
+import unittest
 
 from unittest import TestCase
+from unittest.mock import patch
 from jsonschema import validate
-from request.cpm import DeviceCpm, process_cpm_device_request, CpmClient
+from request.cpm import DeviceCpm, process_cpm_device_request, CpmClient, get_device_from_cpm, DeviceCpmClient
 from request.tests.test_data.cpm.schema import device_schema_json
 from lookup.sds_exception import SDSException
 
-RETURNED_DEVICES_JSON = "returned_devices.json"
-FILTERED_DEVICE_1 = "filtered_device.json"
-FILTERED_DEVICE_2 = "filtered_device2.json"
-FILTERED_DEVICES = "filtered_devices.json"
+RETURNED_DEVICES_JSON = "returned_devices_single.json"
+RETURNED_DEVICES_MULTIPLE_JSON = "returned_devices_multiple.json"
 
 EXPECTED_LDAP_1 = {
     'nhsAsClient': ['5NR'], 
@@ -131,9 +132,8 @@ class TestCPMDevice(TestCase):
         with open(file, 'r') as f:
             return json.load(f)
     
+    @patch.dict(os.environ, {"USE_CPM": "1"})
     def test_filter_results_unsuccessful_missing_required_device(self):
-        dir_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.path.join("test_data", "cpm", RETURNED_DEVICES_JSON))
-        incoming_json = self._read_file(dir_path)
         filters = [
             {
                 "org_code": "",
@@ -174,12 +174,102 @@ class TestCPMDevice(TestCase):
         ]
         for filt in filters:
             with self.assertRaises(SDSException) as context:
-                DeviceCpm(incoming_json, filt)
+                DeviceCpmClient(client_id="1234", apigee_url="https://foo.bar", query_params=filt)
             self.assertEqual(str(context.exception), 'org_code and interaction_id must be provided')
     
-    def test_filter_results_successful_required_device(self):
+    @patch.dict(os.environ, {"USE_CPM": "1"})
+    def test_filter_results_not_allowed(self):
+        filters = [
+            {
+                "foo": "bar",
+                "interaction_id": "urn:nhs:names:services:lrs:MCCI_IN010000UK13",
+            },
+            {
+                "org_code": "5NR",
+                "interaction_id": "urn:nhs:names:services:lrs:MCCI_IN010000UK13",
+                "foo": "bar",
+            },
+            {
+                "org_code": "5NR",
+                "interaction_id": "urn:nhs:names:services:lrs:MCCI_IN010000UK13",
+                "manufacturing_organization": "LSP02",
+                "foo": "bar",
+            },
+            {
+                "org_code": "5NR",
+                "interaction_id": "urn:nhs:names:services:lrs:MCCI_IN010000UK13",
+                "party_key": "5NR-801831",
+                "foo": "bar",
+            },
+            {
+                "org_code": "5NR",
+                "interaction_id": "urn:nhs:names:services:lrs:MCCI_IN010000UK13",
+                "party_key": "5NR-801831",
+                "manufacturing_organization": "LSP02",
+                "foo": "bar",
+            },
+            {
+                "org_code": "RTX",
+                "interaction_id": "urn:nhs:names:services:pds:PRPA_IN160000UK30",
+                "foo": "bar",
+            },
+            {
+                "org_code": "RTX",
+                "interaction_id": "urn:nhs:names:services:pds:PRPA_IN160000UK30",
+                "manufacturing_organization": "LSP02",
+                "foo": "bar",
+            },
+            {
+                "org_code": "RTX",
+                "interaction_id": "urn:nhs:names:services:pds:PRPA_IN160000UK30",
+                "party_key": "RTX-806845",
+                "foo": "bar",
+            },
+            {
+                "org_code": "RTX",
+                "interaction_id": "urn:nhs:names:services:pds:PRPA_IN160000UK30",
+                "party_key": "RTX-806845",
+                "manufacturing_organization": "LSP02",
+                "foo": "bar",
+            },
+        ]
+        for filt in filters:
+            with self.assertRaises(SDSException) as context:
+                DeviceCpmClient(client_id="1234", apigee_url="https://foo.bar", query_params=filt)
+            self.assertEqual(str(context.exception), "foo not allowed in filters")
+    
+    @patch.dict(os.environ, {"USE_CPM": "1"})
+    def test_translated_device_data_device(self):
         dir_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.path.join("test_data", "cpm", RETURNED_DEVICES_JSON))
         incoming_json = self._read_file(dir_path)
+        expected = [EXPECTED_LDAP_1]
+        devices = DeviceCpm(incoming_json)
+        translated_data = devices.transform_to_ldap()
+        self.assertEqual(translated_data, expected)
+    
+    @patch.dict(os.environ, {"USE_CPM": "1"})
+    def test_translated_device_data_multiple_devices(self):
+        expected = [
+            EXPECTED_LDAP_1, 
+            EXPECTED_LDAP_2
+        ]
+        dir_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.path.join("test_data", "cpm", RETURNED_DEVICES_MULTIPLE_JSON))
+        incoming_json = self._read_file(dir_path)
+        devices = DeviceCpm(incoming_json)
+        translated_data = devices.transform_to_ldap()
+        assert len(translated_data) == 2
+        self.assertEqual(translated_data, expected)
+        
+    @patch.dict(os.environ, {"USE_CPM": "1"})
+    def test_device_process_success(self):
+        dir_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.path.join("test_data", "cpm", RETURNED_DEVICES_JSON))
+        incoming_json = self._read_file(dir_path)
+        expected = [EXPECTED_LDAP_1]
+        result = process_cpm_device_request(incoming_json)
+        self.assertEqual(result, expected)
+    
+    @patch.dict(os.environ, {"USE_CPM": "1"})
+    def test_allowed_query_params(self):
         filters = [
             {
                 "org_code": "5NR",
@@ -222,114 +312,16 @@ class TestCPMDevice(TestCase):
                 "manufacturing_organization": "LSP02"
             },
         ]
-        expected = [
-            FILTERED_DEVICE_1,
-            FILTERED_DEVICE_1,
-            FILTERED_DEVICE_1,
-            FILTERED_DEVICE_1,
-            FILTERED_DEVICE_2,
-            FILTERED_DEVICE_2,
-            FILTERED_DEVICE_2,
-            FILTERED_DEVICE_2
-        ]
-        for index, filt in enumerate(filters):
-            exp = self._read_file(os.path.join(os.path.dirname(os.path.realpath(__file__)), os.path.join("test_data", "cpm", expected[index])))
-            devices = DeviceCpm(incoming_json, filt)
-            filtered_data = devices.filter_cpm_response()
-            assert len(filtered_data) == 1
-            self.assertEqual(filtered_data, exp)
-    
-    def test_filter_results_no_results_required_device(self):
-        dir_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.path.join("test_data", "cpm", RETURNED_DEVICES_JSON))
-        incoming_json = self._read_file(dir_path)
-        filters = [
-            {
-                "org_code": "5NR",
-                "interaction_id": "urn:nhs:names:services:lrs:DOESNT_EXIST",
-            },
-            {
-                "org_code": "FOO",
-                "interaction_id": "urn:nhs:names:services:lrs:MCCI_IN010000UK13",
-            },
-            {
-                "org_code": "5NR",
-                "interaction_id": "urn:nhs:names:services:lrs:MCCI_IN010000UK13",
-                "party_key": "5NR-801831",
-                "manufacturing_organization": "BAR"
-            },
-            {
-                "org_code": "5NR",
-                "interaction_id": "urn:nhs:names:services:lrs:MCCI_IN010000UK13",
-                "party_key": "FOO",
-                "manufacturing_organization": "LSP02"
-            },
-            {
-                "org_code": "5NR",
-                "interaction_id": "urn:nhs:names:services:lrs:MCCI_IN010000UK13",
-                "party_key": "FOO",
-            },
-            {
-                "org_code": "5NR",
-                "interaction_id": "urn:nhs:names:services:lrs:MCCI_IN010000UK13",
-                "manufacturing_organization": "BAR"
-            }
-        ]
-        expected = []
-        for filt in filters:
-            devices = DeviceCpm(incoming_json, filt)
-            filtered_data = devices.filter_cpm_response()
-            assert len(filtered_data) == 0
-            self.assertEqual(filtered_data, expected)
-        
-    
-    def test_translated_device_data_device(self):
-        filt = {
-            "org_code": "5NR",
-            "interaction_id": "urn:nhs:names:services:lrs:MCCI_IN010000UK13",
-        }
-        expected = [EXPECTED_LDAP_1]
-        dir_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.path.join("test_data", "cpm", FILTERED_DEVICE_1))
-        incoming_json = self._read_file(dir_path)
-        devices = DeviceCpm(incoming_json, filt)
-        translated_data = devices.transform_to_ldap(incoming_json)
-        self.assertEqual(translated_data, expected)
-    
-    def test_translated_device_data_multiple_devices(self):
-        filt = {
-            "org_code": "5NR",
-            "interaction_id": "urn:nhs:names:services:lrs:MCCI_IN010000UK13",
-        }
-        expected = [
-            EXPECTED_LDAP_1, 
-            EXPECTED_LDAP_2
-        ]
-        dir_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.path.join("test_data", "cpm", FILTERED_DEVICES))
-        incoming_json = self._read_file(dir_path)
-        devices = DeviceCpm(incoming_json, filt)
-        translated_data = devices.transform_to_ldap(incoming_json)
-        assert len(translated_data) == 2
-        self.assertEqual(translated_data, expected)
-        
-    def test_translated_device_full_process(self):
-        dir_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.path.join("test_data", "cpm", RETURNED_DEVICES_JSON))
-        incoming_json = self._read_file(dir_path)
-        filt = {
-            "org_code": "5NR",
-            "interaction_id": "urn:nhs:names:services:lrs:MCCI_IN010000UK13",
-        }
-        expected = [EXPECTED_LDAP_1]
-        devices = DeviceCpm(incoming_json, filt)
-        filtered_data = devices.filter_cpm_response()
-        translated_data = devices.transform_to_ldap(filtered_data)
-        self.assertEqual(translated_data, expected)
-
-    def test_device_process_success(self):
-        dir_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.path.join("test_data", "cpm", RETURNED_DEVICES_JSON))
-        incoming_json = self._read_file(dir_path)
-        filt = {
-            "org_code": "5NR",
-            "interaction_id": "urn:nhs:names:services:lrsquery:MCCI_IN010000UK13",
-        }
-        expected = [EXPECTED_LDAP_1]
-        result = process_cpm_device_request(incoming_json, filt)
-        self.assertEqual(result, expected)
+        for query in filters:
+            cpm_client = DeviceCpmClient(client_id="1234", apigee_url="https://foo.bar", query_params=query)
+            assert "org_code" not in cpm_client._params
+            assert "interaction_id" not in cpm_client._params
+            assert "nhs_as_client" in cpm_client._params
+            assert "nhs_as_svc_ia" in cpm_client._params
+            if "party_key" in query:
+                assert "party_key" not in cpm_client._params
+                assert "nhs_mhs_party_key" in cpm_client._params
+            if "manufacturing_organization" in query:
+                assert "manufacturing_organization" not in cpm_client._params
+                assert "nhs_mhs_manufacturer_org" in cpm_client._params
+            assert isinstance(cpm_client, DeviceCpmClient)
