@@ -1,7 +1,11 @@
 # Changelog
 
-## 2024=07-18
--[PI-453] USE_CPM external toggle
+## 2024-08-13
+- [PI-313] Add PROD CPM Apikey
+- [PI-434] Update SDS Search
+
+## 2024-07-18
+- [PI-453] USE_CPM external toggle
 
 ## 2024-07-10
 - [PI-283] CPM header propagation
