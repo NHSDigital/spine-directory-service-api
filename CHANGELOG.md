@@ -1,5 +1,8 @@
 # Changelog
 
+## 2024-08-27
+- [PI-478] Dependabot updates
+
 ## 2024-08-13
 - [PI-313] Add PROD CPM Apikey
 - [PI-434] Update SDS Search
