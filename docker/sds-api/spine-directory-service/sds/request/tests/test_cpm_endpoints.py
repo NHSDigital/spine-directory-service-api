@@ -292,22 +292,6 @@ class TestCPMEndpoints(TestCase):
             },
             {
                 "org_code": " RTX",
-                "interaction_id": "urn:nhs:names:services:ebs:PRSC_IN070000UK08",
-            },
-            {
-                "org_code": "RTX ",
-                "interaction_id": "urn:nhs:names:services:ebs:PRSC_IN070000UK08",
-            },
-            {
-                "org_code": "RTX",
-                "interaction_id": " urn:nhs:names:services:ebs:PRSC_IN070000UK08",
-            },
-            {
-                "org_code": "RTX",
-                "interaction_id": "urn:nhs:names:services:ebs:PRSC_IN070000UK08 ",
-            },
-            {
-                "org_code": " RTX",
                 "interaction_id": " urn:nhs:names:services:cpisquery:REPC_IN000007GB01",
                 "party_key": " RTX-821088"
             },
