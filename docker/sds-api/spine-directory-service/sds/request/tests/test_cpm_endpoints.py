@@ -289,7 +289,17 @@ class TestCPMEndpoints(TestCase):
             {
                 "interaction_id": "urn:nhs:names:services:cpisquery:REPC_IN000007GB01",
                 "party_key": "RTX-821088"
-            }
+            },
+            {
+                "org_code": " RTX",
+                "interaction_id": " urn:nhs:names:services:cpisquery:REPC_IN000007GB01",
+                "party_key": " RTX-821088"
+            },
+            {
+                "org_code": "RTX ",
+                "interaction_id": "urn:nhs:names:services:cpisquery:REPC_IN000007GB01 ",
+                "party_key": "RTX-821088 "
+            },
         ]
         for query in filters:
             cpm_client = EndpointCpmClient(client_id="1234", apigee_url="https://foo.bar", query_params=query)
@@ -297,10 +307,13 @@ class TestCPMEndpoints(TestCase):
             assert "interaction_id" not in cpm_client._params
             if "org_code" in query:
                 assert "nhs_id_code" in cpm_client._params
+                assert cpm_client._params["nhs_id_code"] == query["org_code"].strip()
             assert "nhs_mhs_svc_ia" in cpm_client._params
+            assert cpm_client._params["nhs_mhs_svc_ia"] == query["interaction_id"].strip()
             if "party_key" in query:
                 assert "party_key" not in cpm_client._params
                 assert "nhs_mhs_party_key" in cpm_client._params
+                assert cpm_client._params["nhs_mhs_party_key"] == query["party_key"].strip()
             assert isinstance(cpm_client, EndpointCpmClient)
     
     @patch.dict(os.environ, {"USE_CPM": "1"})

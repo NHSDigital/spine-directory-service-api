@@ -311,6 +311,18 @@ class TestCPMDevice(TestCase):
                 "party_key": "RTX-806845",
                 "manufacturing_organization": "LSP02"
             },
+            {
+                "org_code": " RTX",
+                "interaction_id": " urn:nhs:names:services:pds:PRPA_IN160000UK30",
+                "party_key": " RTX-806845",
+                "manufacturing_organization": " LSP02"
+            },
+            {
+                "org_code": "RTX ",
+                "interaction_id": "urn:nhs:names:services:pds:PRPA_IN160000UK30 ",
+                "party_key": "RTX-806845 ",
+                "manufacturing_organization": "LSP02 "
+            }
         ]
         for query in filters:
             cpm_client = DeviceCpmClient(client_id="1234", apigee_url="https://foo.bar", query_params=query)
@@ -318,10 +330,14 @@ class TestCPMDevice(TestCase):
             assert "interaction_id" not in cpm_client._params
             assert "nhs_as_client" in cpm_client._params
             assert "nhs_as_svc_ia" in cpm_client._params
+            assert cpm_client._params["nhs_as_client"] == query["org_code"].strip()
+            assert cpm_client._params["nhs_as_svc_ia"] == query["interaction_id"].strip()
             if "party_key" in query:
                 assert "party_key" not in cpm_client._params
                 assert "nhs_mhs_party_key" in cpm_client._params
+                assert cpm_client._params["nhs_mhs_party_key"] == query["party_key"].strip()
             if "manufacturing_organization" in query:
                 assert "manufacturing_organization" not in cpm_client._params
                 assert "nhs_mhs_manufacturer_org" in cpm_client._params
+                assert cpm_client._params["nhs_mhs_manufacturer_org"] == query["manufacturing_organization"].strip()
             assert isinstance(cpm_client, DeviceCpmClient)
