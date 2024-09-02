@@ -1,6 +1,9 @@
 # Changelog
 
 ## 2024-09-02
+- [PI-492] Correct name of nhsMHSActor in mapping
+
+## 2024-09-02
 - [PI-489] Strip white space from incoming params
 
 ## 2024-08-27
