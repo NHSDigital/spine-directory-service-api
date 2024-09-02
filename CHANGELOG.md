@@ -1,5 +1,8 @@
 # Changelog
 
+## 2024-09-02
+- [PI-489] Strip white space from incoming params
+
 ## 2024-08-27
 - [PI-478] Dependabot updates
 
