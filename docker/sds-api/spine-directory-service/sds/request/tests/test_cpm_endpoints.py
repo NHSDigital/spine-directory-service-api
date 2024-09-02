@@ -289,7 +289,23 @@ class TestCPMEndpoints(TestCase):
             {
                 "interaction_id": "urn:nhs:names:services:cpisquery:REPC_IN000007GB01",
                 "party_key": "RTX-821088"
-            }
+            },
+            {
+                "org_code": " RTX",
+                "interaction_id": "urn:nhs:names:services:ebs:PRSC_IN070000UK08",
+            },
+            {
+                "org_code": "RTX ",
+                "interaction_id": "urn:nhs:names:services:ebs:PRSC_IN070000UK08",
+            },
+            {
+                "org_code": "RTX",
+                "interaction_id": " urn:nhs:names:services:ebs:PRSC_IN070000UK08",
+            },
+            {
+                "org_code": "RTX",
+                "interaction_id": "urn:nhs:names:services:ebs:PRSC_IN070000UK08 ",
+            },
         ]
         for query in filters:
             cpm_client = EndpointCpmClient(client_id="1234", apigee_url="https://foo.bar", query_params=query)

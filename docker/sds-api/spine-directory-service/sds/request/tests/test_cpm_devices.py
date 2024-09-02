@@ -311,6 +311,22 @@ class TestCPMDevice(TestCase):
                 "party_key": "RTX-806845",
                 "manufacturing_organization": "LSP02"
             },
+            {
+                "org_code": " 5NR",
+                "interaction_id": "urn:nhs:names:services:lrs:MCCI_IN010000UK13",
+            },
+            {
+                "org_code": "5NR ",
+                "interaction_id": "urn:nhs:names:services:lrs:MCCI_IN010000UK13",
+            },
+            {
+                "org_code": "5NR",
+                "interaction_id": " urn:nhs:names:services:lrs:MCCI_IN010000UK13",
+            },
+            {
+                "org_code": "5NR",
+                "interaction_id": "urn:nhs:names:services:lrs:MCCI_IN010000UK13 ",
+            },
         ]
         for query in filters:
             cpm_client = DeviceCpmClient(client_id="1234", apigee_url="https://foo.bar", query_params=query)
