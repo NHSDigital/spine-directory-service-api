@@ -164,7 +164,7 @@ class CpmClient:
         return self._get_response(res=res)
 
     def _set_params(self, query_params: Dict[str, str]) -> Dict[str, str]:
-        params = {self.FILTER_MAP.get(key, key): value for key, value in query_params.items() if value is not None}
+        params = {self.FILTER_MAP.get(key, key): value.strip() for key, value in query_params.items() if value is not None}
         return params
 
     def _get_response(self, res):
