@@ -19,7 +19,7 @@ RETURNED_ENDPOINTS_CHANGE_JSON = "returned_endpoints_single_endpoint.json"
 EXPECTED_LDAP_1 = {
     'nhsIDCode': 'D81631',
     'nhsMHSAckRequested': 'never',
-    'nhsMhsActor': ['urn:oasis:names:tc:ebxml-msg:actor:nextMSH'],
+    'nhsMHSActor': ['urn:oasis:names:tc:ebxml-msg:actor:nextMSH'],
     'nhsMhsCPAId': 'a83e020a3fe9c2988a36',
     'nhsMHSDuplicateElimination': 'never',
     'nhsMHSEndPoint': ['https://systmonespine1.tpp.nme.ncrs.nhs.uk/SystmOneMHS/NHSConnect/D81631/STU3/1'],
@@ -37,7 +37,7 @@ EXPECTED_LDAP_1 = {
 EXPECTED_LDAP_2 = {
     'nhsIDCode': 'RTX',
     'nhsMHSAckRequested': 'always',
-    'nhsMhsActor': ['urn:oasis:names:tc:ebxml-msg:actor:nextMSH'],
+    'nhsMHSActor': ['urn:oasis:names:tc:ebxml-msg:actor:nextMSH'],
     'nhsMhsCPAId': '69720694737ed98c0242',
     'nhsMHSDuplicateElimination': 'always',
     'nhsMHSEndPoint': ['https://msg65-spine.msg.mpe.ncrs.nhs.uk/MHS/RTX/EBS3-5/messagehandler'],
@@ -55,7 +55,7 @@ EXPECTED_LDAP_2 = {
 EXPECTED_LDAP_2_ENDPOINT_MODIFIED = {
     'nhsIDCode': 'RTX',
     'nhsMHSAckRequested': 'always',
-    'nhsMhsActor': ['urn:oasis:names:tc:ebxml-msg:actor:nextMSH'],
+    'nhsMHSActor': ['urn:oasis:names:tc:ebxml-msg:actor:nextMSH'],
     'nhsMhsCPAId': '69720694737ed98c0242',
     'nhsMHSDuplicateElimination': 'always',
     'nhsMHSEndPoint': ['https://msg.int.spine2.ncrs.nhs.uk/reliablemessaging/intermediary'],
@@ -73,7 +73,7 @@ EXPECTED_LDAP_2_ENDPOINT_MODIFIED = {
 EXPECTED_LDAP_3 = {
     'nhsIDCode': 'RTX',
     'nhsMHSAckRequested': 'never',
-    'nhsMhsActor': [],
+    'nhsMHSActor': [],
     'nhsMhsCPAId': '798bc45334bbb95b51de',
     'nhsMHSDuplicateElimination': 'never',
     'nhsMHSEndPoint': ['https://msg65-spine.msg.mpe.ncrs.nhs.uk/Tower6-2/RTX/CPIS-0/responsehandler'],
