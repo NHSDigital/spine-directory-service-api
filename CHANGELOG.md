@@ -1,6 +1,9 @@
 # Changelog
 
 ## 2024-09-02
+- [PI-500] Dependabot updates
+
+## 2024-09-02
 - [PI-492] Correct name of nhsMHSActor in mapping
 
 ## 2024-09-02
