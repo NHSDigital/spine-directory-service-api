@@ -63,7 +63,7 @@ async def set_mhs_endpoint(ldap_results: list, tracking_id_headers: dict):
                 address: Optional[str] = None
                 for core_spine_interaction, interactions in INTERACTION_MAPPINGS.items():
                     if interaction in interactions:
-                        address = _get_address(core_spine_interaction, tracking_id_headers)
+                        address = await _get_address(core_spine_interaction, tracking_id_headers)
                         break
 
                 if address:
