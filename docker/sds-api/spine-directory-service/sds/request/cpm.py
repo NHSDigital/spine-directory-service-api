@@ -34,7 +34,7 @@ def should_use_cpm(handler: RequestHandler) -> bool:
 async def get_device_from_cpm(tracking_id_headers: dict, **query_parts) -> List:
     try:
         client_id = os.environ["CPM_CLIENT_KEY"]
-        apigee_url = f"{os.environ['APIGEE_URL']}/{os.environ['CPM_PATH_URL']}"
+        apigee_url = f"{os.environ['APIGEE_URL']}/connecting-party-manager"
     except KeyError as e:
         raise KeyError(f"Environment variable is required {e}")
     cpm_client = DeviceCpmClient(client_id=client_id, apigee_url=apigee_url, query_params=query_parts)
@@ -45,7 +45,7 @@ async def get_device_from_cpm(tracking_id_headers: dict, **query_parts) -> List:
 async def get_endpoint_from_cpm(tracking_id_headers: dict, **query_parts) -> List:
     try:
         client_id = os.environ["CPM_CLIENT_KEY"]
-        apigee_url = f"{os.environ['APIGEE_URL']}/{os.environ['CPM_PATH_URL']}"
+        apigee_url = f"{os.environ['APIGEE_URL']}/connecting-party-manager"
     except KeyError as e:
         raise KeyError(f"Environment variable is required {e}")
     cpm_client = EndpointCpmClient(client_id=client_id, apigee_url=apigee_url, query_params=query_parts)
@@ -96,7 +96,7 @@ async def _get_address(service_id: str, tracking_id_headers: dict) -> str:
     
     try:
         client_id = os.environ["CPM_CLIENT_KEY"]
-        apigee_url = f"{os.environ['APIGEE_URL']}/{os.environ['CPM_PATH_URL']}"
+        apigee_url = f"{os.environ['APIGEE_URL']}/connecting-party-manager"
     except KeyError as e:
         raise KeyError(f"Environment variable is required {e}")
     
