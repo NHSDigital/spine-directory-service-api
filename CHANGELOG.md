@@ -1,5 +1,8 @@
 # Changelog
 
+## 2024-11-01
+- [PI-587] SDS FHIR api point at new cpm proxy names
+
 ## 2024-09-02
 - [PI-492] Correct name of nhsMHSActor in mapping
 
