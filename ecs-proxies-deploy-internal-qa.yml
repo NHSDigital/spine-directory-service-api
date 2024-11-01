@@ -14,8 +14,6 @@ docker_service:
         value: ldap.vn1.national.ncrs.nhs.uk
       - name: SDS_SPINE_CORE_ODS_CODE
         value: "YES"
-      - name: CPM_PATH_URL
-        value: cpm-qa
       - name: USE_CPM
         value: "0"
     secrets:
