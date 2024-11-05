@@ -39,7 +39,7 @@ python3 -m venv .venv
 pipenv install
 source .venv/bin/activate
 ```
-Make sure VSCode is using the correct interpreter inside your .venv folder
+Make sure VSCode is using the correct interpreter inside your .venv folder.
 
 Update CPM_CLIENT_KEY to use your client key for accessing cpm in launch.json
 
