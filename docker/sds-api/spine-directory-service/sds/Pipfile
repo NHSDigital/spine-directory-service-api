@@ -9,7 +9,7 @@ unittest-xml-reporting = "~=2.5"
 pytest = "*"
 
 [packages]
-tornado = "~=6.1"
+tornado = "~=6.4"
 ldap3 = "~=2.8.1"
 isodate = "~=0.6"
 python-json-logger = "~=2.0.1"
