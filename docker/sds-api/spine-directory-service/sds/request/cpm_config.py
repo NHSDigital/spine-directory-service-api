@@ -1,5 +1,5 @@
 FILTER_MAP_DEVICE = dict(
-    org_code = "nhs_as_client",
+    org_code = "nhs_id_code",
     interaction_id = "nhs_as_svc_ia",
     manufacturing_organization = "nhs_mhs_manufacturer_org",
     party_key = "nhs_mhs_party_key",
