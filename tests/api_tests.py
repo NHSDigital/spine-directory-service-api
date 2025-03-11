@@ -269,50 +269,6 @@ def test_healthcheck(nhsd_apim_proxy_url, nhsd_apim_auth_headers):
             "status_code": 400,
             "result_count": 0,
         },
-        # condition 13: Return a Device from CPM
-        # {
-        #     "endpoint": "Device",
-        #     "query_params": {
-        #         "organization": f"{ENDPOINT_ORGANIZATION_FHIR_IDENTIFIER}|5NR",
-        #         "identifier": f"{DEVICE_INTERACTION_ID_FHIR_IDENTIFIER}|urn:nhs:names:services:lrs:MCCI_IN010000UK13",
-        #         "use_cpm": USE_CPM_ARGUMENT,
-        #     },
-        #     "status_code": 200,
-        #     "result_count": 1,
-        # },
-        # condition 14: Return no Devices from CPM, no matches
-        {
-            "endpoint": "Device",
-            "query_params": {
-                "organization": f"{ENDPOINT_ORGANIZATION_FHIR_IDENTIFIER}|FOO",
-                "identifier": f"{DEVICE_INTERACTION_ID_FHIR_IDENTIFIER}|urn:nhs:names:services:lrs:MCCI_IN010000UK13",
-                "use_cpm": USE_CPM_ARGUMENT,
-            },
-            "status_code": 200,
-            "result_count": 0,
-        },
-        # condition 15: Return an Endpoint from CPM
-        # {
-        #     "endpoint": "Endpoint",
-        #     "query_params": {
-        #         "organization": f"{ENDPOINT_ORGANIZATION_FHIR_IDENTIFIER}|RTX",
-        #         "identifier": f"{ENDPOINT_INTERACTION_ID_FHIR_IDENTIFIER}|urn:nhs:names:services:ebs:PRSC_IN070000UK08",
-        #         "use_cpm": USE_CPM_ARGUMENT,
-        #     },
-        #     "status_code": 200,
-        #     "result_count": 1,
-        # },
-        # condition 16: Return no Endpoints from CPM, no matches
-        {
-            "endpoint": "Endpoint",
-            "query_params": {
-                "organization": f"{ENDPOINT_ORGANIZATION_FHIR_IDENTIFIER}|FOO",
-                "identifier": f"{ENDPOINT_INTERACTION_ID_FHIR_IDENTIFIER}|urn:nhs:names:services:ebs:PRSC_IN070000UK08",
-                "use_cpm": USE_CPM_ARGUMENT,
-            },
-            "status_code": 200,
-            "result_count": 0,
-        },
     ],
     ids=[
         "condition 1: Endpoint organization query parameters present with service id",
@@ -327,10 +283,6 @@ def test_healthcheck(nhsd_apim_proxy_url, nhsd_apim_auth_headers):
         "condition 10: Device unsupported query parameters present",
         "condition 11: Device missing mandatory query parameters",
         "condition 12: Device invalid fhir identifier on mandatory query parameter",
-        #"condition 13: Return a Device from CPM",
-        "condition 14: Return no Devices from CPM, no matches",
-        #"condition 15: Return an Endpoint from CPM",
-        "condition 16: Return no Endpoints from CPM, no matches",
     ],
 )
 @pytest.mark.nhsd_apim_authorization({"access": "application", "level": "level0"})
@@ -344,19 +296,6 @@ def test_endpoints(nhsd_apim_proxy_url, nhsd_apim_auth_headers, request_data):
     uri = f"{nhsd_apim_proxy_url}/{path}"
     _assert_response(
         uri,
-        nhsd_apim_auth_headers,
-        request_data["result_count"],
-        request_data["status_code"],
-        correlation_id,
-    )
-
-    # Re-run with use_cpm as a query
-    query_params_cpm = request_data["query_params"]
-    query_params_cpm["use_cpm"] = USE_CPM_ARGUMENT
-    path_cpm = _build_test_path(request_data["endpoint"], query_params=query_params_cpm)
-    uri_cpm = f"{nhsd_apim_proxy_url}/{path_cpm}"
-    _assert_response(
-        uri_cpm,
         nhsd_apim_auth_headers,
         request_data["result_count"],
         request_data["status_code"],
@@ -379,80 +318,3 @@ def _assert_response(url, headers, result_count, expected_status, correlation_id
         assert body["total"] == result_count, body
     else:
         assert resource_type == "OperationOutcome", body
-
-
-@pytest.mark.skipif(IS_PROD, reason="cant use test utils for prod")
-@pytest.mark.smoketest
-@pytest.mark.parametrize(
-    "request_data",
-    [
-        {
-            "endpoint": "Device",
-            "query_params": {
-                "organization": f"{ENDPOINT_ORGANIZATION_FHIR_IDENTIFIER}|5NR",
-                "identifier": f"{DEVICE_INTERACTION_ID_FHIR_IDENTIFIER}|urn:nhs:names:services:lrs:MCCI_IN010000UK13",
-                "use_cpm": USE_CPM_ARGUMENT,
-            },
-            "status_code": 200,
-            "result_count": 0,
-        }
-    ],
-)
-@pytest.mark.nhsd_apim_authorization({"access": "application", "level": "level0"})
-def test_check_device_is_connected_to_cpm_ptl(
-    nhsd_apim_proxy_url, nhsd_apim_auth_headers, request_data
-):
-    correlation_id = str(uuid4())
-    nhsd_apim_auth_headers["x-correlation-id"] = correlation_id
-    nhsd_apim_auth_headers["cache-control"] = "no-cache"
-
-    query_params = request_data["query_params"]
-    path = _build_test_path(request_data["endpoint"], query_params)
-    uri = f"{nhsd_apim_proxy_url}/{path}"
-
-    resp = requests.get(uri, headers=nhsd_apim_auth_headers)
-    assert resp.status_code == 200
-
-@pytest.mark.skipif( not IS_PROD, reason="can use test utils for ptl")
-@pytest.mark.skipif( IS_DEV, reason="CPM does not have a dev env")
-@pytest.mark.skipif( getenv("ENVIRONMENT") == "prod", reason="TEMP measure for cert deployment")
-@pytest.mark.smoketest
-@pytest.mark.parametrize(
-    "request_data",
-    [
-        {
-            "endpoint": "Device",
-            "query_params": {
-                "organization": f"{ENDPOINT_ORGANIZATION_FHIR_IDENTIFIER}|5NR",
-                "identifier": f"{DEVICE_INTERACTION_ID_FHIR_IDENTIFIER}|urn:nhs:names:services:lrs:MCCI_IN010000UK13",
-                "use_cpm": USE_CPM_ARGUMENT,
-            },
-            "status_code": 200,
-            "result_count": 0,
-        }
-    ],
-)
-def test_check_device_is_connected_to_cpm_prod(
-    nhsd_apim_proxy_url, request_data
-):
-    SDS_TEST_APP_CLIENT_IDS = {
-        "int": "IQCAZ4bCRw7vhUgqLINk5BazGNcj6qEJ",
-        "sandbox": "6BsT7jsTn6GeLUKw10D56nfPQTEXfOSA",
-        "prod": "TBC"
-    }
-    ENVIRONMENT = getenv("ENVIRONMENT")
-    SDS_CLIENT_ID = SDS_TEST_APP_CLIENT_IDS[ENVIRONMENT]
-
-    correlation_id = str(uuid4())
-    headers = {}
-    headers["x-correlation-id"] = correlation_id
-    headers["cache-control"] = "no-cache"
-    headers["apikey"] = SDS_CLIENT_ID
-
-
-    query_params = request_data["query_params"]
-    path = _build_test_path(request_data["endpoint"], query_params)
-    uri = f"{nhsd_apim_proxy_url}/{path}"
-
-    resp = requests.get(uri, headers=headers)
-    assert resp.status_code == 200

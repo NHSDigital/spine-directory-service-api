@@ -2,7 +2,7 @@ name: PR Quality Check
 on: pull_request
 jobs:
   link-ticket:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     defaults:
       run:
         shell: bash
@@ -11,7 +11,7 @@ jobs:
         run: echo ${{ github.event.pull_request.head.ref }} | grep -i -E -q "((apm|niad|AMB|PI|amp)-[0-9]+)|(dependabot\/)|(release\/)"
 
       - name: Grab ticket name
-        if: | 
+        if: |
           contains(github.event.pull_request.head.ref, 'apm-') || 
           contains(github.event.pull_request.head.ref, 'APM-') || 
           contains(github.event.pull_request.head.ref, 'niad-') || 
@@ -25,7 +25,7 @@ jobs:
           ACTIONS_ALLOW_UNSECURE_COMMANDS: true
 
       - name: Comment on PR
-        if:  | 
+        if: |
           contains(github.event.pull_request.head.ref, 'apm-') || 
           contains(github.event.pull_request.head.ref, 'APM-') || 
           contains(github.event.pull_request.head.ref, 'niad-') || 
