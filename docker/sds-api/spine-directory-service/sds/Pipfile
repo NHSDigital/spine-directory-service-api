@@ -15,9 +15,15 @@ isodate = "~=0.6"
 python-json-logger = "~=2.0.1"
 requests = "~=2.31.0"
 jsonschema = "*"
+urllib3 = "==2.2.3"
+exceptiongroup = "==1.1.2"
+referencing = "==0.29.0"
+rpds-py = "==0.18.1"
+importlib_resources = "==5.12.0"
+zipp = "==3.16.0"
 
 [requires]
-python_version = "3.9"
+python_version = "3.8.18"
 
 [scripts]
 unittests = 'python -m xmlrunner -o test-reports -v'

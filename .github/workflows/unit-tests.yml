@@ -4,17 +4,17 @@ on: pull_request
 
 jobs:
     build:
-        runs-on: ubuntu-latest
+        runs-on: ubuntu-20.04
         defaults:
             run:
                 working-directory: ./docker/sds-api/spine-directory-service/sds
 
         steps:
             - uses: actions/checkout@v1
-            - name: Set up Python 3.9
+            - name: Set up Python 3.8
               uses: actions/setup-python@v1
               with:
-                  python-version: 3.9
+                  python-version: 3.8
             - name: Install pipenv
               uses: dschep/install-pipenv-action@v1
               with:
