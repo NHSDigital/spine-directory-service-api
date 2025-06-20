@@ -34,11 +34,7 @@ info:
     
     ## API status and roadmap
     This API is [in production, beta](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#statuses).
-    
-    To see our roadmap, or to suggest, comment or vote on features for this API, see our [interactive product backlog](https://nhs-digital-api-management.featureupvote.com/?order=popular&filter=all&tag=sds-fhir-api).
-
-    If you  have any other queries, [contact us](https://digital.nhs.uk/developer/help-and-support).
-    
+       
     ## Service level
     This API is a bronze service during private beta, meaning it is operational and supported only during business hours (8am to 6pm), Monday to Friday excluding bank holidays.
     (The planned production service level will be platinum.)
@@ -116,6 +112,9 @@ info:
     * 500 to 599 if it failed because of an error on our server
     
     Errors specific to each API are shown in the Endpoints section, under Response. See our [reference guide](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#http-status-codes) for more on errors.
+
+    ## Contact us
+    For help and support connecting to our APIs and to join our developer community, see [Help and support building healthcare software](https://digital.nhs.uk/developer/help-and-support).
 
   contact:
     name: Spine Directory Service API Support
