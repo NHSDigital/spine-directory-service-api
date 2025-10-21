@@ -44,7 +44,7 @@ apigee:
 {% for ENV in APIGEE_ENVIRONMENTS %}
 {% set TITLE = 'Spine Directory Service (' + ENV.display_name + ')' %}
 {% set DESCRIPTION = 'Spine Directory Service - ' + ENV.display_name | lower + ' environment' %}
-{% set NAME = 'spine-directory-service-' + ENV.name %}
+{% set NAME = 'spine-directory-service-' + ('dep-' if ENV.name == 'dev' else '') + ENV.name %}
   - name: {{ ENV.name }}
     products:
       - name: {{ NAME }}
@@ -58,8 +58,8 @@ apigee:
         displayName: {{ TITLE }}
         environments: [ {{ ENV.name }} ]
         proxies:
-          - spine-directory-service-{{ ENV.name }}
-          - identity-service-{{ ENV.name }}
+          - spine-directory-service-{{ ('dep-' if ENV.name == 'dev' else '') + ENV.name  }}
+          - identity-service-{{ ('dep-' if ENV.name == 'dev' else '') + ENV.name  }}
 {% if ENV.name == 'int' %}
           - identity-service-int-no-smartcard
 {% endif %}
