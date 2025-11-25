@@ -105,7 +105,6 @@ smoketest:
 e2etest:
 	$(TEST_CMD) \
 	--junitxml=test-report.xml \
-	-m e2e
 
 securitytest:
 	$(TEST_CMD) \
