@@ -63,7 +63,7 @@ def _configure_ldap_connection(server) -> ldap3.Connection:
 def create_connection() -> ldap3.Connection:
     ldap_url = config.get_config("LDAP_URL")
     disable_tls_flag = config.get_config("LDAP_DISABLE_TLS", None)
-    use_tls = disable_tls_flag != "True"
+    use_tls = False
     logger.info('Configuring connection to LDAP using {url} {tls}', fparams={"url": ldap_url, "tls": use_tls})
 
     if use_tls:
