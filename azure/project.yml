@@ -1,6 +1,7 @@
 parameters:
     - name: python_version
       type: string
+      default: "3.8"
 
 variables:
     service_name: spine-directory-service
