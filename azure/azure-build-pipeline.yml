@@ -32,19 +32,8 @@ extends:
         short_service_name: ${{ variables.short_service_name }}
         cache_steps:
             - bash: |
-                  PATCH=$(curl -s https://api.github.com/repos/actions/python-versions/tags?per_page=100 \
-                      | jq -r '[.[] | .name | select(startswith("3.8"))] | sort -V | tail -n 1 | cut -d- -f1')
-                  PATCH=$(
-                    curl -s "https://api.github.com/repos/actions/python-versions/tags?per_page=100" \
-                    | jq -r '
-                        [.[] | .name | select(startswith("3.8"))]
-                        | sort
-                        | last
-                        | (split("-"))[0]
-                      '
-                  )
-                  echo "Resolved latest python version: $PATCH"
-                  echo "##vso[task.setvariable variable=LD_LIBRARY_PATH;]/agent/_work/_tool/Python/${PATCH}/x64/lib/"
+                  echo "Resolved latest python version: 3.8.10"
+                  echo "##vso[task.setvariable variable=LD_LIBRARY_PATH;]/agent/_work/_tool/Python/3.8.10/x64/lib/"
               displayName: "Query and set python tool cache path"
 
             - task: UsePythonVersion@0
