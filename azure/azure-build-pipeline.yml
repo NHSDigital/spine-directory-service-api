@@ -1,43 +1,50 @@
 name: "$(SourceBranchName)+$(BuildID)"
 
 trigger:
-  branches:
-    include:
-      - tags/refs/v*
-  tags:
-    include:
-      - v*
+    branches:
+        include:
+            - tags/refs/v*
+    tags:
+        include:
+            - v*
 
 pr:
-  branches:
-    include: ['*']
+    branches:
+        include: ["*"]
 
 resources:
-  repositories:
-    - repository: common
-      type: github
-      name: NHSDigital/api-management-utils
-      ref: refs/heads/edge
-      endpoint: NHSDigital
+    repositories:
+        - repository: common
+          type: github
+          name: NHSDigital/api-management-utils
+          ref: refs/heads/edge
+          endpoint: NHSDigital
 
 variables:
-  - template: project.yml
+    - template: project.yml
 
 extends:
-  template: azure/common/apigee-build.yml@common
-  parameters:
-    service_name: ${{ variables.service_name }}
-    short_service_name: ${{ variables.short_service_name }}
-    cache_steps:
-        - task: s3-cache-action@1
-          inputs:
-            key: 'node modules | ${{ variables.service_name }} | ${{ variables.service_name }}/package-lock.json'
-            location: '${{ variables.service_name }}/node_modules'
-            debug: true
-          displayName: cache node modules
-        - task: s3-cache-action@1
-          inputs:
-            key: 'poetry | ${{ variables.service_name }} | ${{ variables.service_name }}/poetry.lock'
-            location: '${{ variables.service_name }}/.venv'
-            debug: true
-          displayName: cache python dependencies
+    template: azure/common/apigee-build.yml@common
+    parameters:
+        service_name: ${{ variables.service_name }}
+        short_service_name: ${{ variables.short_service_name }}
+        cache_steps:
+            - task: s3-cache-action@1
+              inputs:
+                  key: "node modules | ${{ variables.service_name }} | ${{ variables.service_name }}/package-lock.json"
+                  location: "${{ variables.service_name }}/node_modules"
+                  debug: true
+              displayName: cache node modules
+            - task: s3-cache-action@1
+              inputs:
+                  key: "poetry | ${{ variables.service_name }} | ${{ variables.service_name }}/poetry.lock"
+                  location: "${{ variables.service_name }}/.venv"
+                  debug: true
+              displayName: cache python dependencies
+        apigee_deployments:
+            pre_deploy:
+                parameters:
+                    python_version: ${{ variables.python_version }}
+            post_deploy:
+                parameters:
+                    python_version: ${{ variables.python_version }}
