@@ -31,6 +31,14 @@ extends:
         service_name: ${{ variables.service_name }}
         short_service_name: ${{ variables.short_service_name }}
         cache_steps:
+            - bash: |
+                  PATCH=$(curl -s https://api.github.com/repos/actions/python-versions/releases \
+                      | jq -r '[.[] | .tag_name | select(startswith("3.8"))] | .[]' \
+                      | sort -V | tail -n 1 | cut -d- -f1)
+                  echo "Resolved latest python version: $PATCH"
+                  echo "##vso[task.setvariable variable=LD_LIBRARY_PATH;]/agent/_work/_tool/Python/${PATCH}/x64/lib/"
+              displayName: "Query and set python tool cache path"
+
             - task: s3-cache-action@1
               inputs:
                   key: "node modules | ${{ variables.service_name }} | ${{ variables.service_name }}/package-lock.json"

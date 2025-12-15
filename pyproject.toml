@@ -1,6 +1,3 @@
-[project]
-python = "^3.8"
-
 [tool.poetry]
 name = "spine-directory-service-api"
 version = "0.0.1-alpha"
@@ -18,7 +15,7 @@ repository = "https://github.com/NHSDigital/spine-directory-service-api"
 homepage = "https://github.com/NHSDigital/spine-directory-service-api"
 
 keywords = ["healthcare", "uk", "nhs"] #TODO add additional keywords
-# package-mode = false
+package-mode = false
 
 [tool.poetry.dependencies]
 python = "^3.8"
