@@ -24,7 +24,7 @@ variables:
     - template: project.yml
 
 extends:
-    template: azure/common/apigee-build.yml
+    template: common/apigee-build.yml
 
     parameters:
         python_version: ${{ variables.python_version }}
