@@ -30,6 +30,8 @@ extends:
         service_name: ${{ variables.service_name }}
         short_service_name: ${{ variables.short_service_name }}
         cache_steps:
+            - name: python_version
+              type: string
             - task: s3-cache-action@1
               inputs:
                   key: "node modules | ${{ variables.service_name }} | ${{ variables.service_name }}/package-lock.json"
