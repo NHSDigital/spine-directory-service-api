@@ -43,7 +43,6 @@ extends:
                   debug: true
               displayName: cache python dependencies
             - task: UsePythonVersion@0
-              name: UsePy
               displayName: "Use Python 3.8"
               inputs:
                   versionSpec: 3.8
