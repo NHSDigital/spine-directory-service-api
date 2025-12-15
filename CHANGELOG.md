@@ -1,5 +1,9 @@
 # Changelog
 
+## 2025-12-11
+
+- PI-890 Dependabot updates
+
 ## 2025-01-07
 
 - [PI-672] Change CPM query param from nhs_as_client to nhs_id_code
