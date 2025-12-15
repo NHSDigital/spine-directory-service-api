@@ -25,6 +25,7 @@ variables:
 
 extends:
     template: azure/common/apigee-build.yml@common
+
     parameters:
         service_name: ${{ variables.service_name }}
         short_service_name: ${{ variables.short_service_name }}
@@ -41,10 +42,8 @@ extends:
                   location: "${{ variables.service_name }}/.venv"
                   debug: true
               displayName: cache python dependencies
-        apigee_deployments:
-            pre_deploy:
-                parameters:
-                    python_version: ${{ variables.python_version }}
-            post_deploy:
-                parameters:
-                    python_version: ${{ variables.python_version }}
+            - task: UsePythonVersion@0
+              name: UsePy
+              displayName: "Use Python 3.8"
+              inputs:
+                  versionSpec: 3.8
