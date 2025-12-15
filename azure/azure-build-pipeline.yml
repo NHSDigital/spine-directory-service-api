@@ -42,7 +42,7 @@ extends:
             - task: UsePythonVersion@0
               displayName: "Use Python ${{ variables.python_version }}"
               inputs:
-              versionSpec: ${{ variables.python_version }}
+                  versionSpec: ${{ variables.python_version }}
 
             - task: s3-cache-action@1
               inputs:
