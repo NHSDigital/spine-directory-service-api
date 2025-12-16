@@ -19,6 +19,9 @@ parameters:
       type: string
       displayName: Test for use only with external envs (nhsd-prod org)
       default: ""
+    - name: python_version
+      type: string
+      default: "3.8"
 
 steps:
     - task: UsePythonVersion@0
