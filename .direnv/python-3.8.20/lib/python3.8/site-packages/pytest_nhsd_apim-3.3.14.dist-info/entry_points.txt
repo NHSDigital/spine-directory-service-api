@@ -1,0 +1,2 @@
+[pytest11]
+nhsd_apim = pytest_nhsd_apim.pytest_nhsd_apim

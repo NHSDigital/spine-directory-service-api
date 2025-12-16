@@ -30,6 +30,7 @@ extends:
     service_name: ${{ variables.service_name }}
     short_service_name: ${{ variables.short_service_name }}
     service_base_path: ${{ variables.service_base_path }}
+    python_version: ${{ variables.python_version }}
     enable_monitoring: true
     enable_status_monitoring: true
     jinja_templates:
@@ -48,12 +49,14 @@ extends:
           - template: ./templates/run-tests.yml
             parameters:
               smoke_tests: true
+              python_version: ${{ variables.python_version }}
       - environment: internal-qa-sandbox
         proxy_path: sandbox
         post_deploy:
           - template: ./templates/run-tests.yml
             parameters:
               smoke_tests: true
+              python_version: ${{ variables.python_version }}
       - environment: ref
         depends_on:
           - internal_qa
@@ -62,6 +65,7 @@ extends:
           - template: ./templates/run-tests.yml
             parameters:
               smoke_tests: true
+              python_version: ${{ variables.python_version }}
       - environment: int
         depends_on:
           - internal_qa
@@ -72,6 +76,7 @@ extends:
               smoke_tests: true
               external_env: true
               external_env_test_app_id: "361bffa4-aa29-422b-82b5-08f88bec164f"
+              python_version: ${{ variables.python_version }}
       - environment: dev # dep
         depends_on:
           - internal_qa
@@ -82,6 +87,7 @@ extends:
               smoke_tests: true
               external_env: true
               external_env_test_app_id: "080e22a3-3e11-41b4-852c-6cda725445f1"
+              python_version: ${{ variables.python_version }}
       - environment: sandbox
         proxy_path: sandbox
         depends_on:
@@ -93,6 +99,7 @@ extends:
               smoke_tests: true
               external_env: true
               external_env_test_app_id: "60aeca0f-d963-4c96-b705-eb95fc99dfe5"
+              python_version: ${{ variables.python_version }}
       - environment: prod
         depends_on:
             - internal_qa
@@ -103,3 +110,4 @@ extends:
               smoke_tests: true
               external_env: true
               external_env_test_app_id: "906b4a95-55d0-4b56-83eb-722f0ed31cdf"
+              python_version: ${{ variables.python_version }}
