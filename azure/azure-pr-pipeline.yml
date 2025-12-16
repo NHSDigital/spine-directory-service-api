@@ -43,6 +43,7 @@ extends:
             - /ptl/api-deployment/sds/ldap/ca-certs
         jinja_templates:
         hosted_target_healthcheck_suffix: /healthcheck/deep
+        python_version: ${{ variables.python_version }}
         apigee_deployments:
             - environment: internal-dev
               pre_deploy:

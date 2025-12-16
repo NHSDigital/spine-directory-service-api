@@ -35,6 +35,7 @@ extends:
         jinja_templates:
         hosted_target_healthcheck_suffix: /healthcheck/deep
         prod_producer_approval: true
+        python_version: ${{ variables.python_version }}
         apigee_deployments:
             - environment: internal-dev
               pre_deploy:
