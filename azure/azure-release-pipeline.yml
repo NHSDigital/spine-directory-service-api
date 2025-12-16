@@ -38,9 +38,6 @@ extends:
         python_version: ${{ variables.python_version }}
         apigee_deployments:
             - environment: internal-dev
-              pre_deploy:
-                  parameters:
-                      python_version: ${{ variables.python_version }}
               post_deploy:
                   - template: ./templates/run-tests.yml
                     parameters:
@@ -49,18 +46,12 @@ extends:
                         security_tests: true
                         python_version: ${{ variables.python_version }}
             - environment: internal-qa
-              pre_deploy:
-                  parameters:
-                      python_version: ${{ variables.python_version }}
               post_deploy:
                   - template: ./templates/run-tests.yml
                     parameters:
                         smoke_tests: true
                         python_version: ${{ variables.python_version }}
             - environment: internal-qa-sandbox
-              pre_deploy:
-                  parameters:
-                      python_version: ${{ variables.python_version }}
               proxy_path: sandbox
               post_deploy:
                   - template: ./templates/run-tests.yml
@@ -71,9 +62,6 @@ extends:
               depends_on:
                   - internal_qa
                   - internal_qa_sandbox
-              pre_deploy:
-                  parameters:
-                      python_version: ${{ variables.python_version }}
               post_deploy:
                   - template: ./templates/run-tests.yml
                     parameters:
@@ -83,9 +71,6 @@ extends:
               depends_on:
                   - internal_qa
                   - internal_qa_sandbox
-              pre_deploy:
-                  parameters:
-                      python_version: ${{ variables.python_version }}
               post_deploy:
                   - template: ./templates/run-tests.yml
                     parameters:
@@ -97,9 +82,6 @@ extends:
               depends_on:
                   - internal_qa
                   - internal_qa_sandbox
-              pre_deploy:
-                  parameters:
-                      python_version: ${{ variables.python_version }}
               post_deploy:
                   - template: ./templates/run-tests.yml
                     parameters:
@@ -112,9 +94,6 @@ extends:
               depends_on:
                   - internal_qa
                   - internal_qa_sandbox
-              pre_deploy:
-                  parameters:
-                      python_version: ${{ variables.python_version }}
               post_deploy:
                   - template: ./templates/run-tests.yml
                     parameters:
@@ -126,9 +105,6 @@ extends:
               depends_on:
                   - internal_qa
                   - internal_qa_sandbox
-              pre_deploy:
-                  parameters:
-                      python_version: ${{ variables.python_version }}
               post_deploy:
                   - template: ./templates/run-tests.yml
                     parameters:

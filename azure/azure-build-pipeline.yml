@@ -31,16 +31,6 @@ extends:
         service_name: ${{ variables.service_name }}
         short_service_name: ${{ variables.short_service_name }}
         cache_steps:
-            - bash: |
-                  echo "Resolved latest python version: 3.8.10"
-                  echo "##vso[task.setvariable variable=LD_LIBRARY_PATH;]/agent/_work/_tool/Python/3.8.10/x64/lib/"
-              displayName: "Query and set python tool cache path"
-
-            - task: UsePythonVersion@0
-              displayName: "Use Python ${{ variables.python_version }}"
-              inputs:
-                  versionSpec: ${{ variables.python_version }}
-
             - task: s3-cache-action@1
               inputs:
                   key: "node modules | ${{ variables.service_name }} | ${{ variables.service_name }}/package-lock.json"

@@ -45,9 +45,6 @@ extends:
         hosted_target_healthcheck_suffix: /healthcheck/deep
         apigee_deployments:
             - environment: internal-dev
-              pre_deploy:
-                  parameters:
-                      python_version: ${{ variables.python_version }}
               post_deploy:
                   - template: ./templates/run-tests.yml
                     parameters:
@@ -57,9 +54,6 @@ extends:
                         python_version: ${{ variables.python_version }}
             - environment: internal-dev-sandbox
               proxy_path: sandbox
-              pre_deploy:
-                  parameters:
-                      python_version: ${{ variables.python_version }}
               post_deploy:
                   - template: ./templates/run-tests.yml
                     parameters:
