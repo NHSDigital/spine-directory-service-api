@@ -6,10 +6,18 @@ parameters:
     type: string
     displayName: Test for use only with external envs (nhsd-prod org)
     default: ''
+  - name: python_version
+    type: string
 
 steps:
     # In order to run tests in prod you must supply the unique ID of an Apigee app
     # that has authorized access to your service proxy.
+    - task: UsePythonVersion@0
+      name: UsePy
+      displayName: "Use Python ${{ parameters.python_version }}"
+      inputs:
+        versionSpec: ${{ parameters.python_version }}
+
     - bash: |
         export PROXY_NAME="$(FULLY_QUALIFIED_SERVICE_NAME)"
         export APIGEE_ACCESS_TOKEN="$(secret.AccessToken)"

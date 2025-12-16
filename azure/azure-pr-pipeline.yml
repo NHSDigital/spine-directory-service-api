@@ -33,6 +33,7 @@ extends:
     service_base_path: ${{ variables.service_base_path }}
     short_service_name: ${{ variables.short_service_name }}
     deploy_review_sandbox: true
+    python_version: ${{ variables.python_version }}
     secret_ids:
       - ptl/client/ldap.nis1.national.ncrs.nhs.uk/key
       - ptl/client/ldap.nis1.national.ncrs.nhs.uk/crt
@@ -51,6 +52,7 @@ extends:
               e2e_tests: true
               smoke_tests: true
               security_tests: true
+              python_version: ${{ variables.python_version }}
       - environment: internal-dev-sandbox
         proxy_path: sandbox
         post_deploy:
@@ -58,3 +60,4 @@ extends:
             parameters:
               e2e_tests: true
               smoke_tests: true
+              python_version: ${{ variables.python_version }}
