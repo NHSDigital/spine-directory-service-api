@@ -16,7 +16,8 @@ steps:
     - task: UsePythonVersion@0
       displayName: "Use Python ${{ parameters.python_version }}"
       inputs:
-          versionSpec: ${{ parameters.python_version }}
+        versionSpec: ${{ parameters.python_version }}
+
     - bash: |
           export PROXY_NAME="$(FULLY_QUALIFIED_SERVICE_NAME)"
           export APIGEE_ACCESS_TOKEN="$(secret.AccessToken)"
