@@ -38,6 +38,10 @@ steps:
       displayName: cache pytest dependencies
 
     - bash: |
+          python -m pip install --upgrade pip
+          pip install poetry==2.2.1
+          poetry --version
+          python --version
           make install-python
       workingDirectory: $(Pipeline.Workspace)/s/$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)
       condition: ne(variables['CacheRestored-Pytest'], 'true')
