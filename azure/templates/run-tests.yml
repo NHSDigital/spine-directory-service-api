@@ -39,7 +39,7 @@ steps:
 
     - bash: |
           python -m pip install --upgrade pip
-          pip install poetry==2.2.1
+          pip install poetry
           poetry --version
           python --version
           make install-python
