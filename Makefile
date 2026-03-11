@@ -28,6 +28,7 @@ clean:
 	rm -rf dist
 
 publish: clean
+	python --version
 	mkdir -p build
 	npm run publish 2> /dev/null
 

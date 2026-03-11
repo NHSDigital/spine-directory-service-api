@@ -4,19 +4,19 @@ on: pull_request
 
 jobs:
     build:
-        runs-on: ubuntu-20.04
+        runs-on: ubuntu-22.04
         defaults:
             run:
                 working-directory: ./docker/sds-api/spine-directory-service/sds
 
         steps:
-            - uses: actions/checkout@v1
+            - uses: actions/checkout@v4
             - name: Set up Python 3.8
-              uses: actions/setup-python@v1
+              uses: actions/setup-python@v5
               with:
                   python-version: 3.8
             - name: Install pipenv
-              uses: dschep/install-pipenv-action@v1
+              uses: dschep/install-pipenv-action@aaac0310d5f4a052d150e5f490b44354e08fbb8c
               with:
                   version: 2021.5.29
             - name: Install dependencies

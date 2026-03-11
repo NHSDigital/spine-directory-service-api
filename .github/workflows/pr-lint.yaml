@@ -2,13 +2,30 @@ name: PR Quality Check
 on: pull_request
 jobs:
   link-ticket:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     defaults:
       run:
         shell: bash
     steps:
       - name: Check ticket name conforms to requirements
-        run: echo ${{ github.event.pull_request.head.ref }} | grep -i -E -q "((apm|niad|AMB|PI|amp)-[0-9]+)|(dependabot\/)|(release\/)"
+        if: >
+          !(
+            contains(github.event.pull_request.head.ref, 'dependabot/') ||
+            contains(github.event.pull_request.head.ref, 'release/') ||
+            contains(github.event.pull_request.head.ref, 'apm-') ||
+            contains(github.event.pull_request.head.ref, 'APM-') || 
+            contains(github.event.pull_request.head.ref, 'niad-') ||
+            contains(github.event.pull_request.head.ref, 'NIAD-') || 
+            contains(github.event.pull_request.head.ref, 'amb-') ||
+            contains(github.event.pull_request.head.ref, 'amp-') ||
+            contains(github.event.pull_request.head.ref, 'pi-') ||
+            contains(github.event.pull_request.head.ref, 'AMB-') || 
+            contains(github.event.pull_request.head.ref, 'AMP-') || 
+            contains(github.event.pull_request.head.ref, 'PI-')
+          )
+        run: |
+          echo "Branch name must contain a ticket (APM-123, NIAD-123, PI-123, etc)"
+          exit 1
 
       - name: Grab ticket name
         if: |
@@ -19,10 +36,10 @@ jobs:
           contains(github.event.pull_request.head.ref, 'AMB-') || 
           contains(github.event.pull_request.head.ref, 'AMP-') || 
           contains(github.event.pull_request.head.ref, 'PI-')
-        run: |
-          echo "TICKET_NAME=$(echo ${{ github.event.pull_request.head.ref }} | grep -i -o '\(apm\|niad\|pi\)-[0-9]\+' | tr '[:lower:]' '[:upper:]')" >> $GITHUB_ENV
         env:
-          ACTIONS_ALLOW_UNSECURE_COMMANDS: true
+          BRANCH_NAME: ${{ github.event.pull_request.head.ref }}
+        run: |
+          echo "TICKET_NAME=$(echo "$BRANCH_NAME" | grep -i -o '\(apm\|niad\|pi\)-[0-9]\+' | tr '[:lower:]' '[:upper:]')" >> $GITHUB_ENV
 
       - name: Comment on PR
         if: |
@@ -33,7 +50,7 @@ jobs:
           contains(github.event.pull_request.head.ref, 'AMB-') || 
           contains(github.event.pull_request.head.ref, 'AMP-') || 
           contains(github.event.pull_request.head.ref, 'PI-')
-        uses: unsplash/comment-on-pr@master
+        uses: unsplash/comment-on-pr@a9bf050e744c8282dee4bb0dbcf063186d8316c4
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:

@@ -4,102 +4,111 @@ trigger: none
 pr: none
 
 resources:
-  repositories:
-    - repository: common
-      type: github
-      name: NHSDigital/api-management-utils
-      ref: refs/heads/edge
-      endpoint: NHSDigital
-  pipelines:
-  - pipeline: build_pipeline
-    source: "Spine-Directory-Service-Build"
-    trigger:
-      branches:
-        include:
-          - refs/tags/v*
+    repositories:
+        - repository: common
+          type: github
+          name: NHSDigital/api-management-utils
+          ref: refs/heads/edge
+          endpoint: NHSDigital
+    pipelines:
+        - pipeline: build_pipeline
+          source: "Spine-Directory-Service-Build"
+          trigger:
+              branches:
+                  include:
+                      - refs/tags/v*
 
 pool:
-  name: 'AWS-ECS'
+    name: "AWS-ECS"
 
 variables:
-  - template: project.yml
+    - template: project.yml
 
 extends:
-  template: azure/common/apigee-deployment.yml@common
-  parameters:
-    service_name: ${{ variables.service_name }}
-    short_service_name: ${{ variables.short_service_name }}
-    service_base_path: ${{ variables.service_base_path }}
-    enable_monitoring: true
-    enable_status_monitoring: true
-    jinja_templates:
-    hosted_target_healthcheck_suffix: /healthcheck/deep
-    prod_producer_approval: true
-    apigee_deployments:
-      - environment: internal-dev
-        post_deploy:
-          - template: ./templates/run-tests.yml
-            parameters:
-              e2e_tests: true
-              smoke_tests: true
-              security_tests: true
-      - environment: internal-qa
-        post_deploy:
-          - template: ./templates/run-tests.yml
-            parameters:
-              smoke_tests: true
-      - environment: internal-qa-sandbox
-        proxy_path: sandbox
-        post_deploy:
-          - template: ./templates/run-tests.yml
-            parameters:
-              smoke_tests: true
-      - environment: ref
-        depends_on:
-          - internal_qa
-          - internal_qa_sandbox
-        post_deploy:
-          - template: ./templates/run-tests.yml
-            parameters:
-              smoke_tests: true
-      - environment: int
-        depends_on:
-          - internal_qa
-          - internal_qa_sandbox
-        post_deploy:
-          - template: ./templates/run-tests.yml
-            parameters:
-              smoke_tests: true
-              external_env: true
-              external_env_test_app_id: "361bffa4-aa29-422b-82b5-08f88bec164f"
-      - environment: dev # dep
-        depends_on:
-          - internal_qa
-          - internal_qa_sandbox
-        post_deploy:
-          - template: ./templates/run-tests.yml
-            parameters:
-              smoke_tests: true
-              external_env: true
-              external_env_test_app_id: "080e22a3-3e11-41b4-852c-6cda725445f1"
-      - environment: sandbox
-        proxy_path: sandbox
-        depends_on:
-            - internal_qa
-            - internal_qa_sandbox
-        post_deploy:
-          - template: ./templates/run-tests.yml
-            parameters:
-              smoke_tests: true
-              external_env: true
-              external_env_test_app_id: "60aeca0f-d963-4c96-b705-eb95fc99dfe5"
-      - environment: prod
-        depends_on:
-            - internal_qa
-            - internal_qa_sandbox
-        post_deploy:
-          - template: ./templates/run-tests.yml
-            parameters:
-              smoke_tests: true
-              external_env: true
-              external_env_test_app_id: "906b4a95-55d0-4b56-83eb-722f0ed31cdf"
+    template: azure/common/apigee-deployment.yml@common
+    parameters:
+        service_name: ${{ variables.service_name }}
+        short_service_name: ${{ variables.short_service_name }}
+        service_base_path: ${{ variables.service_base_path }}
+        enable_monitoring: true
+        enable_status_monitoring: true
+        jinja_templates:
+        hosted_target_healthcheck_suffix: /healthcheck/deep
+        prod_producer_approval: true
+        python_version: ${{ variables.python_version }}
+        apigee_deployments:
+            - environment: internal-dev
+              post_deploy:
+                  - template: ./templates/run-tests.yml
+                    parameters:
+                        e2e_tests: true
+                        smoke_tests: true
+                        security_tests: true
+                        python_version: ${{ variables.python_version }}
+            - environment: internal-qa
+              post_deploy:
+                  - template: ./templates/run-tests.yml
+                    parameters:
+                        smoke_tests: true
+                        python_version: ${{ variables.python_version }}
+            - environment: internal-qa-sandbox
+              proxy_path: sandbox
+              post_deploy:
+                  - template: ./templates/run-tests.yml
+                    parameters:
+                        smoke_tests: true
+                        python_version: ${{ variables.python_version }}
+            - environment: ref
+              depends_on:
+                  - internal_qa
+                  - internal_qa_sandbox
+              post_deploy:
+                  - template: ./templates/run-tests.yml
+                    parameters:
+                        smoke_tests: true
+                        python_version: ${{ variables.python_version }}
+            - environment: int
+              depends_on:
+                  - internal_qa
+                  - internal_qa_sandbox
+              post_deploy:
+                  - template: ./templates/run-tests.yml
+                    parameters:
+                        smoke_tests: true
+                        external_env: true
+                        external_env_test_app_id: "361bffa4-aa29-422b-82b5-08f88bec164f"
+                        python_version: ${{ variables.python_version }}
+            - environment: dev # dep
+              depends_on:
+                  - internal_qa
+                  - internal_qa_sandbox
+              post_deploy:
+                  - template: ./templates/run-tests.yml
+                    parameters:
+                        smoke_tests: true
+                        external_env: true
+                        external_env_test_app_id: "080e22a3-3e11-41b4-852c-6cda725445f1"
+                        python_version: ${{ variables.python_version }}
+            - environment: sandbox
+              proxy_path: sandbox
+              depends_on:
+                  - internal_qa
+                  - internal_qa_sandbox
+              post_deploy:
+                  - template: ./templates/run-tests.yml
+                    parameters:
+                        smoke_tests: true
+                        external_env: true
+                        external_env_test_app_id: "60aeca0f-d963-4c96-b705-eb95fc99dfe5"
+                        python_version: ${{ variables.python_version }}
+            - environment: prod
+              depends_on:
+                  - internal_qa
+                  - internal_qa_sandbox
+              post_deploy:
+                  - template: ./templates/run-tests.yml
+                    parameters:
+                        smoke_tests: true
+                        external_env: true
+                        external_env_test_app_id: "906b4a95-55d0-4b56-83eb-722f0ed31cdf"
+                        python_version: ${{ variables.python_version }}

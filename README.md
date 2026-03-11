@@ -180,6 +180,7 @@ Sandbox environment mimics real service behaviour - both correct HTTP 200 and cl
 Both /Endpoint and /Device has built in one response with data that can be fetched using query parameters specified below. All other combinations result with empty FHIR bundle simulating no result found.
 
 1. `/Endpoint`
+
 * `organization=https://fhir.nhs.uk/Id/ods-organization-code|YES`
 * `identifier=https://fhir.nhs.uk/Id/nhsEndpointServiceId|urn:nhs:names:services:psis:REPC_IN150016UK05`
 * `identifier=https://fhir.nhs.uk/Id/nhsMhsPartyKey|YES-0000806`
@@ -189,6 +190,7 @@ Query parametere `organization` is mandatory. At least one `identifier` must be 
 Example: `/Endpoint?organization=https://fhir.nhs.uk/Id/ods-organization-code|YES&identifier=https://fhir.nhs.uk/Id/nhsEndpointServiceId|urn:nhs:names:services:psis:REPC_IN150016UK05&identifier=https://fhir.nhs.uk/Id/nhsMhsPartyKey|YES-0000806`
 
 2. `/Device`
+
 * `organization=https://fhir.nhs.uk/Id/ods-organization-code|YES`
 * `identifier=https://fhir.nhs.uk/Id/nhsEndpointServiceId|urn:nhs:names:services:psis:REPC_IN150016UK05`
 * `identifier=https://fhir.nhs.uk/Id/nhsMhsPartyKey|YES-0000806`
