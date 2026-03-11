@@ -8,10 +8,19 @@ jobs:
         shell: bash
     steps:
       - name: Check ticket name conforms to requirements
-        env:
-          BRANCH_NAME: ${{ github.event.pull_request.head.ref }}
+        if: >
+          !(
+            contains(toLower(github.event.pull_request.head.ref), 'dependabot/') ||
+            contains(toLower(github.event.pull_request.head.ref), 'release/') ||
+            contains(toLower(github.event.pull_request.head.ref), 'apm-') ||
+            contains(toLower(github.event.pull_request.head.ref), 'niad-') ||
+            contains(toLower(github.event.pull_request.head.ref), 'amb-') ||
+            contains(toLower(github.event.pull_request.head.ref), 'amp-') ||
+            contains(toLower(github.event.pull_request.head.ref), 'pi-')
+          )
         run: |
-          echo "$BRANCH_NAME" | grep -i -E -q "((apm|niad|AMB|PI|amp)-[0-9]+)|(dependabot\/)|(release\/)"
+          echo "Branch name must contain a ticket (APM-123, NIAD-123, PI-123, etc)"
+          exit 1
 
       - name: Grab ticket name
         if: |
