@@ -10,13 +10,18 @@ jobs:
       - name: Check ticket name conforms to requirements
         if: >
           !(
-            contains(toLower(github.event.pull_request.head.ref), 'dependabot/') ||
-            contains(toLower(github.event.pull_request.head.ref), 'release/') ||
-            contains(toLower(github.event.pull_request.head.ref), 'apm-') ||
-            contains(toLower(github.event.pull_request.head.ref), 'niad-') ||
-            contains(toLower(github.event.pull_request.head.ref), 'amb-') ||
-            contains(toLower(github.event.pull_request.head.ref), 'amp-') ||
-            contains(toLower(github.event.pull_request.head.ref), 'pi-')
+            contains(github.event.pull_request.head.ref, 'dependabot/') ||
+            contains(github.event.pull_request.head.ref, 'release/') ||
+            contains(github.event.pull_request.head.ref, 'apm-') ||
+            contains(github.event.pull_request.head.ref, 'APM-') || 
+            contains(github.event.pull_request.head.ref, 'niad-') ||
+            contains(github.event.pull_request.head.ref, 'NIAD-') || 
+            contains(github.event.pull_request.head.ref, 'amb-') ||
+            contains(github.event.pull_request.head.ref, 'amp-') ||
+            contains(github.event.pull_request.head.ref, 'pi-') ||
+            contains(github.event.pull_request.head.ref, 'AMB-') || 
+            contains(github.event.pull_request.head.ref, 'AMP-') || 
+            contains(github.event.pull_request.head.ref, 'PI-')
           )
         run: |
           echo "Branch name must contain a ticket (APM-123, NIAD-123, PI-123, etc)"
