@@ -50,7 +50,7 @@ jobs:
           contains(github.event.pull_request.head.ref, 'AMB-') || 
           contains(github.event.pull_request.head.ref, 'AMP-') || 
           contains(github.event.pull_request.head.ref, 'PI-')
-        uses: unsplash/comment-on-pr@master
+        uses: unsplash/comment-on-pr@a9bf050e744c8282dee4bb0dbcf063186d8316c4
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
