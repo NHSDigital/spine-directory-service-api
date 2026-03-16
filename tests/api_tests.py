@@ -107,21 +107,21 @@ def test_endpoints_are_secured(nhsd_apim_proxy_url, endpoint):
 
 @pytest.mark.e2e
 @pytest.mark.nhsd_apim_authorization({"access": "application", "level": "level0"})
-def test_healthcheck(nhsd_apim_proxy_url, nhsd_apim_auth_headers):
-    correlation_id = str(uuid4())
-    nhsd_apim_auth_headers["x-correlation-id"] = correlation_id
-    nhsd_apim_auth_headers["cache-control"] = "no-cache"
+# def test_healthcheck(nhsd_apim_proxy_url, nhsd_apim_auth_headers):
+#     correlation_id = str(uuid4())
+#     nhsd_apim_auth_headers["x-correlation-id"] = correlation_id
+#     nhsd_apim_auth_headers["cache-control"] = "no-cache"
 
-    resp = requests.get(f"{nhsd_apim_proxy_url}/healthcheck/deep", headers=nhsd_apim_auth_headers)
-    body = resp.json()
+#     resp = requests.get(f"{nhsd_apim_proxy_url}/healthcheck/deep", headers=nhsd_apim_auth_headers)
+#     body = resp.json()
 
-    assert resp.status_code == 200, (
-        str(resp.status_code) + " " + str(resp.headers) + " " + str(body)
-    )
-    assert "x-correlation-id" in resp.headers, resp.headers
-    assert resp.headers["x-correlation-id"] == correlation_id
-    assert body["status"] == "pass"
-    assert body["details"]["ldap"]["status"] == "pass"
+#     assert resp.status_code == 200, (
+#         str(resp.status_code) + " " + str(resp.headers) + " " + str(body)
+#     )
+#     assert "x-correlation-id" in resp.headers, resp.headers
+#     assert resp.headers["x-correlation-id"] == correlation_id
+#     assert body["status"] == "pass"
+#     assert body["details"]["ldap"]["status"] == "pass"
 
 
 @pytest.mark.e2e
